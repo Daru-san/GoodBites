@@ -20,39 +20,33 @@ object frmLogin: TfrmLogin
     Align = alClient
     AutoSize = True
     TabOrder = 0
-    ExplicitLeft = 0
-    ExplicitTop = 0
-    ExplicitWidth = 465
-    ExplicitHeight = 265
-    object lblPass: TLabel
-      Left = 40
-      Top = 147
-      Width = 50
-      Height = 15
-      Caption = 'Password'
-    end
-    object lblUser: TLabel
-      Left = 40
-      Top = 67
-      Width = 23
-      Height = 15
-      Caption = 'User'
-    end
-    object Edit2: TEdit
-      Left = 160
+    ExplicitWidth = 397
+    ExplicitHeight = 241
+    object edtPassword: TEdit
+      Left = 48
       Top = 144
       Width = 121
       Height = 23
+      PasswordChar = '*'
       TabOrder = 0
-      Text = 'Edit2'
+      TextHint = 'Password'
     end
-    object Edit1: TEdit
-      Left = 160
+    object edtUser: TEdit
+      Left = 48
       Top = 64
       Width = 121
       Height = 23
       TabOrder = 1
-      Text = 'Edit1'
+      TextHint = 'User'
+    end
+    object btnLogin: TButton
+      Left = 256
+      Top = 143
+      Width = 75
+      Height = 25
+      Caption = 'Login'
+      TabOrder = 2
+      OnClick = btnLoginClick
     end
   end
 end

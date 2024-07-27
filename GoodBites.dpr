@@ -3,7 +3,7 @@ program GoodBites;
 uses
   Vcl.Forms,
   App in 'App.pas' {frmApp},
-  Login in 'Login.pas' {frmLogin};
+  Login in 'Login.pas' {frmLogin},
   Dash in 'Dash.pas' {frmDashboard};
 
 {$R *.res}

@@ -106,6 +106,8 @@ implementation
 
 {$R *.dfm}
 
+// TODO: Show the login form when the button is pressed
+// The error seems to persist somehow, research that
 procedure TfrmApp.btnLoginClick(Sender: TObject);
 var
   LoginForm : Login.TfrmLogin;
@@ -113,7 +115,7 @@ begin
   try
     with LoginForm.Create(self) do
       try
-        ShowModal;
+        Show;
       finally
         Free;
       end;

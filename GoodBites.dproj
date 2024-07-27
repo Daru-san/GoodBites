@@ -106,6 +106,10 @@
             <Form>frmLogin</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="Dash.pas">
+            <Form>frmDashboard</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

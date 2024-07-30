@@ -10,6 +10,8 @@ type
     conDB: TADOConnection;
     tblUsers: TADOTable;
     dscUsers: TDataSource;
+    tblData: TADOTable;
+    dscData: TDataSource;
   private
     { Private declarations }
   public

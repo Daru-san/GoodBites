@@ -5,17 +5,13 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids, dmBase,
-  Vcl.StdCtrls, Vcl.ExtCtrls;
+  Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.ComCtrls;
 
 type
   TfrmAdmin = class(TForm)
-    pnlCenter: TPanel;
-    pnlHeader: TPanel;
-    lblHeader: TLabel;
-    pnlBody: TPanel;
+    TabControl1: TTabControl;
     pnlFooter: TPanel;
-    dbgUsers: TDBGrid;
-    lblUsers: TLabel;
+    btnLogout: TButton;
     procedure FormShow(Sender: TObject);
   private
     { Private declarations }
@@ -30,9 +26,12 @@ implementation
 
 {$R *.dfm}
 
+// TODO: Plot administator navigation
 procedure TfrmAdmin.FormShow(Sender: TObject);
 begin
   dbgUsers.DataSource := dmBase.dmData.dscUsers;
+  dbgData.DataSource := dmBase.dmData.dscData;
+  lblData.font.Size := lblUsers.Font.Size;
 end;
 
 end.

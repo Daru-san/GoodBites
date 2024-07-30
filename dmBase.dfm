@@ -19,11 +19,24 @@ object dmData: TdmData
     CursorType = ctStatic
     TableName = 'tblUsers'
     Left = 240
-    Top = 96
+    Top = 64
   end
   object dscUsers: TDataSource
     DataSet = tblUsers
     Left = 336
-    Top = 104
+    Top = 72
+  end
+  object tblData: TADOTable
+    Active = True
+    Connection = conDB
+    CursorType = ctStatic
+    TableName = 'tblData'
+    Left = 152
+    Top = 168
+  end
+  object dscData: TDataSource
+    DataSet = tblData
+    Left = 320
+    Top = 160
   end
 end

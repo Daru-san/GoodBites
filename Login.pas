@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Dash;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Dash,AdminDash, App,dmBase;
 
 type
   TfrmLogin = class(TForm)
@@ -12,10 +12,16 @@ type
     edtPassword: TEdit;
     pnlCenter: TPanel;
     btnLogin: TButton;
+    btnCancel: TButton;
+    pnlFooter: TPanel;
     procedure btnLoginClick(Sender: TObject);
+    procedure btnCancelClick(Sender: TObject);
+
     procedure CheckFile(filename:string);
-    procedure OpenForm;
+    procedure OpenForm(isAdmin : boolean);
+
     function CheckPass(userString,passString,filename: string): boolean;
+    function CheckAdmin(userString : string) : boolean;
   private
     { Private declarations }
   public
@@ -29,13 +35,29 @@ implementation
 
 {$R *.dfm}
 
-// TODO: Get usernames and user IDs from database
+procedure TfrmLogin.btnCancelClick(Sender: TObject);
+var
+  LoginForm : TfrmLogin;
+  AppForm : App.TfrmApp;
+begin
+  with AppForm do
+  begin
+    try
+      ShowModal;
+    finally
+      Free;
+    end;
+  end;
+  LoginForm.Close;
+
+end;
+
 procedure TfrmLogin.btnLoginClick(Sender: TObject);
 const
   FILENAME = '.passwords';
 var
   userString,passString : string;
-  isCorrect: boolean;
+  isCorrect, isAdmin : boolean;
 begin
   userString := edtUser.Text;
   passString := edtPassword.Text;
@@ -43,7 +65,8 @@ begin
   isCorrect := CheckPass(userString,passString,FILENAME);
   if isCorrect then
   begin
-    OpenForm;
+    isAdmin := CheckAdmin(userString);
+    OpenForm(isAdmin);
   end
   else
   begin
@@ -65,13 +88,16 @@ end;
 function TfrmLogin.CheckPass(userString: string; passString: string; filename: string): boolean;
 var
   passFile : textfile;
-  fileString, userFileString, userPassString : string;
-  isCorrect : boolean;
+  fileString, userFileString, userPassString, userInDatabase : string;
+  isCorrect, isInDB : boolean;
   delPos : integer;
 begin
   AssignFile(passFile,filename);
   Append(passFile);
   Reset(passFile);
+
+  isCorrect := false;
+  isInDB := false;
 
   repeat
     ReadLn(passFile,fileString);
@@ -83,15 +109,56 @@ begin
       isCorrect := true
       else isCorrect := false;
   until EOF(passFile);
+
+  if isCorrect then
+  with dmBase do
+  begin
+    tblUsers.Append;
+    Repeat
+      if tblUsers['Username'] = userString then
+      begin
+        isInDB := true;
+        break;
+      end;
+      tblUsers.Next;
+    Until tblUsers.eof;
+  end;
+  if not isInDB then
+  begin
+    ShowMessage(
+          'The user ' + userString
+          + ' has a password but is not present in the database'
+          + {hash13} + 'Are you sure they are registered?'
+    );
+    isCorrect := false;
+  end;
   CheckPass := isCorrect;
 end;
 
+function TfrmLogin.CheckAdmin(userString : string);
+var
+  isAdmin : boolean;
+begin
+  isAdmin := false;
+  with dmBase do
+  begin
+    tblUsers.Append;
+    repeat
+      if tblUsers['isAdmin'] then
+        isAdmin := true;
+      tblUsers.next;
+    until (tblUsers.eof);
+  end;
+  CheckAdmin := isAdmin;
+end;
 // TODO: Make sure forms open and close properly
-procedure TfrmLogin.OpenForm;
+procedure TfrmLogin.OpenForm(isAdmin : boolean);
 var
   DashForm : Dash.TfrmDashboard;
   LoginForm : TfrmLogin;
+  AdminDashForm : AdminDash.TfrmAdmin;
 begin
+  if not isAdmin then
   with DashForm do
   begin;
     try
@@ -99,8 +166,17 @@ begin
     finally
       Free;
     end;
+  end
+  else
+  with AdminDashForm do
+  begin
+    try
+      ShowModal;
+    finally
+      Free;
+    end;
   end;
-  LoginForm.Close;
+  LoginForm.close;
 end;
 
 end.

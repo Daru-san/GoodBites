@@ -84,7 +84,8 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Login;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Login, dmBase,
+  Data.DB, Vcl.Grids, Vcl.DBGrids;
 
 type
   TfrmApp = class(TForm)
@@ -92,7 +93,9 @@ type
     pnlHeader: TPanel;
     lblHeading: TLabel;
     btnLogin: TButton;
+    dbgUsers: TDBGrid;
     procedure btnLoginClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
   public
@@ -123,6 +126,11 @@ begin
     on E: Exception do
       ShowMessage('Error: ' + E.Message);
   end;
+end;
+
+procedure TfrmApp.FormShow(Sender: TObject);
+begin
+  dbgUsers.DataSource := dmBase.dmData.dscUsers;
 end;
 
 end.

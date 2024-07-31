@@ -93,7 +93,6 @@ type
     pnlHeader: TPanel;
     lblHeading: TLabel;
     btnLogin: TButton;
-    dbgUsers: TDBGrid;
     procedure btnLoginClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private

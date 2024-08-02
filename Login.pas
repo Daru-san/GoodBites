@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Dash,AdminDash, App,dmBase;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Dash,AdminDash, {App,} dmBase;
 
 type
   TfrmLogin = class(TForm)
@@ -36,11 +36,11 @@ implementation
 {$R *.dfm}
 
 procedure TfrmLogin.btnCancelClick(Sender: TObject);
-var
+{var
   LoginForm : TfrmLogin;
-  AppForm : App.TfrmApp;
+  AppForm : App.TfrmApp;}
 begin
-  with AppForm do
+  {with AppForm do
   begin
     try
       ShowModal;
@@ -48,7 +48,7 @@ begin
       Free;
     end;
   end;
-  LoginForm.Close;
+  LoginForm.Close;  }
 
 end;
 
@@ -111,7 +111,7 @@ begin
   until EOF(passFile);
 
   if isCorrect then
-  with dmBase do
+  with dmBase.dmData do
   begin
     tblUsers.Append;
     Repeat
@@ -128,19 +128,19 @@ begin
     ShowMessage(
           'The user ' + userString
           + ' has a password but is not present in the database'
-          + {hash13} + 'Are you sure they are registered?'
+          + #13 + 'Are you sure they are registered?'
     );
     isCorrect := false;
   end;
   CheckPass := isCorrect;
 end;
 
-function TfrmLogin.CheckAdmin(userString : string);
+function TfrmLogin.CheckAdmin(userString : string) : boolean;
 var
   isAdmin : boolean;
 begin
   isAdmin := false;
-  with dmBase do
+  with dmBase.dmData do
   begin
     tblUsers.Append;
     repeat

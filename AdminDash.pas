@@ -29,9 +29,9 @@ implementation
 // TODO: Plot administator navigation
 procedure TfrmAdmin.FormShow(Sender: TObject);
 begin
-  dbgUsers.DataSource := dmBase.dmData.dscUsers;
+  {dbgUsers.DataSource := dmBase.dmData.dscUsers;
   dbgData.DataSource := dmBase.dmData.dscData;
-  lblData.font.Size := lblUsers.Font.Size;
+  lblData.font.Size := lblUsers.Font.Size; }
 end;
 
 end.

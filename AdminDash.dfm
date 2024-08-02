@@ -26,7 +26,8 @@ object frmAdmin: TfrmAdmin
       'Tab 1'
       'Tab 2')
     TabIndex = 1
-    ExplicitLeft = 1
+    ExplicitWidth = 903
+    ExplicitHeight = 514
   end
   object pnlFooter: TPanel
     Left = 0
@@ -36,12 +37,13 @@ object frmAdmin: TfrmAdmin
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitTop = 511
+    ExplicitTop = 514
+    ExplicitWidth = 903
     DesignSize = (
       907
       37)
     object btnLogout: TButton
-      Left = 824
+      Left = 820
       Top = 6
       Width = 75
       Height = 25
@@ -50,6 +52,7 @@ object frmAdmin: TfrmAdmin
       Caption = 'Log Out'
       ModalResult = 2
       TabOrder = 0
+      ExplicitLeft = 816
     end
   end
 end

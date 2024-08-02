@@ -56,7 +56,7 @@ object frmLogin: TfrmLogin
       407
       37)
     object btnLogin: TButton
-      Left = 227
+      Left = 211
       Top = 6
       Width = 75
       Height = 25
@@ -66,10 +66,10 @@ object frmLogin: TfrmLogin
       ModalResult = 1
       TabOrder = 0
       OnClick = btnLoginClick
-      ExplicitLeft = 223
+      ExplicitLeft = 207
     end
     object btnCancel: TButton
-      Left = 314
+      Left = 298
       Top = 6
       Width = 75
       Height = 25
@@ -79,7 +79,7 @@ object frmLogin: TfrmLogin
       ModalResult = 2
       TabOrder = 1
       OnClick = btnCancelClick
-      ExplicitLeft = 310
+      ExplicitLeft = 294
     end
   end
 end

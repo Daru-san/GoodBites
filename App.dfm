@@ -2,35 +2,34 @@ object frmApp: TfrmApp
   Left = 0
   Top = 0
   Caption = 'Welcome to GoodBites'
-  ClientHeight = 330
-  ClientWidth = 678
+  ClientHeight = 323
+  ClientWidth = 650
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
-  OnShow = FormShow
   TextHeight = 15
   object pnlCenter: TPanel
     AlignWithMargins = True
     Left = 3
     Top = 3
-    Width = 672
-    Height = 324
+    Width = 644
+    Height = 317
     Align = alClient
     TabOrder = 0
     object pnlHeader: TPanel
       Left = 1
       Top = 1
-      Width = 670
+      Width = 642
       Height = 41
       Align = alTop
       TabOrder = 0
       object lblHeading: TLabel
         Left = 1
         Top = 1
-        Width = 668
+        Width = 640
         Height = 39
         Align = alClient
         Alignment = taCenter

@@ -7,7 +7,10 @@ uses
   Dash in 'Dash.pas' {frmDashboard},
   AdminDash in 'AdminDash.pas' {frmAdmin},
   dmBase in 'dmBase.pas' {dmData: TDataModule},
-  InfoBoard in 'InfoBoard.pas' {frmInfo};
+  InfoBoard in 'InfoBoard.pas' {frmInfo},
+  Methods in 'Methods.pas',
+  lib in 'lib.pas',
+  DataFetcher in 'DataFetcher.pas';
 
 {$R *.res}
 

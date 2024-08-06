@@ -22,8 +22,6 @@ object frmLogin: TfrmLogin
     Align = alClient
     AutoSize = True
     TabOrder = 0
-    ExplicitWidth = 397
-    ExplicitHeight = 204
     object edtPassword: TEdit
       Left = 48
       Top = 144
@@ -50,8 +48,6 @@ object frmLogin: TfrmLogin
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitTop = 210
-    ExplicitWidth = 403
     DesignSize = (
       407
       37)
@@ -66,7 +62,6 @@ object frmLogin: TfrmLogin
       ModalResult = 1
       TabOrder = 0
       OnClick = btnLoginClick
-      ExplicitLeft = 207
     end
     object btnCancel: TButton
       Left = 298
@@ -79,7 +74,6 @@ object frmLogin: TfrmLogin
       ModalResult = 2
       TabOrder = 1
       OnClick = btnCancelClick
-      ExplicitLeft = 294
     end
   end
 end

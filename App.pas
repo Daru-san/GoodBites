@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Login, dmBase,
-  Data.DB, Vcl.Grids, Vcl.DBGrids;
+  Data.DB, Vcl.Grids, Vcl.DBGrids, Dash;
 
 type
   TfrmApp = class(TForm)
@@ -32,14 +32,28 @@ implementation
 procedure TfrmApp.btnLoginClick(Sender: TObject);
 var
   LoginForm : Login.TfrmLogin;
+  DashForm : Dash.TfrmDashboard;
+  didLogin,isAdmin : boolean;
 begin
+  Application.Initialize;
+  LoginForm := TfrmLogin.Create(nil);
   try
-    LoginForm.Visible := true;
-    self.Visible := false;
-  except
-    on E: Exception do
-      ShowMessage('Error: ' + E.Message);
+    LoginForm.ShowModal;
+    didLogin := LoginForm.IsLoggedIn;
+    isAdmin := LoginForm.isAdmin;
+  finally
+    LoginForm.Free;
   end;
+  // TODO: Handle this
+  //if isAdmin then
+
+  if didLogin then
+  begin
+    Application.CreateForm(Dash.TfrmDashboard,DashForm);
+    Application.Run;
+  end;
+  Self.Visible := false;
+  LoginForm.Visible := true;
 end;
 
 end.

@@ -127,8 +127,9 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="Methods.pas"/>
-        <DCCReference Include="lib.pas"/>
+        <DCCReference Include="UserMod.pas"/>
         <DCCReference Include="DataFetcher.pas"/>
+        <DCCReference Include="Utils.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

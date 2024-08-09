@@ -1,33 +1,26 @@
-unit lib;
+// User creation and modification functions and procedures
+unit UserMod;
 
 interface
 
-uses system.SysUtils,dmBase, Vcl.Dialogs;
+uses system.SysUtils,dmBase, Vcl.Dialogs, Utils;
 
 type
   TLib = class(Tobject);
-  function CheckFile(filename:string) : boolean;
   function CheckPass(userString: string; passString: string; filename: string): boolean;
   function ValidPass(userString,passString:string): boolean;
   function CheckDatabase(userString:string):boolean;
   function GenerateUserID(userString:string): string;
   function ValidateNewUser(userString,passString : string) : boolean;
 
-  procedure WriteLog(logMessage:string);
+  procedure CreateUser(userString,passString: string);
   procedure RegisterUserInDB(passString,userString,userID,currentDate : string);
+
   var
     isFailed : boolean;
 implementation
 
-function CheckFile(filename: string) : boolean;
-begin
-  if not FileExists(filename) then
-  begin
-    ShowMessage('The passwords file does not exist');
-    WriteLog('The file ' + filename + ' was needed but not found');
-    exit;
-  end;
-end;
+
 
 function ValidateNewUser(userString,passString:string):boolean;
 const
@@ -82,6 +75,8 @@ begin
       strValidPass := false;
       errorsPresent := true;
       inc(numErrors);
+      arrErrors[numErrors] := 'Username must not have any special characters';
+      break;
     end;
   end;
 
@@ -115,9 +110,14 @@ end;
 function GenerateUserID(userString:string): string;
 var
   randomInt : integer;
+  dateStr, userID : string;
 begin
   // TODO: Generate a number based on the date registered
   randomInt := Random(10)+1;
+  dateStr := FormatDateTime('%d%m%y',date);
+
+  userID := UPPERCASE(userString) + IntToStr(randomInt) + dateStr;
+  GenerateUserID := userID;
 end;
 
 function WriteUserPassFile(userString,passString:string): boolean;
@@ -126,7 +126,7 @@ var
   passFile : textfile;
   isFileExist, isSuccessful : boolean;
 begin
-  if not CheckFile(FILENAME) then
+  if not CheckFileExists(FILENAME) then
   begin
     WriteLog(
       'User register attempted, but the password file is missing' + #13
@@ -183,26 +183,6 @@ begin
 
 end;
 
-procedure WriteLog(logMessage : string);
-const FILENAME = '.logs';
-var
-  LogFile : textfile;
-  logsExist : boolean;
-begin
-  AssignFile(LogFile,FILENAME);
-  logsExist := CheckFile(FILENAME);
-  if logsExist then
-    Append(logFile)
-  else
-  begin
-    Rewrite(logFile);
-    WriteLn(logFile,'# LOGS #' + #13);
-  end;
-  logMessage := DateToStr(date) + ': ' + logMessage;
-  WriteLn(LogFile,logMessage);
-  CloseFile(logFile);
-end;
-
 function ValidPass(userString,passString: string):boolean;
 var
   isValid : boolean;
@@ -252,7 +232,7 @@ var
 begin
   AssignFile(passFile,filename);
 
-  if not CheckFile(filename) then exit;
+  if not CheckFileExists(filename) then exit;
 
   Reset(passFile);
 
@@ -261,7 +241,7 @@ begin
 
   if not inDatabase then
   begin
-    ShowMessage('The user ' + userString + 'is not found');
+    ShowMessage('The user ' + userString + ' is not found');
   end
   else
   repeat
@@ -271,11 +251,8 @@ begin
     delete(fileString,0,delPos);
     userPassString := fileString;
     if ((userFileString = userString) and (userPassString = passString)) then
-    begin
       isCorrect := true;
-      break;
-    end;
-  until EOF(passFile);
+  until EOF(passFile) or isCorrect;
 
   CheckPass := isCorrect;
 end;

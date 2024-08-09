@@ -48,15 +48,16 @@ object frmLogin: TfrmLogin
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
+    ExplicitLeft = -3
+    ExplicitTop = 214
     DesignSize = (
       407
       37)
     object btnLogin: TButton
-      Left = 211
-      Top = 6
-      Width = 75
+      Left = 221
+      Top = 3
+      Width = 71
       Height = 25
-      Anchors = [akTop, akRight]
       Caption = 'Login'
       Default = True
       ModalResult = 1
@@ -65,7 +66,7 @@ object frmLogin: TfrmLogin
     end
     object btnCancel: TButton
       Left = 298
-      Top = 6
+      Top = 3
       Width = 75
       Height = 25
       Anchors = [akTop, akRight]
@@ -74,6 +75,15 @@ object frmLogin: TfrmLogin
       ModalResult = 2
       TabOrder = 1
       OnClick = btnCancelClick
+    end
+    object btnSignUp: TButton
+      Left = 140
+      Top = 3
+      Width = 75
+      Height = 25
+      Caption = 'Sign Up'
+      TabOrder = 2
+      OnClick = btnSignUpClick
     end
   end
 end

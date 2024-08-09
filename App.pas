@@ -44,14 +44,20 @@ begin
     didLogin := LoginForm.IsLoggedIn;
     isAdmin := LoginForm.isAdmin;
     LoginCancelled := LoginForm.isCancelled;
-    // ShowMessage(didLogin.ToString + #13 + isAdmin.toString + #13 + LoginCancelled.toString);
+    ShowMessage(
+      'Logged in?'+#9 + didLogin.ToString + #13
+      + 'Is admin?'+#9 + isAdmin.toString + #13
+      +  'Login cancelled?' + LoginCancelled.toString
+    );
   finally
+  begin
     if LoginCancelled then
     self.Visible := true;
     if didLogin or LoginCancelled then
     begin
       LoginForm.Free;
     end;
+  end;
   end;
 
   if (didLogin and (not isAdmin)) then

@@ -1,0 +1,2 @@
+# LOGS #
+2024/08/09: The user User01 tried to login, but they were present in the passwords file, but absent in the database.

@@ -42,10 +42,12 @@ object frmApp: TfrmApp
       end
     end
     object btnLogin: TButton
-      Left = 280
-      Top = 216
-      Width = 81
-      Height = 25
+      AlignWithMargins = True
+      Left = 4
+      Top = 45
+      Width = 636
+      Height = 268
+      Align = alClient
       Caption = 'Enter'
       TabOrder = 1
       OnClick = btnLoginClick

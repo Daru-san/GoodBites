@@ -22,7 +22,7 @@ type
     { Private declarations }
   public
     { Public declarations }
-    isLoggedIn,isAdmin : boolean;
+    isLoggedIn,isAdmin,isCancelled : boolean;
   end;
 
 var
@@ -36,6 +36,7 @@ procedure TfrmLogin.btnCancelClick(Sender: TObject);
 var
   LoginForm : TfrmLogin;
 begin
+  isCancelled := true;
   LoginForm.visible := false;
 end;
 
@@ -44,28 +45,28 @@ const
   FILENAME = '.passwords';
 var
   userString,passString : string;
-  isCorrect,isValid : boolean;
+  isCorrect,isValid,passFileExists : boolean;
 begin
   userString := edtUser.Text;
   passString := edtPassword.Text;
 
+  passFileExists := CheckFile(filename);
   isValid := ValidPass(userString,passString);
-  if not isValid then exit;
 
-  isCorrect := CheckPass(userString,passString,FILENAME);
-  if isCorrect then
+  if (isValid and passFileExists) then
   begin
-    isAdmin := CheckAdmin(userString);
-    isLoggedIn := true;
-  end
-  else
-  begin
-    ShowMessage('The username or password are incorrect');
-    exit;
+    isCorrect := CheckPass(userString,passString,FILENAME);
+    if isCorrect then
+    begin
+      isAdmin := CheckAdmin(userString);
+      isLoggedIn := true;
+    end
+    else
+    begin
+      ShowMessage('The username or password are incorrect');
+    end;
   end;
 end;
-
-
 
 function TfrmLogin.CheckAdmin(userString : string) : boolean;
 var

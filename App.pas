@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Login, dmBase,
-  Data.DB, Vcl.Grids, Vcl.DBGrids, Dash;
+  Data.DB, Vcl.Grids, Vcl.DBGrids, Dash,AdminDash;
 
 type
   TfrmApp = class(TForm)
@@ -27,32 +27,43 @@ implementation
 
 {$R *.dfm}
 
-// TODO: Show the login form when the button is pressed
-// The error seems to persist somehow, research that
+
+// TODO: Iron out login issues
 procedure TfrmApp.btnLoginClick(Sender: TObject);
 var
   LoginForm : Login.TfrmLogin;
   DashForm : Dash.TfrmDashboard;
-  didLogin,isAdmin : boolean;
+  AdminForm : AdminDash.TfrmAdmin;
+  didLogin,isAdmin,LoginCancelled : boolean;
 begin
   Application.Initialize;
   LoginForm := TfrmLogin.Create(nil);
+  Self.Visible := false;
   try
     LoginForm.ShowModal;
     didLogin := LoginForm.IsLoggedIn;
     isAdmin := LoginForm.isAdmin;
+    LoginCancelled := LoginForm.isCancelled;
+    // ShowMessage(didLogin.ToString + #13 + isAdmin.toString + #13 + LoginCancelled.toString);
   finally
-    LoginForm.Free;
+    if LoginCancelled then
+    self.Visible := true;
+    if didLogin or LoginCancelled then
+    begin
+      LoginForm.Free;
+    end;
   end;
-  // TODO: Handle this
-  //if isAdmin then
 
-  if didLogin then
+  if (didLogin and (not isAdmin)) then
   begin
     Application.CreateForm(Dash.TfrmDashboard,DashForm);
-    Application.Run;
+  end
+  else
+  if (didLogin and isAdmin) then
+  begin
+    Application.CreateForm(AdminDash.TfrmAdmin,AdminForm);
   end;
-  Self.Visible := false;
+  Application.Run;
   LoginForm.Visible := true;
 end;
 

@@ -1,2 +1,27 @@
 # LOGS #
-2024/08/09: The user User01 tried to login, but they were present in the passwords file, but absent in the database.
+2024/08/10: Password must have a number
+2024/08/10: The user a tried to login, but they were present in the passwords file, but absent in the database.
+2024/08/10: Username must be over 2 characters
+2024/08/10: Password must be over 8 characters
+2024/08/10: Password must have a number
+2024/08/10: The user Dan tried to login, but they were present in the passwords file, but absent in the database.
+2024/08/10: Password must have a number
+2024/08/10: Password must have a number
+2024/08/10: Password must have a number
+2024/08/10: Password must have a number
+2024/08/10: Password must have a number
+2024/08/10: Password must have a number
+2024/08/10: Password must have a number
+2024/08/10: Password must have a number
+2024/08/10: The user da tried to login, but they were present in the passwords file, but absent in the database.
+2024/08/10: The user da tried to login, but they were present in the passwords file, but absent in the database.
+2024/08/10: The user Dar tried to login, but they were present in the passwords file, but absent in the database.
+2024/08/10: The user dar tried to login, but they were present in the passwords file, but absent in the database.
+2024/08/10: The user dada tried to login, but they were present in the passwords file, but absent in the database.
+2024/08/10: The user dau tried to login, but they were present in the passwords file, but absent in the database.
+%10%8%24@%X: The user  tried to login, but they were present in the passwords file, but absent in the database.
+2024/08/10: The user da tried to login, but they were present in the passwords file, but absent in the database.
+2024/08/10@00:00:00: The user Dar tried to login, but they were present in the passwords file, but absent in the database.
+2024/08/10@00:00:00: The user dad tried to login, but they were present in the passwords file, but absent in the database.
+2024/08/10: The user sa tried to login, but they were present in the passwords file, but absent in the database.
+2024/08/10@00:00:00: The user dai tried to login, but they were present in the passwords file, but absent in the database.

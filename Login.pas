@@ -90,6 +90,7 @@ begin
   begin
     tblUsers.Append;
     repeat
+    if tblUsers['Username'] = userString then
       if tblUsers['isAdmin'] then
         isAdmin := true;
       tblUsers.next;

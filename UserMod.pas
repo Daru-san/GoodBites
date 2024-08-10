@@ -15,12 +15,11 @@ type
 
   procedure CreateUser(userString,passString: string);
   procedure RegisterUserInDB(passString,userString,userID,currentDate : string);
+  procedure HandleUserError(userString: string; arrErrors : array of string; numErrors : integer);
 
   var
     isFailed : boolean;
 implementation
-
-
 
 function ValidateNewUser(userString,passString:string):boolean;
 const
@@ -28,13 +27,14 @@ const
 var
   isNameValid,isPassValid, errorsPresent, isAlreadyRegistered : boolean;
   intInPass,strValidPass : boolean;
-  arrErrors : array of string;
+  arrErrors : array [1..50] of string;
   numErrors,passErrorCode : integer;
   tempString : string;
   I,j, tempInt: Integer;
 begin
   isNameValid := false;
   isPassValid := false;
+  errorsPresent := false;
 
   numErrors := 0;
 
@@ -70,7 +70,7 @@ begin
 
   for i := 1 to userString.Length do
   begin
-    if not (passString[i] in VALIDCHARS) then
+    if not (userString[i] in VALIDCHARS) then
     begin
       strValidPass := false;
       errorsPresent := true;
@@ -83,7 +83,7 @@ begin
   for i := 1 to passString.Length do
   begin
     val(passString,tempInt,passErrorCode);
-    if passErrorCode = 1 then
+    if passErrorCode = 0 then
     begin
       intInPass := true;
       errorsPresent := true;
@@ -103,10 +103,23 @@ begin
   begin
     isNameValid := true;
     isPassValid := true;
-  end;
+  end else
+    HandleUserError(userString,arrErrors,numErrors);
   ValidateNewUser := isNameValid;
 end;
 
+procedure HandleUserError(userString: string; arrErrors : array of string; numErrors : integer);
+var
+  errorMsg : string;
+  i: Integer;
+begin
+  errorMsg := '';
+  for i := 1 to numErrors do
+  begin
+    errorMsg := errorMsg + arrErrors[i] + #13;
+  end;
+  ShowMessage(errorMsg);
+end;
 function GenerateUserID(userString:string): string;
 var
   randomInt : integer;
@@ -155,7 +168,7 @@ begin
   if isUserValid then
   begin
     userID := GenerateUserID(userString);
-    RegisterUserInDB(passString,userString,userID,DateToStr(date));
+    RegisterUserInDB(passString,userString,userID,FormatDateTime('%d%m%y',date));
     userInDB := CheckDatabase(userString);
     if userInDB then
     begin
@@ -180,6 +193,17 @@ end;
 
 procedure RegisterUserInDB(passString,userString,userID,currentDate : string);
 begin
+  with dmBase.dmData do
+  begin
+    tblUsers.Append;
+    tblUsers['userID'] := userID;
+    tblUsers['Username'] := userString;
+    tblUsers['RegisterDate'] := currentDate;
+    tblUsers['isAdmin'] := false;
+    tblUsers['Age'] := 0;
+    tblUsers.Post;
+    tblUsers.Close;
+  end;
 
 end;
 
@@ -209,18 +233,13 @@ var
 begin
   with dmBase.dmData do
   begin
-    tblUsers.Append;
     tblUsers.First;
     Repeat
       if tblUsers['Username'] = userString then isFound := true;
       tblUsers.Next;
     Until tblUsers.eof or isFound;
+    tblUsers.close;
   end;
-  if not isFound then
-    WriteLog(
-      'The user ' + userString +
-      ' tried to login, but they were present in the passwords file, but absent in the database.'
-    );
   CheckDatabase := isFound;
 end;
 function CheckPass(userString: string; passString: string; filename: string): boolean;

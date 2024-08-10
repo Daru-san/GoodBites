@@ -48,8 +48,6 @@ object frmLogin: TfrmLogin
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitLeft = -3
-    ExplicitTop = 214
     DesignSize = (
       407
       37)

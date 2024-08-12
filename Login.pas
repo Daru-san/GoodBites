@@ -15,11 +15,14 @@ type
     btnCancel: TButton;
     pnlFooter: TPanel;
     btnSignUp: TButton;
+    pnlHead: TPanel;
+    lblHead: TLabel;
     procedure btnLoginClick(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
 
     function CheckAdmin(userString : string) : boolean;
     procedure btnSignUpClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
   public
@@ -62,12 +65,15 @@ begin
     begin
       isAdmin := CheckAdmin(userString);
       isLoggedIn := true;
+      WriteLog('User ' + userString + ' logged in.' + 'Is admin? ' + isAdmin.ToString);
     end
     else
     begin
       ShowMessage('The username or password are incorrect');
+      WriteLog('Failed login attempt by user ' + userString);
     end;
-  end;
+  end else
+    ShowMessage('Invalid data');;
 end;
 
 procedure TfrmLogin.btnSignUpClick(Sender: TObject);
@@ -75,8 +81,8 @@ var
   confirm : integer;
   userString,passString:string;
 begin
-  userString := InputBox('Goodbites: Account Creation','Enter a username','');
-  passString := InputBox('Goodbites: Account Creation','Enter a password','');
+  userString := edtUser.text;
+  passString := edtPassword.text;
   CreateUser(userString,passString);
 end;
 
@@ -88,6 +94,7 @@ begin
   isAdmin := false;
   with dmBase.dmData do
   begin
+    tblUsers.open;
     tblUsers.Append;
     repeat
     if tblUsers['Username'] = userString then
@@ -99,4 +106,18 @@ begin
   CheckAdmin := isAdmin;
 end;
 
+procedure TfrmLogin.FormShow(Sender: TObject);
+begin
+  with lblHead do
+  begin
+    Caption := 'Login or create account';
+    Font.Name := 'Noto Sans';
+    AutoSize := true;
+    font.Style := [fsBold];
+    Alignment := taCenter;
+  end;
+
+end;
+
 end.
+

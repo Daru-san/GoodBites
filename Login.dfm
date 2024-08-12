@@ -12,19 +12,23 @@ object frmLogin: TfrmLogin
   Font.Name = 'Segoe UI'
   Font.Style = []
   Position = poMainFormCenter
+  OnShow = FormShow
   TextHeight = 15
   object pnlCenter: TPanel
     AlignWithMargins = True
     Left = 3
-    Top = 3
+    Top = 44
     Width = 401
-    Height = 205
+    Height = 164
     Align = alClient
     AutoSize = True
+    BevelOuter = bvNone
     TabOrder = 0
+    ExplicitLeft = 8
+    ExplicitTop = 46
     object edtPassword: TEdit
       Left = 48
-      Top = 144
+      Top = 96
       Width = 121
       Height = 23
       PasswordChar = '*'
@@ -33,7 +37,7 @@ object frmLogin: TfrmLogin
     end
     object edtUser: TEdit
       Left = 48
-      Top = 64
+      Top = 40
       Width = 121
       Height = 23
       TabOrder = 1
@@ -46,7 +50,7 @@ object frmLogin: TfrmLogin
     Width = 407
     Height = 37
     Align = alBottom
-    BevelOuter = bvNone
+    BevelOuter = bvSpace
     TabOrder = 1
     DesignSize = (
       407
@@ -82,6 +86,28 @@ object frmLogin: TfrmLogin
       Caption = 'Sign Up'
       TabOrder = 2
       OnClick = btnSignUpClick
+    end
+  end
+  object pnlHead: TPanel
+    Left = 0
+    Top = 0
+    Width = 407
+    Height = 41
+    Align = alTop
+    BevelEdges = [beBottom]
+    BevelOuter = bvSpace
+    TabOrder = 2
+    object lblHead: TLabel
+      Left = 1
+      Top = 1
+      Width = 405
+      Height = 39
+      Align = alClient
+      AutoSize = False
+      Caption = 'To login or not to login? That is the question!'
+      Layout = tlCenter
+      ExplicitWidth = 3
+      ExplicitHeight = 15
     end
   end
 end

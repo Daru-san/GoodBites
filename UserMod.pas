@@ -14,7 +14,7 @@ type
   function ValidateNewUser(userString,passString : string) : boolean;
 
   procedure CreateUser(userString,passString: string);
-  procedure RegisterUserInDB(passString,userString,userID,currentDate : string);
+  procedure RegisterUserInDB(passString,userString,userID : string);
   procedure HandleUserError(userString: string; arrErrors : array of string; numErrors : integer);
 
   var
@@ -122,14 +122,24 @@ begin
 end;
 function GenerateUserID(userString:string): string;
 var
-  randomInt : integer;
-  dateStr, userID : string;
+  randomInt, iPos : integer;
+  dateStr,finalDateStr, tempStr, userID,nameStr : string;
+  i: Integer;
 begin
-  // TODO: Generate a number based on the date registered
   randomInt := Random(10)+1;
-  dateStr := FormatDateTime('%d%m%y',date);
+  dateStr := FormatDateTime('d/m/y',date);
+  nameStr := UPPERCASE(userString[1] + userString[2]);
 
-  userID := UPPERCASE(userString) + IntToStr(randomInt) + dateStr;
+  FinalDateStr := dateStr[2];
+
+  for i := 1 to 2 do
+  begin
+    iPos := pos('/',dateStr);
+    delete(dateStr,i,iPos);
+    FinalDateStr := FinalDateStr + dateStr[1];
+  end;
+
+  userID := nameStr + IntToStr(randomInt) + dateStr;
   GenerateUserID := userID;
 end;
 
@@ -152,11 +162,12 @@ begin
   begin
     AssignFile(passFile,FILENAME);
     Append(passFile);
-    WriteLn(userString + '#' + passString);
+    WriteLn(passFile,userString + '#' + passString);
     CloseFile(passFile);
     WriteLog('User ' + userString + ' has been saved in the PASSWORDS file');
-    isSuccessful := true;
+    isSuccessful:= true;
   end;
+  WriteUserPassFile := isSuccessful;
 end;
 
 procedure CreateUser(userString,passString: string);
@@ -168,7 +179,7 @@ begin
   if isUserValid then
   begin
     userID := GenerateUserID(userString);
-    RegisterUserInDB(passString,userString,userID,FormatDateTime('%d%m%y',date));
+    RegisterUserInDB(passString,userString,userID);
     userInDB := CheckDatabase(userString);
     if userInDB then
     begin
@@ -191,14 +202,15 @@ begin
   end;
 end;
 
-procedure RegisterUserInDB(passString,userString,userID,currentDate : string);
+procedure RegisterUserInDB(passString,userString,userID : string);
 begin
   with dmBase.dmData do
   begin
+    tblUsers.Open;
     tblUsers.Append;
     tblUsers['userID'] := userID;
     tblUsers['Username'] := userString;
-    tblUsers['RegisterDate'] := currentDate;
+    tblUsers['RegisterDate'] := date;
     tblUsers['isAdmin'] := false;
     tblUsers['Age'] := 0;
     tblUsers.Post;
@@ -225,6 +237,7 @@ begin
   end
    else
     isValid := true;
+  ValidPass := isValid;
 end;
 
 function CheckDatabase(userString : string): boolean;
@@ -233,9 +246,10 @@ var
 begin
   with dmBase.dmData do
   begin
+    tblUsers.Open;
     tblUsers.First;
     Repeat
-      if tblUsers['Username'] = userString then isFound := true;
+      if UPPERCASE(tblUsers['Username']) = UPPERCASE(userString) then isFound := true;
       tblUsers.Next;
     Until tblUsers.eof or isFound;
     tblUsers.close;
@@ -265,11 +279,11 @@ begin
   else
   repeat
     ReadLn(passFile,fileString);
-    delPos := pos(',',fileString);
-    userFileString := copy(fileString,0,delPos);
-    delete(fileString,0,delPos);
+    delPos := pos('#',fileString);
+    userFileString := copy(fileString,1,delPos-1);
+    delete(fileString,1,delPos);
     userPassString := fileString;
-    if ((userFileString = userString) and (userPassString = passString)) then
+    if ((UPPERCASE(userFileString) = UPPERCASE(userString)) and (userPassString = passString)) then
       isCorrect := true;
   until EOF(passFile) or isCorrect;
 
@@ -277,3 +291,4 @@ begin
 end;
 
 end.
+

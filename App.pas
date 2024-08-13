@@ -50,27 +50,24 @@ begin
       +  'Login cancelled?' + LoginCancelled.toString
     );
   finally
-  begin
-    if LoginCancelled then
-    self.Visible := true;
-    if didLogin or LoginCancelled then
+    LoginForm.Free;
+    if didLogin then
     begin
-      LoginForm.Free;
+      if (not isAdmin) then
+      begin
+        Application.CreateForm(Dash.TfrmDashboard,DashForm);
+        DashForm.Visible := true;
+      end
+        else
+      if isAdmin then
+      begin
+        Application.CreateForm(AdminDash.TfrmAdmin,AdminForm);
+        AdminForm.Visible := true;
+      end;
+      Application.ShowMainForm := false;
     end;
+    Application.Run;
   end;
-  end;
-
-  if (didLogin and (not isAdmin)) then
-  begin
-    Application.CreateForm(Dash.TfrmDashboard,DashForm);
-  end
-  else
-  if (didLogin and isAdmin) then
-  begin
-    Application.CreateForm(AdminDash.TfrmAdmin,AdminForm);
-  end;
-  Application.Run;
-  LoginForm.Visible := true;
 end;
 
 end.

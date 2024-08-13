@@ -24,8 +24,6 @@ object frmLogin: TfrmLogin
     AutoSize = True
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitLeft = 8
-    ExplicitTop = 46
     object edtPassword: TEdit
       Left = 48
       Top = 96

@@ -12,7 +12,9 @@ type
     TabControl1: TTabControl;
     pnlFooter: TPanel;
     btnLogout: TButton;
+    dbgUsers: TDBGrid;
     procedure FormShow(Sender: TObject);
+    procedure btnLogoutClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -27,11 +29,17 @@ implementation
 {$R *.dfm}
 
 // TODO: Plot administator navigation
+
+// Logging out
+procedure TfrmAdmin.btnLogoutClick(Sender: TObject);
+begin
+  Application.ShowMainForm := true;
+  Self.CloseModal;
+end;
+
 procedure TfrmAdmin.FormShow(Sender: TObject);
 begin
-  {dbgUsers.DataSource := dmBase.dmData.dscUsers;
-  dbgData.DataSource := dmBase.dmData.dscData;
-  lblData.font.Size := lblUsers.Font.Size; }
+ // dbgUsers.DataSource := dmBase.dmData.dscUsers;
 end;
 
 end.

@@ -26,8 +26,19 @@ object frmAdmin: TfrmAdmin
       'Tab 1'
       'Tab 2')
     TabIndex = 1
-    ExplicitWidth = 903
-    ExplicitHeight = 514
+    object dbgUsers: TDBGrid
+      Left = 64
+      Top = 80
+      Width = 785
+      Height = 377
+      DataSource = dmData.dscUsers
+      TabOrder = 0
+      TitleFont.Charset = DEFAULT_CHARSET
+      TitleFont.Color = clWindowText
+      TitleFont.Height = -12
+      TitleFont.Name = 'Segoe UI'
+      TitleFont.Style = []
+    end
   end
   object pnlFooter: TPanel
     Left = 0
@@ -37,8 +48,6 @@ object frmAdmin: TfrmAdmin
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitTop = 514
-    ExplicitWidth = 903
     DesignSize = (
       907
       37)
@@ -52,7 +61,7 @@ object frmAdmin: TfrmAdmin
       Caption = 'Log Out'
       ModalResult = 2
       TabOrder = 0
-      ExplicitLeft = 816
+      OnClick = btnLogoutClick
     end
   end
 end

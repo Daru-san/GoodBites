@@ -89,19 +89,23 @@ end;
 // Message dialog
 function TfrmLogin.CheckAdmin(userString : string) : boolean;
 var
-  isAdmin : boolean;
+  isAdmin,isFound : boolean;
 begin
   isAdmin := false;
+  isFound := false;
   with dmBase.dmData do
   begin
     tblUsers.open;
-    tblUsers.Append;
+    tblUsers.First;
     repeat
-    if tblUsers['Username'] = userString then
-      if tblUsers['isAdmin'] then
-        isAdmin := true;
+    if UPPERCASE(tblUsers['Username']) = UPPERCASE(userString) then
+    begin
+      isFound := true;
+      if tblUsers['isAdmin'] then isAdmin := true;
+    end;
       tblUsers.next;
-    until (tblUsers.eof);
+    until (tblUsers.EOF or isFound);
+    tblUsers.Close;
   end;
   CheckAdmin := isAdmin;
 end;

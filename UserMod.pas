@@ -157,7 +157,6 @@ begin
     );
     ShowMessage('An unkown error occured');
     isSuccessful := false;
-
   end else
   begin
     AssignFile(passFile,FILENAME);
@@ -251,8 +250,8 @@ begin
     Repeat
       if UPPERCASE(tblUsers['Username']) = UPPERCASE(userString) then isFound := true;
       tblUsers.Next;
-    Until tblUsers.eof or isFound;
-    tblUsers.close;
+    Until tblUsers.EOF or isFound;
+    tblUsers.Close;
   end;
   CheckDatabase := isFound;
 end;
@@ -286,6 +285,7 @@ begin
     if ((UPPERCASE(userFileString) = UPPERCASE(userString)) and (userPassString = passString)) then
       isCorrect := true;
   until EOF(passFile) or isCorrect;
+  CloseFile(passFile);
 
   CheckPass := isCorrect;
 end;

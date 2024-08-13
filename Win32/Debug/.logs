@@ -25,3 +25,18 @@
 2024/08/10@00:00:00: The user dad tried to login, but they were present in the passwords file, but absent in the database.
 2024/08/10: The user sa tried to login, but they were present in the passwords file, but absent in the database.
 2024/08/10@00:00:00: The user dai tried to login, but they were present in the passwords file, but absent in the database.
+2024/08/13@00:00:00: Failed login attempt by user Dan
+2024/08/13@00:00:00: Failed login attempt by user Daru
+2024/08/13@00:00:00: Failed login attempt by user Daru
+2024/08/13@00:00:00: User Dai has been saved in the PASSWORDS file
+2024/08/13@00:00:00: The user Dai, uid DA1084 has registered successfully
+2024/08/13@00:00:00: User Dai logged in.Is admin? 0
+2024/08/13@00:00:00: User Dai logged in.Is admin? 0
+2024/08/13@00:00:00: User Dai logged in.Is admin? 0
+2024/08/13@00:00:00: User Dai logged in.Is admin? 0
+2024/08/13@00:00:00: User Daru logged in.Is admin? 0
+2024/08/13@00:00:00: User Daru logged in.Is admin? -1
+2024/08/13@00:00:00: User Daru logged in.Is admin? -1
+2024/08/13@00:00:00: User Daru logged in.Is admin? -1
+2024/08/13@00:00:00: User Daru logged in.Is admin? -1
+2024/08/13@00:00:00: User Daru logged in.Is admin? -1

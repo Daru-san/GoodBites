@@ -1,42 +1,14 @@
-# LOGS #
-2024/08/10: Password must have a number
-2024/08/10: The user a tried to login, but they were present in the passwords file, but absent in the database.
-2024/08/10: Username must be over 2 characters
-2024/08/10: Password must be over 8 characters
-2024/08/10: Password must have a number
-2024/08/10: The user Dan tried to login, but they were present in the passwords file, but absent in the database.
-2024/08/10: Password must have a number
-2024/08/10: Password must have a number
-2024/08/10: Password must have a number
-2024/08/10: Password must have a number
-2024/08/10: Password must have a number
-2024/08/10: Password must have a number
-2024/08/10: Password must have a number
-2024/08/10: Password must have a number
-2024/08/10: The user da tried to login, but they were present in the passwords file, but absent in the database.
-2024/08/10: The user da tried to login, but they were present in the passwords file, but absent in the database.
-2024/08/10: The user Dar tried to login, but they were present in the passwords file, but absent in the database.
-2024/08/10: The user dar tried to login, but they were present in the passwords file, but absent in the database.
-2024/08/10: The user dada tried to login, but they were present in the passwords file, but absent in the database.
-2024/08/10: The user dau tried to login, but they were present in the passwords file, but absent in the database.
-%10%8%24@%X: The user  tried to login, but they were present in the passwords file, but absent in the database.
-2024/08/10: The user da tried to login, but they were present in the passwords file, but absent in the database.
-2024/08/10@00:00:00: The user Dar tried to login, but they were present in the passwords file, but absent in the database.
-2024/08/10@00:00:00: The user dad tried to login, but they were present in the passwords file, but absent in the database.
-2024/08/10: The user sa tried to login, but they were present in the passwords file, but absent in the database.
-2024/08/10@00:00:00: The user dai tried to login, but they were present in the passwords file, but absent in the database.
-2024/08/13@00:00:00: Failed login attempt by user Dan
-2024/08/13@00:00:00: Failed login attempt by user Daru
-2024/08/13@00:00:00: Failed login attempt by user Daru
-2024/08/13@00:00:00: User Dai has been saved in the PASSWORDS file
-2024/08/13@00:00:00: The user Dai, uid DA1084 has registered successfully
-2024/08/13@00:00:00: User Dai logged in.Is admin? 0
-2024/08/13@00:00:00: User Dai logged in.Is admin? 0
-2024/08/13@00:00:00: User Dai logged in.Is admin? 0
-2024/08/13@00:00:00: User Dai logged in.Is admin? 0
-2024/08/13@00:00:00: User Daru logged in.Is admin? 0
-2024/08/13@00:00:00: User Daru logged in.Is admin? -1
-2024/08/13@00:00:00: User Daru logged in.Is admin? -1
-2024/08/13@00:00:00: User Daru logged in.Is admin? -1
-2024/08/13@00:00:00: User Daru logged in.Is admin? -1
-2024/08/13@00:00:00: User Daru logged in.Is admin? -1
+# LOGS #
+2024/08/16@20:18:08: Administrator Daru logged in.
+2024/08/16@20:18:33: Failed login attempt by user Kale
+2024/08/16@20:18:54: User Kale has been saved in the PASSWORDS file
+2024/08/16@20:18:54: The user Kale, uid KA784 has registered successfully
+2024/08/16@20:18:58: User Kale logged in.
+2024/08/16@20:19:12: Administrator Daru logged in.
+2024/08/16@20:24:40: Administrator Daru logged in.
+2024/08/16@20:25:41: Administrator Daru logged in.
+2024/08/16@20:27:37: Administrator Daru logged in.
+2024/08/16@20:40:11: [USER]Administrator Daru logged in.
+2024/08/16@20:40:12: [SYSTEM]The database `tblUsers` was accessed by an administrator
+2024/08/16@20:41:09: [USER] 	Administrator Daru logged in.
+2024/08/16@20:41:10: [SYSTEM] 	The database table `tblUsers` was accessed by an administrator.

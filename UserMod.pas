@@ -16,6 +16,7 @@ type
   procedure CreateUser(userString,passString: string);
   procedure RegisterUserInDB(passString,userString,userID : string);
   procedure HandleUserError(userString: string; arrErrors : array of string; numErrors : integer);
+  procedure SaveLastLogin(userString : string);
 
   var
     isFailed : boolean;
@@ -151,7 +152,7 @@ var
 begin
   if not CheckFileExists(FILENAME) then
   begin
-    WriteLog(
+    WriteSysLog(
       'User register attempted, but the password file is missing' + #13
       + #9 + 'This may cause errrors, manual intervention is required'
     );
@@ -163,7 +164,7 @@ begin
     Append(passFile);
     WriteLn(passFile,userString + '#' + passString);
     CloseFile(passFile);
-    WriteLog('User ' + userString + ' has been saved in the PASSWORDS file');
+    WriteUserLog('User ' + userString + ' has been saved in the PASSWORDS file');
     isSuccessful:= true;
   end;
   WriteUserPassFile := isSuccessful;
@@ -185,13 +186,13 @@ begin
       userInPassFile := writeUserPassFile(userString,passString);
       if userInPassFile then
       begin
-        WriteLog('The user ' + userString + ', uid ' + userID + ' has registered successfully');
+        WriteUserLog('The user ' + userString + ', uid ' + userID + ' has registered successfully');
         ShowMessage('You have successfully been registered, happy eating!');
       end;
     end
     else
     begin
-      WriteLog(
+      WriteUserLog(
         'The user ' + userString + ',uid ' + userID +
         ' attempted to register, but were not found in the database afterward.'
         + #13 + #9 + 'Something must have gone wrong'
@@ -203,17 +204,17 @@ end;
 
 procedure RegisterUserInDB(passString,userString,userID : string);
 begin
-  with dmBase.dmData do
+  with dmBase.dmData.tblUsers do
   begin
-    tblUsers.Open;
-    tblUsers.Append;
-    tblUsers['userID'] := userID;
-    tblUsers['Username'] := userString;
-    tblUsers['RegisterDate'] := date;
-    tblUsers['isAdmin'] := false;
-    tblUsers['Age'] := 0;
-    tblUsers.Post;
-    tblUsers.Close;
+    Open;
+    Append;
+    FieldValues['userID'] := userID;
+    FieldValues['Username'] := userString;
+    FieldValues['RegisterDate'] := date;
+    FieldValues['isAdmin'] := false;
+    FieldValues['Age'] := 0;
+    Post;
+    Close;
   end;
 
 end;
@@ -243,15 +244,15 @@ function CheckDatabase(userString : string): boolean;
 var
   isFound: boolean;
 begin
-  with dmBase.dmData do
+  with dmBase.dmData.tblUsers do
   begin
-    tblUsers.Open;
-    tblUsers.First;
+    Open;
+    First;
     Repeat
-      if UPPERCASE(tblUsers['Username']) = UPPERCASE(userString) then isFound := true;
-      tblUsers.Next;
-    Until tblUsers.EOF or isFound;
-    tblUsers.Close;
+      if UPPERCASE(FieldValues['Username']) = UPPERCASE(userString) then isFound := true;
+      Next;
+    Until EOF or isFound;
+    Close;
   end;
   CheckDatabase := isFound;
 end;
@@ -290,5 +291,27 @@ begin
   CheckPass := isCorrect;
 end;
 
+procedure SaveLastLogin(userString : string);
+var
+  userFound : boolean;
+begin
+  with dmBase.dmData.tblUsers do
+  begin
+    Open;
+    repeat
+      if FieldValues['Username'] = userString then
+      begin
+        userFound := true;
+      end
+      else Next;
+    until EOF or userFound;
+
+    Edit;
+    FieldValues['LastLogin'] := date;
+    Post;
+
+    Close;
+  end;
+end;
 end.
 

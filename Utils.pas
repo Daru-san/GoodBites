@@ -7,6 +7,9 @@ uses System.SysUtils;
 type
   TBackend = Class(TObject);
   procedure WriteLog(logMessage:string);
+  procedure WriteUserLog(logMessage:string);
+  procedure WriteSysLog(logMessage:string);
+  procedure WriteErrorLog(logMessage:string);
   function CheckFileExists(filename: string;isLogFile:boolean = false) : boolean;
 
   implementation
@@ -30,6 +33,30 @@ begin
   CheckFileExists := isExist;
 end;
 
+procedure WriteUserLog;
+var
+  logMsg : string;
+begin
+  logMsg := '[USER] '+logMessage;
+  WriteLog(logMsg);
+end;
+
+procedure WriteSysLog;
+var
+  logMsg : string;
+begin
+  logMsg := '[SYSTEM] '+logMessage;
+  WriteLog(logMsg);
+end;
+
+procedure WriteErrorLog(logMessage : string);
+var
+  logMsg : string;
+begin
+  logMsg := '[ERROR] '+logMessage;
+  WriteLog(logMsg);
+end;
+
 procedure WriteLog(logMessage : string);
 const FILENAME = '.logs';
 var
@@ -45,7 +72,7 @@ begin
     Rewrite(logFile);
     WriteLn(logFile,'# LOGS #' + #13 + '########');
   end;
-  logMessage := FormatDateTime('ddddd@tt',date) + ': ' + logMessage;
+  logMessage := FormatDateTime('ddddd@tt',now) + ': ' + logMessage;
   WriteLn(LogFile,logMessage);
   //WriteLn(logMessage);
   CloseFile(logFile);

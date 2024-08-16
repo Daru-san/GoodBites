@@ -63,14 +63,18 @@ begin
     isCorrect := CheckPass(userString,passString,FILENAME);
     if isCorrect then
     begin
+      SaveLastLogin(userString);
       isAdmin := CheckAdmin(userString);
       isLoggedIn := true;
-      WriteLog('User ' + userString + ' logged in.' + 'Is admin? ' + isAdmin.ToString);
+      if isAdmin then
+        WriteUserLog('Administrator ' + userString + ' logged in.')
+      else
+        WriteUserLog('User ' + userString + ' logged in.');
     end
     else
     begin
       ShowMessage('The username or password are incorrect');
-      WriteLog('Failed login attempt by user ' + userString);
+      WriteUserLog('Failed login attempt by user ' + userString);
     end;
   end else
     ShowMessage('Invalid data');;
@@ -93,19 +97,19 @@ var
 begin
   isAdmin := false;
   isFound := false;
-  with dmBase.dmData do
+  with dmBase.dmData.tblUsers do
   begin
-    tblUsers.open;
-    tblUsers.First;
+    Open;
+    First;
     repeat
-    if UPPERCASE(tblUsers['Username']) = UPPERCASE(userString) then
+    if UPPERCASE(FieldValues['Username']) = UPPERCASE(userString) then
     begin
       isFound := true;
-      if tblUsers['isAdmin'] then isAdmin := true;
+      if FieldValues['isAdmin'] then isAdmin := true;
     end;
-      tblUsers.next;
-    until (tblUsers.EOF or isFound);
-    tblUsers.Close;
+      Next;
+    until (EOF or isFound);
+    Close;
   end;
   CheckAdmin := isAdmin;
 end;

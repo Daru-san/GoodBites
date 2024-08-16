@@ -1,7 +1,7 @@
 object frmApp: TfrmApp
   Left = 0
   Top = 0
-  Caption = 'Welcome to GoodBites'
+  Caption = #39
   ClientHeight = 323
   ClientWidth = 650
   Color = clBtnFace
@@ -51,6 +51,8 @@ object frmApp: TfrmApp
       Caption = 'Enter'
       TabOrder = 1
       OnClick = btnLoginClick
+      ExplicitLeft = 6
+      ExplicitTop = 47
     end
   end
 end

@@ -224,13 +224,13 @@ var
   isValid : boolean;
 begin
 
-  if (userString = '') then
+  if userString.isEmpty then
   begin
     ShowMessage('Please enter a username');
     isValid := false;
   end
     else
-  if (passString = '') then
+  if passString.isEmpty then
   begin
     ShowMessage('Please enter a valid password');
     isValid := false;

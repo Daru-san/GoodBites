@@ -37,7 +37,7 @@ procedure WriteUserLog;
 var
   logMsg : string;
 begin
-  logMsg := '[USER] '+logMessage;
+  logMsg := '[USER] ' + logMessage;
   WriteLog(logMsg);
 end;
 
@@ -45,7 +45,7 @@ procedure WriteSysLog;
 var
   logMsg : string;
 begin
-  logMsg := '[SYSTEM] '+logMessage;
+  logMsg := '[SYSTEM] ' + logMessage;
   WriteLog(logMsg);
 end;
 
@@ -53,7 +53,7 @@ procedure WriteErrorLog(logMessage : string);
 var
   logMsg : string;
 begin
-  logMsg := '[ERROR] '+logMessage;
+  logMsg := '[ERROR] ' + logMessage;
   WriteLog(logMsg);
 end;
 

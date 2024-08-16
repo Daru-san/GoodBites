@@ -58,8 +58,7 @@ var
   selectedOpt : integer;
 begin
   selectedOpt := MessageDlg('Are you sure you want to clear the log file?',mtError, mbOKCancel, 0);
-  if selectedOpt = mrOk then
-      ClearLogs();
+  if selectedOpt = mrOk then ClearLogs();
 end;
 
 procedure TfrmAdmin.btnLogoutClick(Sender: TObject);

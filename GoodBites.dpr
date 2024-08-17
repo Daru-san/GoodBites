@@ -8,7 +8,6 @@ uses
   AdminDash in 'AdminDash.pas' {frmAdmin},
   dmBase in 'dmBase.pas' {dmData: TDataModule},
   InfoBoard in 'InfoBoard.pas' {frmInfo},
-  Methods in 'Methods.pas',
   UserMod in 'UserMod.pas',
   DataFetcher in 'DataFetcher.pas',
   Utils in 'Utils.pas';

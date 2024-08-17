@@ -3,13 +3,14 @@ unit Utils;
 
 interface
 
-uses System.SysUtils;
+uses System.SysUtils,System.Classes,VCL.StdCtrls;
 type
   TBackend = Class(TObject);
   procedure WriteLog(logMessage:string);
   procedure WriteUserLog(logMessage:string);
   procedure WriteSysLog(logMessage:string);
   procedure WriteErrorLog(logMessage:string);
+  procedure SetLabel(LabelComponent:TLabel;labelMsg:string);
   function CheckFileExists(filename: string;isLogFile:boolean = false) : boolean;
 
   implementation
@@ -26,11 +27,21 @@ begin
     if not isLogFile then
     begin
       WriteLog(logMSG);
-     // WriteLn(logMSG);
     end;
-    exit;
   end else isExist := true;
   CheckFileExists := isExist;
+end;
+
+procedure SetLabel;
+begin
+  with labelComponent do
+  begin
+    font.Name := 'Noto Sans';
+    font.size := 20;
+    Layout := tlCenter;
+    Alignment := taCenter;
+    Caption := labelMsg;
+  end;
 end;
 
 procedure WriteUserLog;

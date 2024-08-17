@@ -62,8 +62,8 @@ object frmAdmin: TfrmAdmin
           Width = 897
           Height = 39
           Align = alClient
-          Caption = 'Are you being a good user?'
-          ExplicitWidth = 144
+          Caption = 'User Management'
+          ExplicitWidth = 97
           ExplicitHeight = 15
         end
       end
@@ -195,6 +195,47 @@ object frmAdmin: TfrmAdmin
         Height = 25
         Caption = 'Filter Logs'
         TabOrder = 4
+      end
+    end
+    object tsNutrients: TTabSheet
+      Caption = 'Modify Nutrients'
+      ImageIndex = 2
+      OnShow = tsNutrientsShow
+      object dbgNutrients: TDBGrid
+        Left = 32
+        Top = 80
+        Width = 809
+        Height = 337
+        DataSource = dmData.dscNutrients
+        TabOrder = 0
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -12
+        TitleFont.Name = 'Segoe UI'
+        TitleFont.Style = []
+        OnDrawColumnCell = dbgNutrientsDrawColumnCell
+      end
+      object pnlNutrientHeader: TPanel
+        Left = 0
+        Top = 0
+        Width = 899
+        Height = 41
+        Align = alTop
+        TabOrder = 1
+        ExplicitLeft = 128
+        ExplicitTop = 24
+        ExplicitWidth = 185
+        object lblNutrient: TLabel
+          Left = 1
+          Top = 1
+          Width = 897
+          Height = 39
+          Align = alClient
+          Alignment = taCenter
+          Caption = 'Nutrients Management'
+          ExplicitWidth = 123
+          ExplicitHeight = 15
+        end
       end
     end
   end

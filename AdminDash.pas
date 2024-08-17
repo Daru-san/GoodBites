@@ -25,6 +25,10 @@ type
     btnPrev: TButton;
     btnNext: TButton;
     btnFilter: TButton;
+    tsNutrients: TTabSheet;
+    dbgNutrients: TDBGrid;
+    pnlNutrientHeader: TPanel;
+    lblNutrient: TLabel;
     procedure btnLogoutClick(Sender: TObject);
     procedure tsLogsShow(Sender: TObject);
     procedure ShowLogs();
@@ -33,10 +37,13 @@ type
     procedure tsUsersShow(Sender: TObject);
     procedure btnNextClick(Sender: TObject);
     procedure btnPrevClick(Sender: TObject);
-    procedure InitializeWidth();
+    procedure InitializeWidth(dbGrid:TDBGrid);
     procedure dbgUsersDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure tsNutrientsShow(Sender: TObject);
+    procedure dbgNutrientsDrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
   private
     { Private declarations }
   public
@@ -80,31 +87,32 @@ end;
 //TODO: Filter logs based on type
 procedure TfrmAdmin.tsLogsShow(Sender: TObject);
 begin
-  with lblLogs do
-  begin
-    font.Name := 'Noto Sans';
-    font.size := 20;
-    Layout := tlCenter;
-  end;
+  SetLabel(lblLogs,'Logs');
   memLogs.Lines.clear;
   ShowLogs();
 end;
 
+procedure TfrmAdmin.tsNutrientsShow(Sender: TObject);
+begin
+  SetLabel(lblNutrient,'Manage Nutrients');
+  with dmBase.dmData do
+  begin
+    tblNutrients.Open;
+    dbgNutrients.DataSource := dscNutrients;
+  end;
+  InitializeWidth(dbgNutrients);
+  WriteSysLog('The database table `tblNutrients` was accessed by an administrator.');
+end;
+
 procedure TfrmAdmin.tsUsersShow(Sender: TObject);
 begin
-  with lblUsers do
-  begin
-    font.Name := 'Noto Sans';
-    font.Size := 20;
-    Layout := tlCenter;
-    Caption := 'User Management';
-  end;
+  SetLabel(lblUsers,'User Management');
   with dmBase.dmData do
   begin
     tblUsers.open;
     dbgUsers.DataSource := dmBase.dmData.dscUsers;
   end;
-  InitializeWidth;
+  InitializeWidth(dbgUsers);
 
   WriteSysLog('The database table `tblUsers` was accessed by an administrator.');
 end;
@@ -163,19 +171,33 @@ begin
   if width>column.width then column.Width := width;
 end;
 
-procedure TfrmAdmin.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+procedure TfrmAdmin.dbgNutrientsDrawColumnCell(Sender: TObject;
+  const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
+var
+  width : integer;
 begin
-  dmBase.dmData.tblUsers.Close;
-  Canclose := true;
-  FrmAdmin.DoExit;
+  width := 5+dbgNutrients.Canvas.TextExtent(Column.Field.DisplayText).cx;
+  if width>column.width then column.Width := width;
 end;
 
-procedure TfrmAdmin.InitializeWidth();
+procedure TfrmAdmin.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+  with dmBase.dmData do
+  begin
+    tblUsers.Close;
+    tblNutrients.Close;
+  end;
+  Canclose := true;
+  FrmAdmin.DoExit;
+  FrmAdmin.Visible := false;
+end;
+
+procedure TfrmAdmin.InitializeWidth(dbGrid:TDBGrid);
 var
   i : integer;
 begin
-  for i := 0 to dbgUsers.Columns.Count -1 do
-  dbgUsers.Columns[i].Width := 5+dbgUsers.Canvas.TextWidth(dbgUsers.Columns[i].Title.Caption);
+  for i := 0 to dbGrid.Columns.Count -1 do
+  dbGrid.Columns[i].Width := 5+dbGrid.Canvas.TextWidth(dbGrid.Columns[i].Title.Caption);
 end;
 
 end.

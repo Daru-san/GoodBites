@@ -1,0 +1,15 @@
+# Logs #
+2024/08/18@08:49:02: [USER] An administrator logged in
+2024/08/18@08:49:07: [SYSTEM] The database table `tblNutrients` was accessed by an administrator.
+2024/08/18@08:49:09: [SYSTEM] The database table `tblUsers` was accessed by an administrator.
+2024/08/18@08:52:43: [USER] Administrator Daru logged in.
+2024/08/18@08:52:45: [SYSTEM] The database table `tblNutrients` was accessed by an administrator.
+2024/08/18@08:54:54: [USER] Administrator Daru logged in.
+2024/08/18@08:54:57: [SYSTEM] The database table `tblNutrients` was accessed by an administrator.
+2024/08/18@09:50:24: [USER] Administrator Daru logged in.
+2024/08/18@09:50:25: [SYSTEM] The database table `tblUsers` was accessed by an administrator.
+2024/08/18@09:50:57: [USER] Administrator Daru logged in.
+2024/08/18@09:50:57: [SYSTEM] The database table `tblUsers` was accessed by an administrator.
+2024/08/18@09:51:00: [SYSTEM] The database table `tblUsers` was accessed by an administrator.
+2024/08/18@09:57:13: [USER] Administrator Daru logged in.
+2024/08/18@09:57:14: [SYSTEM] The database table `tblUsers` was accessed by an administrator.

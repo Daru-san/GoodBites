@@ -3,7 +3,7 @@ unit UserMod;
 
 interface
 
-uses system.SysUtils,dmBase, Vcl.Dialogs, Utils;
+uses system.SysUtils,dmBase, Vcl.Dialogs, Utils,Classes;
 
 type
   TLib = class(Tobject);
@@ -17,6 +17,7 @@ type
   procedure RegisterUserInDB(passString,userString,userID : string);
   procedure HandleUserError(userString: string; arrErrors : array of string; numErrors : integer);
   procedure SaveLastLogin(userString : string);
+  procedure RemoveUser(userID : string);
 
   var
     isFailed : boolean;
@@ -170,6 +171,36 @@ begin
   WriteUserPassFile := isSuccessful;
 end;
 
+function DeleteUserPassFile(userString :string) :boolean;
+const FILENAME = '.passwords';
+var
+  passFile : textfile;
+  isSuccessful : boolean;
+  passList : TStringList;
+  indexNum : integer;
+begin
+  if not CheckFileExists(FILENAME) then
+  begin
+    WriteSysLog('User deletion attempted, but the password file is missing or corrupted');
+    ShowMessage('An unkown error occured');
+    isSuccessful := false;
+  end else
+  begin
+    passList := TStringList.Create;
+    passList.LoadFromFile(FILENAME);
+    passList.NameValueSeparator := '#';
+    indexNum := passList.IndexOfName(userString);
+    if (indexNum <> -1) then
+    begin
+      passList.Delete(indexNum);
+      passList.SaveToFile(FILENAME);
+    end;
+    passList.Free;
+    WriteSysLog('Entry for user ' + userString + ' was removed from the passwords file');
+    isSuccessful := true;
+  end;
+end;
+
 procedure CreateUser(userString,passString: string);
 var
   isUserValid,userInDB, userInPassFile : boolean;
@@ -311,6 +342,32 @@ begin
     Post;
 
     Close;
+  end;
+end;
+
+procedure RemoveUser;
+var
+  isFound, isRemoved : boolean;
+  userString : string;
+begin
+  with dmData.tblUsers do
+  begin
+    Open;
+    First;
+    repeat
+      if FieldValues['UserID'] = userID then
+        isFound := true
+      else Next;
+    until EOF or isFound;
+    userString := FieldValues['Username'];
+
+    isRemoved := DeleteUserPassFile(userString);
+    if isRemoved then
+    begin
+      Delete;
+      Post;
+      WriteUserLog('User ' + userString + ', uid ' + userID + ' was removed completely');
+    end;
   end;
 end;
 end.

@@ -69,7 +69,7 @@ begin
 end;
 
 procedure WriteLog(logMessage : string);
-const FILENAME = '.logs';
+const FILENAME = 'logs';
 var
   LogFile : textfile;
   logsExist : boolean;

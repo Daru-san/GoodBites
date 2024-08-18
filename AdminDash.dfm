@@ -12,7 +12,6 @@ object frmAdmin: TfrmAdmin
   Font.Name = 'Segoe UI'
   Font.Style = []
   Position = poMainFormCenter
-  OnCloseQuery = FormCloseQuery
   TextHeight = 15
   object pnlFooter: TPanel
     Left = 0
@@ -135,6 +134,15 @@ object frmAdmin: TfrmAdmin
         TabOrder = 3
         OnClick = btnNextClick
       end
+      object btnUserDel: TButton
+        Left = 48
+        Top = 424
+        Width = 115
+        Height = 25
+        Caption = 'Delete Selected User'
+        TabOrder = 4
+        OnClick = btnUserDelClick
+      end
     end
     object tsLogs: TTabSheet
       Caption = 'View Logs'
@@ -195,6 +203,7 @@ object frmAdmin: TfrmAdmin
         Height = 25
         Caption = 'Filter Logs'
         TabOrder = 4
+        OnClick = btnFilterClick
       end
     end
     object tsNutrients: TTabSheet
@@ -222,9 +231,6 @@ object frmAdmin: TfrmAdmin
         Height = 41
         Align = alTop
         TabOrder = 1
-        ExplicitLeft = 128
-        ExplicitTop = 24
-        ExplicitWidth = 185
         object lblNutrient: TLabel
           Left = 1
           Top = 1

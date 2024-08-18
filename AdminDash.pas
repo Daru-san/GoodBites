@@ -3,9 +3,9 @@ unit AdminDash;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Winapi.Windows, Winapi.Messages, System.SysUtils,System.StrUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids, dmBase,
-  Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.ComCtrls, Utils;
+  Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.ComCtrls, Utils,UserMod;
 
 type
   TfrmAdmin = class(TForm)
@@ -29,9 +29,10 @@ type
     dbgNutrients: TDBGrid;
     pnlNutrientHeader: TPanel;
     lblNutrient: TLabel;
+    btnUserDel: TButton;
     procedure btnLogoutClick(Sender: TObject);
     procedure tsLogsShow(Sender: TObject);
-    procedure ShowLogs();
+    procedure ShowLogs(filterString:string='');
     procedure ClearLogs();
     procedure btnClearClick(Sender: TObject);
     procedure tsUsersShow(Sender: TObject);
@@ -40,10 +41,11 @@ type
     procedure InitializeWidth(dbGrid:TDBGrid);
     procedure dbgUsersDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
-    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure tsNutrientsShow(Sender: TObject);
     procedure dbgNutrientsDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure btnFilterClick(Sender: TObject);
+    procedure btnUserDelClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -64,14 +66,31 @@ procedure TfrmAdmin.btnClearClick(Sender: TObject);
 var
   selectedOpt : integer;
 begin
-  selectedOpt := MessageDlg('Are you sure you want to clear the log file?',mtError, mbOKCancel, 0);
+  selectedOpt := MessageDlg('Are you sure you want to clear the log file?',mtConfirmation, mbOKCancel, 0);
   if selectedOpt = mrOk then ClearLogs();
+end;
+
+procedure TfrmAdmin.btnFilterClick(Sender: TObject);
+var
+  filterString : string;
+  selectedOpt : integer;
+begin
+  filterString := edtFilter.Text;
+  selectedOpt := MessageDlg('Filter all logs follow the pattern: ' + filterString+'?',mtConfirmation, mbOKCancel, 0);
+  if selectedOpt = mrOk then
+  ShowLogs(filterString);
 end;
 
 procedure TfrmAdmin.btnLogoutClick(Sender: TObject);
 begin
   Application.MainForm.Visible := true;
-  FrmAdmin.CloseQuery;
+  with dmBase.dmData do
+  begin
+    tblUsers.Close;
+    tblNutrients.Close;
+  end;
+  frmAdmin.Close;
+  frmAdmin.Destroy;
 end;
 
 procedure TfrmAdmin.btnNextClick(Sender: TObject);
@@ -82,6 +101,11 @@ end;
 procedure TfrmAdmin.btnPrevClick(Sender: TObject);
 begin
   dmData.tblUsers.Prior;
+end;
+
+procedure TfrmAdmin.btnUserDelClick(Sender: TObject);
+begin
+  RemoveUser(dmBase.dmData.tblUsers.FieldValues['UserID']);
 end;
 
 //TODO: Filter logs based on type
@@ -117,24 +141,35 @@ begin
   WriteSysLog('The database table `tblUsers` was accessed by an administrator.');
 end;
 
-procedure TfrmAdmin.ShowLogs();
-const FILENAME = '.logs';
+procedure TfrmAdmin.ShowLogs;
+const FILENAME = 'logs';
 var
   logFile : textfile;
-  isFileExist, isStrEmpty : boolean;
+  isFileExist, isStrEmpty, doFilter : boolean;
   lineString : string;
+  numLines : integer;
 begin
   memLogs.clear;
+  memLogs.Lines.TrailingLineBreak := false;
   AssignFile(logFile,FILENAME);
   isFileExist := CheckFileExists(FILENAME,true);
+
+  doFilter := false;
+  if not (filterString = '') then doFilter := true;
+
   if isFileExist then
   begin
     Reset(logFile);
     Repeat
       ReadLn(logFile,lineString);
       Trim(lineString);
-      memLogs.lines.Add(lineString);
+      if not doFilter then
+        memLogs.Lines.Add(lineString)
+      else
+        if ContainsText(lineString,filterString) then
+          memLogs.lines.Add(lineString);
     Until EOF(logFile);
+
     CloseFile(logFile);
   end
   else
@@ -143,7 +178,7 @@ end;
 
 //TODO: Clear the log file successfully
 procedure TfrmAdmin.ClearLogs();
-const FILENAME = '.logs';
+const FILENAME = 'logs';
 var
   logFile : textfile;
 begin
@@ -151,11 +186,19 @@ begin
   AssignFile(logFile,FILENAME);
   if CheckFileExists(FILENAME,true) then
   begin
-    Reset(logFile);
-//    Truncate(logFile);
-    Writeln(logFile,'# Logs #');
+    try
+      ReWrite(logFile);
+      Writeln(logFile,'# Logs #');
+    except
+      on E: Exception do
+      begin
+        ShowMessage('There was an error clearing the log file: ' + #13 + E.Message);
+        exit;
+      end;
+    end;
     CloseFile(logFile);
-    memLogs.clear;
+    WriteUserLog('An administrator logged in');
+    ShowLogs;
   end
   else
     ShowMessage('An error occured: the log file is either missing or corrupted');
@@ -178,18 +221,6 @@ var
 begin
   width := 5+dbgNutrients.Canvas.TextExtent(Column.Field.DisplayText).cx;
   if width>column.width then column.Width := width;
-end;
-
-procedure TfrmAdmin.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-begin
-  with dmBase.dmData do
-  begin
-    tblUsers.Close;
-    tblNutrients.Close;
-  end;
-  Canclose := true;
-  FrmAdmin.DoExit;
-  FrmAdmin.Visible := false;
 end;
 
 procedure TfrmAdmin.InitializeWidth(dbGrid:TDBGrid);

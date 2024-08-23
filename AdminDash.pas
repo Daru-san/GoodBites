@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils,System.StrUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids, dmBase,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids, conDBBites,
   Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.ComCtrls, Utils,UserMod;
 
 type
@@ -30,6 +30,15 @@ type
     pnlNutrientHeader: TPanel;
     lblNutrient: TLabel;
     btnUserDel: TButton;
+    btnFirst: TButton;
+    btnLast: TButton;
+    pnlUserNav: TPanel;
+    lblNav: TLabel;
+    pnlMod: TPanel;
+    lblRecMod: TLabel;
+    edtField: TEdit;
+    edtData: TEdit;
+    btnFieldEdit: TButton;
     procedure btnLogoutClick(Sender: TObject);
     procedure tsLogsShow(Sender: TObject);
     procedure ShowLogs(filterString:string='');
@@ -46,6 +55,9 @@ type
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure btnFilterClick(Sender: TObject);
     procedure btnUserDelClick(Sender: TObject);
+    procedure btnFirstClick(Sender: TObject);
+    procedure btnLastClick(Sender: TObject);
+    procedure btnFieldEditClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -70,6 +82,37 @@ begin
   if selectedOpt = mrOk then ClearLogs();
 end;
 
+procedure TfrmAdmin.btnFieldEditClick(Sender: TObject);
+var
+  selectedOpt : integer;
+  fieldName,fieldData : string;
+begin
+  fieldName := edtField.Text;
+  fieldData := edtData.Text;
+  selectedOpt := MessageDlg('Modify user data?',mtConfirmation,mbOKCancel,0);
+  if selectedOpt = mrOk then
+  begin
+    if fieldName = 'Username' then
+    begin
+      EditInDB(fieldName,fieldData);
+    end
+    else
+    if fieldName = 'isAdmin' then
+    begin
+      try
+        if (StrToBool(fieldData) = true) or (StrToBool(fieldData) = false) then
+          EditInDB(fieldName,fieldData);
+        except on E: Exception do
+        begin
+          ShowMessage('This field only takes boolean data');
+          exit;
+        end;
+      end;
+    end
+    else ShowMessage('This data cannot be modified');
+  end;
+end;
+
 procedure TfrmAdmin.btnFilterClick(Sender: TObject);
 var
   filterString : string;
@@ -81,10 +124,20 @@ begin
   ShowLogs(filterString);
 end;
 
+procedure TfrmAdmin.btnFirstClick(Sender: TObject);
+begin
+  dbmData.tblUsers.first;
+end;
+
+procedure TfrmAdmin.btnLastClick(Sender: TObject);
+begin
+  dbmData.tblUsers.Last;
+end;
+
 procedure TfrmAdmin.btnLogoutClick(Sender: TObject);
 begin
   Application.MainForm.Visible := true;
-  with dmBase.dmData do
+  with dbmData do
   begin
     tblUsers.Close;
     tblNutrients.Close;
@@ -95,17 +148,17 @@ end;
 
 procedure TfrmAdmin.btnNextClick(Sender: TObject);
 begin
-  dmBase.dmData.tblUsers.Next;
+  dbmData.tblUsers.Next;
 end;
 
 procedure TfrmAdmin.btnPrevClick(Sender: TObject);
 begin
-  dmData.tblUsers.Prior;
+  dbmData.tblUsers.Prior;
 end;
 
 procedure TfrmAdmin.btnUserDelClick(Sender: TObject);
 begin
-  RemoveUser(dmBase.dmData.tblUsers.FieldValues['UserID']);
+  RemoveUser(dbmData.tblUsers.FieldValues['UserID']);
 end;
 
 //TODO: Filter logs based on type
@@ -119,7 +172,7 @@ end;
 procedure TfrmAdmin.tsNutrientsShow(Sender: TObject);
 begin
   SetLabel(lblNutrient,'Manage Nutrients');
-  with dmBase.dmData do
+  with dbmData do
   begin
     tblNutrients.Open;
     dbgNutrients.DataSource := dscNutrients;
@@ -131,10 +184,10 @@ end;
 procedure TfrmAdmin.tsUsersShow(Sender: TObject);
 begin
   SetLabel(lblUsers,'User Management');
-  with dmBase.dmData do
+  with dbmData do
   begin
     tblUsers.open;
-    dbgUsers.DataSource := dmBase.dmData.dscUsers;
+    dbgUsers.DataSource := dscUsers;
   end;
   InitializeWidth(dbgUsers);
 
@@ -227,6 +280,7 @@ procedure TfrmAdmin.InitializeWidth(dbGrid:TDBGrid);
 var
   i : integer;
 begin
+  dbGrid.ReadOnly := true;
   for i := 0 to dbGrid.Columns.Count -1 do
   dbGrid.Columns[i].Width := 5+dbGrid.Canvas.TextWidth(dbGrid.Columns[i].Title.Caption);
 end;

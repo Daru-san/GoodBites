@@ -19,8 +19,6 @@ object frmDashboard: TfrmDashboard
     Height = 466
     Align = alClient
     TabOrder = 0
-    ExplicitWidth = 886
-    ExplicitHeight = 465
     object pnlHeader: TPanel
       Left = 1
       Top = 1
@@ -28,7 +26,6 @@ object frmDashboard: TfrmDashboard
       Height = 41
       Align = alTop
       TabOrder = 0
-      ExplicitWidth = 884
       object lblHeader: TLabel
         Left = 1
         Top = 1
@@ -43,8 +40,8 @@ object frmDashboard: TfrmDashboard
         Font.Name = 'Noto Sans'
         Font.Style = []
         ParentFont = False
-        ExplicitLeft = 2
-        ExplicitTop = -3
+        ExplicitWidth = 105
+        ExplicitHeight = 36
       end
     end
     object pnlProgress: TPanel
@@ -54,8 +51,6 @@ object frmDashboard: TfrmDashboard
       Height = 423
       Align = alLeft
       TabOrder = 1
-      ExplicitLeft = -5
-      ExplicitTop = 47
       object lblHeading: TLabel
         Left = 1
         Top = 1
@@ -86,8 +81,6 @@ object frmDashboard: TfrmDashboard
       Font.Style = []
       ParentFont = False
       TabOrder = 2
-      ExplicitLeft = 454
-      ExplicitTop = 47
       object Label1: TLabel
         Left = 1
         Top = 1
@@ -117,6 +110,7 @@ object frmDashboard: TfrmDashboard
         Font.Style = []
         ParentFont = False
         TabOrder = 0
+        OnClick = Panel1Click
       end
       object Panel2: TPanel
         Left = 48

@@ -3,14 +3,20 @@ unit Utils;
 
 interface
 
-uses System.SysUtils,System.Classes,VCL.StdCtrls;
+uses System.SysUtils,System.Classes,VCL.StdCtrls,conDBBites;
 type
   TBackend = Class(TObject);
+
+  //Logging procedures
   procedure WriteLog(logMessage:string);
   procedure WriteUserLog(logMessage:string);
   procedure WriteSysLog(logMessage:string);
   procedure WriteErrorLog(logMessage:string);
+
+  // Misc
   procedure SetLabel(LabelComponent:TLabel;labelMsg:string);
+  procedure EditInDB(fieldName,fieldData : string);
+
   function CheckFileExists(filename: string;isLogFile:boolean = false) : boolean;
 
   implementation
@@ -41,6 +47,17 @@ begin
     Layout := tlCenter;
     Alignment := taCenter;
     Caption := labelMsg;
+  end;
+end;
+
+procedure EditInDB;
+begin
+  with dbmData.tblUsers do
+  begin
+    Edit;
+    FieldValues[fieldName] := fieldData;
+    Post;
+    WriteSysLog('An entry has been modified in the database');
   end;
 end;
 
@@ -76,16 +93,19 @@ var
 begin
   AssignFile(LogFile,FILENAME);
   logsExist := CheckFileExists(FILENAME,true);
-  if logsExist then
-    Append(logFile)
-  else
-  begin
-    Rewrite(logFile);
-    WriteLn(logFile,'# LOGS #' + #13 + '########');
+  try
+    if logsExist then
+      Append(logFile)
+    else
+    begin
+      Rewrite(logFile);
+      WriteLn(logFile,'# LOGS #' + #13 + '########');
+    end;
+    logMessage := FormatDateTime('ddddd@tt',now) + ': ' + logMessage;
+    WriteLn(LogFile,logMessage);
+    //WriteLn(logMessage);
+  finally
+    CloseFile(logFile);
   end;
-  logMessage := FormatDateTime('ddddd@tt',now) + ': ' + logMessage;
-  WriteLn(LogFile,logMessage);
-  //WriteLn(logMessage);
-  CloseFile(logFile);
 end;
 end.

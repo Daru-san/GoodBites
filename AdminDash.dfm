@@ -71,7 +71,6 @@ object frmAdmin: TfrmAdmin
         Top = 72
         Width = 809
         Height = 329
-        DataSource = dmData.dscUsers
         TabOrder = 1
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = clWindowText
@@ -116,32 +115,113 @@ object frmAdmin: TfrmAdmin
             Visible = True
           end>
       end
-      object btnPrev: TButton
-        Left = 758
-        Top = 424
-        Width = 75
-        Height = 25
-        Caption = '&Previous'
+      object pnlUserNav: TPanel
+        Left = 416
+        Top = 407
+        Width = 433
+        Height = 75
         TabOrder = 2
-        OnClick = btnPrevClick
+        object lblNav: TLabel
+          Left = 1
+          Top = 1
+          Width = 431
+          Height = 15
+          Align = alTop
+          Alignment = taCenter
+          Caption = 'Record Navigation'
+          Layout = tlCenter
+          ExplicitWidth = 98
+        end
+        object btnLast: TButton
+          Left = 126
+          Top = 38
+          Width = 75
+          Height = 25
+          Caption = 'Last'
+          TabOrder = 0
+          OnClick = btnLastClick
+        end
+        object btnPrev: TButton
+          Left = 229
+          Top = 38
+          Width = 75
+          Height = 25
+          Caption = '&Previous'
+          TabOrder = 1
+          OnClick = btnPrevClick
+        end
+        object btnNext: TButton
+          Left = 334
+          Top = 38
+          Width = 75
+          Height = 25
+          Caption = '&Next'
+          TabOrder = 2
+          OnClick = btnNextClick
+        end
+        object btnFirst: TButton
+          Left = 21
+          Top = 38
+          Width = 75
+          Height = 25
+          Caption = 'First'
+          TabOrder = 3
+          OnClick = btnFirstClick
+        end
       end
-      object btnNext: TButton
-        Left = 664
-        Top = 424
-        Width = 75
-        Height = 25
-        Caption = '&Next'
+      object pnlMod: TPanel
+        Left = 40
+        Top = 407
+        Width = 361
+        Height = 75
         TabOrder = 3
-        OnClick = btnNextClick
-      end
-      object btnUserDel: TButton
-        Left = 48
-        Top = 424
-        Width = 115
-        Height = 25
-        Caption = 'Delete Selected User'
-        TabOrder = 4
-        OnClick = btnUserDelClick
+        object lblRecMod: TLabel
+          Left = 1
+          Top = 1
+          Width = 359
+          Height = 15
+          Align = alTop
+          Alignment = taCenter
+          Caption = 'Record Modification'
+          ExplicitWidth = 108
+        end
+        object btnUserDel: TButton
+          Left = 240
+          Top = 51
+          Width = 115
+          Height = 25
+          Caption = 'Delete Selected User'
+          TabOrder = 0
+          OnClick = btnUserDelClick
+        end
+        object edtField: TEdit
+          Left = 16
+          Top = 22
+          Width = 121
+          Height = 23
+          Hint = 'Name of Field'
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 1
+          TextHint = 'Field'
+        end
+        object edtData: TEdit
+          Left = 16
+          Top = 51
+          Width = 121
+          Height = 23
+          TabOrder = 2
+          TextHint = 'Field Data'
+        end
+        object btnFieldEdit: TButton
+          Left = 159
+          Top = 22
+          Width = 90
+          Height = 25
+          Caption = 'Edit Field Data'
+          TabOrder = 3
+          OnClick = btnFieldEditClick
+        end
       end
     end
     object tsLogs: TTabSheet
@@ -169,14 +249,12 @@ object frmAdmin: TfrmAdmin
         object lblLogs: TLabel
           Left = 1
           Top = 1
-          Width = 897
-          Height = 39
+          Width = 25
+          Height = 15
           Align = alClient
           Alignment = taCenter
           Caption = 'Logs'
           Layout = tlBottom
-          ExplicitWidth = 25
-          ExplicitHeight = 15
         end
       end
       object btnClear: TButton
@@ -215,7 +293,6 @@ object frmAdmin: TfrmAdmin
         Top = 80
         Width = 809
         Height = 337
-        DataSource = dmData.dscNutrients
         TabOrder = 0
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = clWindowText
@@ -234,13 +311,11 @@ object frmAdmin: TfrmAdmin
         object lblNutrient: TLabel
           Left = 1
           Top = 1
-          Width = 897
-          Height = 39
+          Width = 123
+          Height = 15
           Align = alClient
           Alignment = taCenter
           Caption = 'Nutrients Management'
-          ExplicitWidth = 123
-          ExplicitHeight = 15
         end
       end
     end

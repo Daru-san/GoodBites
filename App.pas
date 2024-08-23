@@ -4,8 +4,8 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Login, dmBase,
-  Data.DB, Vcl.Grids, Vcl.DBGrids, Dash,AdminDash;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Login, conDBBites,
+  Data.DB, Vcl.Grids, Vcl.DBGrids, Dash,AdminDash,Helpform;
 
 type
   TfrmApp = class(TForm)
@@ -13,7 +13,10 @@ type
     pnlHeader: TPanel;
     lblHeading: TLabel;
     btnLogin: TButton;
+    btnHelp: TButton;
     procedure btnLoginClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure btnHelpClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -29,6 +32,19 @@ implementation
 
 
 // TODO: Iron out login issues
+procedure TfrmApp.btnHelpClick(Sender: TObject);
+var
+  HelperForm : Helpform.TfrmHelp;
+begin
+  HelperForm := TfrmHelp.Create(nil);
+  Self.Visible := false;
+  try
+    HelperForm.ShowModal;
+  finally
+    HelperForm.Free;
+  end;
+end;
+
 procedure TfrmApp.btnLoginClick(Sender: TObject);
 var
   LoginForm : Login.TfrmLogin;
@@ -68,6 +84,11 @@ begin
     end;
     Application.Run;
   end;
+end;
+
+procedure TfrmApp.FormShow(Sender: TObject);
+begin
+  //btnLogin.
 end;
 
 end.

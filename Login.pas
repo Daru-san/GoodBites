@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Dash,AdminDash, {App,} dmBase, UserMod, Utils;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Dash,AdminDash, conDBBites, UserMod, Utils;
 
 type
   TfrmLogin = class(TForm)
@@ -97,7 +97,7 @@ var
 begin
   isAdmin := false;
   isFound := false;
-  with dmBase.dmData.tblUsers do
+  with dbmData.tblUsers do
   begin
     Open;
     First;

@@ -3,7 +3,7 @@ unit UserMod;
 
 interface
 
-uses system.SysUtils,dmBase, Vcl.Dialogs, Utils,Classes;
+uses system.SysUtils,conDBBites, Vcl.Dialogs, Utils,Classes;
 
 type
   TLib = class(Tobject);
@@ -235,7 +235,7 @@ end;
 
 procedure RegisterUserInDB(passString,userString,userID : string);
 begin
-  with dmBase.dmData.tblUsers do
+  with dbmData.tblUsers do
   begin
     Open;
     Append;
@@ -275,7 +275,7 @@ function CheckDatabase(userString : string): boolean;
 var
   isFound: boolean;
 begin
-  with dmBase.dmData.tblUsers do
+  with dbmData.tblUsers do
   begin
     Open;
     First;
@@ -326,7 +326,7 @@ procedure SaveLastLogin(userString : string);
 var
   userFound : boolean;
 begin
-  with dmBase.dmData.tblUsers do
+  with dbmData.tblUsers do
   begin
     Open;
     repeat
@@ -350,7 +350,7 @@ var
   isFound, isRemoved : boolean;
   userString : string;
 begin
-  with dmData.tblUsers do
+  with dbmData.tblUsers do
   begin
     Open;
     First;
@@ -370,5 +370,6 @@ begin
     end;
   end;
 end;
+
 end.
 

@@ -10,6 +10,7 @@ object frmApp: TfrmApp
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  OnShow = FormShow
   TextHeight = 15
   object pnlCenter: TPanel
     AlignWithMargins = True
@@ -25,12 +26,14 @@ object frmApp: TfrmApp
       Width = 642
       Height = 41
       Align = alTop
+      BevelKind = bkTile
+      BevelOuter = bvSpace
       TabOrder = 0
       object lblHeading: TLabel
         Left = 1
         Top = 1
-        Width = 640
-        Height = 39
+        Width = 636
+        Height = 35
         Align = alClient
         Alignment = taCenter
         BiDiMode = bdLeftToRight
@@ -44,15 +47,26 @@ object frmApp: TfrmApp
     object btnLogin: TButton
       AlignWithMargins = True
       Left = 4
-      Top = 45
+      Top = 272
       Width = 636
-      Height = 268
-      Align = alClient
+      Height = 41
+      Align = alBottom
       Caption = 'Enter'
       TabOrder = 1
+      StyleName = 'Windows'
       OnClick = btnLoginClick
-      ExplicitLeft = 6
-      ExplicitTop = 47
+      ExplicitLeft = 201
+      ExplicitTop = 177
+      ExplicitWidth = 175
+    end
+    object btnHelp: TButton
+      Left = 288
+      Top = 136
+      Width = 75
+      Height = 25
+      Caption = 'Help'
+      TabOrder = 2
+      OnClick = btnHelpClick
     end
   end
 end

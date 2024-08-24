@@ -20,7 +20,6 @@ type
     procedure btnLoginClick(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
 
-    function CheckAdmin(userString : string) : boolean;
     procedure btnSignUpClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
@@ -64,7 +63,7 @@ begin
     if isCorrect then
     begin
       TUsers.Create.SaveLastLogin(userString);
-      isAdmin := CheckAdmin(userString);
+      isAdmin := TUsers.Create.CheckAdmin(userString);
       isLoggedIn := true;
       if isAdmin then
         TUtils.Create.WriteUserLog('Administrator ' + userString + ' logged in.')
@@ -88,30 +87,6 @@ begin
   userString := edtUser.text;
   passString := edtPassword.text;
   TUsers.Create.CreateUser(userString,passString);
-end;
-
-// Message dialog
-function TfrmLogin.CheckAdmin(userString : string) : boolean;
-var
-  isAdmin,isFound : boolean;
-begin
-  isAdmin := false;
-  isFound := false;
-  with dbmData.tblUsers do
-  begin
-    Open;
-    First;
-    repeat
-    if UPPERCASE(FieldValues['Username']) = UPPERCASE(userString) then
-    begin
-      isFound := true;
-      if FieldValues['isAdmin'] then isAdmin := true;
-    end;
-      Next;
-    until (EOF or isFound);
-    Close;
-  end;
-  CheckAdmin := isAdmin;
 end;
 
 procedure TfrmLogin.FormShow(Sender: TObject);

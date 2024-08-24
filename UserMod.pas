@@ -20,6 +20,7 @@ type
   public
     function ValidPass(userString,passString:string): boolean;
     function CheckPass(userString: string; passString: string; filename: string): boolean;
+    function CheckAdmin(userString : string) : boolean;
 
     procedure SaveLastLogin(userString : string);
     procedure CreateUser(userString,passString: string);
@@ -294,6 +295,30 @@ begin
   end;
   CheckDatabase := isFound;
 end;
+
+function TUsers.CheckAdmin;
+var
+  isAdmin,isFound : boolean;
+begin
+  isAdmin := false;
+  isFound := false;
+  with dbmData.tblUsers do
+  begin
+    Open;
+    First;
+    repeat
+    if UPPERCASE(FieldValues['Username']) = UPPERCASE(userString) then
+    begin
+      isFound := true;
+      if FieldValues['isAdmin'] then isAdmin := true;
+    end;
+      Next;
+    until (EOF or isFound);
+    Close;
+  end;
+  CheckAdmin := isAdmin;
+end;
+
 function TUsers.CheckPass;
 var
   passFile : textfile;

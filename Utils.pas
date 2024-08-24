@@ -5,23 +5,27 @@ interface
 
 uses System.SysUtils,System.Classes,VCL.StdCtrls,conDBBites;
 type
-  TBackend = Class(TObject);
+  TUtils = Class(TObject)
 
   //Logging procedures
-  procedure WriteLog(logMessage:string);
-  procedure WriteUserLog(logMessage:string);
-  procedure WriteSysLog(logMessage:string);
-  procedure WriteErrorLog(logMessage:string);
+  private
+    procedure WriteLog(logMessage:string);
+  public
+    procedure WriteUserLog(logMessage:string);
+    procedure WriteSysLog(logMessage:string);
+    procedure WriteErrorLog(logMessage:string);
 
-  // Misc
-  procedure SetLabel(LabelComponent:TLabel;labelMsg:string);
-  procedure EditInDB(fieldName,fieldData : string);
+    // Misc
+    procedure SetLabel(LabelComponent:TLabel;labelMsg:string);
+    procedure EditInDB(fieldName,fieldData : string);
 
-  function CheckFileExists(filename: string;isLogFile:boolean = false) : boolean;
+    function CheckFileExists(filename: string;isLogFile:boolean = false) : boolean;
 
-  implementation
+  End;
 
-function CheckFileExists(filename: string; isLogFile : boolean = false) : boolean;
+implementation
+
+function TUtils.CheckFileExists(filename: string; isLogFile : boolean = false) : boolean;
 var
   logMsg : string;
   isExist : boolean;
@@ -38,7 +42,7 @@ begin
   CheckFileExists := isExist;
 end;
 
-procedure SetLabel;
+procedure TUtils.SetLabel;
 begin
   with labelComponent do
   begin
@@ -50,7 +54,7 @@ begin
   end;
 end;
 
-procedure EditInDB;
+procedure TUtils.EditInDB;
 begin
   with dbmData.tblUsers do
   begin
@@ -61,7 +65,7 @@ begin
   end;
 end;
 
-procedure WriteUserLog;
+procedure TUtils.WriteUserLog;
 var
   logMsg : string;
 begin
@@ -69,7 +73,7 @@ begin
   WriteLog(logMsg);
 end;
 
-procedure WriteSysLog;
+procedure TUtils.WriteSysLog;
 var
   logMsg : string;
 begin
@@ -77,7 +81,7 @@ begin
   WriteLog(logMsg);
 end;
 
-procedure WriteErrorLog(logMessage : string);
+procedure TUtils.WriteErrorLog(logMessage : string);
 var
   logMsg : string;
 begin
@@ -85,7 +89,7 @@ begin
   WriteLog(logMsg);
 end;
 
-procedure WriteLog(logMessage : string);
+procedure TUtils.WriteLog(logMessage : string);
 const FILENAME = 'logs';
 var
   LogFile : textfile;

@@ -39,6 +39,9 @@ type
     edtField: TEdit;
     edtData: TEdit;
     btnFieldEdit: TButton;
+
+  private
+    { Private declarations }
     procedure btnLogoutClick(Sender: TObject);
     procedure tsLogsShow(Sender: TObject);
     procedure ShowLogs(filterString:string='');
@@ -58,8 +61,6 @@ type
     procedure btnFirstClick(Sender: TObject);
     procedure btnLastClick(Sender: TObject);
     procedure btnFieldEditClick(Sender: TObject);
-  private
-    { Private declarations }
   public
     { Public declarations }
   end;
@@ -94,14 +95,14 @@ begin
   begin
     if fieldName = 'Username' then
     begin
-      EditInDB(fieldName,fieldData);
+      TUtils.Create.EditInDB(fieldName,fieldData);
     end
     else
     if fieldName = 'isAdmin' then
     begin
       try
         if (StrToBool(fieldData) = true) or (StrToBool(fieldData) = false) then
-          EditInDB(fieldName,fieldData);
+          TUtils.Create.EditInDB(fieldName,fieldData);
         except on E: Exception do
         begin
           ShowMessage('This field only takes boolean data');
@@ -158,32 +159,32 @@ end;
 
 procedure TfrmAdmin.btnUserDelClick(Sender: TObject);
 begin
-  RemoveUser(dbmData.tblUsers.FieldValues['UserID']);
+  TUsers.Create.RemoveUser(dbmData.tblUsers.FieldValues['UserID']);
 end;
 
 //TODO: Filter logs based on type
 procedure TfrmAdmin.tsLogsShow(Sender: TObject);
 begin
-  SetLabel(lblLogs,'Logs');
+  TUtils.Create.SetLabel(lblLogs,'Logs');
   memLogs.Lines.clear;
   ShowLogs();
 end;
 
 procedure TfrmAdmin.tsNutrientsShow(Sender: TObject);
 begin
-  SetLabel(lblNutrient,'Manage Nutrients');
+  TUtils.Create.SetLabel(lblNutrient,'Manage Nutrients');
   with dbmData do
   begin
     tblNutrients.Open;
     dbgNutrients.DataSource := dscNutrients;
   end;
   InitializeWidth(dbgNutrients);
-  WriteSysLog('The database table `tblNutrients` was accessed by an administrator.');
+  TUtils.Create.WriteSysLog('The database table `tblNutrients` was accessed by an administrator.');
 end;
 
 procedure TfrmAdmin.tsUsersShow(Sender: TObject);
 begin
-  SetLabel(lblUsers,'User Management');
+  TUtils.Create.SetLabel(lblUsers,'User Management');
   with dbmData do
   begin
     tblUsers.open;
@@ -191,7 +192,7 @@ begin
   end;
   InitializeWidth(dbgUsers);
 
-  WriteSysLog('The database table `tblUsers` was accessed by an administrator.');
+  TUtils.Create.WriteSysLog('The database table `tblUsers` was accessed by an administrator.');
 end;
 
 procedure TfrmAdmin.ShowLogs;
@@ -205,7 +206,7 @@ begin
   memLogs.clear;
   memLogs.Lines.TrailingLineBreak := false;
   AssignFile(logFile,FILENAME);
-  isFileExist := CheckFileExists(FILENAME,true);
+  isFileExist := TUtils.Create.CheckFileExists(FILENAME,true);
 
   doFilter := false;
   if not (filterString = '') then doFilter := true;
@@ -237,7 +238,7 @@ var
 begin
   FileMode := 2;
   AssignFile(logFile,FILENAME);
-  if CheckFileExists(FILENAME,true) then
+  if TUtils.Create.CheckFileExists(FILENAME,true) then
   begin
     try
       ReWrite(logFile);
@@ -250,7 +251,7 @@ begin
       end;
     end;
     CloseFile(logFile);
-    WriteUserLog('An administrator logged in');
+    TUtils.Create.WriteUserLog('An administrator logged in');
     ShowLogs;
   end
   else

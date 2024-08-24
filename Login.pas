@@ -55,26 +55,26 @@ begin
   userString := edtUser.Text;
   passString := edtPassword.Text;
 
-  passFileExists := CheckFileExists(filename);
-  isValid := ValidPass(userString,passString);
+  passFileExists := TUtils.Create.CheckFileExists(filename);
+  isValid := TUsers.Create.ValidPass(userString,passString);
 
   if (isValid and passFileExists) then
   begin
-    isCorrect := CheckPass(userString,passString,FILENAME);
+    isCorrect := TUsers.Create.CheckPass(userString,passString,FILENAME);
     if isCorrect then
     begin
-      SaveLastLogin(userString);
+      TUsers.Create.SaveLastLogin(userString);
       isAdmin := CheckAdmin(userString);
       isLoggedIn := true;
       if isAdmin then
-        WriteUserLog('Administrator ' + userString + ' logged in.')
+        TUtils.Create.WriteUserLog('Administrator ' + userString + ' logged in.')
       else
-        WriteUserLog('User ' + userString + ' logged in.');
+        TUtils.Create.WriteUserLog('User ' + userString + ' logged in.');
     end
     else
     begin
       ShowMessage('The username or password are incorrect');
-      WriteUserLog('Failed login attempt by user ' + userString);
+      TUtils.Create.WriteUserLog('Failed login attempt by user ' + userString);
     end;
   end else
     ShowMessage('Invalid data');;
@@ -87,7 +87,7 @@ var
 begin
   userString := edtUser.text;
   passString := edtPassword.text;
-  CreateUser(userString,passString);
+  TUsers.Create.CreateUser(userString,passString);
 end;
 
 // Message dialog

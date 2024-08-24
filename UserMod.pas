@@ -6,24 +6,31 @@ interface
 uses system.SysUtils,conDBBites, Vcl.Dialogs, Utils,Classes;
 
 type
-  TLib = class(Tobject);
-  function CheckPass(userString: string; passString: string; filename: string): boolean;
-  function ValidPass(userString,passString:string): boolean;
-  function CheckDatabase(userString:string):boolean;
-  function GenerateUserID(userString:string): string;
-  function ValidateNewUser(userString,passString : string) : boolean;
+  TUsers = class(Tobject)
+  private
+    function GenerateUserID(userString:string): string;
+    function ValidateNewUser(userString,passString : string) : boolean;
+    function CheckDatabase(userString:string):boolean;
+    function WriteUserPassFile(userString,passString:string): boolean;
+    function DeleteUserPassFile(userString :string) :boolean;
 
-  procedure CreateUser(userString,passString: string);
-  procedure RegisterUserInDB(passString,userString,userID : string);
-  procedure HandleUserError(userString: string; arrErrors : array of string; numErrors : integer);
-  procedure SaveLastLogin(userString : string);
-  procedure RemoveUser(userID : string);
+    procedure RegisterUserInDB(passString,userString,userID : string);
+    procedure HandleUserError(userString: string; arrErrors : array of string; numErrors : integer);
+
+  public
+    function ValidPass(userString,passString:string): boolean;
+    function CheckPass(userString: string; passString: string; filename: string): boolean;
+
+    procedure SaveLastLogin(userString : string);
+    procedure CreateUser(userString,passString: string);
+    procedure RemoveUser(userID : string);
+  end;
 
   var
     isFailed : boolean;
 implementation
 
-function ValidateNewUser(userString,passString:string):boolean;
+function TUsers.ValidateNewUser;
 const
   VALIDCHARS = ['A'..'Z','a'..'z','0'..'9'];
 var
@@ -110,7 +117,7 @@ begin
   ValidateNewUser := isNameValid;
 end;
 
-procedure HandleUserError(userString: string; arrErrors : array of string; numErrors : integer);
+procedure TUsers.HandleUserError;
 var
   errorMsg : string;
   i: Integer;
@@ -122,7 +129,7 @@ begin
   end;
   ShowMessage(errorMsg);
 end;
-function GenerateUserID(userString:string): string;
+function TUsers.GenerateUserID;
 var
   randomInt, iPos : integer;
   dateStr,finalDateStr, tempStr, userID,nameStr : string;
@@ -145,15 +152,15 @@ begin
   GenerateUserID := userID;
 end;
 
-function WriteUserPassFile(userString,passString:string): boolean;
+function TUsers.WriteUserPassFile;
 const FILENAME = '.passwords';
 var
   passFile : textfile;
   isFileExist, isSuccessful : boolean;
 begin
-  if not CheckFileExists(FILENAME) then
+  if not TUtils.Create.CheckFileExists(FILENAME) then
   begin
-    WriteSysLog(
+    TUtils.Create.WriteSysLog(
       'User register attempted, but the password file is missing' + #13
       + #9 + 'This may cause errrors, manual intervention is required'
     );
@@ -165,13 +172,13 @@ begin
     Append(passFile);
     WriteLn(passFile,userString + '#' + passString);
     CloseFile(passFile);
-    WriteUserLog('User ' + userString + ' has been saved in the PASSWORDS file');
+    TUtils.Create.WriteUserLog('User ' + userString + ' has been saved in the PASSWORDS file');
     isSuccessful:= true;
   end;
   WriteUserPassFile := isSuccessful;
 end;
 
-function DeleteUserPassFile(userString :string) :boolean;
+function TUsers.DeleteUserPassFile;
 const FILENAME = '.passwords';
 var
   passFile : textfile;
@@ -179,9 +186,9 @@ var
   passList : TStringList;
   indexNum : integer;
 begin
-  if not CheckFileExists(FILENAME) then
+  if not TUtils.Create.CheckFileExists(FILENAME) then
   begin
-    WriteSysLog('User deletion attempted, but the password file is missing or corrupted');
+    TUtils.Create.WriteSysLog('User deletion attempted, but the password file is missing or corrupted');
     ShowMessage('An unkown error occured');
     isSuccessful := false;
   end else
@@ -196,12 +203,12 @@ begin
       passList.SaveToFile(FILENAME);
     end;
     passList.Free;
-    WriteSysLog('Entry for user ' + userString + ' was removed from the passwords file');
+    TUtils.Create.WriteSysLog('Entry for user ' + userString + ' was removed from the passwords file');
     isSuccessful := true;
   end;
 end;
 
-procedure CreateUser(userString,passString: string);
+procedure TUsers.CreateUser;
 var
   isUserValid,userInDB, userInPassFile : boolean;
   userID : string;
@@ -217,13 +224,13 @@ begin
       userInPassFile := writeUserPassFile(userString,passString);
       if userInPassFile then
       begin
-        WriteUserLog('The user ' + userString + ', uid ' + userID + ' has registered successfully');
+        TUtils.Create.WriteUserLog('The user ' + userString + ', uid ' + userID + ' has registered successfully');
         ShowMessage('You have successfully been registered, happy eating!');
       end;
     end
     else
     begin
-      WriteUserLog(
+      TUtils.Create.WriteUserLog(
         'The user ' + userString + ',uid ' + userID +
         ' attempted to register, but were not found in the database afterward.'
         + #13 + #9 + 'Something must have gone wrong'
@@ -233,7 +240,7 @@ begin
   end;
 end;
 
-procedure RegisterUserInDB(passString,userString,userID : string);
+procedure TUsers.RegisterUserInDB;
 begin
   with dbmData.tblUsers do
   begin
@@ -250,7 +257,7 @@ begin
 
 end;
 
-function ValidPass(userString,passString: string):boolean;
+function TUsers.ValidPass;
 var
   isValid : boolean;
 begin
@@ -271,7 +278,7 @@ begin
   ValidPass := isValid;
 end;
 
-function CheckDatabase(userString : string): boolean;
+function TUsers.CheckDatabase;
 var
   isFound: boolean;
 begin
@@ -287,7 +294,7 @@ begin
   end;
   CheckDatabase := isFound;
 end;
-function CheckPass(userString: string; passString: string; filename: string): boolean;
+function TUsers.CheckPass;
 var
   passFile : textfile;
   fileString, userFileString, userPassString, userInDatabase : string;
@@ -296,7 +303,7 @@ var
 begin
   AssignFile(passFile,filename);
 
-  if not CheckFileExists(filename) then exit;
+  if not TUtils.Create.CheckFileExists(filename) then exit;
 
   Reset(passFile);
 
@@ -322,7 +329,7 @@ begin
   CheckPass := isCorrect;
 end;
 
-procedure SaveLastLogin(userString : string);
+procedure TUsers.SaveLastLogin;
 var
   userFound : boolean;
 begin
@@ -345,7 +352,7 @@ begin
   end;
 end;
 
-procedure RemoveUser;
+procedure TUsers.RemoveUser;
 var
   isFound, isRemoved : boolean;
   userString : string;
@@ -366,7 +373,7 @@ begin
     begin
       Delete;
       Post;
-      WriteUserLog('User ' + userString + ', uid ' + userID + ' was removed completely');
+      TUtils.Create.WriteUserLog('User ' + userString + ', uid ' + userID + ' was removed completely');
     end;
   end;
 end;

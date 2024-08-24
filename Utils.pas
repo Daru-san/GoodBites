@@ -4,28 +4,28 @@ unit Utils;
 interface
 
 uses System.SysUtils,System.Classes,VCL.StdCtrls,conDBBites;
+
 type
   TUtils = Class(TObject)
 
-  //Logging procedures
   private
     procedure WriteLog(logMessage:string);
   public
+    function CheckFileExists(filename: string;isLogFile:boolean = false) : boolean;
+
     procedure WriteUserLog(logMessage:string);
     procedure WriteSysLog(logMessage:string);
     procedure WriteErrorLog(logMessage:string);
 
-    // Misc
     procedure SetLabel(LabelComponent:TLabel;labelMsg:string);
     procedure EditInDB(fieldName,fieldData : string);
 
-    function CheckFileExists(filename: string;isLogFile:boolean = false) : boolean;
 
-  End;
+  end;
 
 implementation
 
-function TUtils.CheckFileExists(filename: string; isLogFile : boolean = false) : boolean;
+function TUtils.CheckFileExists;
 var
   logMsg : string;
   isExist : boolean;
@@ -36,7 +36,7 @@ begin
     isExist := false;
     if not isLogFile then
     begin
-      WriteLog(logMSG);
+      WriteSysLog(logMSG);
     end;
   end else isExist := true;
   CheckFileExists := isExist;
@@ -81,7 +81,7 @@ begin
   WriteLog(logMsg);
 end;
 
-procedure TUtils.WriteErrorLog(logMessage : string);
+procedure TUtils.WriteErrorLog;
 var
   logMsg : string;
 begin
@@ -89,7 +89,7 @@ begin
   WriteLog(logMsg);
 end;
 
-procedure TUtils.WriteLog(logMessage : string);
+procedure TUtils.WriteLog;
 const FILENAME = 'logs';
 var
   LogFile : textfile;

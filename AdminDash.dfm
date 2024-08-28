@@ -42,7 +42,7 @@ object frmAdmin: TfrmAdmin
     Top = 0
     Width = 907
     Height = 515
-    ActivePage = tsUsers
+    ActivePage = tsNutrients
     Align = alClient
     TabOrder = 1
     object tsUsers: TTabSheet
@@ -249,12 +249,14 @@ object frmAdmin: TfrmAdmin
         object lblLogs: TLabel
           Left = 1
           Top = 1
-          Width = 25
-          Height = 15
+          Width = 897
+          Height = 39
           Align = alClient
           Alignment = taCenter
           Caption = 'Logs'
           Layout = tlBottom
+          ExplicitWidth = 25
+          ExplicitHeight = 15
         end
       end
       object btnClear: TButton
@@ -292,7 +294,7 @@ object frmAdmin: TfrmAdmin
         Left = 32
         Top = 80
         Width = 809
-        Height = 337
+        Height = 281
         TabOrder = 0
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = clWindowText
@@ -311,11 +313,96 @@ object frmAdmin: TfrmAdmin
         object lblNutrient: TLabel
           Left = 1
           Top = 1
-          Width = 123
-          Height = 15
+          Width = 897
+          Height = 39
           Align = alClient
           Alignment = taCenter
           Caption = 'Nutrients Management'
+          ExplicitWidth = 123
+          ExplicitHeight = 15
+        end
+      end
+      object pnlAddition: TPanel
+        Left = 32
+        Top = 360
+        Width = 441
+        Height = 123
+        TabOrder = 2
+        object lblNumCalories: TLabel
+          Left = 6
+          Top = 88
+          Width = 66
+          Height = 15
+          Caption = 'Min Calories'
+        end
+        object lblRecQty: TLabel
+          Left = 168
+          Top = 88
+          Width = 130
+          Height = 15
+          Caption = 'Recommended Quantity'
+        end
+        object pnlNutHead: TPanel
+          Left = 1
+          Top = 1
+          Width = 439
+          Height = 41
+          Align = alTop
+          TabOrder = 0
+          ExplicitLeft = 152
+          ExplicitTop = 48
+          ExplicitWidth = 185
+          object lblNutHead: TLabel
+            Left = 200
+            Top = 16
+            Width = 3
+            Height = 15
+          end
+        end
+        object btnNutrient: TButton
+          Left = 328
+          Top = 40
+          Width = 75
+          Height = 25
+          Caption = 'Add nutrient'
+          TabOrder = 1
+          OnClick = btnNutrientClick
+        end
+        object edtNutrient: TEdit
+          Left = 19
+          Top = 48
+          Width = 121
+          Height = 23
+          TabOrder = 2
+          TextHint = 'Nutrient name'
+        end
+        object spnCalories: TSpinEdit
+          Left = 78
+          Top = 85
+          Width = 62
+          Height = 24
+          MaxValue = 0
+          MinValue = 0
+          TabOrder = 3
+          Value = 0
+        end
+        object cbxDaily: TCheckBox
+          Left = 184
+          Top = 48
+          Width = 97
+          Height = 17
+          Caption = 'Needed Daily'
+          TabOrder = 4
+        end
+        object spnRecQty: TSpinEdit
+          Left = 320
+          Top = 84
+          Width = 57
+          Height = 24
+          MaxValue = 0
+          MinValue = 0
+          TabOrder = 5
+          Value = 0
         end
       end
     end

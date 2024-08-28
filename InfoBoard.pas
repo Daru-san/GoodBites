@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, REST.Types, REST.Client,
   Data.Bind.Components, Data.Bind.ObjectScope, OpenAI, Vcl.StdCtrls,
-  Vcl.ComCtrls, Vcl.ExtCtrls,Utils, DataFetcher;
+  Vcl.ComCtrls, Vcl.ExtCtrls,Utils, DataFetcher,conDBBites;
 
 type
   TfrmInfo = class(TForm)
@@ -20,9 +20,11 @@ type
     btnData: TButton;
     procedure FormShow(Sender: TObject);
     procedure btnLoadClick(Sender: TObject);
-    procedure LoadData(nutrientIndex : integer; nutrientName: string);
-    procedure SetIndices;
+    procedure btnDataClick(Sender: TObject);
   private
+    procedure SetIndices;
+    function GetFileStr(nutrientIndex:integer):string;
+    procedure LoadData(nutrientIndex : integer; nutrientName: string);
     { Private declarations }
   public
     { Public declarations }
@@ -30,23 +32,57 @@ type
 
 var
   frmInfo: TfrmInfo;
+  nutrientArr : array of string;
 
 implementation
 
 {$R *.dfm}
 
 
+procedure TfrmInfo.btnDataClick(Sender: TObject);
+var
+  fileString : string;
+  nutrientIndex : integer;
+begin
+  nutrientIndex := cbxNutrients.ItemIndex;
+  fileString := GetFileStr(nutrientIndex);
+  if fileString.IsEmpty then
+  exit;
+  TDataFetcher.Create.FetchData(fileString);
+end;
+
+function TfrmInfo.GetFileStr;
+var
+  fileString : string;
+begin
+  if nutrientIndex <= -1 then
+  begin
+    ShowMessage('Please select an option');
+    fileString := '';
+  end else
+  begin
+    fileString := 'info\';
+    case nutrientIndex of
+      0 : fileString := fileString + 'carbs.txt';
+      1 : fileString := fileString + 'fats.txt';
+      2 : fileString := fileString + 'proteins.txt';
+      3 : fileString := fileString + 'vits.txt';
+    end;
+  end;
+end;
+
 procedure TfrmInfo.btnLoadClick(Sender: TObject);
 var
   nutrientName : string;
   nutrientIndex : integer;
 begin
-
   nutrientIndex := cbxNutrients.ItemIndex;
-  if cbxNutrients.ItemIndex < 0 then
-  LoadData(nutrientIndex,nutrientName)
+  if cbxNutrients.ItemIndex > -1 then
+    LoadData(nutrientIndex,nutrientName)
   else
+  begin
     ShowMessage('Please select an option');
+  end;
 end;
 
 procedure TfrmInfo.LoadData;
@@ -54,16 +90,14 @@ var
   tInfoFile : TextFile;
   fileString, fileText : string;
 begin
-  fileString := 'info\';
-  case nutrientIndex of
-    0 : fileString := fileString + 'carbs.txt';
-    1 : fileString := fileString + 'fats.txt';
-    2 : fileString := fileString + 'proteins.txt';
-    3 : fileString := fileString + 'vits.txt';
-  end;
+  fileString := GetFileStr(nutrientIndex);
+  if fileString.IsEmpty then
+  exit;
+
   AssignFile(tInfoFile,fileString);
-  if CheckFileExists(fileString) then
+  if TUTILS.Create.CheckFileExists(fileString) then
   begin
+  //TODO: Get markdown rendering done
     memInfo.lines.clear;
     memInfo.Lines.Add('Information on ' + nutrientName);
     try
@@ -75,24 +109,33 @@ begin
     finally
       CloseFile(tInfoFile);
     end;
-  end;
+  end else ShowMessage('An unkown error has occured, please ask an administrator to check on the issue');
 end;
 
 procedure TfrmInfo.SetIndices;
+var
+  I: Integer;
 begin
   with cbxNutrients do
   begin
-    Items[0] := 'Carbohydrates';
-    Items[1] := 'Fats';
-    Items[2] := 'Proteins';
-    Items[3] := 'Vitamins and Minerals';
+    with dbmData.tblNutrients do
+    begin
+      Open;
+      First;
+      repeat
+        inc(i);
+        Items.Add(FieldValues['NutrientName']);
+        Next;
+      until eof;
+      Close;
+    end;
   end;
-
 end;
 procedure TfrmInfo.FormShow(Sender: TObject);
 begin
-  SetLabel(lblHeader,'About nutrients');
+  TUtils.Create.SetLabel(lblHeader,'About nutrients',15);
   memInfo.ReadOnly := true;
+  SetIndices;
 end;
 
 end.

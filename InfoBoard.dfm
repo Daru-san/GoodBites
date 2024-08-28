@@ -19,8 +19,6 @@ object frmInfo: TfrmInfo
     Height = 360
     Align = alClient
     TabOrder = 0
-    ExplicitLeft = 8
-    ExplicitTop = 65
     object btnLoad: TButton
       Left = 496
       Top = 329
@@ -54,6 +52,7 @@ object frmInfo: TfrmInfo
       Height = 25
       Caption = 'Reload Data'
       TabOrder = 3
+      OnClick = btnDataClick
     end
   end
   object pnlTop: TPanel
@@ -68,6 +67,7 @@ object frmInfo: TfrmInfo
       Top = 16
       Width = 3
       Height = 15
+      Alignment = taCenter
     end
   end
   object pnlFoot: TPanel

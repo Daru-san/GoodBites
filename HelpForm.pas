@@ -13,8 +13,6 @@ type
     pnlHeader: TPanel;
     lblHeader: TLabel;
     memPurpose: TMemo;
-    pnlFoot: TPanel;
-    btnExit: TButton;
     procedure FormCreate(Sender: TObject);
     procedure tsExplainShow(Sender: TObject);
     procedure btnExitClick(Sender: TObject);
@@ -38,7 +36,7 @@ end;
 
 procedure TfrmHelp.FormCreate(Sender: TObject);
 begin
-  SetLabel(lblHeader,'Help');
+  TUtils.Create.SetLabel(lblHeader,'Help',20);
 
 end;
 
@@ -52,7 +50,7 @@ var
   lineString : string;
 begin
   memoComp.Lines.Clear;
-  if CheckFileExists(filename) then
+  if TUtils.Create.CheckFileExists(filename) then
   begin
     AssignFile(infoFile,filename);
     Reset(infoFile);

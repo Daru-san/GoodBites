@@ -1,7 +1,7 @@
 object frmApp: TfrmApp
   Left = 0
   Top = 0
-  Caption = #39
+  Caption = 'Goodbites'
   ClientHeight = 323
   ClientWidth = 650
   Color = clBtnFace
@@ -20,6 +20,8 @@ object frmApp: TfrmApp
     Height = 317
     Align = alClient
     TabOrder = 0
+    ExplicitLeft = 8
+    ExplicitTop = 8
     object pnlHeader: TPanel
       Left = 1
       Top = 1
@@ -55,9 +57,6 @@ object frmApp: TfrmApp
       TabOrder = 1
       StyleName = 'Windows'
       OnClick = btnLoginClick
-      ExplicitLeft = 201
-      ExplicitTop = 177
-      ExplicitWidth = 175
     end
     object btnHelp: TButton
       Left = 288

@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls,InfoBoard;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls,InfoBoard,Utils;
 
 type
   TfrmDashboard = class(TForm)
@@ -36,8 +36,7 @@ implementation
 
 procedure TfrmDashboard.FormShow(Sender: TObject);
 begin
-  lblHeading.Font.Size := 15;
-  lblHeading.Font.Name := 'NotoSans';
+  TUtils.Create.SetLabel(lblHeading,'Dashboard',15);
 end;
 
 procedure TfrmDashboard.Panel1Click(Sender: TObject);

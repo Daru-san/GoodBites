@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils,System.StrUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids, conDBBites,
-  Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.ComCtrls, Utils,UserMod;
+  Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.ComCtrls, Utils,UserMod, Vcl.Samples.Spin;
 
 type
   TfrmAdmin = class(TForm)
@@ -39,18 +39,22 @@ type
     edtField: TEdit;
     edtData: TEdit;
     btnFieldEdit: TButton;
-
-  private
-    { Private declarations }
+    pnlAddition: TPanel;
+    pnlNutHead: TPanel;
+    lblNutHead: TLabel;
+    btnNutrient: TButton;
+    edtNutrient: TEdit;
+    spnCalories: TSpinEdit;
+    cbxDaily: TCheckBox;
+    spnRecQty: TSpinEdit;
+    lblNumCalories: TLabel;
+    lblRecQty: TLabel;
     procedure btnLogoutClick(Sender: TObject);
     procedure tsLogsShow(Sender: TObject);
-    procedure ShowLogs(filterString:string='');
-    procedure ClearLogs();
     procedure btnClearClick(Sender: TObject);
     procedure tsUsersShow(Sender: TObject);
     procedure btnNextClick(Sender: TObject);
     procedure btnPrevClick(Sender: TObject);
-    procedure InitializeWidth(dbGrid:TDBGrid);
     procedure dbgUsersDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure tsNutrientsShow(Sender: TObject);
@@ -61,6 +65,13 @@ type
     procedure btnFirstClick(Sender: TObject);
     procedure btnLastClick(Sender: TObject);
     procedure btnFieldEditClick(Sender: TObject);
+    procedure btnNutrientClick(Sender: TObject);
+  private
+    { Private declarations }
+    procedure ShowLogs(filterString:string='');
+    procedure ClearLogs();
+    procedure InitializeWidth(dbGrid:TDBGrid);
+
   public
     { Public declarations }
   end;
@@ -152,6 +163,31 @@ begin
   dbmData.tblUsers.Next;
 end;
 
+procedure TfrmAdmin.btnNutrientClick(Sender: TObject);
+var
+  numMinCalories,numRecQty,confInt:integer;
+  nutrientName : string;
+  isDaily : boolean;
+begin
+  confInt := MessageDlg('Are you sure you would like to add this nutrient to the database?',mtConfirmation,mbYesNo,0);
+  if confInt <> mrYes then exit;
+
+  numMinCalories := spnCalories.Value;
+  numRecQty := spnRecQty.Value;
+  nutrientName := edtNutrient.Text;
+  isDaily := cbxDaily.Checked;
+  with dbmData.tblNutrients do
+  begin
+    Open;
+    Edit;
+    FieldValues['NutrientName'] := nutrientName;
+    FieldValues['MinCalories'] := numMinCalories;
+    FieldValues['RecommendedQty'] := numRecQty;
+    FieldValues['NeededDaily'] := isDaily;
+    Post;
+  end;
+end;
+
 procedure TfrmAdmin.btnPrevClick(Sender: TObject);
 begin
   dbmData.tblUsers.Prior;
@@ -165,14 +201,15 @@ end;
 //TODO: Filter logs based on type
 procedure TfrmAdmin.tsLogsShow(Sender: TObject);
 begin
-  TUtils.Create.SetLabel(lblLogs,'Logs');
+  TUtils.Create.SetLabel(lblLogs,'Logs',20);
   memLogs.Lines.clear;
   ShowLogs();
 end;
 
 procedure TfrmAdmin.tsNutrientsShow(Sender: TObject);
 begin
-  TUtils.Create.SetLabel(lblNutrient,'Manage Nutrients');
+  TUtils.Create.SetLabel(lblNutrient,'Manage Nutrients',20);
+  TUtils.Create.SetLabel(lblNutHead,'Add new nutrients',14);
   with dbmData do
   begin
     tblNutrients.Open;
@@ -184,7 +221,7 @@ end;
 
 procedure TfrmAdmin.tsUsersShow(Sender: TObject);
 begin
-  TUtils.Create.SetLabel(lblUsers,'User Management');
+  TUtils.Create.SetLabel(lblUsers,'User Management',20);
   with dbmData do
   begin
     tblUsers.open;

@@ -17,7 +17,7 @@ type
     procedure WriteSysLog(logMessage:string);
     procedure WriteErrorLog(logMessage:string);
 
-    procedure SetLabel(LabelComponent:TLabel;labelMsg:string);
+    procedure SetLabel(LabelComponent:TLabel;labelMsg:string;fontSize : integer);
     procedure EditInDB(fieldName,fieldData : string);
 
 
@@ -47,7 +47,7 @@ begin
   with labelComponent do
   begin
     font.Name := 'Noto Sans';
-    font.size := 20;
+    font.size := fontSize;
     Layout := tlCenter;
     Alignment := taCenter;
     Caption := labelMsg;

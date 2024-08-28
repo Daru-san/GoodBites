@@ -5,10 +5,12 @@ program GoodBites;
 {$ENDIF}
 
 uses
-{$IFnDEF FPC}
-  Vcl.Forms, Vcl.Themes, Vcl.Styles,
-{$ELSE}
-{$ENDIF}
+  {$IFnDEF FPC}
+  Vcl.Forms,
+  Vcl.Themes,
+  Vcl.Styles,
+  {$ELSE}
+  {$ENDIF }
   App in 'App.pas' {frmApp},
   Login in 'Login.pas' {frmLogin},
   Dash in 'Dash.pas' {frmDashboard},

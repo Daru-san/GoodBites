@@ -24,6 +24,7 @@ type
   private
     procedure SetIndices;
     function GetFileStr(nutrientIndex:integer):string;
+    function GetNutrient:string;
     procedure LoadData(nutrientIndex : integer; nutrientName: string);
     { Private declarations }
   public
@@ -43,12 +44,30 @@ procedure TfrmInfo.btnDataClick(Sender: TObject);
 var
   fileString : string;
   nutrientIndex : integer;
+  nutrientName : string;
 begin
   nutrientIndex := cbxNutrients.ItemIndex;
+  nutrientName := GetNutrient;
   fileString := GetFileStr(nutrientIndex);
   if fileString.IsEmpty then
   exit;
-  TDataFetcher.Create.FetchData(fileString);
+  TDataFetcher.Create.FetchData(fileString,nutrientName);
+end;
+
+function TfrmInfo.GetNutrient;
+var
+  nutrientName : string;
+  nutrientIndex : integer;
+begin
+  if nutrientIndex <= -1 then
+  begin
+    nutrientName := '';
+    getNutrient := nutrientName;
+    EXIT;
+  end;
+  nutrientName := GetNutrient;
+  if nutrientName.IsEmpty then
+  exit else GetNutrient := nutrientName;
 end;
 
 function TfrmInfo.GetFileStr;
@@ -59,6 +78,8 @@ begin
   begin
     ShowMessage('Please select an option');
     fileString := '';
+    GetFileStr := '';
+    exit;
   end else
   begin
     fileString := 'info\';
@@ -69,6 +90,13 @@ begin
       3 : fileString := fileString + 'vits.txt';
     end;
   end;
+  if not TUtils.Create.CheckFileExists(fileString) then
+  begin
+    ShowMessage('An unknown error occured, please contact an administrator');
+    TUtils.Create.WriteErrorLog('The file ' + fileString + ' was needed but not found');
+    fileString := '';
+  end else
+  GetFileStr := fileString;
 end;
 
 procedure TfrmInfo.btnLoadClick(Sender: TObject);
@@ -76,6 +104,7 @@ var
   nutrientName : string;
   nutrientIndex : integer;
 begin
+  nutrientName := GetNutrient;
   nutrientIndex := cbxNutrients.ItemIndex;
   if cbxNutrients.ItemIndex > -1 then
     LoadData(nutrientIndex,nutrientName)
@@ -90,6 +119,7 @@ var
   tInfoFile : TextFile;
   fileString, fileText : string;
 begin
+  nutrientName := GetNutrient;
   fileString := GetFileStr(nutrientIndex);
   if fileString.IsEmpty then
   exit;

@@ -59,15 +59,18 @@ var
   nutrientName : string;
   nutrientIndex : integer;
 begin
+  nutrientIndex := cbxNutrients.ItemIndex;
   if nutrientIndex <= -1 then
   begin
     nutrientName := '';
     getNutrient := nutrientName;
-    EXIT;
+  end
+  else
+  begin
+    nutrientName := GetNutrient;
+    if nutrientName.IsEmpty then
+    exit else GetNutrient := nutrientName;
   end;
-  nutrientName := GetNutrient;
-  if nutrientName.IsEmpty then
-  exit else GetNutrient := nutrientName;
 end;
 
 function TfrmInfo.GetFileStr;
@@ -85,9 +88,10 @@ begin
     fileString := 'info\';
     case nutrientIndex of
       0 : fileString := fileString + 'carbs.txt';
-      1 : fileString := fileString + 'fats.txt';
+      1 : fileString := fileString + 'fibre.txt';
       2 : fileString := fileString + 'proteins.txt';
-      3 : fileString := fileString + 'vits.txt';
+      3 : fileString := fileString + 'fats.txt';
+      4 : fileString := fileString + 'vits.txt';
     end;
   end;
   if not TUtils.Create.CheckFileExists(fileString) then

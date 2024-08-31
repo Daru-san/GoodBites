@@ -58,12 +58,10 @@ object frmAdmin: TfrmAdmin
         object lblUsers: TLabel
           Left = 1
           Top = 1
-          Width = 897
-          Height = 39
+          Width = 97
+          Height = 15
           Align = alClient
           Caption = 'User Management'
-          ExplicitWidth = 97
-          ExplicitHeight = 15
         end
       end
       object dbgUsers: TDBGrid
@@ -124,13 +122,12 @@ object frmAdmin: TfrmAdmin
         object lblNav: TLabel
           Left = 1
           Top = 1
-          Width = 431
+          Width = 98
           Height = 15
           Align = alTop
           Alignment = taCenter
           Caption = 'Record Navigation'
           Layout = tlCenter
-          ExplicitWidth = 98
         end
         object btnLast: TButton
           Left = 126
@@ -178,12 +175,11 @@ object frmAdmin: TfrmAdmin
         object lblRecMod: TLabel
           Left = 1
           Top = 1
-          Width = 359
+          Width = 108
           Height = 15
           Align = alTop
           Alignment = taCenter
           Caption = 'Record Modification'
-          ExplicitWidth = 108
         end
         object btnUserDel: TButton
           Left = 240
@@ -249,14 +245,12 @@ object frmAdmin: TfrmAdmin
         object lblLogs: TLabel
           Left = 1
           Top = 1
-          Width = 897
-          Height = 39
+          Width = 25
+          Height = 15
           Align = alClient
           Alignment = taCenter
           Caption = 'Logs'
           Layout = tlBottom
-          ExplicitWidth = 25
-          ExplicitHeight = 15
         end
       end
       object btnClear: TButton
@@ -349,9 +343,6 @@ object frmAdmin: TfrmAdmin
           Height = 41
           Align = alTop
           TabOrder = 0
-          ExplicitLeft = 152
-          ExplicitTop = 48
-          ExplicitWidth = 185
           object lblNutHead: TLabel
             Left = 200
             Top = 16

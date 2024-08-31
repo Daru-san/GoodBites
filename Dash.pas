@@ -15,15 +15,12 @@ type
     lblHeading: TLabel;
     pnlNav: TPanel;
     Label1: TLabel;
-    Panel1: TPanel;
-    Panel2: TPanel;
-    Panel3: TPanel;
-    Panel4: TPanel;
     pnlFoot: TPanel;
     btnLogOut: TButton;
+    pnlInfo: TPanel;
     procedure FormShow(Sender: TObject);
-    procedure Panel1Click(Sender: TObject);
     procedure btnLogOutClick(Sender: TObject);
+    procedure pnlInfoClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -48,8 +45,7 @@ begin
   TUtils.Create.SetLabel(lblHeading,'Dashboard',15);
 
 end;
-
-procedure TfrmDashboard.Panel1Click(Sender: TObject);
+procedure TfrmDashboard.pnlInfoClick(Sender: TObject);
 var
   infoForm : InfoBoard.TfrmInfo;
 begin

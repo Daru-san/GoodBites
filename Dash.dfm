@@ -19,7 +19,6 @@ object frmDashboard: TfrmDashboard
     Height = 425
     Align = alClient
     TabOrder = 0
-    ExplicitHeight = 466
     object pnlHeader: TPanel
       Left = 1
       Top = 1
@@ -52,7 +51,6 @@ object frmDashboard: TfrmDashboard
       Height = 382
       Align = alLeft
       TabOrder = 1
-      ExplicitHeight = 423
       object lblHeading: TLabel
         Left = 1
         Top = 1
@@ -83,7 +81,8 @@ object frmDashboard: TfrmDashboard
       Font.Style = []
       ParentFont = False
       TabOrder = 2
-      ExplicitHeight = 423
+      ExplicitLeft = 454
+      ExplicitTop = 47
       object Label1: TLabel
         Left = 1
         Top = 1
@@ -100,62 +99,14 @@ object frmDashboard: TfrmDashboard
         ParentFont = False
         ExplicitWidth = 96
       end
-      object Panel1: TPanel
-        Left = 48
-        Top = 56
-        Width = 329
+      object pnlInfo: TPanel
+        Left = 120
+        Top = 304
+        Width = 185
         Height = 41
-        Caption = 'Carbohydrates'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -19
-        Font.Name = 'Segoe UI'
-        Font.Style = []
-        ParentFont = False
+        Caption = 'Information'
         TabOrder = 0
-        OnClick = Panel1Click
-      end
-      object Panel2: TPanel
-        Left = 48
-        Top = 188
-        Width = 329
-        Height = 41
-        Caption = 'Fats and oils'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -19
-        Font.Name = 'Segoe UI'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 1
-      end
-      object Panel3: TPanel
-        Left = 48
-        Top = 120
-        Width = 329
-        Height = 41
-        Caption = 'Proteins'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -19
-        Font.Name = 'Segoe UI'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 2
-      end
-      object Panel4: TPanel
-        Left = 48
-        Top = 256
-        Width = 329
-        Height = 41
-        Caption = 'Milk products'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -19
-        Font.Name = 'Segoe UI'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 3
+        OnClick = pnlInfoClick
       end
     end
   end
@@ -166,9 +117,6 @@ object frmDashboard: TfrmDashboard
     Height = 41
     Align = alBottom
     TabOrder = 1
-    ExplicitLeft = 360
-    ExplicitTop = 232
-    ExplicitWidth = 185
     object btnLogOut: TButton
       Left = 784
       Top = 16

@@ -179,7 +179,7 @@ begin
   with dbmData.tblNutrients do
   begin
     Open;
-    Edit;
+    Append;
     FieldValues['NutrientName'] := nutrientName;
     FieldValues['MinCalories'] := numMinCalories;
     FieldValues['RecommendedQty'] := numRecQty;

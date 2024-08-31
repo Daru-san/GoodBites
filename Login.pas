@@ -66,9 +66,13 @@ begin
       isAdmin := TUsers.Create.CheckAdmin(userString);
       isLoggedIn := true;
       if isAdmin then
-        TUtils.Create.WriteUserLog('Administrator ' + userString + ' logged in.')
+      begin
+        TUtils.Create.WriteUserLog('Administrator ' + userString + ' logged in.');
+      end
       else
+      begin
         TUtils.Create.WriteUserLog('User ' + userString + ' logged in.');
+      end;
     end
     else
     begin
@@ -99,6 +103,7 @@ begin
     font.Style := [fsBold];
     Alignment := taCenter;
   end;
+  edtUser.SetFocus;
 
 end;
 

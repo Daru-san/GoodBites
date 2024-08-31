@@ -16,9 +16,10 @@ object frmDashboard: TfrmDashboard
     Left = 0
     Top = 0
     Width = 890
-    Height = 466
+    Height = 425
     Align = alClient
     TabOrder = 0
+    ExplicitHeight = 466
     object pnlHeader: TPanel
       Left = 1
       Top = 1
@@ -48,9 +49,10 @@ object frmDashboard: TfrmDashboard
       Left = 1
       Top = 42
       Width = 448
-      Height = 423
+      Height = 382
       Align = alLeft
       TabOrder = 1
+      ExplicitHeight = 423
       object lblHeading: TLabel
         Left = 1
         Top = 1
@@ -72,7 +74,7 @@ object frmDashboard: TfrmDashboard
       Left = 448
       Top = 42
       Width = 441
-      Height = 423
+      Height = 382
       Align = alRight
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -81,6 +83,7 @@ object frmDashboard: TfrmDashboard
       Font.Style = []
       ParentFont = False
       TabOrder = 2
+      ExplicitHeight = 423
       object Label1: TLabel
         Left = 1
         Top = 1
@@ -154,6 +157,27 @@ object frmDashboard: TfrmDashboard
         ParentFont = False
         TabOrder = 3
       end
+    end
+  end
+  object pnlFoot: TPanel
+    Left = 0
+    Top = 425
+    Width = 890
+    Height = 41
+    Align = alBottom
+    TabOrder = 1
+    ExplicitLeft = 360
+    ExplicitTop = 232
+    ExplicitWidth = 185
+    object btnLogOut: TButton
+      Left = 784
+      Top = 16
+      Width = 75
+      Height = 25
+      Cancel = True
+      Caption = 'Log Out'
+      TabOrder = 0
+      OnClick = btnLogOutClick
     end
   end
 end

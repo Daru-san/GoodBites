@@ -16,10 +16,11 @@ object frmHelp: TfrmHelp
     Left = 0
     Top = 61
     Width = 930
-    Height = 412
+    Height = 371
     ActivePage = tsExplain
     Align = alClient
     TabOrder = 0
+    ExplicitHeight = 412
     object tsExplain: TTabSheet
       Caption = 'What is this app?'
       OnShow = tsExplainShow
@@ -46,6 +47,27 @@ object frmHelp: TfrmHelp
       Top = 16
       Width = 3
       Height = 15
+    end
+  end
+  object pnlFoot: TPanel
+    Left = 0
+    Top = 432
+    Width = 930
+    Height = 41
+    Align = alBottom
+    TabOrder = 2
+    ExplicitLeft = 384
+    ExplicitTop = 240
+    ExplicitWidth = 185
+    object btnExit: TButton
+      Left = 826
+      Top = 14
+      Width = 75
+      Height = 25
+      Cancel = True
+      Caption = 'Exit'
+      TabOrder = 0
+      OnClick = btnExitClick
     end
   end
 end

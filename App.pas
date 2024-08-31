@@ -54,7 +54,7 @@ var
 begin
   Application.Initialize;
   LoginForm := TfrmLogin.Create(nil);
-  Self.Visible := false;
+  Self.Hide;
   try
     LoginForm.ShowModal;
     didLogin := LoginForm.IsLoggedIn;
@@ -66,21 +66,33 @@ begin
       +  'Login cancelled?' + LoginCancelled.toString
     );
   finally
+  //TODO: Do something about form closing and switching
     LoginForm.Free;
     if didLogin then
     begin
       if (not isAdmin) then
       begin
         Application.CreateForm(Dash.TfrmDashboard,DashForm);
-        DashForm.Visible := true;
+        try
+          DashForm.ShowModal;
+          Self.Hide;
+        finally
+          DashForm.free;
+          Self.Visible := true;
+        end;
       end
         else
       if isAdmin then
       begin
         Application.CreateForm(AdminDash.TfrmAdmin,AdminForm);
-        AdminForm.Visible := true;
+        try
+          AdminForm.ShowModal;
+          self.Hide;
+        finally
+          AdminForm.Free;
+          Self.Visible := true;
+        end;
       end;
-      Application.ShowMainForm := false;
     end;
     Application.Run;
   end;

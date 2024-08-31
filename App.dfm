@@ -20,8 +20,6 @@ object frmApp: TfrmApp
     Height = 317
     Align = alClient
     TabOrder = 0
-    ExplicitLeft = 8
-    ExplicitTop = 8
     object pnlHeader: TPanel
       Left = 1
       Top = 1

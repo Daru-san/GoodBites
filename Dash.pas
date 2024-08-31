@@ -19,8 +19,11 @@ type
     Panel2: TPanel;
     Panel3: TPanel;
     Panel4: TPanel;
+    pnlFoot: TPanel;
+    btnLogOut: TButton;
     procedure FormShow(Sender: TObject);
     procedure Panel1Click(Sender: TObject);
+    procedure btnLogOutClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -34,9 +37,16 @@ implementation
 
 {$R *.dfm}
 
+procedure TfrmDashboard.btnLogOutClick(Sender: TObject);
+begin
+  frmDashboard.CloseModal;
+  Application.MainForm.Visible := true;
+end;
+
 procedure TfrmDashboard.FormShow(Sender: TObject);
 begin
   TUtils.Create.SetLabel(lblHeading,'Dashboard',15);
+
 end;
 
 procedure TfrmDashboard.Panel1Click(Sender: TObject);
@@ -46,8 +56,10 @@ begin
  infoForm := TfrmInfo.Create(nil);
  try
   infoForm.ShowModal;
+  self.Visible := false;
  finally
    infoForm.Free;
+   Self.Show;
  end;
 
 end;

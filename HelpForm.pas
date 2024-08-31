@@ -13,6 +13,8 @@ type
     pnlHeader: TPanel;
     lblHeader: TLabel;
     memPurpose: TMemo;
+    pnlFoot: TPanel;
+    btnExit: TButton;
     procedure FormCreate(Sender: TObject);
     procedure tsExplainShow(Sender: TObject);
     procedure btnExitClick(Sender: TObject);
@@ -31,6 +33,7 @@ implementation
 
 procedure TfrmHelp.btnExitClick(Sender: TObject);
 begin
+  Self.ModalResult := mrClose;
   Self.CloseModal;
 end;
 

@@ -35,6 +35,7 @@ procedure TfrmHelp.btnExitClick(Sender: TObject);
 begin
   Self.ModalResult := mrClose;
   Self.CloseModal;
+  Application.MainForm.show;
 end;
 
 procedure TfrmHelp.FormCreate(Sender: TObject);

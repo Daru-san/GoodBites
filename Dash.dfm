@@ -81,8 +81,6 @@ object frmDashboard: TfrmDashboard
       Font.Style = []
       ParentFont = False
       TabOrder = 2
-      ExplicitLeft = 454
-      ExplicitTop = 47
       object Label1: TLabel
         Left = 1
         Top = 1

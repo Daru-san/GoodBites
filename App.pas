@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Login, conDBBites,
-  Data.DB, Vcl.Grids, Vcl.DBGrids, Dash,AdminDash,Helpform;
+  Data.DB, Vcl.Grids, Vcl.DBGrids, Dash,AdminDash,Helpform, Vcl.Imaging.pngimage;
 
 type
   TfrmApp = class(TForm)
@@ -14,9 +14,13 @@ type
     lblHeading: TLabel;
     btnLogin: TButton;
     btnHelp: TButton;
+    pnlFoot: TPanel;
+    btnExit: TButton;
+    imgCenter: TImage;
     procedure btnLoginClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btnHelpClick(Sender: TObject);
+    procedure btnExitClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -30,8 +34,11 @@ implementation
 
 {$R *.dfm}
 
+procedure TfrmApp.btnExitClick(Sender: TObject);
+begin
+  Application.Terminate;
+end;
 
-// TODO: Iron out login issues
 procedure TfrmApp.btnHelpClick(Sender: TObject);
 var
   HelperForm : Helpform.TfrmHelp;
@@ -60,11 +67,11 @@ begin
     didLogin := LoginForm.IsLoggedIn;
     isAdmin := LoginForm.isAdmin;
     LoginCancelled := LoginForm.isCancelled;
-    ShowMessage(
+   { ShowMessage(
       'Logged in?'+#9 + didLogin.ToString + #13
       + 'Is admin?'+#9 + isAdmin.toString + #13
       +  'Login cancelled?' + LoginCancelled.toString
-    );
+    ); }
   finally
   //TODO: Do something about form closing and switching
     LoginForm.Free;
@@ -100,7 +107,9 @@ end;
 
 procedure TfrmApp.FormShow(Sender: TObject);
 begin
-  //btnLogin.
+  btnLogin.SetFocus;
+ // imgCenter.Picture.LoadFromFile('image.png');
+  imgCenter.Stretch := true;
 end;
 
 end.

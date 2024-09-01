@@ -36,8 +36,10 @@ implementation
 
 procedure TfrmDashboard.btnLogOutClick(Sender: TObject);
 begin
-  frmDashboard.CloseModal;
+  // Get closing to work properly
   Application.MainForm.Visible := true;
+  frmDashboard.Close;
+  frmDashboard.Destroy;
 end;
 
 procedure TfrmDashboard.FormShow(Sender: TObject);
@@ -52,10 +54,10 @@ begin
  infoForm := TfrmInfo.Create(nil);
  try
   infoForm.ShowModal;
-  self.Visible := false;
+  self.hide;
  finally
    infoForm.Free;
-   Self.Show;
+//   Self.Show;
  end;
 
 end;

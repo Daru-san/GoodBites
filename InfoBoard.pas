@@ -97,7 +97,7 @@ begin
   if not TUtils.Create.CheckFileExists(fileString) then
   begin
     ShowMessage('An unknown error occured, please contact an administrator');
-    TUtils.Create.WriteErrorLog('The file ' + fileString + ' was needed but not found');
+    TLogs.Create.WriteErrorLog('The file ' + fileString + ' was needed but not found');
     fileString := '';
   end else
   GetFileStr := fileString;

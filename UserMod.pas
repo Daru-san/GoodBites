@@ -161,7 +161,7 @@ var
 begin
   if not TUtils.Create.CheckFileExists(FILENAME) then
   begin
-    TUtils.Create.WriteSysLog(
+    TLogs.Create.WriteSysLog(
       'User register attempted, but the password file is missing' + #13
       + #9 + 'This may cause errrors, manual intervention is required'
     );
@@ -173,7 +173,7 @@ begin
     Append(passFile);
     WriteLn(passFile,userString + '#' + passString);
     CloseFile(passFile);
-    TUtils.Create.WriteUserLog('User ' + userString + ' has been saved in the PASSWORDS file');
+    TLogs.Create.WriteUserLog('User ' + userString + ' has been saved in the PASSWORDS file');
     isSuccessful:= true;
   end;
   WriteUserPassFile := isSuccessful;
@@ -189,7 +189,7 @@ var
 begin
   if not TUtils.Create.CheckFileExists(FILENAME) then
   begin
-    TUtils.Create.WriteSysLog('User deletion attempted, but the password file is missing or corrupted');
+    TLogs.Create.WriteSysLog('User deletion attempted, but the password file is missing or corrupted');
     ShowMessage('An unkown error occured');
     isSuccessful := false;
   end else
@@ -204,7 +204,7 @@ begin
       passList.SaveToFile(FILENAME);
     end;
     passList.Free;
-    TUtils.Create.WriteSysLog('Entry for user ' + userString + ' was removed from the passwords file');
+    TLogs.Create.WriteSysLog('Entry for user ' + userString + ' was removed from the passwords file');
     isSuccessful := true;
   end;
 end;
@@ -225,13 +225,13 @@ begin
       userInPassFile := writeUserPassFile(userString,passString);
       if userInPassFile then
       begin
-        TUtils.Create.WriteUserLog('The user ' + userString + ', uid ' + userID + ' has registered successfully');
+        TLogs.Create.WriteUserLog('The user ' + userString + ', uid ' + userID + ' has registered successfully');
         ShowMessage('You have successfully been registered, happy eating!');
       end;
     end
     else
     begin
-      TUtils.Create.WriteUserLog(
+      TLogs.Create.WriteUserLog(
         'The user ' + userString + ',uid ' + userID +
         ' attempted to register, but were not found in the database afterward.'
         + #13 + #9 + 'Something must have gone wrong'
@@ -398,7 +398,7 @@ begin
     begin
       Delete;
       Post;
-      TUtils.Create.WriteUserLog('User ' + userString + ', uid ' + userID + ' was removed completely');
+      TLogs.Create.WriteUserLog('User ' + userString + ', uid ' + userID + ' was removed completely');
     end;
   end;
 end;

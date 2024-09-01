@@ -67,17 +67,17 @@ begin
       isLoggedIn := true;
       if isAdmin then
       begin
-        TUtils.Create.WriteUserLog('Administrator ' + userString + ' logged in.');
+        TLogs.Create.WriteUserLog('Administrator ' + userString + ' logged in.');
       end
       else
       begin
-        TUtils.Create.WriteUserLog('User ' + userString + ' logged in.');
+        TLogs.Create.WriteUserLog('User ' + userString + ' logged in.');
       end;
     end
     else
     begin
       ShowMessage('The username or password are incorrect');
-      TUtils.Create.WriteUserLog('Failed login attempt by user ' + userString);
+      TLogs.Create.WriteUserLog('Failed login attempt by user ' + userString);
     end;
   end else
     ShowMessage('Invalid data');;

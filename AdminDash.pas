@@ -216,7 +216,7 @@ begin
     dbgNutrients.DataSource := dscNutrients;
   end;
   InitializeWidth(dbgNutrients);
-  TUtils.Create.WriteSysLog('The database table `tblNutrients` was accessed by an administrator.');
+  TLogs.Create.WriteSysLog('The database table `tblNutrients` was accessed by an administrator.');
 end;
 
 procedure TfrmAdmin.tsUsersShow(Sender: TObject);
@@ -229,7 +229,7 @@ begin
   end;
   InitializeWidth(dbgUsers);
 
-  TUtils.Create.WriteSysLog('The database table `tblUsers` was accessed by an administrator.');
+  TLogs.Create.WriteSysLog('The database table `tblUsers` was accessed by an administrator.');
 end;
 
 procedure TfrmAdmin.ShowLogs;
@@ -288,7 +288,7 @@ begin
       end;
     end;
     CloseFile(logFile);
-    TUtils.Create.WriteUserLog('An administrator logged in');
+    TLogs.Create.WriteUserLog('An administrator logged in');
     ShowLogs;
   end
   else

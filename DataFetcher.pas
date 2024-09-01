@@ -36,7 +36,7 @@ var
 begin
   if not TUtils.Create.CheckFileExists(filename) then
   begin
-    TUtils.Create.WriteErrorLog('The file ' + filename + ' was needed but not found');
+    TLogs.Create.WriteErrorLog('The file ' + filename + ' was needed but not found');
     isFailed := true;
     Exit;
   end;

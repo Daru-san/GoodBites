@@ -7,21 +7,21 @@ uses System.SysUtils,System.Classes,VCL.StdCtrls,conDBBites;
 
 type
   TUtils = Class(TObject)
-
-  private
-    procedure WriteLog(logMessage:string);
   public
     function CheckFileExists(filename: string;isLogFile:boolean = false) : boolean;
-
-    procedure WriteUserLog(logMessage:string);
-    procedure WriteSysLog(logMessage:string);
-    procedure WriteErrorLog(logMessage:string);
 
     procedure SetLabel(LabelComponent:TLabel;labelMsg:string;fontSize : integer);
     procedure EditInDB(fieldName,fieldData : string);
 
-
   end;
+  TLogs = Class(TObject)
+  private
+    procedure WriteLog(logMessage:string);
+  public
+    procedure WriteUserLog(logMessage:string);
+    procedure WriteSysLog(logMessage:string);
+    procedure WriteErrorLog(logMessage:string);
+  End;
 
 implementation
 
@@ -36,7 +36,7 @@ begin
     isExist := false;
     if not isLogFile then
     begin
-      WriteSysLog(logMSG);
+      Tlogs.Create.WriteSysLog(logMSG);
     end;
   end else isExist := true;
   CheckFileExists := isExist;
@@ -61,11 +61,11 @@ begin
     Edit;
     FieldValues[fieldName] := fieldData;
     Post;
-    WriteSysLog('An entry has been modified in the database');
+    TLogs.Create.WriteSysLog('An entry has been modified in the database');
   end;
 end;
 
-procedure TUtils.WriteUserLog;
+procedure Tlogs.WriteUserLog;
 var
   logMsg : string;
 begin
@@ -73,7 +73,7 @@ begin
   WriteLog(logMsg);
 end;
 
-procedure TUtils.WriteSysLog;
+procedure TLogs.WriteSysLog;
 var
   logMsg : string;
 begin
@@ -81,7 +81,7 @@ begin
   WriteLog(logMsg);
 end;
 
-procedure TUtils.WriteErrorLog;
+procedure TLogs.WriteErrorLog;
 var
   logMsg : string;
 begin
@@ -89,14 +89,14 @@ begin
   WriteLog(logMsg);
 end;
 
-procedure TUtils.WriteLog;
+procedure  TLogs.WriteLog;
 const FILENAME = 'logs';
 var
   LogFile : textfile;
   logsExist : boolean;
 begin
   AssignFile(LogFile,FILENAME);
-  logsExist := CheckFileExists(FILENAME,true);
+  logsExist := Tutils.Create.CheckFileExists(FILENAME,true);
   try
     if logsExist then
       Append(logFile)

@@ -135,6 +135,7 @@
             <Form>frmHelp</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="user.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

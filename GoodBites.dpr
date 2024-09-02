@@ -20,7 +20,8 @@ uses
   UserMod in 'UserMod.pas',
   DataFetcher in 'DataFetcher.pas',
   Utils in 'Utils.pas',
-  HelpForm in 'HelpForm.pas' {frmHelp};
+  HelpForm in 'HelpForm.pas' {frmHelp},
+  user in 'user.pas';
 
 {$R *.res}
 

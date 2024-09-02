@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls,InfoBoard,Utils;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls,InfoBoard,Utils,user;
 
 type
   TfrmDashboard = class(TForm)
@@ -25,10 +25,12 @@ type
     { Private declarations }
   public
     { Public declarations }
+    userObj : TUser;
   end;
 
 var
   frmDashboard: TfrmDashboard;
+  username : string;
 
 implementation
 
@@ -40,12 +42,13 @@ begin
   Application.MainForm.Visible := true;
   frmDashboard.Close;
   frmDashboard.Destroy;
+  userObj.Free;
 end;
 
 procedure TfrmDashboard.FormShow(Sender: TObject);
 begin
   TUtils.Create.SetLabel(lblHeading,'Dashboard',15);
-
+  username := userObj.GetUser;
 end;
 procedure TfrmDashboard.pnlInfoClick(Sender: TObject);
 var

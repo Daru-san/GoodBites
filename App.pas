@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Login, conDBBites,
-  Data.DB, Vcl.Grids, Vcl.DBGrids, Dash,AdminDash,Helpform, Vcl.Imaging.pngimage;
+  Data.DB, Vcl.Grids, Vcl.DBGrids, Dash,AdminDash,Helpform, Vcl.Imaging.pngimage,user;
 
 type
   TfrmApp = class(TForm)
@@ -23,6 +23,7 @@ type
     procedure btnExitClick(Sender: TObject);
   private
     { Private declarations }
+    userObj : TUser;
   public
     { Public declarations }
   end;
@@ -64,14 +65,9 @@ begin
   Self.Hide;
   try
     LoginForm.ShowModal;
-    didLogin := LoginForm.IsLoggedIn;
-    isAdmin := LoginForm.isAdmin;
-    LoginCancelled := LoginForm.isCancelled;
-   { ShowMessage(
-      'Logged in?'+#9 + didLogin.ToString + #13
-      + 'Is admin?'+#9 + isAdmin.toString + #13
-      +  'Login cancelled?' + LoginCancelled.toString
-    ); }
+    userObj := LoginForm.userObj;
+    isAdmin := userObj.GetAdmin;
+    didLogin := userObj.CheckLogIn;
   finally
   //TODO: Do something about form closing and switching
     LoginForm.Free;
@@ -81,6 +77,7 @@ begin
       begin
         Application.CreateForm(Dash.TfrmDashboard,DashForm);
         try
+          DashForm.userObj := userObj;
           DashForm.ShowModal;
           Self.Hide;
         finally
@@ -93,6 +90,7 @@ begin
       begin
         Application.CreateForm(AdminDash.TfrmAdmin,AdminForm);
         try
+          AdminForm.adminObj := userObj;
           AdminForm.ShowModal;
           self.Hide;
         finally
@@ -101,6 +99,11 @@ begin
         end;
       end;
     end;
+    if not didLogin then
+    begin
+      userObj.Free;
+    end;
+
     Application.Run;
   end;
 end;

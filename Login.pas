@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Dash,AdminDash, conDBBites, UserMod, Utils;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Dash,AdminDash, conDBBites, UserMod, Utils,user;
 
 type
   TfrmLogin = class(TForm)
@@ -24,9 +24,10 @@ type
     procedure FormShow(Sender: TObject);
   private
     { Private declarations }
+    isLoggedIn,isAdmin,isCancelled : boolean;
   public
     { Public declarations }
-    isLoggedIn,isAdmin,isCancelled : boolean;
+    userObj : TUser;
   end;
 
 var
@@ -56,6 +57,7 @@ begin
 
   passFileExists := TUtils.Create.CheckFileExists(filename);
   isValid := TUsers.Create.ValidPass(userString,passString);
+  isLoggedIn := false;
 
   if (isValid and passFileExists) then
   begin
@@ -80,7 +82,9 @@ begin
       TLogs.Create.WriteUserLog('Failed login attempt by user ' + userString);
     end;
   end else
-    ShowMessage('Invalid data');;
+    ShowMessage('Invalid data');
+
+  userObj := TUser.Create(userString,isAdmin,isLoggedIn);
 end;
 
 procedure TfrmLogin.btnSignUpClick(Sender: TObject);

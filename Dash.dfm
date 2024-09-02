@@ -29,7 +29,7 @@ object frmDashboard: TfrmDashboard
       object lblHeader: TLabel
         Left = 1
         Top = 1
-        Width = 886
+        Width = 701
         Height = 39
         Align = alClient
         Alignment = taCenter
@@ -42,6 +42,23 @@ object frmDashboard: TfrmDashboard
         ParentFont = False
         ExplicitWidth = 105
         ExplicitHeight = 36
+      end
+      object pnlUser: TPanel
+        Left = 702
+        Top = 1
+        Width = 185
+        Height = 39
+        Align = alRight
+        TabOrder = 0
+        ExplicitLeft = 352
+        ExplicitTop = 0
+        ExplicitHeight = 41
+        object lblUser: TLabel
+          Left = 72
+          Top = 16
+          Width = 3
+          Height = 15
+        end
       end
     end
     object pnlProgress: TPanel

@@ -18,6 +18,8 @@ type
     pnlFoot: TPanel;
     btnLogOut: TButton;
     pnlInfo: TPanel;
+    pnlUser: TPanel;
+    lblUser: TLabel;
     procedure FormShow(Sender: TObject);
     procedure btnLogOutClick(Sender: TObject);
     procedure pnlInfoClick(Sender: TObject);
@@ -49,6 +51,7 @@ procedure TfrmDashboard.FormShow(Sender: TObject);
 begin
   TUtils.Create.SetLabel(lblHeading,'Dashboard',15);
   username := userObj.GetUser;
+  Tutils.Create.SetLabel(lblUser,'Logged in as ' + username,8);
 end;
 procedure TfrmDashboard.pnlInfoClick(Sender: TObject);
 var

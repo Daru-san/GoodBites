@@ -20,8 +20,6 @@ object frmApp: TfrmApp
     Height = 276
     Align = alClient
     TabOrder = 0
-    ExplicitLeft = 27
-    ExplicitTop = 4
     object imgCenter: TImage
       Left = 1
       Top = 42
@@ -6750,9 +6748,6 @@ object frmApp: TfrmApp
     Height = 41
     Align = alBottom
     TabOrder = 1
-    ExplicitLeft = 240
-    ExplicitTop = 160
-    ExplicitWidth = 185
     object btnLogin: TButton
       AlignWithMargins = True
       Left = 240
@@ -6765,7 +6760,6 @@ object frmApp: TfrmApp
       TabOrder = 0
       StyleName = 'Material Oxford Blue'
       OnClick = btnLoginClick
-      ExplicitLeft = 4
     end
     object btnExit: TButton
       Left = 472
@@ -6776,8 +6770,6 @@ object frmApp: TfrmApp
       Caption = 'Exit'
       TabOrder = 1
       OnClick = btnExitClick
-      ExplicitLeft = 478
-      ExplicitTop = 3
     end
     object btnHelp: TButton
       Left = 1
@@ -6788,8 +6780,6 @@ object frmApp: TfrmApp
       Caption = 'Help'
       TabOrder = 2
       OnClick = btnHelpClick
-      ExplicitLeft = 239
-      ExplicitTop = 3
     end
   end
 end

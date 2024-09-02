@@ -12,6 +12,7 @@ object frmAdmin: TfrmAdmin
   Font.Name = 'Segoe UI'
   Font.Style = []
   Position = poMainFormCenter
+  OnShow = FormShow
   TextHeight = 15
   object pnlFooter: TPanel
     Left = 0
@@ -39,12 +40,18 @@ object frmAdmin: TfrmAdmin
   end
   object pageCtrl: TPageControl
     Left = 0
-    Top = 0
+    Top = 25
     Width = 907
-    Height = 515
-    ActivePage = tsNutrients
+    Height = 490
+    ActivePage = tsLogs
     Align = alClient
     TabOrder = 1
+    ExplicitTop = 0
+    ExplicitHeight = 515
+    object tsHome: TTabSheet
+      Caption = 'Home'
+      ImageIndex = 3
+    end
     object tsUsers: TTabSheet
       Caption = 'Manage Users'
       OnShow = tsUsersShow
@@ -58,10 +65,12 @@ object frmAdmin: TfrmAdmin
         object lblUsers: TLabel
           Left = 1
           Top = 1
-          Width = 97
-          Height = 15
+          Width = 897
+          Height = 39
           Align = alClient
           Caption = 'User Management'
+          ExplicitWidth = 97
+          ExplicitHeight = 15
         end
       end
       object dbgUsers: TDBGrid
@@ -122,12 +131,13 @@ object frmAdmin: TfrmAdmin
         object lblNav: TLabel
           Left = 1
           Top = 1
-          Width = 98
+          Width = 431
           Height = 15
           Align = alTop
           Alignment = taCenter
           Caption = 'Record Navigation'
           Layout = tlCenter
+          ExplicitWidth = 98
         end
         object btnLast: TButton
           Left = 126
@@ -175,11 +185,12 @@ object frmAdmin: TfrmAdmin
         object lblRecMod: TLabel
           Left = 1
           Top = 1
-          Width = 108
+          Width = 359
           Height = 15
           Align = alTop
           Alignment = taCenter
           Caption = 'Record Modification'
+          ExplicitWidth = 108
         end
         object btnUserDel: TButton
           Left = 240
@@ -245,12 +256,14 @@ object frmAdmin: TfrmAdmin
         object lblLogs: TLabel
           Left = 1
           Top = 1
-          Width = 25
-          Height = 15
+          Width = 897
+          Height = 39
           Align = alClient
           Alignment = taCenter
           Caption = 'Logs'
           Layout = tlBottom
+          ExplicitWidth = 25
+          ExplicitHeight = 15
         end
       end
       object btnClear: TButton
@@ -395,6 +408,32 @@ object frmAdmin: TfrmAdmin
           TabOrder = 5
           Value = 0
         end
+      end
+    end
+  end
+  object pnlHead: TPanel
+    Left = 0
+    Top = 0
+    Width = 907
+    Height = 25
+    Align = alTop
+    TabOrder = 2
+    object pnlUser: TPanel
+      Left = 721
+      Top = 1
+      Width = 185
+      Height = 23
+      Align = alRight
+      TabOrder = 0
+      ExplicitLeft = 360
+      ExplicitTop = -8
+      ExplicitHeight = 41
+      object lblUser: TLabel
+        Left = 72
+        Top = 8
+        Width = 34
+        Height = 15
+        Caption = 'Label1'
       end
     end
   end

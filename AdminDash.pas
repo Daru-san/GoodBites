@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils,System.StrUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids, conDBBites,
-  Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.ComCtrls, Utils,UserMod, Vcl.Samples.Spin;
+  Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.ComCtrls, Utils,UserMod, Vcl.Samples.Spin,user;
 
 type
   TfrmAdmin = class(TForm)
@@ -49,6 +49,10 @@ type
     spnRecQty: TSpinEdit;
     lblNumCalories: TLabel;
     lblRecQty: TLabel;
+    tsHome: TTabSheet;
+    pnlHead: TPanel;
+    pnlUser: TPanel;
+    lblUser: TLabel;
     procedure btnLogoutClick(Sender: TObject);
     procedure tsLogsShow(Sender: TObject);
     procedure btnClearClick(Sender: TObject);
@@ -66,18 +70,23 @@ type
     procedure btnLastClick(Sender: TObject);
     procedure btnFieldEditClick(Sender: TObject);
     procedure btnNutrientClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
     procedure ShowLogs(filterString:string='');
     procedure ClearLogs();
     procedure InitializeWidth(dbGrid:TDBGrid);
 
+
+
   public
     { Public declarations }
+    adminObj : TUser;
   end;
 
 var
   frmAdmin: TfrmAdmin;
+  adminName : string;
 
 implementation
 
@@ -156,6 +165,7 @@ begin
   end;
   frmAdmin.Close;
   frmAdmin.Destroy;
+  adminObj.Free;
 end;
 
 procedure TfrmAdmin.btnNextClick(Sender: TObject);
@@ -216,7 +226,7 @@ begin
     dbgNutrients.DataSource := dscNutrients;
   end;
   InitializeWidth(dbgNutrients);
-  TLogs.Create.WriteSysLog('The database table `tblNutrients` was accessed by an administrator.');
+  TLogs.Create.WriteSysLog('The database table `tblNutrients` was accessed by administrator ' + adminName);
 end;
 
 procedure TfrmAdmin.tsUsersShow(Sender: TObject);
@@ -229,7 +239,7 @@ begin
   end;
   InitializeWidth(dbgUsers);
 
-  TLogs.Create.WriteSysLog('The database table `tblUsers` was accessed by an administrator.');
+  TLogs.Create.WriteSysLog('The database table `tblUsers` was accessed by administrator ' + adminName);
 end;
 
 procedure TfrmAdmin.ShowLogs;
@@ -288,7 +298,7 @@ begin
       end;
     end;
     CloseFile(logFile);
-    TLogs.Create.WriteUserLog('An administrator logged in');
+    TLogs.Create.WriteUserLog('The administrator ' + adminName + ' was logged in');
     ShowLogs;
   end
   else
@@ -303,6 +313,13 @@ var
 begin
   width := 5+dbgUsers.Canvas.TextExtent(Column.Field.DisplayText).cx;
   if width>column.width then column.Width := width;
+end;
+
+procedure TfrmAdmin.FormShow(Sender: TObject);
+begin
+  adminName := adminObj.GetUser;
+  pageCtrl.TabIndex := 0;
+  Tutils.Create.SetLabel(lblUser,'[Admin]Logged in as ' + adminName,7);
 end;
 
 procedure TfrmAdmin.dbgNutrientsDrawColumnCell(Sender: TObject;

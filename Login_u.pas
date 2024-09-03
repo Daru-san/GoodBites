@@ -24,7 +24,6 @@ type
     procedure FormShow(Sender: TObject);
   private
     { Private declarations }
-    isLoggedIn,isAdmin,isCancelled : boolean;
   public
     { Public declarations }
     userObj : TUser;

@@ -1,13 +1,19 @@
 // User creation and modification functions and procedures
-unit UserMod;
+unit User_u;
 
 interface
 
 uses system.SysUtils,conDBBites, Vcl.Dialogs, Utils,Classes;
 
 type
-  TUsers = class(Tobject)
+  TUser = class(TObject)
   private
+    Fusername : string;
+    FisAdmin : boolean;
+    FUserID : string;
+    LoggedIn : boolean;
+    FPassword : string;
+
     function GenerateUserID(userString:string): string;
     function ValidateNewUser(userString,passString : string) : boolean;
     function CheckDatabase(userString:string):boolean;
@@ -16,22 +22,100 @@ type
 
     procedure RegisterUserInDB(passString,userString,userID : string);
     procedure HandleUserError(userString: string; arrErrors : array of string; numErrors : integer);
-
   public
-    function ValidPass(userString,passString:string): boolean;
-    function CheckPass(userString: string; passString: string; filename: string): boolean;
-    function CheckAdmin(userString : string) : boolean;
+    constructor Create(Username : string;Password:string;NewUser:Boolean);
 
-    procedure SaveLastLogin(userString : string);
+    function CheckLogIn : boolean;
+    property isAdmin: Boolean read FisAdmin write FisAdmin;
+    property Username: string read Fusername write Fusername;
+    property UserID: string read FUserID write FUserID;
+
+    function ValidPass(userString,passString:string): boolean;
+    function CheckPass(userString: string; passString: string): boolean;
+    function CheckAdmin(sUserID : string) : boolean;
+    function GetUserId(userString:string):string;
+
+    procedure SaveLastLogin(userString,userID : string; userIsAdmin : Boolean);
     procedure CreateUser(userString,passString: string);
     procedure RemoveUser(userID : string);
   end;
 
   var
     isFailed : boolean;
+    loggerObj : TLogs;
+    UtilObj : TUtils;
 implementation
 
-function TUsers.ValidateNewUser;
+constructor TUser.Create;
+var
+  isCorrect,isValid,passFileExists,loginSuccessful : boolean;
+begin
+  loggerObj := TLogs.Create;
+  UtilObj := TUtils.Create;
+  loginSuccessful := false;
+  if NewUser then
+  begin
+    CreateUser(Username,Password);
+  end else
+  begin
+    isValid := ValidPass(Username,Password);
+
+    if isValid then
+    begin
+      isCorrect := CheckPass(Username,Password);
+      UserId := GetUserID(Username);
+      if isCorrect then
+      begin
+        isAdmin := CheckAdmin(UserID);
+        SaveLastLogin(Username,UserID,isAdmin);
+        loginSuccessful := true;
+      end
+      else
+      begin
+        ShowMessage('The username or password are incorrect');
+        LoggerObj.WriteUserLog('Failed login attempt by user ' + Username);
+      end;
+    end else
+      ShowMessage('Invalid data');
+  end;
+
+  Fusername := Username;
+  FisAdmin := IsAdmin;
+  LoggedIn := loginSuccessful;
+  FPassword := Password;
+  FUserID := UserID;
+end;
+
+function TUser.CheckLogin;
+begin
+  result := LoggedIn;
+end;
+
+function TUser.GetUserId;
+var
+  sUserId : string;
+  isFound : boolean;
+begin
+  isFound := false;
+  with dbmData.tblUsers do
+  begin
+    Open;
+    First;
+    repeat
+      if UpperCase(userString) = UpperCase(FieldValues['Username']) then
+      begin
+        isFound := true;
+        sUserId := FieldValues['UserID'];
+      end else Next;
+    until Eof or isFound;
+    Close;
+  end;
+  if not isFound then
+  ShowMessage('User not found?' + userString);
+  result := sUserId;
+end;
+
+function TUser.ValidateNewUser;
 const
   VALIDCHARS = ['A'..'Z','a'..'z','0'..'9'];
 var
@@ -118,7 +202,7 @@ begin
   ValidateNewUser := isNameValid;
 end;
 
-procedure TUsers.HandleUserError;
+procedure TUser.HandleUserError;
 var
   errorMsg : string;
   i: Integer;
@@ -130,7 +214,8 @@ begin
   end;
   ShowMessage(errorMsg);
 end;
-function TUsers.GenerateUserID;
+
+function TUser.GenerateUserID;
 var
   randomInt, iPos : integer;
   dateStr,finalDateStr, tempStr, userID,nameStr : string;
@@ -153,7 +238,7 @@ begin
   GenerateUserID := userID;
 end;
 
-function TUsers.WriteUserPassFile;
+function TUser.WriteUserPassFile;
 const FILENAME = '.passwords';
 var
   passFile : textfile;
@@ -161,7 +246,7 @@ var
 begin
   if not TUtils.Create.CheckFileExists(FILENAME) then
   begin
-    TLogs.Create.WriteSysLog(
+    LoggerObj.WriteSysLog(
       'User register attempted, but the password file is missing' + #13
       + #9 + 'This may cause errrors, manual intervention is required'
     );
@@ -173,13 +258,13 @@ begin
     Append(passFile);
     WriteLn(passFile,userString + '#' + passString);
     CloseFile(passFile);
-    TLogs.Create.WriteUserLog('User ' + userString + ' has been saved in the PASSWORDS file');
+    LoggerObj.WriteUserLog('User ' + userString + ' has been saved in the PASSWORDS file');
     isSuccessful:= true;
   end;
   WriteUserPassFile := isSuccessful;
 end;
 
-function TUsers.DeleteUserPassFile;
+function TUser.DeleteUserPassFile;
 const FILENAME = '.passwords';
 var
   passFile : textfile;
@@ -187,9 +272,9 @@ var
   passList : TStringList;
   indexNum : integer;
 begin
-  if not TUtils.Create.CheckFileExists(FILENAME) then
+  if not UtilObj.CheckFileExists(FILENAME) then
   begin
-    TLogs.Create.WriteSysLog('User deletion attempted, but the password file is missing or corrupted');
+    LoggerObj.WriteSysLog('User deletion attempted, but the password file is missing or corrupted');
     ShowMessage('An unkown error occured');
     isSuccessful := false;
   end else
@@ -204,12 +289,12 @@ begin
       passList.SaveToFile(FILENAME);
     end;
     passList.Free;
-    TLogs.Create.WriteSysLog('Entry for user ' + userString + ' was removed from the passwords file');
+    LoggerObj.WriteSysLog('Entry for user ' + userString + ' was removed from the passwords file');
     isSuccessful := true;
   end;
 end;
 
-procedure TUsers.CreateUser;
+procedure TUser.CreateUser;
 var
   isUserValid,userInDB, userInPassFile : boolean;
   userID : string;
@@ -225,13 +310,13 @@ begin
       userInPassFile := writeUserPassFile(userString,passString);
       if userInPassFile then
       begin
-        TLogs.Create.WriteUserLog('The user ' + userString + ', uid ' + userID + ' has registered successfully');
+        LoggerObj.WriteUserLog('The user ' + userString + ', uid ' + userID + ' has registered successfully');
         ShowMessage('You have successfully been registered, happy eating!');
       end;
     end
     else
     begin
-      TLogs.Create.WriteUserLog(
+      LoggerObj.WriteUserLog(
         'The user ' + userString + ',uid ' + userID +
         ' attempted to register, but were not found in the database afterward.'
         + #13 + #9 + 'Something must have gone wrong'
@@ -241,7 +326,7 @@ begin
   end;
 end;
 
-procedure TUsers.RegisterUserInDB;
+procedure TUser.RegisterUserInDB;
 begin
   with dbmData.tblUsers do
   begin
@@ -258,7 +343,7 @@ begin
 
 end;
 
-function TUsers.ValidPass;
+function TUser.ValidPass;
 var
   isValid : boolean;
 begin
@@ -279,7 +364,7 @@ begin
   ValidPass := isValid;
 end;
 
-function TUsers.CheckDatabase;
+function TUser.CheckDatabase;
 var
   isFound: boolean;
 begin
@@ -296,30 +381,32 @@ begin
   CheckDatabase := isFound;
 end;
 
-function TUsers.CheckAdmin;
+function TUser.CheckAdmin;
 var
-  isAdmin,isFound : boolean;
+  userIsAdmin,isFound : boolean;
 begin
   isAdmin := false;
-  isFound := false;
   with dbmData.tblUsers do
   begin
     Open;
     First;
     repeat
-    if UPPERCASE(FieldValues['Username']) = UPPERCASE(userString) then
+    if UPPERCASE(FieldValues['UserID']) = UPPERCASE(sUserID) then
     begin
       isFound := true;
-      if FieldValues['isAdmin'] then isAdmin := true;
-    end;
-      Next;
+      if FieldValues['isAdmin'] then userIsAdmin := true;
+    end else Next;
     until (EOF or isFound);
     Close;
   end;
-  CheckAdmin := isAdmin;
+  if not isFound then
+  ShowMessage('User not found?');
+  result := userIsAdmin;
 end;
 
-function TUsers.CheckPass;
+function TUser.CheckPass;
+const
+FILENAME = '.passwords';
 var
   passFile : textfile;
   fileString, userFileString, userPassString, userInDatabase : string;
@@ -354,7 +441,7 @@ begin
   CheckPass := isCorrect;
 end;
 
-procedure TUsers.SaveLastLogin;
+procedure TUser.SaveLastLogin;
 var
   userFound : boolean;
 begin
@@ -375,9 +462,17 @@ begin
 
     Close;
   end;
+  if userIsAdmin then
+  begin
+    LoggerObj.WriteUserLog('Administrator ' + userString + ' uid ' + userID + ' logged in.');
+  end
+  else
+  begin
+    LoggerObj.WriteUserLog('User ' + userString + ' uid ' + userID + ' logged in.');
+  end;
 end;
 
-procedure TUsers.RemoveUser;
+procedure TUser.RemoveUser;
 var
   isFound, isRemoved : boolean;
   userString : string;
@@ -398,7 +493,7 @@ begin
     begin
       Delete;
       Post;
-      TLogs.Create.WriteUserLog('User ' + userString + ', uid ' + userID + ' was removed completely');
+      loggerObj.WriteUserLog('User ' + userString + ', uid ' + userID + ' was removed completely');
     end;
   end;
 end;

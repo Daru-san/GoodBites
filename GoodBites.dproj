@@ -103,19 +103,19 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="App.pas">
+        <DCCReference Include="Main_U.pas">
             <Form>frmApp</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="Login.pas">
+        <DCCReference Include="Login_u.pas">
             <Form>frmLogin</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="Dash.pas">
+        <DCCReference Include="Dashboard_U.pas">
             <Form>frmDashboard</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="AdminDash.pas">
+        <DCCReference Include="Admin_U.pas">
             <Form>frmAdmin</Form>
             <FormType>dfm</FormType>
         </DCCReference>
@@ -128,14 +128,13 @@
             <Form>frmInfo</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="UserMod.pas"/>
+        <DCCReference Include="User_u.pas"/>
         <DCCReference Include="DataFetcher.pas"/>
         <DCCReference Include="Utils.pas"/>
         <DCCReference Include="HelpForm.pas">
             <Form>frmHelp</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="user.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

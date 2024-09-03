@@ -1,10 +1,10 @@
-unit Login;
+unit Login_u;
 
 interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Dash,AdminDash, conDBBites, UserMod, Utils,user;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Dashboard_U,Admin_U, conDBBites, User_u, Utils;
 
 type
   TfrmLogin = class(TForm)
@@ -55,36 +55,7 @@ begin
   userString := edtUser.Text;
   passString := edtPassword.Text;
 
-  passFileExists := TUtils.Create.CheckFileExists(filename);
-  isValid := TUsers.Create.ValidPass(userString,passString);
-  isLoggedIn := false;
-
-  if (isValid and passFileExists) then
-  begin
-    isCorrect := TUsers.Create.CheckPass(userString,passString,FILENAME);
-    if isCorrect then
-    begin
-      TUsers.Create.SaveLastLogin(userString);
-      isAdmin := TUsers.Create.CheckAdmin(userString);
-      isLoggedIn := true;
-      if isAdmin then
-      begin
-        TLogs.Create.WriteUserLog('Administrator ' + userString + ' logged in.');
-      end
-      else
-      begin
-        TLogs.Create.WriteUserLog('User ' + userString + ' logged in.');
-      end;
-    end
-    else
-    begin
-      ShowMessage('The username or password are incorrect');
-      TLogs.Create.WriteUserLog('Failed login attempt by user ' + userString);
-    end;
-  end else
-    ShowMessage('Invalid data');
-
-  userObj := TUser.Create(userString,isAdmin,isLoggedIn);
+  userObj := TUser.Create(userString,passString,false);
 end;
 
 procedure TfrmLogin.btnSignUpClick(Sender: TObject);
@@ -94,7 +65,8 @@ var
 begin
   userString := edtUser.text;
   passString := edtPassword.text;
-  TUsers.Create.CreateUser(userString,passString);
+  userObj := TUser.Create(userString,passString,true);
+  userObj.Free;
 end;
 
 procedure TfrmLogin.FormShow(Sender: TObject);

@@ -1,10 +1,10 @@
-unit Dash;
+unit Dashboard_U;
 
 interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls,InfoBoard,Utils,user;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls,InfoBoard,Utils,User_u;
 
 type
   TfrmDashboard = class(TForm)
@@ -50,7 +50,7 @@ end;
 procedure TfrmDashboard.FormShow(Sender: TObject);
 begin
   TUtils.Create.SetLabel(lblHeading,'Dashboard',15);
-  username := userObj.GetUser;
+  username := userObj.Username;
   Tutils.Create.SetLabel(lblUser,'Logged in as ' + username,8);
 end;
 procedure TfrmDashboard.pnlInfoClick(Sender: TObject);

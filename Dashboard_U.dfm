@@ -50,9 +50,6 @@ object frmDashboard: TfrmDashboard
         Height = 39
         Align = alRight
         TabOrder = 0
-        ExplicitLeft = 352
-        ExplicitTop = 0
-        ExplicitHeight = 41
         object lblUser: TLabel
           Left = 72
           Top = 16

@@ -22,6 +22,8 @@ object frmAdmin: TfrmAdmin
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitLeft = -8
+    ExplicitTop = 522
     DesignSize = (
       907
       37)
@@ -46,8 +48,6 @@ object frmAdmin: TfrmAdmin
     ActivePage = tsLogs
     Align = alClient
     TabOrder = 1
-    ExplicitTop = 0
-    ExplicitHeight = 515
     object tsHome: TTabSheet
       Caption = 'Home'
       ImageIndex = 3
@@ -268,7 +268,7 @@ object frmAdmin: TfrmAdmin
       end
       object btnClear: TButton
         Left = 806
-        Top = 441
+        Top = 433
         Width = 75
         Height = 24
         Caption = 'Clear Logs'
@@ -276,8 +276,8 @@ object frmAdmin: TfrmAdmin
         OnClick = btnClearClick
       end
       object edtFilter: TEdit
-        Left = 40
-        Top = 441
+        Left = 32
+        Top = 434
         Width = 121
         Height = 23
         TabOrder = 3
@@ -285,7 +285,7 @@ object frmAdmin: TfrmAdmin
       end
       object btnFilter: TButton
         Left = 167
-        Top = 440
+        Top = 432
         Width = 75
         Height = 25
         Caption = 'Filter Logs'
@@ -425,9 +425,6 @@ object frmAdmin: TfrmAdmin
       Height = 23
       Align = alRight
       TabOrder = 0
-      ExplicitLeft = 360
-      ExplicitTop = -8
-      ExplicitHeight = 41
       object lblUser: TLabel
         Left = 72
         Top = 8

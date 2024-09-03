@@ -1,11 +1,11 @@
-unit AdminDash;
+unit Admin_U;
 
 interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils,System.StrUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids, conDBBites,
-  Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.ComCtrls, Utils,UserMod, Vcl.Samples.Spin,user;
+  Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.ComCtrls, Utils,User_u, Vcl.Samples.Spin;
 
 type
   TfrmAdmin = class(TForm)
@@ -87,6 +87,8 @@ type
 var
   frmAdmin: TfrmAdmin;
   adminName : string;
+  LoggerObj : TLogs;
+  UtilObj : TUtils;
 
 implementation
 
@@ -115,14 +117,14 @@ begin
   begin
     if fieldName = 'Username' then
     begin
-      TUtils.Create.EditInDB(fieldName,fieldData);
+      UtilObj.EditInDB(fieldName,fieldData);
     end
     else
     if fieldName = 'isAdmin' then
     begin
       try
         if (StrToBool(fieldData) = true) or (StrToBool(fieldData) = false) then
-          TUtils.Create.EditInDB(fieldName,fieldData);
+         UtilObj.EditInDB(fieldName,fieldData);
         except on E: Exception do
         begin
           ShowMessage('This field only takes boolean data');
@@ -205,33 +207,33 @@ end;
 
 procedure TfrmAdmin.btnUserDelClick(Sender: TObject);
 begin
-  TUsers.Create.RemoveUser(dbmData.tblUsers.FieldValues['UserID']);
+  adminObj.RemoveUser(dbmData.tblUsers.FieldValues['UserID']);
 end;
 
 //TODO: Filter logs based on type
 procedure TfrmAdmin.tsLogsShow(Sender: TObject);
 begin
-  TUtils.Create.SetLabel(lblLogs,'Logs',20);
+  UtilObj.SetLabel(lblLogs,'Logs',20);
   memLogs.Lines.clear;
   ShowLogs();
 end;
 
 procedure TfrmAdmin.tsNutrientsShow(Sender: TObject);
 begin
-  TUtils.Create.SetLabel(lblNutrient,'Manage Nutrients',20);
-  TUtils.Create.SetLabel(lblNutHead,'Add new nutrients',14);
+  UtilObj.SetLabel(lblNutrient,'Manage Nutrients',20);
+  UtilObj.SetLabel(lblNutHead,'Add new nutrients',14);
   with dbmData do
   begin
     tblNutrients.Open;
     dbgNutrients.DataSource := dscNutrients;
   end;
   InitializeWidth(dbgNutrients);
-  TLogs.Create.WriteSysLog('The database table `tblNutrients` was accessed by administrator ' + adminName);
+  LoggerObj.WriteSysLog('The database table `tblNutrients` was accessed by administrator ' + adminName);
 end;
 
 procedure TfrmAdmin.tsUsersShow(Sender: TObject);
 begin
-  TUtils.Create.SetLabel(lblUsers,'User Management',20);
+  UtilObj.SetLabel(lblUsers,'User Management',20);
   with dbmData do
   begin
     tblUsers.open;
@@ -239,7 +241,7 @@ begin
   end;
   InitializeWidth(dbgUsers);
 
-  TLogs.Create.WriteSysLog('The database table `tblUsers` was accessed by administrator ' + adminName);
+  LoggerObj.WriteSysLog('The database table `tblUsers` was accessed by administrator ' + adminName);
 end;
 
 procedure TfrmAdmin.ShowLogs;
@@ -253,7 +255,7 @@ begin
   memLogs.clear;
   memLogs.Lines.TrailingLineBreak := false;
   AssignFile(logFile,FILENAME);
-  isFileExist := TUtils.Create.CheckFileExists(FILENAME,true);
+  isFileExist := UtilObj.CheckFileExists(FILENAME,true);
 
   doFilter := false;
   if not (filterString = '') then doFilter := true;
@@ -285,7 +287,7 @@ var
 begin
   FileMode := 2;
   AssignFile(logFile,FILENAME);
-  if TUtils.Create.CheckFileExists(FILENAME,true) then
+  if UtilObj.CheckFileExists(FILENAME,true) then
   begin
     try
       ReWrite(logFile);
@@ -298,7 +300,7 @@ begin
       end;
     end;
     CloseFile(logFile);
-    TLogs.Create.WriteUserLog('The administrator ' + adminName + ' was logged in');
+    LoggerObj.WriteUserLog('The administrator ' + adminName + ' was logged in');
     ShowLogs;
   end
   else
@@ -317,9 +319,11 @@ end;
 
 procedure TfrmAdmin.FormShow(Sender: TObject);
 begin
-  adminName := adminObj.GetUser;
+  adminName := adminObj.Username;
+  LoggerObj := TLogs.Create;
+  UtilObj := TUtils.Create;
   pageCtrl.TabIndex := 0;
-  Tutils.Create.SetLabel(lblUser,'[Admin]Logged in as ' + adminName,7);
+  UtilObj.SetLabel(lblUser,'[Admin]Logged in as ' + adminName,7);
 end;
 
 procedure TfrmAdmin.dbgNutrientsDrawColumnCell(Sender: TObject;

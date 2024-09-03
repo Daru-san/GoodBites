@@ -11,17 +11,16 @@ uses
   Vcl.Styles,
   {$ELSE}
   {$ENDIF }
-  App in 'App.pas' {frmApp},
-  Login in 'Login.pas' {frmLogin},
-  Dash in 'Dash.pas' {frmDashboard},
-  AdminDash in 'AdminDash.pas' {frmAdmin},
+  Main_U in 'Main_U.pas' {frmApp},
+  Login_u in 'Login_u.pas' {frmLogin},
+  Dashboard_U in 'Dashboard_U.pas' {frmDashboard},
+  Admin_U in 'Admin_U.pas' {frmAdmin},
   conDBBites in 'conDBBites.pas' {dbmData: TDataModule},
   InfoBoard in 'InfoBoard.pas' {frmInfo},
-  UserMod in 'UserMod.pas',
+  User_u in 'User_u.pas',
   DataFetcher in 'DataFetcher.pas',
   Utils in 'Utils.pas',
-  HelpForm in 'HelpForm.pas' {frmHelp},
-  user in 'user.pas';
+  HelpForm in 'HelpForm.pas' {frmHelp};
 
 {$R *.res}
 

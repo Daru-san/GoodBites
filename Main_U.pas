@@ -1,11 +1,11 @@
-unit App;
+unit Main_U;
 
 interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Login, conDBBites,
-  Data.DB, Vcl.Grids, Vcl.DBGrids, Dash,AdminDash,Helpform, Vcl.Imaging.pngimage,user;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Login_u, conDBBites,
+  Data.DB, Vcl.Grids, Vcl.DBGrids, Dashboard_U,Admin_U,User_u,Helpform, Vcl.Imaging.pngimage;
 
 type
   TfrmApp = class(TForm)
@@ -55,9 +55,9 @@ end;
 
 procedure TfrmApp.btnLoginClick(Sender: TObject);
 var
-  LoginForm : Login.TfrmLogin;
-  DashForm : Dash.TfrmDashboard;
-  AdminForm : AdminDash.TfrmAdmin;
+  LoginForm : TfrmLogin;
+  DashForm : TfrmDashboard;
+  AdminForm : TfrmAdmin;
   didLogin,isAdmin,LoginCancelled : boolean;
 begin
   Application.Initialize;
@@ -66,7 +66,7 @@ begin
   try
     LoginForm.ShowModal;
     userObj := LoginForm.userObj;
-    isAdmin := userObj.GetAdmin;
+    isAdmin := userObj.isAdmin;
     didLogin := userObj.CheckLogIn;
   finally
   //TODO: Do something about form closing and switching
@@ -75,7 +75,7 @@ begin
     begin
       if (not isAdmin) then
       begin
-        Application.CreateForm(Dash.TfrmDashboard,DashForm);
+        Application.CreateForm(TfrmDashboard,DashForm);
         try
           DashForm.userObj := userObj;
           DashForm.ShowModal;
@@ -88,7 +88,7 @@ begin
         else
       if isAdmin then
       begin
-        Application.CreateForm(AdminDash.TfrmAdmin,AdminForm);
+        Application.CreateForm(TfrmAdmin,AdminForm);
         try
           AdminForm.adminObj := userObj;
           AdminForm.ShowModal;

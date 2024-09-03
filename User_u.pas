@@ -19,7 +19,13 @@ type
     function CheckDatabase(userString:string):boolean;
     function WriteUserPassFile(userString,passString:string): boolean;
     function DeleteUserPassFile(userString :string) :boolean;
+    function ValidPass(userString,passString:string): boolean;
+    function CheckPass(userString: string; passString: string): boolean;
+    function CheckAdmin(sUserID : string) : boolean;
+    function GetUserId(userString:string):string;
 
+    procedure SaveLastLogin(userString,userID : string; userIsAdmin : Boolean);
+    procedure CreateUser(userString,passString: string);
     procedure RegisterUserInDB(passString,userString,userID : string);
     procedure HandleUserError(userString: string; arrErrors : array of string; numErrors : integer);
   public
@@ -30,13 +36,6 @@ type
     property UserID: string read FUserID write FUserID;
 
     function CheckLogIn : boolean;
-    function ValidPass(userString,passString:string): boolean;
-    function CheckPass(userString: string; passString: string): boolean;
-    function CheckAdmin(sUserID : string) : boolean;
-    function GetUserId(userString:string):string;
-
-    procedure SaveLastLogin(userString,userID : string; userIsAdmin : Boolean);
-    procedure CreateUser(userString,passString: string);
     procedure RemoveUser(userID : string);
   end;
 

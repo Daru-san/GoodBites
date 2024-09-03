@@ -25,11 +25,11 @@ type
   public
     constructor Create(Username : string;Password:string;NewUser:Boolean);
 
-    function CheckLogIn : boolean;
     property isAdmin: Boolean read FisAdmin write FisAdmin;
     property Username: string read Fusername write Fusername;
     property UserID: string read FUserID write FUserID;
 
+    function CheckLogIn : boolean;
     function ValidPass(userString,passString:string): boolean;
     function CheckPass(userString: string; passString: string): boolean;
     function CheckAdmin(sUserID : string) : boolean;
@@ -449,7 +449,7 @@ begin
   begin
     Open;
     repeat
-      if FieldValues['Username'] = userString then
+      if UpperCase(FieldValues['UserID']) = UpperCase(userID) then
       begin
         userFound := true;
       end

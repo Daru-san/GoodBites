@@ -19,8 +19,9 @@ uses
   InfoBoard in 'InfoBoard.pas' {frmInfo},
   User_u in 'User_u.pas',
   DataFetcher in 'DataFetcher.pas',
-  Utils in 'Utils.pas',
-  HelpForm in 'HelpForm.pas' {frmHelp};
+  Utils_U in 'Utils_U.pas',
+  HelpForm in 'HelpForm.pas' {frmHelp},
+  Meals_U in 'Meals_U.pas';
 
 {$R *.res}
 

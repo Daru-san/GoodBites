@@ -23,7 +23,7 @@ type
     procedure btnExitClick(Sender: TObject);
   private
     { Private declarations }
-    userObj : TUser;
+    currentUser : TUser;
   public
     { Public declarations }
   end;
@@ -65,9 +65,9 @@ begin
   Self.Hide;
   try
     LoginForm.ShowModal;
-    userObj := LoginForm.userObj;
-    isAdmin := userObj.isAdmin;
-    didLogin := userObj.CheckLogIn;
+    currentUser := LoginForm.currentUser;
+    isAdmin := currentUser.isAdmin;
+    didLogin := currentUser.CheckLogIn;
   finally
   //TODO: Do something about form closing and switching
     LoginForm.Free;
@@ -77,7 +77,7 @@ begin
       begin
         Application.CreateForm(TfrmDashboard,DashForm);
         try
-          DashForm.userObj := userObj;
+          DashForm.currentUser := currentUser;
           DashForm.ShowModal;
           Self.Hide;
         finally
@@ -90,7 +90,7 @@ begin
       begin
         Application.CreateForm(TfrmAdmin,AdminForm);
         try
-          AdminForm.adminObj := userObj;
+          AdminForm.currentAdmin := currentUser;
           AdminForm.ShowModal;
           self.Hide;
         finally
@@ -101,7 +101,7 @@ begin
     end;
     if not didLogin then
     begin
-      userObj.Free;
+      currentUser.Free;
     end;
 
     Application.Run;

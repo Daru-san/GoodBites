@@ -3,7 +3,7 @@ unit User_u;
 
 interface
 
-uses system.SysUtils,conDBBites, Vcl.Dialogs, Utils,Classes;
+uses system.SysUtils,conDBBites, Vcl.Dialogs, Utils_U,Classes;
 
 type
   TUser = class(TObject)
@@ -13,6 +13,7 @@ type
     FUserID : string;
     LoggedIn : boolean;
     FPassword : string;
+    FDailyCalories : integer;
 
     function GenerateUserID(userString:string): string;
     function ValidateNewUser(userString,passString : string) : boolean;
@@ -29,14 +30,20 @@ type
     procedure RegisterUserInDB(passString,userString,userID : string);
     procedure HandleUserError(userString: string; arrErrors : array of string; numErrors : integer);
   public
-    constructor Create(Username : string;Password:string;NewUser:Boolean);
+    constructor Create(Username : string;Password:string;NewUser:Boolean;LoggingIn : boolean = true);
 
     property isAdmin: Boolean read FisAdmin write FisAdmin;
     property Username: string read Fusername write Fusername;
     property UserID: string read FUserID write FUserID;
 
     function CheckLogIn : boolean;
+    function GetDailyCalories(currentDate:Tdate):integer;
+    function GetTotalMeals:integer;
+    function GetMeal(mealIndex:integer):string;
+
     procedure RemoveUser(userID : string);
+    procedure AddCalories(numCalories : Integer);
+    procedure UpdateDatabase;
   end;
 
   var
@@ -52,6 +59,7 @@ begin
   loggerObj := TLogs.Create;
   UtilObj := TUtils.Create;
   loginSuccessful := false;
+  if LoggingIn then
   if NewUser then
   begin
     CreateUser(Username,Password);
@@ -76,6 +84,10 @@ begin
       end;
     end else
       ShowMessage('Invalid data');
+  end else
+  begin
+    UserID := '';
+    FisAdmin := false;
   end;
 
   Fusername := Username;
@@ -83,6 +95,7 @@ begin
   LoggedIn := loginSuccessful;
   FPassword := Password;
   FUserID := UserID;
+  FDailyCalories := GetDailyCalories(date);
 end;
 
 function TUser.CheckLogin;
@@ -497,5 +510,81 @@ begin
   end;
 end;
 
+function TUser.GetDailyCalories(currentDate: TDate): Integer;
+var
+  eatenDate : TDate;
+  numCalories : integer;
+begin
+  numCalories := 0;
+  with dbmData.tblMeals do
+  begin
+    Open;
+    First;
+    repeat
+      if UserID = FieldValues['UserID'] then
+      begin
+        eatenDate := FieldValues['EatenDate'];
+        if FormatDateTime('dd/mm/yy',currentDate) = FormatDateTime('dd/mm/yy',eatenDate) then
+          numCalories := numCalories + FieldValues['TotalCalories'];
+      end;
+    until EOF;
+    Close;
+  end;
+  Result := numCalories;
+end;
+
+procedure TUser.AddCalories(numCalories:integer);
+begin
+  FDailyCalories := FDailyCalories + numCalories;
+end;
+
+function TUser.GetTotalMeals: Integer;
+var
+  numMeals : integer;
+begin
+  numMeals := 0;
+  with dbmData.tblMeals do
+  begin
+    Open;
+    First;
+    repeat
+      if UserID = FieldValues['UserID'] then
+      inc(numMeals);
+      next;
+    until EOF;
+    Close;
+  end;
+  result := numMeals;
+end;
+
+procedure TUser.UpdateDatabase;
+begin
+end;
+
+function TUser.GetMeal(mealIndex: Integer): string;
+var
+  sMealName : string;
+  dEatenDate : TDate;
+  isMealFound : boolean;
+begin
+  with dbmData.tblMeals do
+  begin
+    Open;
+    First;
+    repeat
+      if UserID = FieldValues['UserID'] then
+      begin
+        if mealIndex = FieldValues['MealIndex'] then
+        begin
+          isMealFound := true;
+          dEatenDate := FieldValues['DateEaten'];
+          sMealName := FieldValues['MealName'];
+        end else next;
+      end else next;
+    until EOF or isMealFound;
+    Close;
+  end;
+  result := sMealName + ' eaten on ' + FormatDateTime('dd mm yy at tt',dEatenDate);
+end;
 end.
 

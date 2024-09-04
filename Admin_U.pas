@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils,System.StrUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids, conDBBites,
-  Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.ComCtrls, Utils,User_u, Vcl.Samples.Spin;
+  Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.ComCtrls, Utils_U,User_u, Vcl.Samples.Spin;
 
 type
   TfrmAdmin = class(TForm)
@@ -81,7 +81,7 @@ type
 
   public
     { Public declarations }
-    adminObj : TUser;
+    currentAdmin : TUser;
   end;
 
 var
@@ -167,7 +167,7 @@ begin
   end;
   frmAdmin.Close;
   frmAdmin.Destroy;
-  adminObj.Free;
+  currentAdmin.Free;
 end;
 
 procedure TfrmAdmin.btnNextClick(Sender: TObject);
@@ -207,7 +207,7 @@ end;
 
 procedure TfrmAdmin.btnUserDelClick(Sender: TObject);
 begin
-  adminObj.RemoveUser(dbmData.tblUsers.FieldValues['UserID']);
+  currentAdmin.RemoveUser(dbmData.tblUsers.FieldValues['UserID']);
 end;
 
 //TODO: Filter logs based on type
@@ -319,7 +319,7 @@ end;
 
 procedure TfrmAdmin.FormShow(Sender: TObject);
 begin
-  adminName := adminObj.Username;
+  adminName := currentAdmin.Username;
   LoggerObj := TLogs.Create;
   UtilObj := TUtils.Create;
   pageCtrl.TabIndex := 0;

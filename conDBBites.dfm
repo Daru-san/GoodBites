@@ -26,16 +26,15 @@ object dbmData: TdbmData
     Left = 96
     Top = 56
   end
-  object tblData: TADOTable
-    Active = True
+  object tblMeals: TADOTable
     Connection = conDB
     CursorType = ctStatic
-    TableName = 'tblData'
+    TableName = 'tblMeals'
     Left = 200
     Top = 288
   end
-  object dscData: TDataSource
-    DataSet = tblData
+  object dscMeals: TDataSource
+    DataSet = tblMeals
     Left = 96
     Top = 344
   end

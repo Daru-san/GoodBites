@@ -130,11 +130,12 @@
         </DCCReference>
         <DCCReference Include="User_u.pas"/>
         <DCCReference Include="DataFetcher.pas"/>
-        <DCCReference Include="Utils.pas"/>
+        <DCCReference Include="Utils_U.pas"/>
         <DCCReference Include="HelpForm.pas">
             <Form>frmHelp</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="Meals_U.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

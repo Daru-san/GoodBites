@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Dashboard_U,Admin_U, conDBBites, User_u, Utils;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Dashboard_U,Admin_U, conDBBites, User_u, Utils_U;
 
 type
   TfrmLogin = class(TForm)
@@ -26,7 +26,7 @@ type
     { Private declarations }
   public
     { Public declarations }
-    userObj : TUser;
+    currentUser : TUser;
   end;
 
 var
@@ -40,8 +40,8 @@ procedure TfrmLogin.btnCancelClick(Sender: TObject);
 var
   LoginForm : TfrmLogin;
 begin
-  isCancelled := true;
   LoginForm.visible := false;
+  currentUser.Create('','',false,false);
 end;
 
 procedure TfrmLogin.btnLoginClick(Sender: TObject);
@@ -54,7 +54,7 @@ begin
   userString := edtUser.Text;
   passString := edtPassword.Text;
 
-  userObj := TUser.Create(userString,passString,false);
+  currentUser := TUser.Create(userString,passString,false);
 end;
 
 procedure TfrmLogin.btnSignUpClick(Sender: TObject);
@@ -64,8 +64,8 @@ var
 begin
   userString := edtUser.text;
   passString := edtPassword.text;
-  userObj := TUser.Create(userString,passString,true);
-  userObj.Free;
+  currentUser := TUser.Create(userString,passString,true);
+  currentUser.Free;
 end;
 
 procedure TfrmLogin.FormShow(Sender: TObject);

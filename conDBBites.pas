@@ -10,8 +10,8 @@ type
     conDB: TADOConnection;
     tblUsers: TADOTable;
     dscUsers: TDataSource;
-    tblData: TADOTable;
-    dscData: TDataSource;
+    tblMeals: TADOTable;
+    dscMeals: TDataSource;
     tblFoods: TADOTable;
     tblNutrients: TADOTable;
     dscNutrients: TDataSource;

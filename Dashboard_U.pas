@@ -72,26 +72,34 @@ begin
     if cbxNewFood.Checked then
       currentMeal.Create(sMealName,iCalories,false) else
       currentMeal.Create(sMealName,0,false);
+    currentMeal.EatMeal(currentUser.UserID);
   end;
 
 end;
 
 procedure TfrmDashboard.btnLoadDataClick(Sender: TObject);
 var
-  selectedDate : TDate;
+  selectedDate,dEatenDate : TDate;
   iTotalCalories,iNumMeals : integer;
-  arrMealLog :  array of string;
+  arrMeals :  array of string;
   i: Integer;
+  sMealName,sMealString,sEatenDate : string;
 begin
   selectedDate := dpcDay.Date;
   iTotalCalories := currentUser.GetDailyCalories(selectedDate);
   iNumMeals := currentUser.GetTotalMeals;
   for i := 1 to iNumMeals do
   begin
-    arrMealLog[i] := currentUser.GetMeal(i);
-    memMealLog.Lines.Add(arrMealLog[i]);
+    arrMeals[i] := currentUser.GetMeal(i);
   end;
-
+  for i := 1 to iNumMeals do 
+  begin
+    sMealString := arrMeals[i];
+    sMealName := copy(sMealString,1,pos(sMealString,'/')-1);
+    sEatenDate := copy(sMealString,pos(mealString,'/')+1,sMealString.length);
+    dEatenDate := StrToDate(sEatenDate);
+    memMealLog.Lines.Add(sMealName + ' eaten on ' + FormatDateTime('dd mm yy at tt'));
+  end;
   edtCaloires.Text := IntToStr(iTotalCalories);
 end;
 

@@ -584,7 +584,6 @@ begin
     until EOF or isMealFound;
     Close;
   end;
-  result := sMealName + ' eaten on ' + FormatDateTime('dd mm yy at tt',dEatenDate);
+  result := sMealName + '/' + FormatDateTime('dd/mm/yy@tt',dEatenDate);
 end;
 end.
-

@@ -12,11 +12,11 @@ type
       FArrNutrients : array[1..6] of String;
 
       procedure AddMealToDB(sMealname:string;iNumNutrients:string);
-      procedure EatMeal(sMealname:string;iNumNutrients:Integer;sUserID:string);
+      procedure EatMeal(sUserID:string);
       procedure GetNutrients;
       procedure GetCalories;
     public
-      constructor Create(Mealname:string;Calories:Integer = 0;NewMeal:Boolean = false);
+      constructor Create(Mealname:string; portionSize : integer = 0; Calories:Integer = 0;NewMeal:Boolean = false);
       property Mealname :string read FMealName write FMealName;
       property Calories : Integer read FNumCalories write FNumCalories;
 
@@ -26,29 +26,45 @@ type
 
 implementation
 
-constructor TMeal.Create(Mealname: string; Calories: Integer = 0;NewMeal:Boolean = false);
+constructor TMeal.Create(Mealname: string; portionSize:integer = 0; Calories: Integer = 0;NewMeal:Boolean = false);
+var
+  sNutrients : string;
 begin
 
- if NewMeal then
- begin
-
- end else
- begin
-   GetNutrients;
- end;
- if Calories = 0 then
- GetCalories;
- FMealName := Mealname;
- FNumCalories := Calories;
+  if NewMeal then
+  begin
+    AddMealToDB(Mealname,sNutrients,Calories);
+  end else
+  begin
+    GetNutrients;
+  end;
+  if Calories = 0 then
+  GetCalories(portionSize);
+  FMealName := Mealname;
+  FNumCalories := Calories;
 end;
 
-procedure TMeal.AddMealToDB(sMealname: string; iNumNutrients: string);
+procedure TMeal.AddMealToDB(sMealname: string; sNutrients: string;numCalories : integer);
 begin
 end;
 
-procedure TMeal.EatMeal(sMealname: string; iNumNutrients: Integer; sUserID: string);
+procedure TMeal.EatMeal(sUserID: string);
+var
+  currentDate : TDate;
 begin
+  currentDate := now;
 
+  with dbmDase.tblMeals do
+  begin
+    Open;
+    Append;
+    FieldValues['MealName'] := Mealname;
+    FieldValues['TotalCalories'] := Calories;
+    FieldValues['DateEaten'] := currentDate;
+    FieldValues['Nutrients'] := sNutrients;
+    Post;
+    Close;
+  end;
 end;
 procedure TMeal.GetNutrients;
 begin
@@ -58,6 +74,6 @@ begin
 end;
 procedure TMeal.GetCalories;
 begin
-
+{ Somehow calculate the number of calories in food based on it's portion size}
 end;
 end.

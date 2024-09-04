@@ -3,13 +3,16 @@ unit Meals_U;
 interface
 
 uses conDBBites,System.Classes;
-
+{ Display the meals in an image if possible}
 type
   TMeal = class
     private
+      FMealID;
       FMealName : String;
       FNumCalories : integer;
-      FArrNutrients : array[1..6] of String;
+      FProtein : integer;
+      FCarbohydrate : integer;
+      FFats : integer;
 
       procedure AddMealToDB(sMealname:string;iNumNutrients:string);
       procedure EatMeal(sUserID:string);

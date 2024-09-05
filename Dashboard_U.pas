@@ -175,8 +175,8 @@ begin
   begin
     with Paragraph do
     begin
-      TabCount := 2;
-      Tab[1] := 250;
+      TabCount := 1;
+      Tab[0] := 200;
     end;
     with Lines do
     begin

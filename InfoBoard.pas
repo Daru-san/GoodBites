@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, REST.Types, REST.Client,
   Data.Bind.Components, Data.Bind.ObjectScope, OpenAI, Vcl.StdCtrls,
-  Vcl.ComCtrls, Vcl.ExtCtrls,Utils, DataFetcher,conDBBites;
+  Vcl.ComCtrls, Vcl.ExtCtrls, DataFetcher,conDBBites,Utils_U;
 
 type
   TfrmInfo = class(TForm)
@@ -29,6 +29,8 @@ type
     { Private declarations }
   public
     { Public declarations }
+    utilObj : TUtils;
+    logObJ : TLogs;
   end;
 
 var
@@ -94,10 +96,10 @@ begin
       4 : fileString := fileString + 'vits.txt';
     end;
   end;
-  if not TUtils.Create.CheckFileExists(fileString) then
+  if not utilObj.CheckFileExists(fileString) then
   begin
     ShowMessage('An unknown error occured, please contact an administrator');
-    TLogs.Create.WriteErrorLog('The file ' + fileString + ' was needed but not found');
+    logObj.WriteErrorLog('The file ' + fileString + ' was needed but not found');
     fileString := '';
   end else
   GetFileStr := fileString;
@@ -129,7 +131,7 @@ begin
   exit;
 
   AssignFile(tInfoFile,fileString);
-  if TUTILS.Create.CheckFileExists(fileString) then
+  if utilObj.CheckFileExists(fileString) then
   begin
   //TODO: Get markdown rendering done
     memInfo.lines.clear;
@@ -167,9 +169,11 @@ begin
 end;
 procedure TfrmInfo.FormShow(Sender: TObject);
 begin
-  TUtils.Create.SetLabel(lblHeader,'About nutrients',15);
   memInfo.ReadOnly := true;
   SetIndices;
+  utilObj := TUtils.Create;
+  logObJ := TLogs.Create;
+  utilObj.SetLabel(lblHeader,'About nutrients',15);
 end;
 
 end.

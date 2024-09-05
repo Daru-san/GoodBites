@@ -2,7 +2,7 @@ unit DataFetcher;
 
 interface
 
-uses Vcl.Dialogs,Utils;
+uses Vcl.Dialogs,Utils_U;
 type
   TDataFetcher = class(TObject)
 

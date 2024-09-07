@@ -15,7 +15,8 @@ type
     FPassword : string;
     FDailyCalories : integer;
 
-    function GenerateUserID(userString:string): string;
+    function GenerateUserID(sUsername:string): string;
+	function CheckUserID(sUserID:string) : boolean;
     function CheckUsername(sUsername:string) : boolean;
     function CheckDatabase(userString:string):boolean;
     function WriteUserPassFile(userString,passString:string): boolean;
@@ -346,25 +347,46 @@ end;
 
 function TUser.GenerateUserID;
 var
-  randomInt, iPos : integer;
-  dateStr,finalDateStr, tempStr, userID,nameStr : string;
-  i: Integer;
+	isExisting : boolean;
 begin
-  randomInt := Random(10)+1;
-  dateStr := FormatDateTime('d/m/y',date);
-  nameStr := UPPERCASE(userString[1] + userString[2]);
+	{
+		Generate a userID using:
+		- A random number with between 1 and 9
+		- The current month
+		- The current hour, discarding the `1` and `2` if above 9 hours
+		- The first two characters of the username
+		- Example: Hanzal -> HA759
+	}
 
-  FinalDateStr := dateStr[2];
-
-  for i := 1 to 2 do
-  begin
-    iPos := pos('/',dateStr);
-    delete(dateStr,i,iPos);
-    FinalDateStr := FinalDateStr + dateStr[1];
-  end;
-
-  userID := nameStr + IntToStr(randomInt) + dateStr;
+	{
+		Will check if the user ID exists in the database already, incase of multiple users with similar details
+		Looping until the ID is completely unique
+	}
+	isExisting := false;
+	repeat
+  	userID := UPPERCASE(sUsername[1] + sUsername[2]) + IntToStr(RandomRage(1,9)) + FormatDateTime('t',now)[2] + FormatDateTime('m',date);
+		isExisting := CheckUserID;
+	until not isExisting;
   GenerateUserID := userID;
+end;
+
+// Check if a UserID already exists in the database
+function TUser.CheckUserID;
+var
+	isFound : boolean;
+begin
+	isFound := false;
+	with dbmData.tblUsers do
+	begin
+		First;
+		repeat
+			if sUserID = FieldValues['UserID'] then
+			begin
+				isFound := true;
+			end else next;
+		until EOF or isFound;
+	end;
+	Result := isFound;
 end;
 
 function TUser.WriteUserPassFile;

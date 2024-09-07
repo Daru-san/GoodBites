@@ -3,7 +3,7 @@ unit User_u;
 
 interface
 
-uses system.SysUtils,conDBBites, Vcl.Dialogs, Utils_U,Classes;
+uses system.SysUtils,conDBBites, Vcl.Dialogs, Utils_U,Classes,Math;
 
 type
   TUser = class(TObject)
@@ -27,10 +27,12 @@ type
     function GetUserId(sUsername:string):string;
     function CheckPassword(sPassword:string):Boolean;
     function CheckUserExisting(sUsername:string):Boolean;
+    function GetLastLogin:string;
 
     procedure SaveLastLogin(sUsername,userID : string; userIsAdmin : Boolean);
     procedure CreateUser(sUsername,sPassword: string);
     procedure RegisterUserInDB(sPassword,sUsername,userID : string);
+    procedure SetUserInfo;
   public
     constructor Create(Username : string;Password:string;NewUser:Boolean = false;LoggingIn : boolean = true);
 
@@ -42,6 +44,7 @@ type
     function GetDailyCalories(currentDate:Tdate):integer;
     function GetTotalMeals:integer;
     function GetMeal(mealIndex:integer):string;
+
 
     procedure RemoveUser(userID : string);
     procedure AddCalories(numCalories : Integer);
@@ -60,6 +63,8 @@ implementation
 constructor TUser.Create;
 var
   isCorrect,isValid,passFileExists,loginSuccessful : boolean;
+  sFullName : string;
+  iAge : Integer;
 begin
   loggerObj := TLogs.Create;
   UtilObj := TUtils.Create;
@@ -95,6 +100,11 @@ begin
   begin
     UserID := '';
     FisAdmin := false;
+  end;
+
+  if GetLastLogin = '' then
+  begin
+    SetUserInfo;
   end;
 
   Fusername := Username;
@@ -134,6 +144,17 @@ begin
   result := sUserId;
 end;
 
+// Validate new users
+procedure TUser.SetUserInfo;
+const CHARS = ['A'..'Z'];
+var
+  sFullname: string;
+  iAge : integer;
+begin
+ sFullname := InputBox('Enter your details','What is your first name?','');
+// if sFullname = '' then
+
+end;
 
 { Account creation }
 
@@ -591,6 +612,26 @@ begin
   begin
     LoggerObj.WriteUserLog('User ' + sUsername + ' uid ' + userID + ' logged in.');
   end;
+end;
+
+function TUser.GetLastLogin: string;
+var
+  userFound : Boolean;
+  sLastLogin : string;
+begin
+ with dbmData.tblUsers do
+ begin
+   Open;
+   repeat
+     if UserID = FieldValues['UserID'] then
+     begin
+       userFound := true;
+       sLastLogin := FieldValues['LastLogin'];
+     end else next;
+   until EOF or userFound;
+   Close;
+ end;
+  Result := sLastLogin;
 end;
 
 procedure TUser.RemoveUser;

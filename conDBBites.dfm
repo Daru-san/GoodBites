@@ -46,17 +46,6 @@ object dbmData: TdbmData
     Left = 448
     Top = 280
   end
-  object tblNutrients: TADOTable
-    Connection = conDB
-    TableName = 'tblNutrients'
-    Left = 520
-    Top = 104
-  end
-  object dscNutrients: TDataSource
-    DataSet = tblNutrients
-    Left = 656
-    Top = 48
-  end
   object dscFoods: TDataSource
     DataSet = tblFoods
     Left = 576

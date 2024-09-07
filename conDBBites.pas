@@ -13,8 +13,6 @@ type
     tblMeals: TADOTable;
     dscMeals: TDataSource;
     tblFoods: TADOTable;
-    tblNutrients: TADOTable;
-    dscNutrients: TDataSource;
     dscFoods: TDataSource;
   private
     { Private declarations }

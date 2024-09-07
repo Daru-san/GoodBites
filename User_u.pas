@@ -11,7 +11,7 @@ type
     Fusername : string;
     FisAdmin : boolean;
     FUserID : string;
-    LoggedIn : boolean;
+    FLoggedIn : boolean;
     FPassword : string;
     FDailyCalories : integer;
 
@@ -92,7 +92,7 @@ begin
 
   Fusername := Username;
   FisAdmin := IsAdmin;
-  LoggedIn := loginSuccessful;
+  FLoggedIn := loginSuccessful;
   FPassword := Password;
   FUserID := UserID;
   FDailyCalories := GetDailyCalories(date);
@@ -100,7 +100,7 @@ end;
 
 function TUser.CheckLogin;
 begin
-  result := LoggedIn;
+  result := FLoggedIn;
 end;
 
 function TUser.GetUserId;

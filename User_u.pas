@@ -348,6 +348,7 @@ end;
 function TUser.GenerateUserID;
 var
 	isExisting : boolean;
+  sUserID : string;
 begin
 	{
 		Generate a userID using:
@@ -364,10 +365,10 @@ begin
 	}
 	isExisting := false;
 	repeat
-  	userID := UPPERCASE(sUsername[1] + sUsername[2]) + IntToStr(RandomRage(1,9)) + FormatDateTime('t',now)[2] + FormatDateTime('m',date);
-		isExisting := CheckUserID;
+  	sUserID := UPPERCASE(sUsername[1] + sUsername[2]) + IntToStr(RandomRange(1,9)) + FormatDateTime('t',now)[2] + FormatDateTime('m',date);
+		isExisting := CheckUserID(sUserID);
 	until not isExisting;
-  GenerateUserID := userID;
+  Result := sUserID;
 end;
 
 // Check if a UserID already exists in the database

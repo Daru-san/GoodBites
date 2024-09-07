@@ -26,7 +26,6 @@ type
 
       function GetMealInfo(MealProperty:string; nutrientName : string = '') : Integer;
   end;
-  var
 
 implementation
 

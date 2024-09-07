@@ -15,8 +15,8 @@ type
     FPassword : string;
     FDailyCalories : integer;
 
-    function GenerateUserID(sUsername:string): string;
-	function CheckUserID(sUserID:string) : boolean;
+    function GenerateUserID(sUsername:string): string; 
+    function CheckUserID(sUserID:string) : boolean;
     function CheckUsername(sUsername:string) : boolean;
     function CheckDatabase(sUsername:string):boolean;
     function WriteUserPassFile(sUsername,sPassword:string): boolean;

@@ -1,4 +1,4 @@
-// User creation and modification functions and procedures
+﻿// User creation and modification functions and procedures
 unit User_u;
 
 interface
@@ -16,21 +16,22 @@ type
     FDailyCalories : integer;
 
     function GenerateUserID(userString:string): string;
-    function ValidateNewUser(userString,passString : string) : boolean;
+    function CheckUsername(sUsername:string) : boolean;
     function CheckDatabase(userString:string):boolean;
     function WriteUserPassFile(userString,passString:string): boolean;
     function DeleteUserPassFile(userString :string) :boolean;
-    function ValidPass(userString,passString:string): boolean;
-    function CheckPass(userString: string; passString: string): boolean;
+    function CheckPresence(userString,passString:string): boolean;
+    function CheckLoginDetails(userString: string; passString: string): boolean;
     function CheckAdmin(sUserID : string) : boolean;
     function GetUserId(userString:string):string;
+    function CheckPassword(sPassword:string):Boolean;
+    function CheckUserExisting(sUsername:string):Boolean;
 
     procedure SaveLastLogin(userString,userID : string; userIsAdmin : Boolean);
     procedure CreateUser(userString,passString: string);
     procedure RegisterUserInDB(passString,userString,userID : string);
-    procedure HandleUserError(userString: string; arrErrors : array of string; numErrors : integer);
   public
-    constructor Create(Username : string;Password:string;NewUser:Boolean;LoggingIn : boolean = true);
+    constructor Create(Username : string;Password:string;NewUser:Boolean = false;LoggingIn : boolean = true);
 
     property isAdmin: Boolean read FisAdmin write FisAdmin;
     property Username: string read Fusername write Fusername;
@@ -50,6 +51,9 @@ type
     isFailed : boolean;
     loggerObj : TLogs;
     UtilObj : TUtils;
+
+    // Stores all accumulated user-creation errors
+    errorsList : TStringList;
 implementation
 
 constructor TUser.Create;
@@ -59,17 +63,19 @@ begin
   loggerObj := TLogs.Create;
   UtilObj := TUtils.Create;
   loginSuccessful := false;
-  if LoggingIn then
+
   if NewUser then
   begin
     CreateUser(Username,Password);
-  end else
+  end;
+
+  if LoggingIn then
   begin
-    isValid := ValidPass(Username,Password);
+    isValid := CheckPresence(Username,Password);
 
     if isValid then
     begin
-      isCorrect := CheckPass(Username,Password);
+      isCorrect := CheckLoginDetails(Username,Password);
       UserId := GetUserID(Username);
       if isCorrect then
       begin
@@ -127,104 +133,215 @@ begin
   result := sUserId;
 end;
 
-function TUser.ValidateNewUser;
-const
-  VALIDCHARS = ['A'..'Z','a'..'z','0'..'9'];
+
+{ Account creation }
+
+procedure TUser.CreateUser;
 var
-  isNameValid,isPassValid, errorsPresent, isAlreadyRegistered : boolean;
-  intInPass,strValidPass : boolean;
-  arrErrors : array [1..50] of string;
-  numErrors,passErrorCode : integer;
-  tempString : string;
-  I,j, tempInt: Integer;
+  isUserValid,userInDB, userInPassFile,isPassValid,userExistsing,isCorrect,isPresent : boolean;
+  userID : string;
 begin
-  isNameValid := false;
-  isPassValid := false;
-  errorsPresent := false;
+  isUserValid := false;
+  userExistsing := False;
+  isPassValid := False;
+  isCorrect := false;
 
-  numErrors := 0;
+  isPresent := CheckPresence(userString,passString);
 
-  if userString.Length < 2 then
+  {
+    Steps, if one of these fails the process stops
+    -> Check if the username and password are present
+    -> Check if the username is valid
+    -> Check if the user exists
+    -> Check if the password is valid
+    -> Show error message if username or password is invalid
+  }
+  if isPresent then
   begin
-    inc(numErrors);
-    errorsPresent := true;
-    arrErrors[numErrors] := 'Username must be over 2 characters';
-  end;
-  if CheckDatabase(userString) then
-  begin
-    inc(numErrors);
-    errorsPresent := true;
-    isAlreadyRegistered := true;
-    arrErrors[numErrors] := 'User ' + userString + ' already exists';
-  end;
-  if userString.Length > 10 then
-  begin
-    inc(numErrors);
-    errorsPresent := true;
-    arrErrors[numErrors] := 'Username ' + userString + ' is too long, maximum length is 10 characters';
-  end;
-
-  if passString.Length < 8 then
-  begin
-    inc(numErrors);
-    errorsPresent := true;
-    arrErrors[numErrors] := 'Password must be over 8 characters';
-  end;
-
-  intInPass := false;
-  strValidPass := true;
-
-  for i := 1 to userString.Length do
-  begin
-    if not (userString[i] in VALIDCHARS) then
+    errorsList := TStringList.Create;
+    isUserValid := CheckUsername(userString);
+    ShowMessage(isUserValid.ToString);
+    if isUserValid then
     begin
-      strValidPass := false;
-      errorsPresent := true;
-      inc(numErrors);
-      arrErrors[numErrors] := 'Username must not have any special characters';
-      break;
+      userExistsing := CheckUserExisting(userString);
+      if not(userExistsing) then
+      begin
+        isPassValid := CheckPassword(passString);
+      end;
+    end;
+    if not (isPassValid) or not(isUserValid) then
+      ShowMessage('User creation errors ' + #13+#13+ errorsList.Text);
+  end;
+
+  isCorrect := isPassValid and isUserValid and isPresent and not(userExistsing);
+
+  if isCorrect then
+  begin
+    userID := GenerateUserID(userString);
+    RegisterUserInDB(passString,userString,userID);
+    userInDB := CheckDatabase(userString);
+    if userInDB then
+    begin
+      userInPassFile := writeUserPassFile(userString,passString);
+      if userInPassFile then
+      begin
+        LoggerObj.WriteUserLog('The user ' + userString + ', uid ' + userID + ' has registered successfully');
+        ShowMessage('You have successfully been registered, happy eating!');
+      end;
+    end
+    else
+    begin
+      LoggerObj.WriteUserLog(
+        'The user ' + userString + ',uid ' + userID +
+        ' attempted to register, but were not found in the database afterward.'
+        + #13 + #9 + 'Something must have gone wrong'
+      );
+      ShowMessage('Some error occured and user registration has failed.' + #13 + 'Please try again');
     end;
   end;
-
-  for i := 1 to passString.Length do
-  begin
-    val(passString,tempInt,passErrorCode);
-    if passErrorCode = 0 then
-    begin
-      intInPass := true;
-      errorsPresent := true;
-      inc(numErrors);
-      arrErrors[numErrors] := 'Password must have a number';
-    end;
-    if not (passString[i] in VALIDCHARS) then
-    begin
-      strValidPass := false;
-      errorsPresent := true;
-      inc(numErrors);
-      arrErrors[numErrors] := 'Password is not valid, only use numbers and letters in your password';
-    end;
-  end;
-
-  if (numErrors = 0) and not errorsPresent then
-  begin
-    isNameValid := true;
-    isPassValid := true;
-  end else
-    HandleUserError(userString,arrErrors,numErrors);
-  ValidateNewUser := isNameValid;
 end;
 
-procedure TUser.HandleUserError;
+function TUser.CheckPassword(sPassword:string):Boolean;
+const
+  LOWERCHARS = ['a'..'z'];
+  UPPERCHARS = ['A'..'z'];
+  NUMBERS = ['0'..'9'];
+  SPECIALCHARS = ['.',',','/','\','!','@','#','%','&','*','(',')'];
+  VALIDCHARS = LOWERCHARS + UPPERCHARS + NUMBERS + SPECIALCHARS;
 var
-  errorMsg : string;
+  hasUpcase,hasLowcase,hasNumbers,isValid,hasSpecial,isLong,hasValidChars : boolean;
+  I: Integer;
+begin
+  hasUpcase := false;
+  hasLowcase := False;
+  hasNumbers := False;
+  hasSpecial := False;
+  isValid := false;
+  hasValidChars := False;
+
+  //Ensure password is between 2 and 20 characters
+  if (sPassword.length < 2) or (sPassword.Length > 20) then
+  begin
+    isLong := false;
+    errorsList.Add('Password must be between 3 to 20 characters in length');
+  end else isLong := true;
+
+  //Ensure presence of upper and lower case characters and numbers, special characters are optional
+  for I := 1 to sPassword.Length do
+  begin
+
+    if sPassword[i] in LOWERCHARS then
+    begin
+      hasLowcase := true;
+    end;
+
+    if sPassword[i] in UPPERCHARS then
+    begin
+      hasUpcase := true;
+    end;
+
+    if sPassword[i] in NUMBERS then
+    begin
+      hasNumbers := true;
+    end;
+
+    // Ensure no characters outside of the valid range are present, being letters, numbers and certain characters
+    if sPassword[i] in VALIDCHARS then
+    begin
+      hasValidChars := true;
+    end;
+  end;
+
+  if (not hasLowcase) or (not hasUpcase) then
+  errorsList.Add('Password must contain uppercase and lowercase characters');
+
+  if not hasNumbers then
+  errorsList.Add('Password must contain a number');
+
+  // Special characters are optional but restricted to a range
+  if not hasValidChars then
+  errorsList.Add('Password can numbers, letters and any of the special characters ' + '.,,,/,\,(,),!,@,#,%,&,*');
+
+  // If the password has upper and lower case letters, numbers, valid characters and is of good length
+  result := hasLowcase and hasLowcase and hasNumbers and hasValidChars and isLong;
+end;
+
+function TUser.CheckUsername;
+const
+  // Set of characters that must be in the username
+  VALIDCHARS = ['A'..'Z','a'..'z','0'..'9'];
+var
+  isLong,hasValidChars,hasExtraChars : Boolean;
   i: Integer;
 begin
-  errorMsg := '';
-  for i := 1 to numErrors do
+  isLong := false;
+  hasValidChars := false;
+  hasExtraChars := false;
+
+  //Ensure username is between 2 and 10 characters
+  if (sUsername.Length < 2) or (sUsername.Length > 10) then
   begin
-    errorMsg := errorMsg + arrErrors[i] + #13;
+    errorsList.Add('Username must be between 2 and 10 characters in length');
+    isLong := false;
+  end else isLong := True;
+
+  // Ensuring username has no characters outside of the range of letters and numbers
+  for i := 1 to sUsername.Length do
+  begin
+    if sUsername[i] in VALIDCHARS then
+    begin
+      hasValidChars := true;
+    end;
+    if not (sUsername[i] in VALIDCHARS) then
+    begin
+      hasExtraChars := true;
+    end;
   end;
-  ShowMessage(errorMsg);
+  // Ensure that characters are only numbers and letters
+  if (hasValidChars and hasExtraChars) or hasExtraChars or (not hasValidChars) then
+  errorsList.Add('Username must only have letters and numbers, special characters are not allowed');
+
+  // If the password is long enough, has only numbers and letters
+  Result := isLong and hasValidChars and (not hasExtraChars);
+end;
+
+function TUser.CheckUserExisting;
+const FILENAME = '.passwords';
+var
+  isUserDatabase,hasPassword : Boolean;
+  passFile : TextFile;
+  fileString,sUserinFile : string;
+  delimPos : Integer;
+begin
+  hasPassword := false;
+  isUserDatabase := CheckDatabase(sUsername);
+  if UtilObj.CheckFileExists(FILENAME) then
+  begin
+    AssignFile(passFile,FILENAME);
+    Reset(passFile);
+    repeat
+      Readln(passFile,fileString);
+
+      // Get the delimiter position
+      delimPos := pos('#',fileString);
+
+      // Copy the username in the file
+      sUserinFile := Copy(fileString,1,delimPos-1);
+
+
+      if UpperCase(sUserinFile) = UpperCase(sUsername) then
+      begin
+        hasPassword := true;
+      end;
+    until Eof(passFile) or hasPassword;
+    CloseFile(passFile);
+  end;
+
+  if isUserDatabase or hasPassword then
+  begin
+    ShowMessage('The user ' + sUsername + ' already exists');
+  end;
+  Result := isUserDatabase or hasPassword;
 end;
 
 function TUser.GenerateUserID;
@@ -306,37 +423,6 @@ begin
   end;
 end;
 
-procedure TUser.CreateUser;
-var
-  isUserValid,userInDB, userInPassFile : boolean;
-  userID : string;
-begin
-  isUserValid := ValidateNewUser(userString,passString);
-  if isUserValid then
-  begin
-    userID := GenerateUserID(userString);
-    RegisterUserInDB(passString,userString,userID);
-    userInDB := CheckDatabase(userString);
-    if userInDB then
-    begin
-      userInPassFile := writeUserPassFile(userString,passString);
-      if userInPassFile then
-      begin
-        LoggerObj.WriteUserLog('The user ' + userString + ', uid ' + userID + ' has registered successfully');
-        ShowMessage('You have successfully been registered, happy eating!');
-      end;
-    end
-    else
-    begin
-      LoggerObj.WriteUserLog(
-        'The user ' + userString + ',uid ' + userID +
-        ' attempted to register, but were not found in the database afterward.'
-        + #13 + #9 + 'Something must have gone wrong'
-      );
-      ShowMessage('Some error occured and user registration has failed.' + #13 + 'Please try again');
-    end;
-  end;
-end;
 
 procedure TUser.RegisterUserInDB;
 begin
@@ -355,7 +441,7 @@ begin
 
 end;
 
-function TUser.ValidPass;
+function TUser.CheckPresence;
 var
   isValid : boolean;
 begin
@@ -373,7 +459,7 @@ begin
   end
    else
     isValid := true;
-  ValidPass := isValid;
+  CheckPresence := isValid;
 end;
 
 function TUser.CheckDatabase;
@@ -416,7 +502,7 @@ begin
   result := userIsAdmin;
 end;
 
-function TUser.CheckPass;
+function TUser.CheckLoginDetails;
 const
 FILENAME = '.passwords';
 var
@@ -450,7 +536,7 @@ begin
   until EOF(passFile) or isCorrect;
   CloseFile(passFile);
 
-  CheckPass := isCorrect;
+  CheckLoginDetails := isCorrect;
 end;
 
 procedure TUser.SaveLastLogin;

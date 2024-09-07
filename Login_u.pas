@@ -54,7 +54,8 @@ begin
   userString := edtUser.Text;
   passString := edtPassword.Text;
 
-  currentUser := TUser.Create(userString,passString,false);
+  // Call the constructor, (username,password,is new user,are they loggin in)
+  currentUser := TUser.Create(userString,passString,False);
 end;
 
 procedure TfrmLogin.btnSignUpClick(Sender: TObject);
@@ -64,8 +65,7 @@ var
 begin
   userString := edtUser.text;
   passString := edtPassword.text;
-  currentUser := TUser.Create(userString,passString,true);
-  currentUser.Free;
+  currentUser := TUser.Create(userString,passString,true,False);
 end;
 
 procedure TfrmLogin.FormShow(Sender: TObject);

@@ -65,11 +65,12 @@ begin
   Self.Hide;
   try
     LoginForm.ShowModal;
+
+    //Obtain the currently logged in user from the login form, all data is filled in the object if login was successful
     currentUser := LoginForm.currentUser;
     isAdmin := currentUser.isAdmin;
     didLogin := currentUser.CheckLogIn;
   finally
-  //TODO: Do something about form closing and switching
     LoginForm.Free;
     if didLogin then
     begin
@@ -99,6 +100,8 @@ begin
         end;
       end;
     end;
+
+    //Free current user if login was somehow unsuccessful or new user was created
     if not didLogin then
     begin
       currentUser.Free;

@@ -18,19 +18,19 @@ type
     function GenerateUserID(sUsername:string): string;
 	function CheckUserID(sUserID:string) : boolean;
     function CheckUsername(sUsername:string) : boolean;
-    function CheckDatabase(userString:string):boolean;
-    function WriteUserPassFile(userString,passString:string): boolean;
-    function DeleteUserPassFile(userString :string) :boolean;
-    function CheckPresence(userString,passString:string): boolean;
-    function CheckLoginDetails(userString: string; passString: string): boolean;
+    function CheckDatabase(sUsername:string):boolean;
+    function WriteUserPassFile(sUsername,sPassword:string): boolean;
+    function DeleteUserPassFile(sUsername :string) :boolean;
+    function CheckPresence(sUsername,sPassword:string): boolean;
+    function CheckLoginDetails(sUsername: string; sPassword: string): boolean;
     function CheckAdmin(sUserID : string) : boolean;
-    function GetUserId(userString:string):string;
+    function GetUserId(sUsername:string):string;
     function CheckPassword(sPassword:string):Boolean;
     function CheckUserExisting(sUsername:string):Boolean;
 
-    procedure SaveLastLogin(userString,userID : string; userIsAdmin : Boolean);
-    procedure CreateUser(userString,passString: string);
-    procedure RegisterUserInDB(passString,userString,userID : string);
+    procedure SaveLastLogin(sUsername,userID : string; userIsAdmin : Boolean);
+    procedure CreateUser(sUsername,sPassword: string);
+    procedure RegisterUserInDB(sPassword,sUsername,userID : string);
   public
     constructor Create(Username : string;Password:string;NewUser:Boolean = false;LoggingIn : boolean = true);
 
@@ -121,7 +121,7 @@ begin
     Open;
     First;
     repeat
-      if UpperCase(userString) = UpperCase(FieldValues['Username']) then
+      if UpperCase(sUsername) = UpperCase(FieldValues['Username']) then
       begin
         isFound := true;
         sUserId := FieldValues['UserID'];
@@ -130,7 +130,7 @@ begin
     Close;
   end;
   if not isFound then
-  ShowMessage('User not found?' + userString);
+  ShowMessage('User not found?' + sUsername);
   result := sUserId;
 end;
 
@@ -139,7 +139,7 @@ end;
 
 procedure TUser.CreateUser;
 var
-  isUserValid,userInDB, userInPassFile,isPassValid,userExistsing,isCorrect,isPresent : boolean;
+  isUserValid,userInDB, userInPassFile,isPassValid,userExistsing,isCorrect,isPresent: boolean;
   userID : string;
 begin
   isUserValid := false;
@@ -147,7 +147,7 @@ begin
   isPassValid := False;
   isCorrect := false;
 
-  isPresent := CheckPresence(userString,passString);
+  isPresent := CheckPresence(sUsername,sPassword);
 
   {
     Steps, if one of these fails the process stops
@@ -160,14 +160,14 @@ begin
   if isPresent then
   begin
     errorsList := TStringList.Create;
-    isUserValid := CheckUsername(userString);
+    isUserValid := CheckUsername(sUsername);
     ShowMessage(isUserValid.ToString);
     if isUserValid then
     begin
-      userExistsing := CheckUserExisting(userString);
+      userExistsing := CheckUserExisting(sUsername);
       if not(userExistsing) then
       begin
-        isPassValid := CheckPassword(passString);
+        isPassValid := CheckPassword(sPassword);
       end;
     end;
     if not (isPassValid) or not(isUserValid) then
@@ -178,22 +178,22 @@ begin
 
   if isCorrect then
   begin
-    userID := GenerateUserID(userString);
-    RegisterUserInDB(passString,userString,userID);
-    userInDB := CheckDatabase(userString);
+    userID := GenerateUserID(sUsername);
+    RegisterUserInDB(sPassword,sUsername,userID);
+    userInDB := CheckDatabase(sUsername);
     if userInDB then
     begin
-      userInPassFile := writeUserPassFile(userString,passString);
+      userInPassFile := writeUserPassFile(sUsername,sPassword);
       if userInPassFile then
       begin
-        LoggerObj.WriteUserLog('The user ' + userString + ', uid ' + userID + ' has registered successfully');
+        LoggerObj.WriteUserLog('The user ' + sUsername + ', uid ' + userID + ' has registered successfully');
         ShowMessage('You have successfully been registered, happy eating!');
       end;
     end
     else
     begin
       LoggerObj.WriteUserLog(
-        'The user ' + userString + ',uid ' + userID +
+        'The user ' + sUsername + ',uid ' + userID +
         ' attempted to register, but were not found in the database afterward.'
         + #13 + #9 + 'Something must have gone wrong'
       );
@@ -407,9 +407,9 @@ begin
   begin
     AssignFile(passFile,FILENAME);
     Append(passFile);
-    WriteLn(passFile,userString + '#' + passString);
+    WriteLn(passFile,sUsername + '#' + sPassword);
     CloseFile(passFile);
-    LoggerObj.WriteUserLog('User ' + userString + ' has been saved in the PASSWORDS file');
+    LoggerObj.WriteUserLog('User ' + sUsername + ' has been saved in the PASSWORDS file');
     isSuccessful:= true;
   end;
   WriteUserPassFile := isSuccessful;
@@ -433,14 +433,14 @@ begin
     passList := TStringList.Create;
     passList.LoadFromFile(FILENAME);
     passList.NameValueSeparator := '#';
-    indexNum := passList.IndexOfName(userString);
+    indexNum := passList.IndexOfName(sUsername);
     if (indexNum <> -1) then
     begin
       passList.Delete(indexNum);
       passList.SaveToFile(FILENAME);
     end;
     passList.Free;
-    LoggerObj.WriteSysLog('Entry for user ' + userString + ' was removed from the passwords file');
+    LoggerObj.WriteSysLog('Entry for user ' + sUsername + ' was removed from the passwords file');
     isSuccessful := true;
   end;
 end;
@@ -453,7 +453,7 @@ begin
     Open;
     Append;
     FieldValues['userID'] := userID;
-    FieldValues['Username'] := userString;
+    FieldValues['Username'] := sUsername;
     FieldValues['RegisterDate'] := date;
     FieldValues['isAdmin'] := false;
     FieldValues['Age'] := 0;
@@ -468,13 +468,13 @@ var
   isValid : boolean;
 begin
 
-  if userString.isEmpty then
+  if sUsername.isEmpty then
   begin
     ShowMessage('Please enter a username');
     isValid := false;
   end
     else
-  if passString.isEmpty then
+  if sPassword.isEmpty then
   begin
     ShowMessage('Please enter a valid password');
     isValid := false;
@@ -493,7 +493,7 @@ begin
     Open;
     First;
     Repeat
-      if UPPERCASE(FieldValues['Username']) = UPPERCASE(userString) then isFound := true;
+      if UPPERCASE(FieldValues['Username']) = UPPERCASE(sUsername) then isFound := true;
       Next;
     Until EOF or isFound;
     Close;
@@ -529,7 +529,7 @@ const
 FILENAME = '.passwords';
 var
   passFile : textfile;
-  fileString, userFileString, userPassString, userInDatabase : string;
+  fileString, sUserInFile, sPassInFile, userInDatabase : string;
   isCorrect,inDatabase : boolean;
   delPos : integer;
 begin
@@ -540,20 +540,20 @@ begin
   Reset(passFile);
 
   isCorrect := false;
-  inDatabase := CheckDatabase(userString);
+  inDatabase := CheckDatabase(sUsername);
 
   if not inDatabase then
   begin
-    ShowMessage('The user ' + userString + ' is not found');
+    ShowMessage('The user ' + sUsername + ' is not found');
   end
   else
   repeat
     ReadLn(passFile,fileString);
     delPos := pos('#',fileString);
-    userFileString := copy(fileString,1,delPos-1);
+    sUserInFile := copy(fileString,1,delPos-1);
     delete(fileString,1,delPos);
-    userPassString := fileString;
-    if ((UPPERCASE(userFileString) = UPPERCASE(userString)) and (userPassString = passString)) then
+    sPassInFile := fileString;
+    if ((UPPERCASE(sUserInFile) = UPPERCASE(sUsername)) and (sPassInFile = sPassword)) then
       isCorrect := true;
   until EOF(passFile) or isCorrect;
   CloseFile(passFile);
@@ -584,18 +584,18 @@ begin
   end;
   if userIsAdmin then
   begin
-    LoggerObj.WriteUserLog('Administrator ' + userString + ' uid ' + userID + ' logged in.');
+    LoggerObj.WriteUserLog('Administrator ' + sUsername + ' uid ' + userID + ' logged in.');
   end
   else
   begin
-    LoggerObj.WriteUserLog('User ' + userString + ' uid ' + userID + ' logged in.');
+    LoggerObj.WriteUserLog('User ' + sUsername + ' uid ' + userID + ' logged in.');
   end;
 end;
 
 procedure TUser.RemoveUser;
 var
   isFound, isRemoved : boolean;
-  userString : string;
+  sUsername : string;
 begin
   with dbmData.tblUsers do
   begin
@@ -606,14 +606,14 @@ begin
         isFound := true
       else Next;
     until EOF or isFound;
-    userString := FieldValues['Username'];
+    sUsername := FieldValues['Username'];
 
-    isRemoved := DeleteUserPassFile(userString);
+    isRemoved := DeleteUserPassFile(sUsername);
     if isRemoved then
     begin
       Delete;
       Post;
-      loggerObj.WriteUserLog('User ' + userString + ', uid ' + userID + ' was removed completely');
+      loggerObj.WriteUserLog('User ' + sUsername + ', uid ' + userID + ' was removed completely');
     end;
   end;
 end;

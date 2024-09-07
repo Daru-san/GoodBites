@@ -48,24 +48,24 @@ procedure TfrmLogin.btnLoginClick(Sender: TObject);
 const
   FILENAME = '.passwords';
 var
-  userString,passString : string;
+  sUsername,sPassword : string;
   isCorrect,isValid,passFileExists : boolean;
 begin
-  userString := edtUser.Text;
-  passString := edtPassword.Text;
+  sUsername := edtUser.Text;
+  sPassword := edtPassword.Text;
 
   // Call the constructor, (username,password,is new user,are they loggin in)
-  currentUser := TUser.Create(userString,passString,False);
+  currentUser := TUser.Create(sUsername,sPassword,False);
 end;
 
 procedure TfrmLogin.btnSignUpClick(Sender: TObject);
 var
   confirm : integer;
-  userString,passString:string;
+  sUsername,sPassword:string;
 begin
-  userString := edtUser.text;
-  passString := edtPassword.text;
-  currentUser := TUser.Create(userString,passString,true,False);
+  sUsername := edtUser.text;
+  sPassword := edtPassword.text;
+  currentUser := TUser.Create(sUsername,sPassword,true,False);
 end;
 
 procedure TfrmLogin.FormShow(Sender: TObject);

@@ -1,15 +1,15 @@
-# Logs #
-2024/08/18@08:49:02: [USER] An administrator logged in
-2024/08/18@08:49:07: [SYSTEM] The database table `tblNutrients` was accessed by an administrator.
-2024/08/18@08:49:09: [SYSTEM] The database table `tblUsers` was accessed by an administrator.
-2024/08/18@08:52:43: [USER] Administrator Daru logged in.
-2024/08/18@08:52:45: [SYSTEM] The database table `tblNutrients` was accessed by an administrator.
-2024/08/18@08:54:54: [USER] Administrator Daru logged in.
-2024/08/18@08:54:57: [SYSTEM] The database table `tblNutrients` was accessed by an administrator.
-2024/08/18@09:50:24: [USER] Administrator Daru logged in.
-2024/08/18@09:50:25: [SYSTEM] The database table `tblUsers` was accessed by an administrator.
-2024/08/18@09:50:57: [USER] Administrator Daru logged in.
-2024/08/18@09:50:57: [SYSTEM] The database table `tblUsers` was accessed by an administrator.
-2024/08/18@09:51:00: [SYSTEM] The database table `tblUsers` was accessed by an administrator.
-2024/08/18@09:57:13: [USER] Administrator Daru logged in.
-2024/08/18@09:57:14: [SYSTEM] The database table `tblUsers` was accessed by an administrator.
+# LOGS #########
+2024/09/07@08:41:11: [SYSTEM] The file .passwords was need but not found
+2024/09/07@08:41:15: [USER] User max&(* uid  logged in.
+2024/09/07@08:51:03: [USER] Administrator daru uid DA1755 logged in.
+2024/09/07@08:51:09: [SYSTEM] The database table `tblUsers` was accessed by administrator daru
+2024/09/07@08:51:13: [SYSTEM] The database table `tblNutrients` was accessed by administrator daru
+2024/09/07@08:51:14: [SYSTEM] The database table `tblUsers` was accessed by administrator daru
+2024/09/07@08:51:25: [USER] Failed login attempt by user dai
+2024/09/07@08:51:31: [USER] User dai uid DA1084 logged in.
+2024/09/07@09:34:17: [USER] Failed login attempt by user dat
+2024/09/07@09:40:41: [USER] Failed login attempt by user Daru
+2024/09/07@09:40:50: [USER] Administrator daru uid DA1755 logged in.
+2024/09/07@09:52:21: [USER] User cady has been saved in the PASSWORDS file
+2024/09/07@09:52:21: [USER] The user cady, uid CA994 has registered successfully
+2024/09/07@09:52:26: [USER] User cady uid CA994 logged in.

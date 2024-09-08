@@ -21,7 +21,8 @@ uses
   DataFetcher in 'DataFetcher.pas',
   Utils_U in 'Utils_U.pas',
   HelpForm in 'HelpForm.pas' {frmHelp},
-  Meals_U in 'Meals_U.pas';
+  Meals_U in 'Meals_U.pas',
+  frmUserDLG in 'frmUserDLG.pas' {OKRightDlg};
 
 {$R *.res}
 
@@ -36,5 +37,6 @@ begin
   Application.CreateForm(TdbmData, dbmData);
   Application.CreateForm(TfrmInfo, frmInfo);
   Application.CreateForm(TfrmHelp, frmHelp);
+  Application.CreateForm(TOKRightDlg, OKRightDlg);
   Application.Run;
 end.

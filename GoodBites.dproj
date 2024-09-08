@@ -136,6 +136,10 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="Meals_U.pas"/>
+        <DCCReference Include="frmUserDLG.pas">
+            <Form>OKRightDlg</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls,InfoBoard,Utils_U,User_u,
-  Vcl.ComCtrls,Meals_U,conDBBites;
+  Vcl.ComCtrls,Meals_U,conDBBites,frmUserDLG;
 
 type
   TfrmDashboard = class(TForm)
@@ -200,6 +200,8 @@ begin
 end;
 
 procedure TfrmDashboard.FormShow(Sender: TObject);
+var
+  userInfoForm : TfrmUserDLG;
 begin
   utilObj := TUtils.Create;
   utilObj.SetLabel(lblHeading,'Dashboard',15);
@@ -209,6 +211,11 @@ begin
   pctDashboard.TabIndex := 0;
   tsSearch.TabVisible := false;
   GetInfo;
+
+  if currentUser.GetFirstLogin then
+  begin
+    userInfoForm.Create(nil);
+  end;
 end;
 
 procedure TfrmDashboard.PopulateFoods;

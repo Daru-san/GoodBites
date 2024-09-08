@@ -14,6 +14,8 @@ type
     FLoggedIn : boolean;
     FPassword : string;
     FDailyCalories : integer;
+    FFullname : string;
+    FAge : integer;
 
     function GenerateUserID(sUsername:string): string; 
     function CheckUserID(sUserID:string) : boolean;
@@ -32,15 +34,17 @@ type
     procedure SaveLastLogin(sUsername,userID : string; userIsAdmin : Boolean);
     procedure CreateUser(sUsername,sPassword: string);
     procedure RegisterUserInDB(sPassword,sUsername,userID : string);
-    procedure SetUserInfo;
   public
     constructor Create(Username : string;Password:string;NewUser:Boolean = false;LoggingIn : boolean = true);
 
     property isAdmin: Boolean read FisAdmin write FisAdmin;
     property Username: string read Fusername write Fusername;
+    property Fullname: string read FFullname write FFullname;
+    property Age: Integer read FAge write FAge;
     property UserID: string read FUserID write FUserID;
 
     function CheckLogIn : boolean;
+    function GetFirstLogin : boolean;
     function GetDailyCalories(currentDate:Tdate):integer;
     function GetTotalMeals:integer;
     function GetMeal(mealIndex:integer):string;
@@ -49,6 +53,7 @@ type
     procedure RemoveUser(userID : string);
     procedure AddCalories(numCalories : Integer);
     procedure UpdateDatabase;
+    procedure SetUserInfo(sUserID,sFullname : string;iAge : integer);
   end;
 
   var
@@ -102,11 +107,6 @@ begin
     FisAdmin := false;
   end;
 
-  if GetLastLogin = '' then
-  begin
-    SetUserInfo;
-  end;
-
   Fusername := Username;
   FisAdmin := IsAdmin;
   FLoggedIn := loginSuccessful;
@@ -118,6 +118,24 @@ end;
 function TUser.CheckLogin;
 begin
   result := FLoggedIn;
+end;
+
+function TUser.GetFirstLogin;
+var
+  isFound : Boolean;
+begin
+  with dbmData.tblUsers do
+  begin
+    Open;
+    First;
+    repeat
+      if UserID = FieldValues['UserID'] then
+        isFound := true
+      else next;
+    until EOF;
+    Result := FieldValues['FirstLogin'];
+    Close;
+  end;
 end;
 
 function TUser.GetUserId;
@@ -144,16 +162,24 @@ begin
   result := sUserId;
 end;
 
-// Validate new users
+// Add extra information from new users on first login
 procedure TUser.SetUserInfo;
-const CHARS = ['A'..'Z'];
 var
-  sFullname: string;
-  iAge : integer;
+  userFound : Boolean;
 begin
- sFullname := InputBox('Enter your details','What is your first name?','');
-// if sFullname = '' then
-
+  with dbmData.tblUsers do
+  begin
+    Open;
+    First;
+    repeat
+      if sUserID = FieldValues['UserID'] then
+      userFound := true;
+    until (Eof) or userFound;
+    Edit;
+    FieldValues['Fullname'] := sFullname;
+    FieldValues['Age'] := iAge;
+    Post;
+  end;
 end;
 
 { Account creation }

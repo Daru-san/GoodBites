@@ -17,7 +17,7 @@ uses
   Admin_U in 'Admin_U.pas' {frmAdmin},
   conDBBites in 'conDBBites.pas' {dbmData: TDataModule},
   InfoBoard in 'InfoBoard.pas' {frmInfo},
-  User_u in 'User_u.pas',
+  User_u in 'User_U.pas',
   DataFetcher in 'DataFetcher.pas',
   Utils_U in 'Utils_U.pas',
   HelpForm in 'HelpForm.pas' {frmHelp},

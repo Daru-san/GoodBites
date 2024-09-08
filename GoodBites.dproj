@@ -128,7 +128,7 @@
             <Form>frmInfo</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="User_u.pas"/>
+        <DCCReference Include="User_U.pas"/>
         <DCCReference Include="DataFetcher.pas"/>
         <DCCReference Include="Utils_U.pas"/>
         <DCCReference Include="HelpForm.pas">

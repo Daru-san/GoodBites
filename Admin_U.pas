@@ -25,10 +25,6 @@ type
     btnPrev: TButton;
     btnNext: TButton;
     btnFilter: TButton;
-    tsNutrients: TTabSheet;
-    dbgNutrients: TDBGrid;
-    pnlNutrientHeader: TPanel;
-    lblNutrient: TLabel;
     btnUserDel: TButton;
     btnFirst: TButton;
     btnLast: TButton;
@@ -39,16 +35,6 @@ type
     edtField: TEdit;
     edtData: TEdit;
     btnFieldEdit: TButton;
-    pnlAddition: TPanel;
-    pnlNutHead: TPanel;
-    lblNutHead: TLabel;
-    btnNutrient: TButton;
-    edtNutrient: TEdit;
-    spnCalories: TSpinEdit;
-    cbxDaily: TCheckBox;
-    spnRecQty: TSpinEdit;
-    lblNumCalories: TLabel;
-    lblRecQty: TLabel;
     tsHome: TTabSheet;
     pnlHead: TPanel;
     pnlUser: TPanel;
@@ -61,15 +47,11 @@ type
     procedure btnPrevClick(Sender: TObject);
     procedure dbgUsersDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
-    procedure tsNutrientsShow(Sender: TObject);
-    procedure dbgNutrientsDrawColumnCell(Sender: TObject; const Rect: TRect;
-      DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure btnFilterClick(Sender: TObject);
     procedure btnUserDelClick(Sender: TObject);
     procedure btnFirstClick(Sender: TObject);
     procedure btnLastClick(Sender: TObject);
     procedure btnFieldEditClick(Sender: TObject);
-    procedure btnNutrientClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
     { Private declarations }
@@ -163,7 +145,6 @@ begin
   with dbmData do
   begin
     tblUsers.Close;
-    tblNutrients.Close;
   end;
   frmAdmin.Close;
   frmAdmin.Destroy;
@@ -173,31 +154,6 @@ end;
 procedure TfrmAdmin.btnNextClick(Sender: TObject);
 begin
   dbmData.tblUsers.Next;
-end;
-
-procedure TfrmAdmin.btnNutrientClick(Sender: TObject);
-var
-  numMinCalories,numRecQty,confInt:integer;
-  nutrientName : string;
-  isDaily : boolean;
-begin
-  confInt := MessageDlg('Are you sure you would like to add this nutrient to the database?',mtConfirmation,mbYesNo,0);
-  if confInt <> mrYes then exit;
-
-  numMinCalories := spnCalories.Value;
-  numRecQty := spnRecQty.Value;
-  nutrientName := edtNutrient.Text;
-  isDaily := cbxDaily.Checked;
-  with dbmData.tblNutrients do
-  begin
-    Open;
-    Append;
-    FieldValues['NutrientName'] := nutrientName;
-    FieldValues['MinCalories'] := numMinCalories;
-    FieldValues['RecommendedQty'] := numRecQty;
-    FieldValues['NeededDaily'] := isDaily;
-    Post;
-  end;
 end;
 
 procedure TfrmAdmin.btnPrevClick(Sender: TObject);
@@ -216,19 +172,6 @@ begin
   UtilObj.SetLabel(lblLogs,'Logs',20);
   memLogs.Lines.clear;
   ShowLogs();
-end;
-
-procedure TfrmAdmin.tsNutrientsShow(Sender: TObject);
-begin
-  UtilObj.SetLabel(lblNutrient,'Manage Nutrients',20);
-  UtilObj.SetLabel(lblNutHead,'Add new nutrients',14);
-  with dbmData do
-  begin
-    tblNutrients.Open;
-    dbgNutrients.DataSource := dscNutrients;
-  end;
-  InitializeWidth(dbgNutrients);
-  LoggerObj.WriteSysLog('The database table `tblNutrients` was accessed by administrator ' + adminName);
 end;
 
 procedure TfrmAdmin.tsUsersShow(Sender: TObject);
@@ -317,24 +260,7 @@ begin
   if width>column.width then column.Width := width;
 end;
 
-procedure TfrmAdmin.FormShow(Sender: TObject);
-begin
-  adminName := currentAdmin.Username;
-  LoggerObj := TLogs.Create;
-  UtilObj := TUtils.Create;
-  pageCtrl.TabIndex := 0;
-  UtilObj.SetLabel(lblUser,'[Admin]Logged in as ' + adminName,7);
-end;
-
-procedure TfrmAdmin.dbgNutrientsDrawColumnCell(Sender: TObject;
-  const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
-var
-  width : integer;
-begin
-  width := 5+dbgNutrients.Canvas.TextExtent(Column.Field.DisplayText).cx;
-  if width>column.width then column.Width := width;
-end;
-
+//Initialize
 procedure TfrmAdmin.InitializeWidth(dbGrid:TDBGrid);
 var
   i : integer;
@@ -344,4 +270,15 @@ begin
   dbGrid.Columns[i].Width := 5+dbGrid.Canvas.TextWidth(dbGrid.Columns[i].Title.Caption);
 end;
 
+procedure TfrmAdmin.FormShow(Sender: TObject);
+begin
+  adminName := currentAdmin.Username;
+  LoggerObj := TLogs.Create;
+  UtilObj := TUtils.Create;
+  pageCtrl.TabIndex := 0;
+  UtilObj.SetLabel(lblUser,'[Admin]Logged in as ' + adminName,7);
+end;
+
+
 end.
+

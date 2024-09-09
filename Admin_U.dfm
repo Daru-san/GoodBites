@@ -3,7 +3,7 @@ object frmAdmin: TfrmAdmin
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Goodbites:  Adminastration'
-  ClientHeight = 552
+  ClientHeight = 581
   ClientWidth = 907
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -16,12 +16,13 @@ object frmAdmin: TfrmAdmin
   TextHeight = 15
   object pnlFooter: TPanel
     Left = 0
-    Top = 515
+    Top = 544
     Width = 907
     Height = 37
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitTop = 515
     DesignSize = (
       907
       37)
@@ -42,10 +43,11 @@ object frmAdmin: TfrmAdmin
     Left = 0
     Top = 25
     Width = 907
-    Height = 490
-    ActivePage = tsLogs
+    Height = 519
+    ActivePage = tsUsers
     Align = alClient
     TabOrder = 1
+    ExplicitHeight = 490
     object tsHome: TTabSheet
       Caption = 'Home'
       ImageIndex = 3
@@ -63,10 +65,12 @@ object frmAdmin: TfrmAdmin
         object lblUsers: TLabel
           Left = 1
           Top = 1
-          Width = 97
-          Height = 15
+          Width = 897
+          Height = 39
           Align = alClient
           Caption = 'User Management'
+          ExplicitWidth = 97
+          ExplicitHeight = 15
         end
       end
       object dbgUsers: TDBGrid
@@ -127,12 +131,13 @@ object frmAdmin: TfrmAdmin
         object lblNav: TLabel
           Left = 1
           Top = 1
-          Width = 98
+          Width = 431
           Height = 15
           Align = alTop
           Alignment = taCenter
           Caption = 'Record Navigation'
           Layout = tlCenter
+          ExplicitWidth = 98
         end
         object btnLast: TButton
           Left = 126
@@ -180,11 +185,12 @@ object frmAdmin: TfrmAdmin
         object lblRecMod: TLabel
           Left = 1
           Top = 1
-          Width = 108
+          Width = 359
           Height = 15
           Align = alTop
           Alignment = taCenter
           Caption = 'Record Modification'
+          ExplicitWidth = 108
         end
         object btnUserDel: TButton
           Left = 240
@@ -285,121 +291,6 @@ object frmAdmin: TfrmAdmin
         Caption = 'Filter Logs'
         TabOrder = 4
         OnClick = btnFilterClick
-      end
-    end
-    object tsNutrients: TTabSheet
-      Caption = 'Modify Nutrients'
-      ImageIndex = 2
-      OnShow = tsNutrientsShow
-      object dbgNutrients: TDBGrid
-        Left = 32
-        Top = 80
-        Width = 809
-        Height = 281
-        TabOrder = 0
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = clWindowText
-        TitleFont.Height = -12
-        TitleFont.Name = 'Segoe UI'
-        TitleFont.Style = []
-        OnDrawColumnCell = dbgNutrientsDrawColumnCell
-      end
-      object pnlNutrientHeader: TPanel
-        Left = 0
-        Top = 0
-        Width = 899
-        Height = 41
-        Align = alTop
-        TabOrder = 1
-        object lblNutrient: TLabel
-          Left = 1
-          Top = 1
-          Width = 123
-          Height = 15
-          Align = alClient
-          Alignment = taCenter
-          Caption = 'Nutrients Management'
-        end
-      end
-      object pnlAddition: TPanel
-        Left = 32
-        Top = 360
-        Width = 441
-        Height = 123
-        TabOrder = 2
-        object lblNumCalories: TLabel
-          Left = 6
-          Top = 88
-          Width = 66
-          Height = 15
-          Caption = 'Min Calories'
-        end
-        object lblRecQty: TLabel
-          Left = 168
-          Top = 88
-          Width = 130
-          Height = 15
-          Caption = 'Recommended Quantity'
-        end
-        object pnlNutHead: TPanel
-          Left = 1
-          Top = 1
-          Width = 439
-          Height = 41
-          Align = alTop
-          TabOrder = 0
-          object lblNutHead: TLabel
-            Left = 200
-            Top = 16
-            Width = 3
-            Height = 15
-          end
-        end
-        object btnNutrient: TButton
-          Left = 328
-          Top = 40
-          Width = 75
-          Height = 25
-          Caption = 'Add nutrient'
-          TabOrder = 1
-          OnClick = btnNutrientClick
-        end
-        object edtNutrient: TEdit
-          Left = 19
-          Top = 48
-          Width = 121
-          Height = 23
-          TabOrder = 2
-          TextHint = 'Nutrient name'
-        end
-        object spnCalories: TSpinEdit
-          Left = 78
-          Top = 85
-          Width = 62
-          Height = 24
-          MaxValue = 0
-          MinValue = 0
-          TabOrder = 3
-          Value = 0
-        end
-        object cbxDaily: TCheckBox
-          Left = 184
-          Top = 48
-          Width = 97
-          Height = 17
-          Caption = 'Needed Daily'
-          TabOrder = 4
-        end
-        object spnRecQty: TSpinEdit
-          Left = 320
-          Top = 84
-          Width = 57
-          Height = 24
-          MaxValue = 0
-          MinValue = 0
-          TabOrder = 5
-          Value = 0
-        end
       end
     end
   end

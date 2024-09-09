@@ -13,3 +13,35 @@
 2024/09/07@09:52:21: [USER] User cady has been saved in the PASSWORDS file
 2024/09/07@09:52:21: [USER] The user cady, uid CA994 has registered successfully
 2024/09/07@09:52:26: [USER] User cady uid CA994 logged in.
+2024/09/07@14:59:56: [USER] User hanzal has been saved in the PASSWORDS file
+2024/09/07@14:59:56: [USER] The user hanzal, uid  has registered successfully
+2024/09/07@15:00:05: [USER] Administrator daru uid DA1755 logged in.
+2024/09/07@15:00:07: [SYSTEM] The database table `tblUsers` was accessed by administrator daru
+2024/09/07@15:02:03: [USER] User hanzal has been saved in the PASSWORDS file
+2024/09/07@15:02:03: [USER] The user hanzal, uid HA559 has registered successfully
+2024/09/07@15:02:11: [USER] Administrator daru uid DA1755 logged in.
+2024/09/07@15:02:13: [SYSTEM] The database table `tblUsers` was accessed by administrator daru
+2024/09/09@16:04:42: [USER] User dai uid DA118 logged in.
+2024/09/09@16:07:42: [USER] User dai uid DA118 logged in.
+2024/09/09@16:10:11: [USER] User dai uid DA118 logged in.
+2024/09/09@16:12:35: [USER] User dai uid DA118 logged in.
+2024/09/09@16:13:02: [USER] Administrator daru uid DA175 logged in.
+2024/09/09@16:13:05: [SYSTEM] The database table `tblUsers` was accessed by administrator daru
+2024/09/09@16:15:22: [USER] Administrator daru uid DA175 logged in.
+2024/09/09@16:15:24: [SYSTEM] The database table `tblUsers` was accessed by administrator daru
+2024/09/09@16:16:51: [USER] Administrator daru uid DA175 logged in.
+2024/09/09@16:16:54: [SYSTEM] The database table `tblUsers` was accessed by administrator daru
+2024/09/09@16:23:58: [USER] Administrator daru uid DA175 logged in.
+2024/09/09@16:23:58: [SYSTEM] The database table `tblUsers` was accessed by administrator 
+2024/09/09@16:24:05: [SYSTEM] The database table `tblUsers` was accessed by administrator daru
+2024/09/09@16:28:54: [USER] Administrator daru uid DA175 logged in.
+2024/09/09@16:28:54: [SYSTEM] The database table `tblUsers` was accessed by administrator 
+2024/09/09@16:28:56: [SYSTEM] The database table `tblUsers` was accessed by administrator daru
+2024/09/09@16:30:41: [USER] Administrator daru uid DA175 logged in.
+2024/09/09@16:30:41: [SYSTEM] The database table `tblUsers` was accessed by administrator 
+2024/09/09@16:30:53: [USER] Administrator hanzal uid HA559 logged in.
+2024/09/09@16:30:53: [SYSTEM] The database table `tblUsers` was accessed by administrator daru
+2024/09/09@16:30:56: [SYSTEM] The database table `tblUsers` was accessed by administrator hanzal
+2024/09/09@16:31:57: [USER] Administrator HANZAL uid HA559 logged in.
+2024/09/09@16:31:57: [SYSTEM] The database table `tblUsers` was accessed by administrator 
+2024/09/09@16:31:58: [SYSTEM] The database table `tblUsers` was accessed by administrator HANZAL

@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls,InfoBoard,Utils_U,User_u,
-  Vcl.ComCtrls,Meals_U,conDBBites,frmUserDLG;
+  Vcl.ComCtrls,Meals_U,conDBBites,frmGreeter_U;
 
 type
   TfrmDashboard = class(TForm)
@@ -175,18 +175,19 @@ begin
   begin
     with Paragraph do
     begin
-      TabCount := 1;
-      Tab[0] := 200;
+      TabCount := 2;
+      Tab[0] := 150;
+      Tab[1] := 250;
     end;
     with Lines do
     begin
       Clear;
       Add('Information on ' + sMealName);
       Add('----------------------------');
-      Add('Calories per 100g:' + #13 + IntToStr(iCalories));
-      Add('Proteins per 100g:' + #13 + IntToStr(iProteins));
-      Add('Carbohydrates per 100g:' + #13 + IntToStr(iCalories));
-      Add('Fat per 100g:' + #13 + IntToStr(iProteins));
+      Add('Calories per 100g:' + #9 + IntToStr(iCalories));
+      Add('Proteins per 100g:' + #9 + IntToStr(iProteins));
+      Add('Carbohydrates per 100g:' + #9 + IntToStr(iCalories));
+      Add('Fat per 100g:' + #9 + IntToStr(iProteins));
     end;
   end else
   ShowMessage('Meal not found');
@@ -201,7 +202,7 @@ end;
 
 procedure TfrmDashboard.FormShow(Sender: TObject);
 var
-  userInfoForm : TfrmUserDLG;
+  userGreeter : TfrmGreeter;
 begin
   utilObj := TUtils.Create;
   utilObj.SetLabel(lblHeading,'Dashboard',15);
@@ -210,11 +211,12 @@ begin
   PopulateFoods;
   pctDashboard.TabIndex := 0;
   tsSearch.TabVisible := false;
-  GetInfo;
+ // GetInfo;
 
   if currentUser.GetFirstLogin then
   begin
-    userInfoForm.Create(nil);
+    userGreeter.Create(nil);
+    userGreeter.currentUser := currentUser;
   end;
 end;
 
@@ -222,6 +224,7 @@ procedure TfrmDashboard.PopulateFoods;
 var
  currentMeal : string;
  i : Integer;
+ bStop : boolean;
 begin
  i := 0;
  with dbmData.tblFoods do
@@ -231,10 +234,15 @@ begin
   repeat
     inc(i);
     currentMeal := FieldValues['Foodname'];
-    arrMeals[i] := currentMeal;
-    cmbMeals.Items.Add(currentMeal);
-    Next;
-  until Eof;
+    if currentMeal = '' then
+    begin
+      bStop := true;
+      // Dynamic array sizes
+      arrMeals[i] := currentMeal;
+      cmbMeals.Items.Add(currentMeal);
+      Next;
+    end;
+  until Eof or bStop;
   Close;
  end;
 end;

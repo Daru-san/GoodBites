@@ -53,7 +53,7 @@ type
     procedure RemoveUser(userID : string);
     procedure AddCalories(numCalories : Integer);
     procedure UpdateDatabase;
-    procedure SetUserInfo(sUserID,sFullname : string;iAge : integer);
+    procedure SaveUserInfo(sUserID,sFullname : string;iAge : integer);
   end;
 
   var
@@ -163,7 +163,7 @@ begin
 end;
 
 // Add extra information from new users on first login
-procedure TUser.SetUserInfo;
+procedure TUser.SaveUserInfo;
 var
   userFound : Boolean;
 begin

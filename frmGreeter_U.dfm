@@ -1,4 +1,4 @@
-object OKRightDlg: TOKRightDlg
+object frmGreeter: TfrmGreeter
   Left = 227
   Top = 108
   BorderStyle = bsDialog
@@ -8,7 +8,6 @@ object OKRightDlg: TOKRightDlg
   Color = clBtnFace
   ParentFont = True
   Position = poScreenCenter
-  OnCreate = FormCreate
   TextHeight = 15
   object Bevel1: TBevel
     Left = 8

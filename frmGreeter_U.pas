@@ -1,4 +1,4 @@
-unit frmUserDLG;
+unit frmGreeter_U;
 
 interface
 
@@ -6,7 +6,7 @@ uses Winapi.Windows, System.SysUtils, System.Classes, Vcl.Graphics, Vcl.Forms,
   Vcl.Controls, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, Vcl.Samples.Spin,vcl.Dialogs,User_u;
 
 type
-  TfrmUserDLG = class(TForm)
+  TfrmGreeter = class(TForm)
     OKBtn: TButton;
     CancelBtn: TButton;
     Bevel1: TBevel;
@@ -14,31 +14,32 @@ type
     spnAge: TSpinEdit;
     lblFName: TLabel;
     lblAge: TLabel;
-    procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure OKBtnClick(Sender: TObject);
   private
     { Private declarations }
   public
     { Public declarations }
+    currentUser : TUser;
   end;
 
 var
-  OKRightDlg: TfrmUserDLG;
-  currentUser : TUser;
+  frmGreeter: TfrmGreeter;
 
 implementation
 
 {$R *.dfm}
 
-procedure TfrmUserDLG.FormCreate(Sender: TObject);
+procedure TfrmGreeter.FormShow(Sender: TObject);
 begin
   spnAge.Value := -1;
   spnAge.MinValue := 7;
   spnAge.MaxValue := 149;
+  ShowMessage('Welcome ' + currentUser.Username + ', please enter your information here');
 end;
 
 // We should probably get the birthday and calculate the age using that instead
-procedure TfrmUserDLG.OKBtnClick(Sender: TObject);
+procedure TfrmGreeter.OKBtnClick(Sender: TObject);
 const LETTERS = ['A'..'Z'];
 var
   sFullname : string;
@@ -82,7 +83,7 @@ begin
     );
     if iConf = mrYes then
     begin
-      currentUser.SetUserInfo(currentUser.UserID,sFullname,iAge);
+      currentUser.SaveUserInfo(currentUser.UserID,sFullname,iAge);
       ShowMessage('Welcome to ' + Application.Name + '!');
     end else exit;
   end else exit;

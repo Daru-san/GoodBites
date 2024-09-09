@@ -17,12 +17,12 @@ uses
   Admin_U in 'Admin_U.pas' {frmAdmin},
   conDBBites in 'conDBBites.pas' {dbmData: TDataModule},
   InfoBoard in 'InfoBoard.pas' {frmInfo},
-  User_u in 'User_U.pas',
+  User_U in 'User_U.pas',
   DataFetcher in 'DataFetcher.pas',
   Utils_U in 'Utils_U.pas',
   HelpForm in 'HelpForm.pas' {frmHelp},
   Meals_U in 'Meals_U.pas',
-  frmUserDLG in 'frmUserDLG.pas' {OKRightDlg};
+  frmGreeter_U in 'frmGreeter_U.pas' {frmGreeter};
 
 {$R *.res}
 
@@ -37,6 +37,6 @@ begin
   Application.CreateForm(TdbmData, dbmData);
   Application.CreateForm(TfrmInfo, frmInfo);
   Application.CreateForm(TfrmHelp, frmHelp);
-  Application.CreateForm(TOKRightDlg, OKRightDlg);
+  Application.CreateForm(TfrmGreeter, frmGreeter);
   Application.Run;
 end.

@@ -628,16 +628,19 @@ begin
     ShowMessage('The user ' + sUsername + ' is not found');
   end
   else
-  repeat
-    ReadLn(passFile,fileString);
-    delPos := pos('#',fileString);
-    sUserInFile := copy(fileString,1,delPos-1);
-    delete(fileString,1,delPos);
-    sPassInFile := fileString;
-    if ((UPPERCASE(sUserInFile) = UPPERCASE(sUsername)) and (sPassInFile = sPassword)) then
-      isCorrect := true;
-  until EOF(passFile) or isCorrect;
-  CloseFile(passFile);
+  try
+    repeat
+      ReadLn(passFile,fileString);
+      delPos := pos('#',fileString);
+      sUserInFile := copy(fileString,1,delPos-1);
+      delete(fileString,1,delPos);
+      sPassInFile := fileString;
+      if ((UPPERCASE(sUserInFile) = UPPERCASE(sUsername)) and (sPassInFile = sPassword)) then
+        isCorrect := true;
+    until EOF(passFile) or isCorrect;
+  finally
+    CloseFile(passFile);
+  end;
 
   CheckLoginDetails := isCorrect;
 end;

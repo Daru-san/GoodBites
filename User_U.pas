@@ -608,8 +608,15 @@ var
   delPos : integer;
 begin
   AssignFile(passFile,filename);
+  isCorrect := false;
 
-  if not TUtils.Create.CheckFileExists(filename) then exit;
+  if not TUtils.Create.CheckFileExists(filename) then
+  begin
+    ShowMessage('An unkown error ocurred, please contact an administrator');
+    loggerObj.WriteSysLog('The passwords file was needed but not found');
+    Result := false;
+    exit;
+  end;
 
   Reset(passFile);
 

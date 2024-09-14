@@ -772,13 +772,13 @@ end;
 
 function TUser.GetMeal(mealIndex: Integer;ValueIndex:integer = 0): string;
 var
-  sMealName,sMealType : string;
+  sFoodName,sMealType : string;
   eatenDate,eatenTime : TDate;
   isMealFound : boolean;
 begin
 {
   ValueIndex is the index of the specific value one is looking for:
-  1 = name of the meal
+  1 = name of the food eaten during the meal
   2 = Type of mean i.e dinner, breakfast etc.
   3 = Day the meal was eaten
   4 = Time the meal was eaten
@@ -795,7 +795,7 @@ begin
           isMealFound := true;
           eatenDate := FieldValues['DateEaten'];
           eatenTime := FieldValues['TimeEaten'];
-          sMealName := FieldValues['FoodName'];
+          sFoodName := FieldValues['FoodName'];
           sMealType := FieldValues['MealType'];
         end else next;
       end else next;
@@ -803,7 +803,7 @@ begin
     Close;
   end;
   case ValueIndex of
-  1 : Result := sMealName;
+  1 : Result := sFoodName;
   2 : Result := sMealType;
   3 : Result := DateToStr(eatenDate);
   4 : Result := FormatDateTime('tt',eatenTime);

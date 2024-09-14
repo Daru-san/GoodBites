@@ -9,10 +9,11 @@ type
     private
       FMealID : string;
       FMealName : String;
-      FNumCalories : integer;
-      FProtein : integer;
-      FCarbohydrate : integer;
-      FFats : integer;
+      FCaloriePer100G : integer;
+      FCalories : Integer;
+      FProteinPer100G : integer;
+      FCarbPer100G : integer;
+      FFatPer100G : integer;
 
       procedure AddMealToDB(sMealname: string; sNutrients: string;numCalories : integer);
       procedure GetNutrients;
@@ -20,7 +21,7 @@ type
     public
       constructor Create(Mealname:string; portionSize : integer = 0; Calories:Integer = 0;NewMeal:Boolean = false);
       property Mealname :string read FMealName write FMealName;
-      property Calories : Integer read FNumCalories write FNumCalories;
+      property Calories : Integer read FCalories write FCalories;
 
       procedure EatMeal(currentUser : TUser);
 
@@ -88,10 +89,11 @@ begin
       if UpperCase(Mealname) = UpperCase(FieldValues['Mealname']) then
       begin
         isMealFound := true;
-        FProtein := FieldValues['ProteinsPer100g'];
-        FCarbohydrate := FieldValues['CarbsPer100g'];
-        FFats := FieldValues['FatsPer100g'];
-      end;
+        FProteinPer100G := FieldValues['ProteinsPer100g'];
+        FCarbPer100G := FieldValues['CarbsPer100g'];
+        FFatPer100G := FieldValues['FatsPer100g'];
+        FCaloriePer100G := FieldValues['CaloriesPer100g'];
+      end else Next;
     until EOF or isMealFound;
     Close;
   end;
@@ -104,14 +106,14 @@ begin
   if MealProperty = 'Nutrient' then
   begin
     if nutrientName = 'Protein' then
-      returnString := FProtein else
+      returnString := FProteinPer100G else
     if nutrientName = 'Carbohydrate' then
-      returnString := FCarbohydrate else
+      returnString := FCarbPer100G else
     if nutrientName = 'Fat' then
-      returnString := FFats;
+      returnString := FFatPer100G;
   end else
   if MealProperty = 'Calories' then
-   returnString := FNumCalories;
+   returnString := FCaloriePer100G;
   Result := returnString;
 end;
 

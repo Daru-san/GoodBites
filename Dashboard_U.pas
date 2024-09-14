@@ -72,8 +72,8 @@ type
 var
   frmDashboard: TfrmDashboard;
   username : string;
-  gMealCount : integer;
   foodList : TStringList;
+  gFoodCount : integer;
 
 implementation
 
@@ -83,7 +83,6 @@ procedure TfrmDashboard.btnEatenClick(Sender: TObject);
 var
   selectedOpt,iCalories,iCheckInt,iPortion : integer;
   sMealName : string;
-  arrNutrients : array of string;
 begin
   sMealName := cmbMeals.text;
   Val(edtPortion.Text,iPortion,iCheckInt);
@@ -163,17 +162,17 @@ begin
   isMealFound := false;
   i := 0;
   repeat
-    if UpperCase(sMealName) = arrMeals[i] then
+    if UpperCase(sMealName) = foodList[i] then
     begin
       isMealFound := true;
-      currentMeal.Create(arrMeals[i]);
+      currentMeal.Create(foodList[i]);
       iProteins := currentMeal.GetMealInfo('Nutrient','Protein');
       iCarbs := currentMeal.GetMealInfo('Nutrient','Carbohydrate');
       iFat := currentMeal.GetMealInfo('Nutrient','Fat');
       iCalories := currentMeal.GetMealInfo('Calories');
       currentMeal.Free;
     end else inc(i);
-  until (i = gMealCount) or isMealFound;
+  until (i = gFoodCount) or isMealFound;
 
   if isMealFound then
   with redMealInfo do

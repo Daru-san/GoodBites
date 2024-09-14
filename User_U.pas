@@ -98,22 +98,25 @@ begin
       else
       begin
         ShowMessage('The username or password are incorrect');
-        LoggerObj.WriteUserLog('Failed login attempt by user ' + Username);
       end;
-    end else
-      ShowMessage('Invalid data');
+      // end if
+    end;
   end else
   begin
-    UserID := '';
+    UserID := 'Bob';
     FisAdmin := false;
+    loginSuccessful := false;
   end;
 
   Fusername := Username;
   FisAdmin := IsAdmin;
   FLoggedIn := loginSuccessful;
-  FPassword := Password;
-  FUserID := UserID;
-  FDailyCalories := GetDailyCalories(date);
+  if loginSuccessful then
+  begin
+    FPassword := Password;
+    FUserID := UserID;
+    FDailyCalories := GetDailyCalories(date);
+  end;
 function TUser.GetUsername : string;
 var
   isFound : Boolean;

@@ -47,7 +47,7 @@ type
     function GetFirstLogin : boolean;
     function GetDailyCalories(currentDate:Tdate):integer;
     function GetTotalMeals:integer;
-    function GetMeal(mealIndex:integer):string;
+    function GetMeal(mealIndex: Integer;ValueIndex:integer = 0): string;
 
 
     procedure RemoveUser(userID : string);
@@ -737,12 +737,19 @@ procedure TUser.UpdateDatabase;
 begin
 end;
 
-function TUser.GetMeal(mealIndex: Integer): string;
+function TUser.GetMeal(mealIndex: Integer;ValueIndex:integer = 0): string;
 var
-  sMealName : string;
-  dEatenDate : TDate;
+  sMealName,sMealType : string;
+  eatenDate,eatenTime : TDate;
   isMealFound : boolean;
 begin
+{
+  ValueIndex is the index of the specific value one is looking for:
+  1 = name of the meal
+  2 = Type of mean i.e dinner, breakfast etc.
+  3 = Day the meal was eaten
+  4 = Time the meal was eaten
+  }
   with dbmData.tblMeals do
   begin
     Open;
@@ -753,13 +760,20 @@ begin
         if mealIndex = FieldValues['MealIndex'] then
         begin
           isMealFound := true;
-          dEatenDate := FieldValues['DateEaten'];
-          sMealName := FieldValues['MealName'];
+          eatenDate := FieldValues['DateEaten'];
+          eatenTime := FieldValues['TimeEaten'];
+          sMealName := FieldValues['FoodName'];
+          sMealType := FieldValues['MealType'];
         end else next;
       end else next;
     until EOF or isMealFound;
     Close;
   end;
-  result := sMealName + '/' + FormatDateTime('dd/mm/yy@tt',dEatenDate);
+  case ValueIndex of
+  1 : Result := sMealName;
+  2 : Result := sMealType;
+  3 : Result := DateToStr(eatenDate);
+  4 : Result := FormatDateTime('tt',eatenTime);
+  end;
 end;
 end.

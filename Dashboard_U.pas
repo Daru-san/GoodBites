@@ -112,29 +112,35 @@ end;
 
 procedure TfrmDashboard.GetInfo;
 var
-  selectedDate,dEatenDate : TDate;
+  selectedDate : TDate;
   iTotalCalories,iNumMeals : integer;
   i: Integer;
-  arrUserMeals : array of string;
-  sMealName,sMealString,sEatenDate : string;
+  sMealName,dateEaten,timeEaten : string;
 begin
-  selectedDate := dpcDay.Date;
+  memMealLog.Clear;
+  if dpcDay.Checked then
+  selectedDate := dpcDay.Date
+  else selectedDate := Date;
   iTotalCalories := currentUser.GetDailyCalories(selectedDate);
   iNumMeals := currentUser.GetTotalMeals;
-  for i := 1 to iNumMeals do
+  if iNumMeals = 0 then
+    begin
+    memMealLog.Lines.Add('Nothing to see here! ' + #13 + 'Start eating!');
+    edtCaloires.Text := 0.ToString;
+  end else
   begin
-    arrUserMeals[i] := currentUser.GetMeal(i);
-    inc(gMealCount);
+    for i := 1 to iNumMeals do
+    begin
+      sMealName := currentUser.GetMeal(i,1);
+      dateEaten := currentUser.GetMeal(i,3);
+      timeEaten := currentUser.GetMeal(i,4);
+      if StrToDate(dateEaten) = selectedDate then
+      memMealLog.Lines.Add(
+        timeEaten + ': ' + sMealName + ' eaten for '+ currentUser.GetMeal(i,2)
+      );
+    end;
+    edtCaloires.Text := IntToStr(iTotalCalories);
   end;
-  for i := 1 to iNumMeals do
-  begin
-    sMealString := arrUserMeals[i];
-    sMealName := copy(sMealString,1,pos(sMealString,'/')-1);
-    sEatenDate := copy(sMealString,pos(sMealString,'/')+1,sMealString.length);
-    dEatenDate := StrToDate(sEatenDate);
-    memMealLog.Lines.Add(sMealName + ' eaten on ' +  FormatDateTime('dd mm yy at tt',dEatenDate));
-  end;
-  edtCaloires.Text := IntToStr(iTotalCalories);
 end;
 
 procedure TfrmDashboard.btnLogOutClick(Sender: TObject);
@@ -210,8 +216,7 @@ begin
   PopulateFoods;
   pctDashboard.TabIndex := 0;
   tsSearch.TabVisible := false;
- // GetInfo;
-
+  GetInfo;
   if currentUser.GetFirstLogin then
   begin
     userGreeter.Create(nil);

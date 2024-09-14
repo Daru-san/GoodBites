@@ -14,10 +14,11 @@ type
       FProteinPer100G : integer;
       FCarbPer100G : integer;
       FFatPer100G : integer;
+      FNumServings : Integer;
 
       procedure AddMealToDB(sMealname: string; sNutrients: string;numCalories : integer);
       procedure GetNutrients;
-      procedure GetCalories(portionSize:integer);
+      procedure CalcCalories(portionSize:integer);
     public
       constructor Create(Mealname:string; portionSize : integer = 0; Calories:Integer = 0;NewMeal:Boolean = false);
       property Mealname :string read FMealName write FMealName;
@@ -43,9 +44,8 @@ begin
     GetNutrients;
   end;
   if Calories = 0 then
-  GetCalories(portionSize);
+  CalcCalories(portionSize);
   FMealName := Mealname;
-  FNumCalories := Calories;
 end;
 
 procedure TMeal.AddMealToDB(sMealname: string; sNutrients: string;numCalories : integer);
@@ -117,8 +117,20 @@ begin
   Result := returnString;
 end;
 
-procedure TMeal.GetCalories;
+procedure TMeal.CalcCalories;
+var
+  iTotalCalories : Integer;
 begin
-{ Somehow calculate the number of calories in food based on it's portion size}
+  {
+    Say calories are measured in cl, num calories would be 100 grams per cl
+    x = (150/100)g*52cl.100g^-1 * 5, would be about 260 calories?
+    That makes decent sense, I will stick to  this methodology for now
+  }
+  iTotalCalories := Round(
+      (portionSize/100)*FCaloriePer100G
+    )*FNumServings;
+
+  Calories := iTotalCalories;
+
 end;
 end.

@@ -699,10 +699,11 @@ begin
     repeat
       if UserID = FieldValues['UserID'] then
       begin
-        eatenDate := FieldValues['EatenDate'];
+        eatenDate := FieldValues['DateEaten'];
         if FormatDateTime('dd/mm/yy',currentDate) = FormatDateTime('dd/mm/yy',eatenDate) then
           numCalories := numCalories + FieldValues['TotalCalories'];
       end;
+      Next;
     until EOF;
     Close;
   end;

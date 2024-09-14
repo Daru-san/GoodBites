@@ -105,17 +105,18 @@ object frmDashboard: TfrmDashboard
             Caption = 'Total Daily Calories'
           end
           object memMealLog: TMemo
-            Left = 232
+            Left = 136
             Top = 29
-            Width = 208
+            Width = 304
             Height = 196
             Lines.Strings = (
               'memMealLog')
+            ScrollBars = ssBoth
             TabOrder = 0
           end
           object edtCaloires: TEdit
-            Left = 130
-            Top = 29
+            Left = 19
+            Top = 61
             Width = 96
             Height = 23
             NumbersOnly = True

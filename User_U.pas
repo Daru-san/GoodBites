@@ -30,12 +30,13 @@ type
     function CheckPassword(sPassword:string):Boolean;
     function CheckUserExisting(sUsername:string):Boolean;
     function GetLastLogin:string;
+    function GetUsername : string;
 
     procedure SaveLastLogin(sUsername,userID : string; userIsAdmin : Boolean);
     procedure CreateUser(sUsername,sPassword: string);
     procedure RegisterUserInDB(sPassword,sUsername,userID : string);
   public
-    constructor Create(Username : string;Password:string;NewUser:Boolean = false;LoggingIn : boolean = true);
+    constructor Create(sUsername : string;Password:string;NewUser:Boolean = false;LoggingIn : boolean = true);
 
     property isAdmin: Boolean read FisAdmin write FisAdmin;
     property Username: string read Fusername write Fusername;
@@ -76,20 +77,21 @@ begin
 
   if NewUser then
   begin
-    CreateUser(Username,Password);
+    CreateUser(sUsername,Password);
   end;
 
   if LoggingIn then
   begin
-    isValid := CheckPresence(Username,Password);
+    isValid := CheckPresence(sUsername,Password);
 
     if isValid then
     begin
-      isCorrect := CheckLoginDetails(Username,Password);
-      UserId := GetUserID(Username);
+      isCorrect := CheckLoginDetails(sUsername,Password);
       if isCorrect then
       begin
+        UserID := GetUserID(sUsername);
         isAdmin := CheckAdmin(UserID);
+        Username := GetUsername;
         SaveLastLogin(Username,UserID,isAdmin);
         loginSuccessful := true;
       end
@@ -112,6 +114,25 @@ begin
   FPassword := Password;
   FUserID := UserID;
   FDailyCalories := GetDailyCalories(date);
+function TUser.GetUsername : string;
+var
+  isFound : Boolean;
+  sUsername : string;
+begin
+  with dbmData.tblUsers do
+  begin
+    Open;
+    First;
+    repeat
+      if UserID = FieldValues['UserID'] then
+      begin
+        isFound := true;
+        sUsername := FieldValues['Username'];
+      end else Next;
+    until eof or isFound;
+    Close;
+  end;
+  Result := sUsername;
 end;
 
 function TUser.CheckLogin;

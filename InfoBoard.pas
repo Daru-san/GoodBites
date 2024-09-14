@@ -152,7 +152,7 @@ procedure TfrmInfo.SetIndices;
 var
   I: Integer;
 begin
-  with cbxNutrients do
+ { with cbxNutrients do
   begin
     with dbmData.tblNutrients do
     begin
@@ -165,7 +165,7 @@ begin
       until eof;
       Close;
     end;
-  end;
+  end;     }
 end;
 procedure TfrmInfo.FormShow(Sender: TObject);
 begin

@@ -216,11 +216,23 @@ begin
   pctDashboard.TabIndex := 0;
   tsSearch.TabVisible := false;
   GetInfo;
+
+
+
   if currentUser.GetFirstLogin then
   begin
-    userGreeter.Create(nil);
-    userGreeter.currentUser := currentUser;
+   userGreeter := TfrmGreeter.Create(nil);
+   userGreeter.currentUser := currentUser;
+   with userGreeter do
+   begin
+    try
+      ShowModal;
+    finally
+      Free;
+    end;
+   end;
   end;
+
 end;
 
 procedure TfrmDashboard.PopulateFoods;

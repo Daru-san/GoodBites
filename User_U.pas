@@ -17,7 +17,7 @@ type
     FFullname : string;
     FAge : integer;
 
-    function GenerateUserID(sUsername:string): string; 
+    function GenerateUserID(sUsername:string): string;
     function CheckUserID(sUserID:string) : boolean;
     function CheckUsername(sUsername:string) : boolean;
     function CheckDatabase(sUsername:string):boolean;

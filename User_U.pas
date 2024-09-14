@@ -80,6 +80,22 @@ begin
     CreateUser(sUsername,Password);
   end;
 
+  {
+    Process:
+    1. Validate the user by ensuring data is present
+    2. Check if the data is correct(username and password)
+    3. Get the user ID, using the username
+    4. Check for administrator privilage using the user ID
+    5. Get the username from the database to ensure the username is the original
+      - Just ensuring if user Mat logs in as MAT, the username remains as Mat
+    6. Save the last login entry in the database to the current date and time
+    7. Update the logged in status to show that they are logged in incase any other procedure needs that info
+      - These procedures being found in the main unit
+
+    On failure:
+    1. If username or password are invalid, inform the user to enter them properly
+    2. If the username or password are incorrect, inform the user to correct them
+    }
   if LoggingIn then
   begin
     isValid := CheckPresence(sUsername,Password);
@@ -101,22 +117,32 @@ begin
       end;
       // end if
     end;
+    //end if
   end else
   begin
     UserID := 'Bob';
     FisAdmin := false;
     loginSuccessful := false;
   end;
+  //end if
 
   Fusername := Username;
   FisAdmin := IsAdmin;
   FLoggedIn := loginSuccessful;
   if loginSuccessful then
   begin
+    { This may be a big security vulnerability }
     FPassword := Password;
+
+
     FUserID := UserID;
     FDailyCalories := GetDailyCalories(date);
   end;
+end;
+
+// Ensure that the username is the same as in the database
+// This prevents quircks from entering capitalized usernames
+// That are still valid but misplaced after login
 function TUser.GetUsername : string;
 var
   isFound : Boolean;
@@ -247,6 +273,16 @@ begin
 
   isCorrect := isPassValid and isUserValid and isPresent and not(userExistsing);
 
+  {
+    Process:
+    1. generate the user ID
+    2. Register the user in the database
+    3. Ensure that they exist in the database
+    4. Write the user to the passwords file
+    5. Log their successful account creation
+
+    If any steps fail logging will be done to let me debug the issue
+  }
   if isCorrect then
   begin
     userID := GenerateUserID(sUsername);
@@ -462,12 +498,22 @@ begin
 	Result := isFound;
 end;
 
+
+{
+  Write the user into the passwords file,
+  done as a function and not a procedure to do a check if
+  the operation was not successful, so that if so
+  the user is not added to the database
+  }
 function TUser.WriteUserPassFile;
 const FILENAME = '.passwords';
 var
   passFile : textfile;
   isFileExist, isSuccessful : boolean;
 begin
+
+  // The condition here being whether the file exists or not
+  // If not then the operation has to be aborted as soon as possible
   if not TUtils.Create.CheckFileExists(FILENAME) then
   begin
     LoggerObj.WriteSysLog(
@@ -488,6 +534,12 @@ begin
   WriteUserPassFile := isSuccessful;
 end;
 
+{
+  A very incomplete attempt at removing entries from the passwords file
+  The main issue is that the file begings with a `.`, giving it the hidden
+  attribute, preventing me from rewriting it.
+  I will either rename the file or find a workaround to solve this
+}
 function TUser.DeleteUserPassFile;
 const FILENAME = '.passwords';
 var
@@ -506,6 +558,8 @@ begin
     passList := TStringList.Create;
     passList.LoadFromFile(FILENAME);
     passList.NameValueSeparator := '#';
+
+    // Delete the password at the index in the file, e.g line 9
     indexNum := passList.IndexOfName(sUsername);
     if (indexNum <> -1) then
     begin
@@ -534,7 +588,6 @@ begin
     Post;
     Close;
   end;
-
 end;
 
 function TUser.CheckPresence;
@@ -558,6 +611,7 @@ begin
   CheckPresence := isValid;
 end;
 
+// Check if a user exists in the database already
 function TUser.CheckDatabase;
 var
   isFound: boolean;
@@ -575,6 +629,7 @@ begin
   CheckDatabase := isFound;
 end;
 
+// Check for administrator privilages
 function TUser.CheckAdmin;
 var
   userIsAdmin,isFound : boolean;
@@ -598,6 +653,7 @@ begin
   result := userIsAdmin;
 end;
 
+// Check user details to ensure they exist in the database and the passwords file
 function TUser.CheckLoginDetails;
 const
 FILENAME = '.passwords';
@@ -645,6 +701,7 @@ begin
   CheckLoginDetails := isCorrect;
 end;
 
+// Save the last login parameter in the database as the current date
 procedure TUser.SaveLastLogin;
 var
   userFound : boolean;
@@ -676,6 +733,8 @@ begin
   end;
 end;
 
+
+//TODO: Evaluate whether this procedure is needed
 function TUser.GetLastLogin: string;
 var
   userFound : Boolean;
@@ -696,6 +755,9 @@ begin
   Result := sLastLogin;
 end;
 
+
+// Still in progress, removing a user from the database
+//TODO: Come back to user removal
 procedure TUser.RemoveUser;
 var
   isFound, isRemoved : boolean;
@@ -722,6 +784,7 @@ begin
   end;
 end;
 
+// Calculate the number of calories consumed by a user on a particular day
 function TUser.GetDailyCalories(currentDate: TDate): Integer;
 var
   eatenDate : TDate;
@@ -746,11 +809,15 @@ begin
   Result := numCalories;
 end;
 
+// Increment daily calorie count(for the current day) as needed
 procedure TUser.AddCalories(numCalories:integer);
 begin
   FDailyCalories := FDailyCalories + numCalories;
 end;
 
+// Count the total amount of meals eaten by a user
+// Userful in displaying them all by providing an index
+// To use when searching for them, knowing where to start and stop
 function TUser.GetTotalMeals: Integer;
 var
   numMeals : integer;
@@ -770,6 +837,7 @@ begin
   result := numMeals;
 end;
 
+// Get information on a specific meal eaten by the user, i.e the food they ate, time they ate it
 function TUser.GetMeal(mealIndex: Integer;ValueIndex:integer = 0): string;
 var
   sFoodName,sMealType : string;

@@ -40,7 +40,7 @@ end;
 
 // We should probably get the birthday and calculate the age using that instead
 procedure TfrmGreeter.OKBtnClick(Sender: TObject);
-const LETTERS = ['A'..'Z'];
+const LETTERS = ['A'..'Z'] + [' '];
 var
   sFullname : string;
   iAge : Integer;

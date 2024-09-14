@@ -72,8 +72,8 @@ type
 var
   frmDashboard: TfrmDashboard;
   username : string;
-  arrMeals : array of string;
   gMealCount : integer;
+  foodList : TStringList;
 
 implementation
 
@@ -104,7 +104,6 @@ procedure TfrmDashboard.btnLoadDataClick(Sender: TObject);
 var
   selectedDate,dEatenDate : TDate;
   iTotalCalories,iNumMeals : integer;
-  arrMeals :  array of string;
   i: Integer;
   sMealName,sMealString,sEatenDate : string;
 begin
@@ -224,9 +223,9 @@ procedure TfrmDashboard.PopulateFoods;
 var
  currentMeal : string;
  i : Integer;
- bStop : boolean;
 begin
  i := 0;
+ foodList := TStringList.Create;
  with dbmData.tblFoods do
  begin
   Open;
@@ -234,15 +233,13 @@ begin
   repeat
     inc(i);
     currentMeal := FieldValues['Foodname'];
-    if currentMeal = '' then
+    if not (currentMeal = '') then
     begin
-      bStop := true;
-      // Dynamic array sizes
-      arrMeals[i] := currentMeal;
+      foodList.Add(currentMeal);
       cmbMeals.Items.Add(currentMeal);
       Next;
     end;
-  until Eof or bStop;
+  until Eof;
   Close;
  end;
 end;

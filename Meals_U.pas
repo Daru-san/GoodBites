@@ -8,7 +8,7 @@ type
   TMeal = class
     private
       FMealID : string;
-      FMealName : String;
+      FFoodName : String;
       FCaloriePer100G : integer;
       FCalories : Integer;
       FProteinPer100G : integer;
@@ -16,29 +16,30 @@ type
       FFatPer100G : integer;
       FNumServings : Integer;
 
-      procedure AddMealToDB(sMealname: string; sNutrients: string;numCalories : integer);
+      procedure AddFoodToDB(sFoodname: string; numCalories : integer);
       procedure GetNutrients;
       procedure CalcCalories(portionSize:integer);
     public
-      constructor Create(Mealname:string; portionSize : integer = 0; Calories:Integer = 0;NewMeal:Boolean = false);
-      property Mealname :string read FMealName write FMealName;
+      constructor Create(Foodname:string; portionSize : integer = 0; Calories:Integer = 0;NewMeal:Boolean = false);
+      property Foodname :string read FFoodName write FFoodName;
       property Calories : Integer read FCalories write FCalories;
 
       procedure EatMeal(currentUser : TUser);
 
-      function GetMealInfo(MealProperty:string; nutrientName : string = '') : Integer;
+      function GetFoodInfo(FoodProperty:string; nutrientName : string = '') : Integer;
+      function ValidateFood(sFoodname:string;Calories:Integer): boolean;
   end;
 
 implementation
 
-constructor TMeal.Create(Mealname: string; portionSize:integer = 0; Calories: Integer = 0;NewMeal:Boolean = false);
+constructor TMeal.Create(Foodname: string; portionSize:integer = 0; Calories: Integer = 0;NewMeal:Boolean = false);
 var
   sNutrients : string;
 begin
 
   if NewMeal then
   begin
-    AddMealToDB(Mealname,sNutrients,Calories);
+    AddFoodToDB(Foodname,Calories);
   end else
   begin
     GetNutrients;
@@ -48,8 +49,29 @@ begin
   FMealName := Mealname;
 end;
 
-procedure TMeal.AddMealToDB(sMealname: string; sNutrients: string;numCalories : integer);
+function TMeal.ValidateFood(sFoodname:string;Calories:Integer): boolean;
+var
+  nameCorrect,nutrientCorrect,calorieCorrect : Boolean;
+  isLong : Boolean;
 begin
+  nameCorrect := utilObj.ValidateString(Foodname,'Meal',2,20);
+  //Validate nutrients and calorie counts
+end;
+
+procedure TMeal.AddFoodToDB(sFoodname: string; numCalories : integer);
+begin
+  if ValidateMeal(sFoodname,numCalories) then
+    with dbmData.tblFoods do
+    begin
+      Open;
+      Append;
+      FieldValues['FoodName'] := Foodname;
+      FieldValues['CaloriesPer100g'] := numCalories;
+      FieldValues['CarbsPer100g'] := FCarbPer100G;
+      FieldValues['ProteinsPer100g'] := FProteinPer100G;
+      FieldValues['FatPer100g'] := FFatPer100G;
+      Post;
+    end;
 end;
 
 procedure TMeal.EatMeal(currentUser : TUser);
@@ -65,12 +87,9 @@ begin
   begin
     Open;
     Append;
-    FieldValues['MealName'] := Mealname;
+    FieldValues['FoodName'] := Foodname;
     FieldValues['TotalCalories'] := Calories;
     FieldValues['DateEaten'] := currentDate;
-    FieldValues['CarbsPer100g'] := FCarbohydrate;
-    FieldValues['ProteinsPer100g'] := FProtein;
-    FieldValues['FatPer100g'] := FFats;
     FieldValues['UserID'] := currentUser.UserID;
     FieldValues['MealIndex'] := iMealIndex;
     Post;
@@ -79,31 +98,31 @@ begin
 end;
 procedure TMeal.GetNutrients;
 var
-  isMealFound : Boolean;
+  isFoodFound : Boolean;
 begin
   with dbmData.tblFoods do
   begin
     Open;
     First;
     repeat
-      if UpperCase(Mealname) = UpperCase(FieldValues['Mealname']) then
+      if Mealname = FieldValues['FoodName'] then    //Solve access violation issue
       begin
-        isMealFound := true;
+				isFoodFound := true;
         FProteinPer100G := FieldValues['ProteinsPer100g'];
         FCarbPer100G := FieldValues['CarbsPer100g'];
         FFatPer100G := FieldValues['FatsPer100g'];
         FCaloriePer100G := FieldValues['CaloriesPer100g'];
       end else Next;
-    until EOF or isMealFound;
+    until EOF or isFoodFound;
     Close;
   end;
 end;
 
-function TMeal.GetMealInfo(MealProperty:string; nutrientName : string = '') : Integer;
+function TMeal.GetFoodInfo(FoodProperty:string; nutrientName : string = '') : Integer;
 var
   returnString : Integer;
 begin
-  if MealProperty = 'Nutrient' then
+  if FoodProperty = 'Nutrient' then
   begin
     if nutrientName = 'Protein' then
       returnString := FProteinPer100G else
@@ -112,7 +131,7 @@ begin
     if nutrientName = 'Fat' then
       returnString := FFatPer100G;
   end else
-  if MealProperty = 'Calories' then
+  if FoodProperty = 'Calories' then
    returnString := FCaloriePer100G;
   Result := returnString;
 end;
@@ -125,6 +144,8 @@ begin
     Say calories are measured in cl, num calories would be 100 grams per cl
     x = (150/100)g*52cl.100g^-1 * 5, would be about 260 calories?
     That makes decent sense, I will stick to  this methodology for now
+
+		Too much physics style calculation?
   }
   iTotalCalories := Round(
       (portionSize/100)*FCaloriePer100G

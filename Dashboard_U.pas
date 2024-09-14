@@ -166,10 +166,10 @@ begin
     begin
       isMealFound := true;
       currentMeal.Create(foodList[i]);
-      iProteins := currentMeal.GetMealInfo('Nutrient','Protein');
-      iCarbs := currentMeal.GetMealInfo('Nutrient','Carbohydrate');
-      iFat := currentMeal.GetMealInfo('Nutrient','Fat');
-      iCalories := currentMeal.GetMealInfo('Calories');
+      iProteins := currentMeal.GetFoodInfo('Nutrient','Protein');
+      iCarbs := currentMeal.GetFoodInfo('Nutrient','Carbohydrate');
+      iFat := currentMeal.GetFoodInfo('Nutrient','Fat');
+      iCalories := currentMeal.GetFoodInfo('Calories');
       currentMeal.Free;
     end else inc(i);
   until (i = gFoodCount) or isMealFound;

@@ -46,7 +46,7 @@ begin
   end;
   if Calories = 0 then
   CalcCalories(portionSize);
-  FMealName := Mealname;
+  FFoodName := Foodname;
 end;
 
 function TMeal.ValidateFood(sFoodname:string;Calories:Integer): boolean;
@@ -60,7 +60,7 @@ end;
 
 procedure TMeal.AddFoodToDB(sFoodname: string; numCalories : integer);
 begin
-  if ValidateMeal(sFoodname,numCalories) then
+  if ValidateFood(sFoodname,numCalories) then
     with dbmData.tblFoods do
     begin
       Open;
@@ -105,7 +105,7 @@ begin
     Open;
     First;
     repeat
-      if Mealname = FieldValues['FoodName'] then    //Solve access violation issue
+      if Foodname = FieldValues['FoodName'] then    //Solve access violation issue     d
       begin
 				isFoodFound := true;
         FProteinPer100G := FieldValues['ProteinsPer100g'];

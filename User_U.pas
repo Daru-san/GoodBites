@@ -52,7 +52,6 @@ type
 
     procedure RemoveUser(userID : string);
     procedure AddCalories(numCalories : Integer);
-    procedure UpdateDatabase;
     procedure SaveUserInfo(sUserID,sFullname : string;iAge : integer);
   end;
 
@@ -732,10 +731,6 @@ begin
     Close;
   end;
   result := numMeals;
-end;
-
-procedure TUser.UpdateDatabase;
-begin
 end;
 
 function TUser.GetMeal(mealIndex: Integer;ValueIndex:integer = 0): string;

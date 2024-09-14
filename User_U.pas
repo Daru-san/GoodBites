@@ -155,7 +155,7 @@ begin
       if UserID = FieldValues['UserID'] then
         isFound := true
       else next;
-    until EOF;
+    until EOF or isFound;
     Result := FieldValues['FirstLogin'];
     Close;
   end;
@@ -196,11 +196,12 @@ begin
     First;
     repeat
       if sUserID = FieldValues['UserID'] then
-      userFound := true;
+      userFound := true else next;
     until (Eof) or userFound;
     Edit;
     FieldValues['Fullname'] := sFullname;
     FieldValues['Age'] := iAge;
+    FieldValues['FirstLogin'] := false;
     Post;
   end;
 end;
@@ -449,6 +450,7 @@ begin
 	isFound := false;
 	with dbmData.tblUsers do
 	begin
+    Open;
 		First;
 		repeat
 			if sUserID = FieldValues['UserID'] then
@@ -528,6 +530,7 @@ begin
     FieldValues['RegisterDate'] := date;
     FieldValues['isAdmin'] := false;
     FieldValues['Age'] := 0;
+    FieldValues['FirstLogin'] := true;
     Post;
     Close;
   end;
@@ -582,7 +585,7 @@ begin
     Open;
     First;
     repeat
-    if UPPERCASE(FieldValues['UserID']) = UPPERCASE(sUserID) then
+    if FieldValues['UserID'] = sUserID then
     begin
       isFound := true;
       if FieldValues['isAdmin'] then userIsAdmin := true;

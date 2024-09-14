@@ -9,6 +9,8 @@ type
   TUtils = Class(TObject)
   public
     function CheckFileExists(filename: string;isLogFile:boolean = false) : boolean;
+    function ValidateString(S,StringName: string; minLength: Integer = 0;
+     maxLength: Integer = 0; AllowChars : Boolean = false; AllowNum : Boolean = false): Boolean;
 
     procedure SetLabel(LabelComponent:TLabel;labelMsg:string;fontSize : integer);
     procedure EditInDB(fieldName,fieldData : string);
@@ -24,6 +26,28 @@ type
   End;
 
 implementation
+
+function TUtils.ValidateString(S,StringName: string; minLength: Integer = 0;
+     maxLength: Integer = 0; AllowChars : Boolean = false; AllowNum : Boolean = false): Boolean;
+const
+NUMS = ['1'..'9'];
+SPECIAL = ['.',',','/','\','!','@','#','%','&','*'];
+LETTERS = ['A'..'Z'];
+var
+  isPresent,isLong:Boolean;
+  hasNum : Integer;
+  hasSpecial : Integer;
+  hasLetters : Boolean;
+begin
+  if S = '' then
+  begin
+    isPresent := false;
+  end;
+  if (S.Length < minLength) or (S.Length > maxLength) then
+  isLong := false;
+
+  Result := isPresent and isLong;
+end;
 
 function TUtils.CheckFileExists;
 var

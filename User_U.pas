@@ -65,6 +65,8 @@ type
     errorsList : TStringList;
 implementation
 
+{ The main constructor }
+{$REGION constructor}
 constructor TUser.Create;
 var
   isCorrect,isValid,passFileExists,loginSuccessful : boolean;
@@ -139,100 +141,10 @@ begin
     FDailyCalories := GetDailyCalories(date);
   end;
 end;
+{$ENDREGION}
 
-// Ensure that the username is the same as in the database
-// This prevents quircks from entering capitalized usernames
-// That are still valid but misplaced after login
-function TUser.GetUsername : string;
-var
-  isFound : Boolean;
-  sUsername : string;
-begin
-  with dbmData.tblUsers do
-  begin
-    Open;
-    First;
-    repeat
-      if UserID = FieldValues['UserID'] then
-      begin
-        isFound := true;
-        sUsername := FieldValues['Username'];
-      end else Next;
-    until eof or isFound;
-    Close;
-  end;
-  Result := sUsername;
-end;
-
-function TUser.CheckLogin;
-begin
-  result := FLoggedIn;
-end;
-
-function TUser.GetFirstLogin;
-var
-  isFound : Boolean;
-begin
-  with dbmData.tblUsers do
-  begin
-    Open;
-    First;
-    repeat
-      if UserID = FieldValues['UserID'] then
-        isFound := true
-      else next;
-    until EOF or isFound;
-    Result := FieldValues['FirstLogin'];
-    Close;
-  end;
-end;
-
-function TUser.GetUserId;
-var
-  sUserId : string;
-  isFound : boolean;
-begin
-  isFound := false;
-  with dbmData.tblUsers do
-  begin
-    Open;
-    First;
-    repeat
-      if UpperCase(sUsername) = UpperCase(FieldValues['Username']) then
-      begin
-        isFound := true;
-        sUserId := FieldValues['UserID'];
-      end else Next;
-    until Eof or isFound;
-    Close;
-  end;
-  if not isFound then
-  ShowMessage('User not found?' + sUsername);
-  result := sUserId;
-end;
-
-// Add extra information from new users on first login
-procedure TUser.SaveUserInfo;
-var
-  userFound : Boolean;
-begin
-  with dbmData.tblUsers do
-  begin
-    Open;
-    First;
-    repeat
-      if sUserID = FieldValues['UserID'] then
-      userFound := true else next;
-    until (Eof) or userFound;
-    Edit;
-    FieldValues['Fullname'] := sFullname;
-    FieldValues['Age'] := iAge;
-    FieldValues['FirstLogin'] := false;
-    Post;
-  end;
-end;
-
-{ Account creation }
+{ User account creation  }
+{$REGION Account creation }
 
 procedure TUser.CreateUser;
 var
@@ -504,7 +416,7 @@ end;
   done as a function and not a procedure to do a check if
   the operation was not successful, so that if so
   the user is not added to the database
-  }
+}
 function TUser.WriteUserPassFile;
 const FILENAME = '.passwords';
 var
@@ -534,45 +446,6 @@ begin
   WriteUserPassFile := isSuccessful;
 end;
 
-{
-  A very incomplete attempt at removing entries from the passwords file
-  The main issue is that the file begings with a `.`, giving it the hidden
-  attribute, preventing me from rewriting it.
-  I will either rename the file or find a workaround to solve this
-}
-function TUser.DeleteUserPassFile;
-const FILENAME = '.passwords';
-var
-  passFile : textfile;
-  isSuccessful : boolean;
-  passList : TStringList;
-  indexNum : integer;
-begin
-  if not UtilObj.CheckFileExists(FILENAME) then
-  begin
-    LoggerObj.WriteSysLog('User deletion attempted, but the password file is missing or corrupted');
-    ShowMessage('An unkown error occured');
-    isSuccessful := false;
-  end else
-  begin
-    passList := TStringList.Create;
-    passList.LoadFromFile(FILENAME);
-    passList.NameValueSeparator := '#';
-
-    // Delete the password at the index in the file, e.g line 9
-    indexNum := passList.IndexOfName(sUsername);
-    if (indexNum <> -1) then
-    begin
-      passList.Delete(indexNum);
-      passList.SaveToFile(FILENAME);
-    end;
-    passList.Free;
-    LoggerObj.WriteSysLog('Entry for user ' + sUsername + ' was removed from the passwords file');
-    isSuccessful := true;
-  end;
-end;
-
-
 procedure TUser.RegisterUserInDB;
 begin
   with dbmData.tblUsers do
@@ -588,6 +461,57 @@ begin
     Post;
     Close;
   end;
+end;
+{$ENDREGION}
+
+{ User login }
+{$REGION USER LOGIN}
+// Ensure that the username is the same as in the database
+// This prevents quircks from entering capitalized usernames
+// That are still valid but misplaced after login
+function TUser.GetUsername : string;
+var
+  isFound : Boolean;
+  sUsername : string;
+begin
+  with dbmData.tblUsers do
+  begin
+    Open;
+    First;
+    repeat
+      if UserID = FieldValues['UserID'] then
+      begin
+        isFound := true;
+        sUsername := FieldValues['Username'];
+      end else Next;
+    until eof or isFound;
+    Close;
+  end;
+  Result := sUsername;
+end;
+
+function TUser.GetUserId;
+var
+  sUserId : string;
+  isFound : boolean;
+begin
+  isFound := false;
+  with dbmData.tblUsers do
+  begin
+    Open;
+    First;
+    repeat
+      if UpperCase(sUsername) = UpperCase(FieldValues['Username']) then
+      begin
+        isFound := true;
+        sUserId := FieldValues['UserID'];
+      end else Next;
+    until Eof or isFound;
+    Close;
+  end;
+  if not isFound then
+  ShowMessage('User not found?' + sUsername);
+  result := sUserId;
 end;
 
 function TUser.CheckPresence;
@@ -732,8 +656,10 @@ begin
     LoggerObj.WriteUserLog('User ' + sUsername + ' uid ' + userID + ' logged in.');
   end;
 end;
+{$ENDREGION}
 
-
+{ Random used procedures}
+{$REGION MISC}
 //TODO: Evaluate whether this procedure is needed
 function TUser.GetLastLogin: string;
 var
@@ -756,6 +682,53 @@ begin
 end;
 
 
+function TUser.CheckLogin;
+begin
+  result := FLoggedIn;
+end;
+
+function TUser.GetFirstLogin;
+var
+  isFound : Boolean;
+begin
+  with dbmData.tblUsers do
+  begin
+    Open;
+    First;
+    repeat
+      if UserID = FieldValues['UserID'] then
+        isFound := true
+      else next;
+    until EOF or isFound;
+    Result := FieldValues['FirstLogin'];
+    Close;
+  end;
+end;
+
+// Add extra information from new users on first login
+procedure TUser.SaveUserInfo;
+var
+  userFound : Boolean;
+begin
+  with dbmData.tblUsers do
+  begin
+    Open;
+    First;
+    repeat
+      if sUserID = FieldValues['UserID'] then
+      userFound := true else next;
+    until (Eof) or userFound;
+    Edit;
+    FieldValues['Fullname'] := sFullname;
+    FieldValues['Age'] := iAge;
+    FieldValues['FirstLogin'] := false;
+    Post;
+  end;
+end;
+{$ENDREGION}
+
+{ User deletion procedures }
+{$REGION USER DELETION}
 // Still in progress, removing a user from the database
 //TODO: Come back to user removal
 procedure TUser.RemoveUser;
@@ -784,6 +757,46 @@ begin
   end;
 end;
 
+{
+  A very incomplete attempt at removing entries from the passwords file
+  The main issue is that the file begings with a `.`, giving it the hidden
+  attribute, preventing me from rewriting it.
+  I will either rename the file or find a workaround to solve this
+}
+function TUser.DeleteUserPassFile;
+const FILENAME = '.passwords';
+var
+  passFile : textfile;
+  isSuccessful : boolean;
+  passList : TStringList;
+  indexNum : integer;
+begin
+  if not UtilObj.CheckFileExists(FILENAME) then
+  begin
+    LoggerObj.WriteSysLog('User deletion attempted, but the password file is missing or corrupted');
+    ShowMessage('An unkown error occured');
+    isSuccessful := false;
+  end else
+  begin
+    passList := TStringList.Create;
+    passList.LoadFromFile(FILENAME);
+    passList.NameValueSeparator := '#';
+
+    // Delete the password at the index in the file, e.g line 9
+    indexNum := passList.IndexOfName(sUsername);
+    if (indexNum <> -1) then
+    begin
+      passList.Delete(indexNum);
+      passList.SaveToFile(FILENAME);
+    end;
+    passList.Free;
+    LoggerObj.WriteSysLog('Entry for user ' + sUsername + ' was removed from the passwords file');
+    isSuccessful := true;
+  end;
+end;
+{$ENDREGION}
+
+{$REGION FOOD DATA}
 // Calculate the number of calories consumed by a user on a particular day
 function TUser.GetDailyCalories(currentDate: TDate): Integer;
 var
@@ -877,4 +890,5 @@ begin
   4 : Result := FormatDateTime('tt',eatenTime);
   end;
 end;
+{$ENDREGION}
 end.

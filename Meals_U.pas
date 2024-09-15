@@ -2,10 +2,10 @@ unit Meals_U;
 
 interface
 
-uses conDBBites,System.Classes,System.SysUtils,User_U;
+uses conDBBites,System.Classes,System.SysUtils,User_U,Dialogs;
 { Display the meals in an image if possible}
 type
-  TMeal = class
+  TMeal = class(TObject)
     private
       FMealID : string;
       FFoodName : String;
@@ -17,11 +17,14 @@ type
       FNumServings : Integer;
 
       procedure AddFoodToDB(sFoodname: string; numCalories : integer);
-      procedure GetNutrients;
+      procedure GetNutrients(sFoodname:string);
       procedure CalcCalories(portionSize:integer);
+
+      function GetFoodname(sFoodname:string) : string;
     public
-      constructor Create(Foodname:string; portionSize : integer = 0; Calories:Integer = 0;NewMeal:Boolean = false);
-      property Foodname :string read FFoodName write FFoodName;
+      constructor Create(sFoodname:string; portionSize : integer = 0; Calories:Integer = 0;NewMeal:Boolean = false);
+
+      property Foodname : string read FFoodName write FFoodName;
       property Calories : Integer read FCalories write FCalories;
 
       procedure EatMeal(currentUser : TUser);
@@ -32,17 +35,19 @@ type
 
 implementation
 
-constructor TMeal.Create(Foodname: string; portionSize:integer = 0; Calories: Integer = 0;NewMeal:Boolean = false);
-var
-  sNutrients : string;
+constructor TMeal.Create(sFoodname: string; portionSize:integer = 0; Calories: Integer = 0;NewMeal:Boolean = false);
 begin
+  sFoodname.Trim;
 
   if NewMeal then
   begin
-    AddFoodToDB(Foodname,Calories);
+    AddFoodToDB(sFoodname,Calories);
   end else
   begin
-    GetNutrients;
+  //TODO: Research and solve this error
+  // I am not sure what is causing it, but using this variable in any way causes an access violation
+    Foodname := GetFoodname(sFoodname);
+    GetNutrients(sFoodname);
   end;
   if Calories = 0 then
   CalcCalories(portionSize);
@@ -56,6 +61,28 @@ var
 begin
   nameCorrect := utilObj.ValidateString(Foodname,'Meal',2,20);
   //Validate nutrients and calorie counts
+end;
+
+function TMeal.GetFoodname(sFoodname: string): string;
+var
+  sFinalFoodname : string;
+  isFound : Boolean;
+begin
+  isFound := False;
+  with dbmData.tblFoods do
+  begin
+    Open;
+    First;
+    repeat
+      if UpperCase(sFoodname) = UpperCase(FieldValues['Foodname']) then
+      begin
+        isFound := true;
+        sFinalFoodname := FieldValues['Foodname'];
+      end else next;
+    until Eof or isFound;
+    Close;
+  end;
+  Result := sFinalFoodname;
 end;
 
 procedure TMeal.AddFoodToDB(sFoodname: string; numCalories : integer);
@@ -100,12 +127,13 @@ procedure TMeal.GetNutrients;
 var
   isFoodFound : Boolean;
 begin
+  isFoodFound := False;
   with dbmData.tblFoods do
   begin
     Open;
     First;
     repeat
-      if Foodname = FieldValues['FoodName'] then    //Solve access violation issue     d
+      if Foodname = FieldValues['FoodName'] then
       begin
 				isFoodFound := true;
         FProteinPer100G := FieldValues['ProteinsPer100g'];
@@ -149,7 +177,7 @@ begin
   }
   iTotalCalories := Round(
       (portionSize/100)*FCaloriePer100G
-    )*FNumServings;
+    ); //*FNumServings;
 
   Calories := iTotalCalories;
 

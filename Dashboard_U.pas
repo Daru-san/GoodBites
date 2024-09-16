@@ -84,9 +84,14 @@ implementation
 procedure TfrmDashboard.btnEatenClick(Sender: TObject);
 var
   selectedOpt,iCalories,iCheckInt,iPortion : integer;
-  sMealName : string;
+  sMealName,sMealType : string;
 begin
+  if cmbMeals.ItemIndex = -1 then
+  exit;
+  if cmbMealType.ItemIndex = -1 then
+  exit;
   sMealName := cmbMeals.text;
+  sMealType := cmbMealType.Text;
   Val(edtPortion.Text,iPortion,iCheckInt);
   Val(edtCaloires.Text,iCalories,iCheckInt);
   selectedOpt := MessageDlg('Are you sure you want to enter this food item',mtConfirmation,mbYesNo,0);

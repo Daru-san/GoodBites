@@ -85,7 +85,8 @@ procedure TfrmDashboard.btnEatenClick(Sender: TObject);
 var
   selectedOpt,iCalories,iCheckInt,iPortion : integer;
   sMealName,sMealType : string;
-  EatenMeal : TMeal;
+  Meal : TMeal;
+	FoodItem : TFood;
 begin
   if cmbMeals.ItemIndex = -1 then
   exit;
@@ -100,11 +101,15 @@ begin
 
   if selectedOpt = mrYes then
   begin
-    if cbxNewFood.Checked then
-      eatenMeal := TMeal.Create(sMealName,sMealType,iPortion,iCalories,false) else
-      eatenMeal := TMeal.Create(sMealName,sMealType,iPortion,0,false);
-    eatenMeal.EatMeal(currentUser);
-    eatenMeal.Free;
+		FoodItem := TFood.Create(sFoodname);
+
+		//TODO: GET Data on food nutrients 
+		if cbxNewFood.Checked then
+			FoodItem.AddToDB;
+
+		Meal := TMeal.Create(sMealType,iPortion);
+		Meal.FoodItem := FoodItem;
+		Meal.EatMeal(currentUser);
   end;
 
 end;
@@ -161,28 +166,33 @@ end;
 
 procedure TfrmDashboard.btnMealSearchClick(Sender: TObject);
 var
-  sMealName,sCurrentMeal : string;
+  sFoodname: string;
   i: Integer;
-  isMealFound : boolean;
+  isFound : boolean;
   iProteins,iCarbs,iFat,iCalories: integer;
+	FoodItem : TFood;
 begin
-  sMealName := edtSearchMeal.text;
-  isMealFound := false;
+	if edtSearchMeal.text = '' then
+		exit;
+  sFoodname := edtSearchMeal.text;
+	isFound := false;
+
+	{ Loop through the food list until either i is at the food count or the food is found }
   i := 0;
   repeat
-    if UpperCase(sMealName) = foodList[i] then
+    if UpperCase(sFoodname) = foodList[i] then
     begin
-      isMealFound := true;
-      currentMeal.Create(foodList[i]);
-      iProteins := currentMeal.ProteinPer100G;
-      iCarbs := currentMeal.CarbPer100G;
-      iFat := currentMeal.FatPer100G;
-      iCalories := currentMeal.Calories;
-      currentMeal.Free;
+			isFound := true;
+			FoodItem := TFood.Create(foodList[i]);
+      iProteins := FoodItem.ProteinPer100G;
+      iCarbs := FoodItem.CarbPer100G;
+      iFat := FoodItem.FatPer100G;
+      iCalories := FoodItem.CaloriesPer100G;
+			FoodItem.Free;
     end else inc(i);
-  until (i = gFoodCount) or isMealFound;
+  until (i = gFoodCount) or isFound;
 
-  if isMealFound then
+  if isFound then
   with redMealInfo do
   begin
     with Paragraph do
@@ -190,18 +200,19 @@ begin
       TabCount := 2;
       Tab[0] := 150;
       Tab[1] := 250;
-    end;
+    end; // end with paragraph
     with Lines do
     begin
       Clear;
-      Add('Information on ' + sMealName);
+      Add('Information on ' + sFoodname);
       Add('----------------------------');
       Add('Calories per 100g:' + #9 + IntToStr(iCalories));
       Add('Proteins per 100g:' + #9 + IntToStr(iProteins));
       Add('Carbohydrates per 100g:' + #9 + IntToStr(iCalories));
       Add('Fat per 100g:' + #9 + IntToStr(iProteins));
-    end;
-  end else
+    end; // end lines
+  end // end with redMealInfo
+	else
   ShowMessage('Meal not found');
 
 end;

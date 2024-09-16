@@ -1,107 +1,68 @@
 ﻿unit Meals_U;
 
 interface
-
 uses conDBBites,System.Classes,System.SysUtils,User_U,Dialogs;
 { Display the meals in an image if possible}
 type
+	TFoodItem = class(TObject)
+	private
+		FFoodname : String;
+    FCaloriePer100G : integer;
+    FProteinPer100G : integer;
+    FCarbPer100G : integer;
+    FFatPer100G : integer;
+
+    function ValidateFood(sFoodname:string;Calories:Integer): boolean;
+
+    procedure GetNutrients(sFoodname:string);
+	public
+		constructor Create(sFoodname:string; isNew : Boolean;);
+
+		property Foodname : String read GetFoodname;
+    property CaloriePer100G : Integer read FCaloriePer100G write FCaloriePer100G;
+    property ProteinPer100G : integer read FProteinPer100G write FProteinPer100G;
+    property CarbPer100G : integer read FCarbPer100G write FCarbPer100G;
+    property FatPer100G : integer read FFatPer100G write FFatPer100G;
+
+    procedure AddFoodToDB;
+		function GetFoodname(sFoodname:string) : string;
+	end;
   TMeal = class(TObject)
     private
       FMealID : string;
       FFood : String;
-      FCaloriePer100G : integer;
       FCalories : Integer;
-      FProteinPer100G : integer;
-      FCarbPer100G : integer;
-      FFatPer100G : integer;
       FNumServings : Integer;
       FMealType : String;
       FPortion : Integer;
 
-      procedure AddFoodToDB(sFoodname: string; numCalories : integer);
-      procedure GetNutrients(sFoodname:string);
 
       function CalcCalories(iPortionSize:integer; numCalories: Integer) : Integer;
-      function GetFoodname(sFoodname:string) : string;
     public
-      constructor Create(sFoodname:string; sMealType:string = 'Other'; iportionSize : integer = 0; iCalories:Integer = 0;NewMeal:Boolean = false);
+      constructor Create(sMealType:string = 'Other'; iportionSize : integer = 0;);
 
-      property Foodname : string read FFood write FFood;
       property Calories : Integer read FCalories write FCalories;
-      property CaloriePer100G : Integer read FCaloriePer100G write FCaloriePer100G;
-      property ProteinPer100G : integer read FProteinPer100G write FProteinPer100G;
-      property CarbPer100G : integer read FCarbPer100G write FCarbPer100G;
-      property FatPer100G : integer read FFatPer100G write FFatPer100G;
       property NumServings : Integer read FNumServings write FNumServings;
       property MealType : string read FMealType write FMealType;
       property PortionSize : Integer read FPortion write FPortion;
 
       procedure EatMeal(currentUser : TUser);
 
-      function ValidateFood(sFoodname:string;Calories:Integer): boolean;
+
+			FoodItem : TFoodItem;
   end;
 
 implementation
 
-constructor TMeal.Create(sFoodname : string; sMealType: string = 'Other'; iPortionSize:integer = 0; iCalories: Integer = 0;NewMeal:Boolean = false);
+{ Food procedures }
+{$REGION FOODS }
+constructor TFoodItem.Create(sFoodname: string);
 begin
-  sFoodname.Trim;
-
-  if NewMeal then
-  begin
-    AddFoodToDB(sFoodname,Calories);
-  end else
-  begin
-    sFoodname := GetFoodname(sFoodname);
-    GetNutrients(sFoodname);
-  end;
-  if iCalories = 0 then
-    Calories := CalcCalories(iPortionSize,CaloriePer100G)
-  else
-    Calories := 0;
-  Foodname := sFoodname;
-  PortionSize := iPortionSize;
-  MealType := sMealType;
+	Foodname := sFoodname;
+	GetNutrients(sFoodname);
 end;
 
-//TODO: Complete validateFood() function
-function TMeal.ValidateFood(sFoodname:string;Calories:Integer): boolean;
-var
-  nameCorrect,nutrientCorrect,calorieCorrect : Boolean;
-  isLong : Boolean;
-begin
-  nameCorrect := utilObj.ValidateString(Foodname,'Meal',2,20);
-  //Validate nutrients and calorie counts
-end;
-
-function TMeal.GetFoodname(sFoodname: string): string;
-var
-  sFinalFoodname : string;
-  isFound : Boolean;
-begin
-	{
-		Get the food name from the database
-		Ensuring that the names are the same as in the database
-		in the situation where the user manually inputs a meal
-	}
-  isFound := False;
-  with dbmData.tblFoods do
-  begin
-    Open;
-    First;
-    repeat
-      if UpperCase(sFoodname) = UpperCase(FieldValues['Foodname']) then
-      begin
-        isFound := true;
-        sFinalFoodname := FieldValues['Foodname'];
-      end else next;
-    until Eof or isFound;
-    Close;
-  end;
-  Result := sFinalFoodname;
-end;
-
-procedure TMeal.GetNutrients;
+procedure TFoodItem.GetNutrients;
 var
   isFoodFound : Boolean;
 begin
@@ -122,6 +83,49 @@ begin
     until EOF or isFoodFound;
     Close;
   end;
+end;
+
+//TODO: Complete validateFood() function
+function TMeal.ValidateFood(sFoodname:string;Calories:Integer): boolean;
+var
+  nameCorrect,nutrientCorrect,calorieCorrect : Boolean;
+  isLong : Boolean;
+begin
+  nameCorrect := utilObj.ValidateString(Foodname,'Meal',2,20);
+  //Validate nutrients and calorie counts
+end;
+{
+	Get validated information from the user to add to the database
+	these foods can then be eaten by the user afterwards
+}
+procedure TFoodItem.AddFoodToDB(sFoodname: string; numCalories : integer; lFoodItem : TFood);
+begin
+  if ValidateFood(sFoodname,numCalories) then
+    with dbmData.tblFoods do
+    begin
+      Open;
+      Append;
+      FieldValues['FoodName'] := Foodname;
+      FieldValues['CaloriesPer100g'] := numCalories;
+      FieldValues['CarbohydratePer100g'] := lFoodItem.CarbPer100G;
+      FieldValues['ProteinPer100g'] := ProteinPer100G;
+      FieldValues['FatPer100g'] := FatPer100G;
+      Post;
+    end;
+end;
+{ Meal procedures}
+{$REGION MEALS}
+constructor TMeal.Create(sFoodname : string; sMealType: string = 'Other'; iPortionSize:integer = 0; iCalories: Integer = 0);
+begin
+  sFoodname.Trim;
+
+	FoodItem := TFoodItem.Create(sFoodname);
+
+  sFoodname := TFoodItem.GetFoodname;
+  Calories := CalcCalories(iPortionSize,FoodItem.CaloriePer100G)
+  Foodname := sFoodname;
+  PortionSize := iPortionSize;
+  MealType := sMealType;
 end;
 
 function TMeal.CalcCalories;
@@ -196,25 +200,5 @@ begin
     until EOF or isFound;
     Close;
   end; // end tblFoods with
-end;
-
-{
-	Get validated information from the user to add to the database
-	these foods can then be eaten by the user afterwards
-}
-procedure TMeal.AddFoodToDB(sFoodname: string; numCalories : integer);
-begin
-  if ValidateFood(sFoodname,numCalories) then
-    with dbmData.tblFoods do
-    begin
-      Open;
-      Append;
-      FieldValues['FoodName'] := Foodname;
-      FieldValues['CaloriesPer100g'] := numCalories;
-      FieldValues['CarbohydratePer100g'] := CarbPer100G;
-      FieldValues['ProteinPer100g'] := ProteinPer100G;
-      FieldValues['FatPer100g'] := FatPer100G;
-      Post;
-    end;
 end;
 end.

@@ -125,9 +125,7 @@ var
   sMealName,dateEaten,timeEaten : string;
 begin
   memMealLog.Clear;
-  if dpcDay.Checked then
-  selectedDate := dpcDay.Date
-  else selectedDate := Date;
+  selectedDate := dpcDay.Date;
   iTotalCalories := currentUser.GetDailyCalories(selectedDate);
   iNumMeals := currentUser.GetTotalMeals;
   if iNumMeals = 0 then
@@ -224,6 +222,7 @@ begin
   PopulateMealType;
   pctDashboard.TabIndex := 0;
   tsSearch.TabVisible := false;
+  dpcDay.Date := Date;
   GetInfo;
 
 

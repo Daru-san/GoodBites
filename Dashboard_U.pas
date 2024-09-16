@@ -85,6 +85,7 @@ procedure TfrmDashboard.btnEatenClick(Sender: TObject);
 var
   selectedOpt,iCalories,iCheckInt,iPortion : integer;
   sMealName,sMealType : string;
+  EatenMeal : TMeal;
 begin
   if cmbMeals.ItemIndex = -1 then
   exit;
@@ -98,10 +99,10 @@ begin
   if selectedOpt = mrYes then
   begin
     if cbxNewFood.Checked then
-      currentMeal.Create(sMealName,iCalories,iPortion,false) else
-      currentMeal.Create(sMealName,0,iPortion,false);
-    currentMeal.EatMeal(currentUser);
-    currentMeal.Free;
+      eatenMeal := TMeal.Create(sMealName,sMealType,iPortion,iCalories,false) else
+      eatenMeal := TMeal.Create(sMealName,sMealType,iPortion,0,false);
+    eatenMeal.EatMeal(currentUser);
+    eatenMeal.Free;
   end;
 
 end;

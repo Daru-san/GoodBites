@@ -38,7 +38,6 @@ type
 
       procedure EatMeal(currentUser : TUser);
 
-      function GetFoodInfo(FoodProperty:string; nutrientName : string = '') : Integer;
       function ValidateFood(sFoodname:string;Calories:Integer): boolean;
   end;
 
@@ -189,23 +188,7 @@ begin
   end;
 end;
 
-function TMeal.GetFoodInfo(FoodProperty:string; nutrientName : string = '') : Integer;
-var
-  returnString : Integer;
 begin
-  if FoodProperty = 'Nutrient' then
-  begin
-    if nutrientName = 'Protein' then
-      returnString := FProteinPer100G else
-    if nutrientName = 'Carbohydrate' then
-      returnString := FCarbPer100G else
-    if nutrientName = 'Fat' then
-      returnString := FFatPer100G;
-  end else
-  if FoodProperty = 'Calories' then
-   returnString := CaloriePer100G;
-  Result := returnString;
-end;
 
 function TMeal.CalcCalories;
 var

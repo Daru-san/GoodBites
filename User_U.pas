@@ -366,48 +366,48 @@ end;
 
 function TUser.GenerateUserID;
 var
-	isExisting : boolean;
+  isExisting : boolean;
   sUserID : string;
 begin
-	{
-		Generate a userID using:
-		- A random number with between 1 and 9
-		- The current month
-		- The current hour, discarding the `1` and `2` if above 9 hours
-		- The first two characters of the username
-		- Example: Hanzal -> HA759
-	}
+{
+  Generate a userID using:
+  - A random number with between 1 and 9
+  - The current month
+  - The current hour, discarding the `1` and `2` if above 9 hours
+  - The first two characters of the username
+  - Example: Hanzal -> HA759
+}
 
-	{
-		Will check if the user ID exists in the database already, incase of multiple users with similar details
-		Looping until the ID is completely unique
-	}
-	isExisting := false;
-	repeat
-  	sUserID := UPPERCASE(sUsername[1] + sUsername[2]) + IntToStr(RandomRange(1,9)) + FormatDateTime('t',now)[2] + FormatDateTime('m',date);
-		isExisting := CheckUserID(sUserID);
-	until not isExisting;
+{
+  Will check if the user ID exists in the database already, incase of multiple users with similar details
+  Looping until the ID is completely unique
+}
+  isExisting := false;
+  repeat
+    sUserID := UPPERCASE(sUsername[1] + sUsername[2]) + IntToStr(RandomRange(1,9)) + FormatDateTime('t',now)[2] + FormatDateTime('m',date);
+    isExisting := CheckUserID(sUserID);
+  until not isExisting;
   Result := sUserID;
 end;
 
 // Check if a UserID already exists in the database
 function TUser.CheckUserID;
 var
-	isFound : boolean;
+  isFound : boolean;
 begin
-	isFound := false;
-	with dbmData.tblUsers do
-	begin
+  isFound := false;
+  with dbmData.tblUsers do
+  begin
     Open;
-		First;
-		repeat
-			if sUserID = FieldValues['UserID'] then
-			begin
-				isFound := true;
-			end else next;
-		until EOF or isFound;
-	end;
-	Result := isFound;
+    First;
+    repeat
+      if sUserID = FieldValues['UserID'] then
+      begin
+	isFound := true;
+      end else next;
+    until EOF or isFound;
+  end;
+  Result := isFound;
 end;
 
 
@@ -864,7 +864,7 @@ begin
   2 = Type of mean i.e dinner, breakfast etc.
   3 = Day the meal was eaten
   4 = Time the meal was eaten
-  }
+}
   with dbmData.tblMeals do
   begin
     Open;

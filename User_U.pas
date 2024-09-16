@@ -796,6 +796,7 @@ begin
 end;
 {$ENDREGION}
 
+{ Meals }
 {$REGION FOOD DATA}
 // Calculate the number of calories consumed by a user on a particular day
 function TUser.GetDailyCalories(currentDate: TDate): Integer;

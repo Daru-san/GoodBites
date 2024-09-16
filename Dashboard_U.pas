@@ -47,6 +47,7 @@ type
     edtSearchMeal: TEdit;
     btnMealSearch: TButton;
     redMealInfo: TRichEdit;
+    cmbMealType: TComboBox;
     procedure FormShow(Sender: TObject);
     procedure btnLogOutClick(Sender: TObject);
     procedure pnlInfoClick(Sender: TObject);
@@ -63,6 +64,7 @@ type
     { Private declarations }
     procedure PopulateFoods;
     procedure GetInfo;
+    procedure PopulateMealType;
   public
     { Public declarations }
     currentUser : TUser;
@@ -213,6 +215,7 @@ begin
   username := currentUser.Username;
   utilObj.SetLabel(lblUser,'Logged in as ' + username,8);
   PopulateFoods;
+  PopulateMealType;
   pctDashboard.TabIndex := 0;
   tsSearch.TabVisible := false;
   GetInfo;
@@ -235,6 +238,19 @@ begin
 
 end;
 
+procedure TfrmDashboard.PopulateMealType;
+begin
+// Populating the combo box with meal types
+  with cmbMealType.Items do
+  begin
+    Add('Breakfast');
+    Add('Lunch');
+    Add('Brunch');
+    Add('Supper');
+    Add('Snack');
+    Add('Other');
+  end;
+end;
 procedure TfrmDashboard.PopulateFoods;
 var
  currentMeal : string;

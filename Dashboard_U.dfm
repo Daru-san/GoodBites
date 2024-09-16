@@ -267,6 +267,14 @@ object frmDashboard: TfrmDashboard
           TabOrder = 5
           OnClick = btnSearchClick
         end
+        object cmbMealType: TComboBox
+          Left = 32
+          Top = 81
+          Width = 145
+          Height = 23
+          TabOrder = 6
+          Text = 'Meal type'
+        end
       end
     end
     object tsSearch: TTabSheet

@@ -26,6 +26,10 @@ type
 
       property Foodname : string read FFood write FFood;
       property Calories : Integer read FCalories write FCalories;
+      property CaloriePer100G : Integer read FCaloriePer100G write FCaloriePer100G;
+      property ProteinPer100G : integer read FProteinPer100G write FProteinPer100G;
+      property CarbPer100G : integer read FCarbPer100G write FCarbPer100G;
+      property FatPer100G : integer read FFatPer100G write FFatPer100G;
 
       procedure EatMeal(currentUser : TUser);
 
@@ -92,9 +96,9 @@ begin
       Append;
       FieldValues['FoodName'] := Foodname;
       FieldValues['CaloriesPer100g'] := numCalories;
-      FieldValues['CarbsPer100g'] := FCarbPer100G;
-      FieldValues['ProteinsPer100g'] := FProteinPer100G;
-      FieldValues['FatPer100g'] := FFatPer100G;
+      FieldValues['CarbohydratePer100g'] := CarbPer100G;
+      FieldValues['ProteinPer100g'] := ProteinPer100G;
+      FieldValues['FatPer100g'] := FatPer100G;
       Post;
     end;
 end;
@@ -131,13 +135,13 @@ begin
     Open;
     First;
     repeat
-      if Foodname = FieldValues['FoodName'] then
+      if sFoodname = FieldValues['FoodName'] then
       begin
 				isFoodFound := true;
-        FProteinPer100G := FieldValues['ProteinsPer100g'];
-        FCarbPer100G := FieldValues['CarbsPer100g'];
-        FFatPer100G := FieldValues['FatsPer100g'];
-        FCaloriePer100G := FieldValues['CaloriesPer100g'];
+        ProteinPer100G := FieldValues['ProteinPer100g'];
+        CarbPer100G := FieldValues['CarbohydratePer100g'];
+        FatPer100G := FieldValues['FatPer100g'];
+        CaloriePer100G := FieldValues['CaloriesPer100g'];
       end else Next;
     until EOF or isFoodFound;
     Close;
@@ -158,7 +162,7 @@ begin
       returnString := FFatPer100G;
   end else
   if FoodProperty = 'Calories' then
-   returnString := FCaloriePer100G;
+   returnString := CaloriePer100G;
   Result := returnString;
 end;
 

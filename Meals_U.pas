@@ -8,7 +8,7 @@ type
   TMeal = class(TObject)
     private
       FMealID : string;
-      FFoodName : String;
+      FFood : String;
       FCaloriePer100G : integer;
       FCalories : Integer;
       FProteinPer100G : integer;
@@ -24,7 +24,7 @@ type
     public
       constructor Create(sFoodname:string; portionSize : integer = 0; Calories:Integer = 0;NewMeal:Boolean = false);
 
-      property Foodname : string read FFoodName write FFoodName;
+      property Foodname : string read FFood write FFood;
       property Calories : Integer read FCalories write FCalories;
 
       procedure EatMeal(currentUser : TUser);
@@ -44,14 +44,12 @@ begin
     AddFoodToDB(sFoodname,Calories);
   end else
   begin
-  //TODO: Research and solve this error
-  // I am not sure what is causing it, but using this variable in any way causes an access violation
-    Foodname := GetFoodname(sFoodname);
+    sFoodname := GetFoodname(sFoodname);
     GetNutrients(sFoodname);
   end;
   if Calories = 0 then
   CalcCalories(portionSize);
-  FFoodName := Foodname;
+  Foodname := sFoodname;
 end;
 
 function TMeal.ValidateFood(sFoodname:string;Calories:Integer): boolean;

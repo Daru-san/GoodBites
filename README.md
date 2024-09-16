@@ -12,7 +12,7 @@
 
 - [ ] Database design
   - [x] Users table
-  - [ ] Meals table
+  - [x] Meals table
   - [ ] Nutrients table
   - [ ] Foods table
 - [ ] GUI design
@@ -33,7 +33,7 @@
     - [x] Data checking(Looking at the database tables)
 - [ ] Tracking and eating
   - [ ] Store meals
-  - [ ] Log meals
+  - [x] Log meals
   - [ ] Store calories and nutrients
   - [ ] Get daily user stats
   - [ ] Allow users to search stats
@@ -42,6 +42,7 @@
 - [ ] Documentation
   - [ ] Help form
   - [ ] Comments
+  - [ ] New user help screen
 - [ ] Finalizations
   - [ ] Everything works
   - [ ] Everything works well

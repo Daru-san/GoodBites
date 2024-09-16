@@ -4,9 +4,9 @@ interface
 uses conDBBites,System.Classes,System.SysUtils,User_U,Dialogs;
 { Display the meals in an image if possible}
 type
-	TFoodItem = class(TObject)
-	private
-		FFoodname : String;
+  TFoodItem = class(TObject)
+  private
+    FFoodname : String;
     FCaloriePer100G : integer;
     FProteinPer100G : integer;
     FCarbPer100G : integer;
@@ -15,18 +15,18 @@ type
     function ValidateFood(sFoodname:string;Calories:Integer): boolean;
 
     procedure GetNutrients(sFoodname:string);
-	public
-		constructor Create(sFoodname:string; isNew : Boolean;);
+  public
+    constructor Create(sFoodname:string; isNew : Boolean = false);
 
-		property Foodname : String read GetFoodname;
+    property Foodname : String read FFoodname write FFoodname;
     property CaloriePer100G : Integer read FCaloriePer100G write FCaloriePer100G;
     property ProteinPer100G : integer read FProteinPer100G write FProteinPer100G;
     property CarbPer100G : integer read FCarbPer100G write FCarbPer100G;
     property FatPer100G : integer read FFatPer100G write FFatPer100G;
 
     procedure AddFoodToDB;
-		function GetFoodname(sFoodname:string) : string;
-	end;
+    //function GetFoodname(sFoodname:string) : string;
+  end;
   TMeal = class(TObject)
     private
       FMealID : string;
@@ -39,27 +39,23 @@ type
 
       function CalcCalories(iPortionSize:integer; numCalories: Integer) : Integer;
     public
-      constructor Create(sMealType:string = 'Other'; iportionSize : integer = 0;);
-
+      constructor Create(FoodItem : TFoodItem; sMealType: string = 'Other'; iPortionSize:integer = 0);
       property Calories : Integer read FCalories write FCalories;
       property NumServings : Integer read FNumServings write FNumServings;
       property MealType : string read FMealType write FMealType;
       property PortionSize : Integer read FPortion write FPortion;
 
-      procedure EatMeal(currentUser : TUser);
-
-
-			FoodItem : TFoodItem;
+      procedure EatMeal(currentUser : TUser; eatenFood:TFoodItem);
   end;
 
 implementation
 
 { Food procedures }
 {$REGION FOODS }
-constructor TFoodItem.Create(sFoodname: string);
+constructor TFoodItem.Create(sFoodname: string; isNew : Boolean);
 begin
-	Foodname := sFoodname;
-	GetNutrients(sFoodname);
+  Foodname := sFoodname;
+  GetNutrients(sFoodname);
 end;
 
 procedure TFoodItem.GetNutrients;
@@ -74,7 +70,7 @@ begin
     repeat
       if sFoodname = FieldValues['FoodName'] then
       begin
-				isFoodFound := true;
+	isFoodFound := true;
         ProteinPer100G := FieldValues['ProteinPer100g'];
         CarbPer100G := FieldValues['CarbohydratePer100g'];
         FatPer100G := FieldValues['FatPer100g'];
@@ -86,7 +82,7 @@ begin
 end;
 
 //TODO: Complete validateFood() function
-function TMeal.ValidateFood(sFoodname:string;Calories:Integer): boolean;
+function TFoodItem.ValidateFood(sFoodname:string;Calories:Integer): boolean;
 var
   nameCorrect,nutrientCorrect,calorieCorrect : Boolean;
   isLong : Boolean;
@@ -95,35 +91,33 @@ begin
   //Validate nutrients and calorie counts
 end;
 {
-	Get validated information from the user to add to the database
-	these foods can then be eaten by the user afterwards
+  Get validated information from the user to add to the database
+  these foods can then be eaten by the user afterwards
 }
-procedure TFoodItem.AddFoodToDB(sFoodname: string; numCalories : integer; lFoodItem : TFood);
+procedure TFoodItem.AddFoodToDB;
 begin
-  if ValidateFood(sFoodname,numCalories) then
+  if ValidateFood(Foodname,CaloriePer100G) then
     with dbmData.tblFoods do
     begin
       Open;
       Append;
       FieldValues['FoodName'] := Foodname;
-      FieldValues['CaloriesPer100g'] := numCalories;
-      FieldValues['CarbohydratePer100g'] := lFoodItem.CarbPer100G;
+      FieldValues['CaloriesPer100g'] := CaloriePer100G;
+      FieldValues['CarbohydratePer100g'] := CarbPer100G;
       FieldValues['ProteinPer100g'] := ProteinPer100G;
       FieldValues['FatPer100g'] := FatPer100G;
       Post;
     end;
 end;
+
+{$ENDREGION}
+
 { Meal procedures}
+
 {$REGION MEALS}
-constructor TMeal.Create(sFoodname : string; sMealType: string = 'Other'; iPortionSize:integer = 0; iCalories: Integer = 0);
+constructor TMeal.Create(FoodItem : TFoodItem; sMealType: string = 'Other'; iPortionSize:integer = 0);
 begin
-  sFoodname.Trim;
-
-	FoodItem := TFoodItem.Create(sFoodname);
-
-  sFoodname := TFoodItem.GetFoodname;
-  Calories := CalcCalories(iPortionSize,FoodItem.CaloriePer100G)
-  Foodname := sFoodname;
+  Calories := CalcCalories(iPortionSize,FoodItem.CaloriePer100G);
   PortionSize := iPortionSize;
   MealType := sMealType;
 end;
@@ -137,7 +131,7 @@ begin
     x = (150/100)g*52cl.100g^-1 * 5, would be about 260 calories?
     That makes decent sense, I will stick to  this methodology for now
 
-		Too much physics style calculation?
+    Too many physics style calculation?
   }
 
   iTotalCalories := Round(
@@ -147,7 +141,7 @@ begin
   Result := iTotalCalories;
 end;
 
-procedure TMeal.EatMeal(currentUser : TUser);
+procedure TMeal.EatMeal(currentUser : TUser;eatenFood:TFoodItem);
 var
   sFoodname : string;
   iMealIndex : integer;
@@ -177,7 +171,7 @@ begin
     Open;
     First;
     repeat
-      if Foodname = FieldValues['Foodname'] then
+      if eatenFood.Foodname = FieldValues['Foodname'] then
       begin
         isFound := true;
         sFoodname := FieldValues['Foodname'];
@@ -201,4 +195,6 @@ begin
     Close;
   end; // end tblFoods with
 end;
+
+{$ENDREGION}
 end.

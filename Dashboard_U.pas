@@ -93,9 +93,11 @@ begin
   exit;
   sMealName := cmbMeals.text;
   sMealType := cmbMealType.Text;
+
   Val(edtPortion.Text,iPortion,iCheckInt);
   Val(edtCaloires.Text,iCalories,iCheckInt);
   selectedOpt := MessageDlg('Are you sure you want to enter this food item',mtConfirmation,mbYesNo,0);
+
   if selectedOpt = mrYes then
   begin
     if cbxNewFood.Checked then
@@ -172,10 +174,10 @@ begin
     begin
       isMealFound := true;
       currentMeal.Create(foodList[i]);
-      iProteins := currentMeal.GetFoodInfo('Nutrient','Protein');
-      iCarbs := currentMeal.GetFoodInfo('Nutrient','Carbohydrate');
-      iFat := currentMeal.GetFoodInfo('Nutrient','Fat');
-      iCalories := currentMeal.GetFoodInfo('Calories');
+      iProteins := currentMeal.ProteinPer100G;
+      iCarbs := currentMeal.CarbPer100G;
+      iFat := currentMeal.FatPer100G;
+      iCalories := currentMeal.Calories;
       currentMeal.Free;
     end else inc(i);
   until (i = gFoodCount) or isMealFound;
@@ -225,8 +227,6 @@ begin
   dpcDay.Date := Date;
   GetInfo;
 
-
-
   if currentUser.GetFirstLogin then
   begin
    userGreeter := TfrmGreeter.Create(nil);
@@ -256,6 +256,7 @@ begin
     Add('Other');
   end;
 end;
+
 procedure TfrmDashboard.PopulateFoods;
 var
  currentMeal : string;

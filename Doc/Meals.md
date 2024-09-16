@@ -1,5 +1,7 @@
 # Meal Overview
 
+> NOTE: A food item is not a meal
+
 ## Use to the user
 
 - Eaten by the user
@@ -7,19 +9,36 @@
 
 ## Navigation
 
-- User enters the meal on the dashboard
-- If they are adding a new meal, then it is added to the database and eaten
-- In this case, nutrient values will need to be either found or entered by the user
-  so: Meal.Create -> Meal.AddToDB -> Meal.EatMeal
-  -> When adding to DB, data validation is done to ensure validity
-  - Name length is correct
-  - Name has letters only
-  - Calories are correct-looking
-- If they are eating an existing meal, the meal is eaten
-  (logged in the database table tblMeals)
-  so: Meal.Create -> Meal.EatMeal
-  - Meal Process in detail:
-    - GetNutrients -> GetCalories -> EatMeal
+### When eating
+
+- User enters the food item and the meal type on the dashboard
+  - The food item is created and given all necessary parameters
+  - If new item than add it to database
+  - The meal is created with its parameters
+  - The food item in the meal is assigned the food item selected by the user
+  - The meal is eaten by the current user
+
+```none
+FoodItem.Create -> if new -> FoodItem.AddFoodToDB  --
+                -> else   -> Ensure it exists -- >  |
+                                                    |
+                <-----------------------------------|
+                |
+                -> Meal.Create -> Meal.FoodItem = FoodItem -> Meal.Eat
+```
+
+### When searching
+
+- User enters the name of the food item
+  - Food Item object is created
+  - The existence of the item is checked, if not prompt the user
+  - Information on the food item is fetched and displayed to the user
+
+```none
+FoodItem.Create -> FoodItem.Search -> if returns true -> else show food item not found
+                                            |
+                                            -> Fetch info from database -> Display in a memo
+```
 
 ## Current capabilities
 

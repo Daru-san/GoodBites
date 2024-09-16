@@ -16,7 +16,7 @@ type
 
     procedure GetNutrients(sFoodname:string);
   public
-    constructor Create(sFoodname:string; isNew : Boolean = false);
+    constructor Create(sFoodname:string);
 
     property Foodname : String read FFoodname write FFoodname;
     property CaloriePer100G : Integer read FCaloriePer100G write FCaloriePer100G;
@@ -52,7 +52,7 @@ implementation
 
 { Food procedures }
 {$REGION FOODS }
-constructor TFoodItem.Create(sFoodname: string; isNew : Boolean);
+constructor TFoodItem.Create(sFoodname: string);
 begin
   Foodname := sFoodname;
   GetNutrients(sFoodname);
@@ -90,9 +90,14 @@ begin
   nameCorrect := utilObj.ValidateString(Foodname,'Meal',2,20);
   //Validate nutrients and calorie counts
 end;
+
 {
   Get validated information from the user to add to the database
-  these foods can then be eaten by the user afterwards
+  these foods can then be eaten by the user afterwards.
+
+  An idea I have is to allow users to search for the foods in some
+  food database which can give them all of the nutrient values 
+  given that the name is correct.
 }
 procedure TFoodItem.AddFoodToDB;
 begin

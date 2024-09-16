@@ -19,11 +19,11 @@ type
 
       procedure AddFoodToDB(sFoodname: string; numCalories : integer);
       procedure GetNutrients(sFoodname:string);
-      procedure CalcCalories(portionSize:integer);
 
+      function CalcCalories(iPortionSize:integer; numCalories: Integer) : Integer;
       function GetFoodname(sFoodname:string) : string;
     public
-      constructor Create(sFoodname:string; portionSize : integer = 0; Calories:Integer = 0;NewMeal:Boolean = false);
+      constructor Create(sFoodname:string; sMealType:string = 'Other'; iportionSize : integer = 0; iCalories:Integer = 0;NewMeal:Boolean = false);
 
       property Foodname : string read FFood write FFood;
       property Calories : Integer read FCalories write FCalories;
@@ -31,6 +31,7 @@ type
       property ProteinPer100G : integer read FProteinPer100G write FProteinPer100G;
       property CarbPer100G : integer read FCarbPer100G write FCarbPer100G;
       property FatPer100G : integer read FFatPer100G write FFatPer100G;
+      property NumServings : Integer read FNumServings write FNumServings;
       property PortionSize : Integer read FPortion write FPortion;
 
       procedure EatMeal(currentUser : TUser);
@@ -53,8 +54,10 @@ begin
     sFoodname := GetFoodname(sFoodname);
     GetNutrients(sFoodname);
   end;
-  if Calories = 0 then
-  CalcCalories(portionSize);
+  if iCalories = 0 then
+    Calories := CalcCalories(iPortionSize,CaloriePer100G)
+  else
+    Calories := 0;
   Foodname := sFoodname;
   PortionSize := iPortionSize;
 end;
@@ -169,7 +172,7 @@ begin
   Result := returnString;
 end;
 
-procedure TMeal.CalcCalories;
+function TMeal.CalcCalories;
 var
   iTotalCalories : Integer;
 begin
@@ -180,11 +183,11 @@ begin
 
 		Too much physics style calculation?
   }
+
   iTotalCalories := Round(
-      (portionSize/100)*FCaloriePer100G
-    ); //*FNumServings;
+      (numCalories/100)*iPortionSize
+  ); //*FNumServings;
 
-  Calories := iTotalCalories;
-
+  Result := iTotalCalories;
 end;
 end.

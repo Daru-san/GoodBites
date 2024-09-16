@@ -64,6 +64,7 @@ begin
   MealType := sMealType;
 end;
 
+//TODO: Complete validateFood() function
 function TMeal.ValidateFood(sFoodname:string;Calories:Integer): boolean;
 var
   nameCorrect,nutrientCorrect,calorieCorrect : Boolean;
@@ -78,6 +79,11 @@ var
   sFinalFoodname : string;
   isFound : Boolean;
 begin
+	{
+		Get the food name from the database
+		Ensuring that the names are the same as in the database
+		in the situation where the user manually inputs a meal
+	}
   isFound := False;
   with dbmData.tblFoods do
   begin
@@ -95,20 +101,46 @@ begin
   Result := sFinalFoodname;
 end;
 
-procedure TMeal.AddFoodToDB(sFoodname: string; numCalories : integer);
+procedure TMeal.GetNutrients;
+var
+  isFoodFound : Boolean;
 begin
-  if ValidateFood(sFoodname,numCalories) then
-    with dbmData.tblFoods do
-    begin
-      Open;
-      Append;
-      FieldValues['FoodName'] := Foodname;
-      FieldValues['CaloriesPer100g'] := numCalories;
-      FieldValues['CarbohydratePer100g'] := CarbPer100G;
-      FieldValues['ProteinPer100g'] := ProteinPer100G;
-      FieldValues['FatPer100g'] := FatPer100G;
-      Post;
-    end;
+  isFoodFound := False;
+  with dbmData.tblFoods do
+  begin
+    Open;
+    First;
+    repeat
+      if sFoodname = FieldValues['FoodName'] then
+      begin
+				isFoodFound := true;
+        ProteinPer100G := FieldValues['ProteinPer100g'];
+        CarbPer100G := FieldValues['CarbohydratePer100g'];
+        FatPer100G := FieldValues['FatPer100g'];
+        CaloriePer100G := FieldValues['CaloriesPer100g'];
+      end else Next;
+    until EOF or isFoodFound;
+    Close;
+  end;
+end;
+
+function TMeal.CalcCalories;
+var
+  iTotalCalories : Integer;
+begin
+  {
+    Say calories are measured in cl, num calories would be 100 grams per cl
+    x = (150/100)g*52cl.100g^-1 * 5, would be about 260 calories?
+    That makes decent sense, I will stick to  this methodology for now
+
+		Too much physics style calculation?
+  }
+
+  iTotalCalories := Round(
+      (numCalories/100)*iPortionSize
+  ); //*FNumServings;
+
+  Result := iTotalCalories;
 end;
 
 procedure TMeal.EatMeal(currentUser : TUser);
@@ -165,47 +197,24 @@ begin
     Close;
   end; // end tblFoods with
 end;
-procedure TMeal.GetNutrients;
-var
-  isFoodFound : Boolean;
+
+{
+	Get validated information from the user to add to the database
+	these foods can then be eaten by the user afterwards
+}
+procedure TMeal.AddFoodToDB(sFoodname: string; numCalories : integer);
 begin
-  isFoodFound := False;
-  with dbmData.tblFoods do
-  begin
-    Open;
-    First;
-    repeat
-      if sFoodname = FieldValues['FoodName'] then
-      begin
-				isFoodFound := true;
-        ProteinPer100G := FieldValues['ProteinPer100g'];
-        CarbPer100G := FieldValues['CarbohydratePer100g'];
-        FatPer100G := FieldValues['FatPer100g'];
-        CaloriePer100G := FieldValues['CaloriesPer100g'];
-      end else Next;
-    until EOF or isFoodFound;
-    Close;
-  end;
-end;
-
-begin
-
-function TMeal.CalcCalories;
-var
-  iTotalCalories : Integer;
-begin
-  {
-    Say calories are measured in cl, num calories would be 100 grams per cl
-    x = (150/100)g*52cl.100g^-1 * 5, would be about 260 calories?
-    That makes decent sense, I will stick to  this methodology for now
-
-		Too much physics style calculation?
-  }
-
-  iTotalCalories := Round(
-      (numCalories/100)*iPortionSize
-  ); //*FNumServings;
-
-  Result := iTotalCalories;
+  if ValidateFood(sFoodname,numCalories) then
+    with dbmData.tblFoods do
+    begin
+      Open;
+      Append;
+      FieldValues['FoodName'] := Foodname;
+      FieldValues['CaloriesPer100g'] := numCalories;
+      FieldValues['CarbohydratePer100g'] := CarbPer100G;
+      FieldValues['ProteinPer100g'] := ProteinPer100G;
+      FieldValues['FatPer100g'] := FatPer100G;
+      Post;
+    end;
 end;
 end.

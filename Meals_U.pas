@@ -1,4 +1,4 @@
-unit Meals_U;
+﻿unit Meals_U;
 
 interface
 
@@ -114,25 +114,57 @@ end;
 
 procedure TMeal.EatMeal(currentUser : TUser);
 var
-  currentDate : TDate;
+  sFoodname : string;
   iMealIndex : integer;
+  isFound : Boolean;
 begin
-  currentDate := now;
+
+  // Increase the index of the meal for the specific user
+  // Every user has an index for their meals
+  // Making it possible to search through them for a specific one
   iMealIndex := currentUser.GetTotalMeals;
   inc(iMealIndex);
 
-  with dbmData.tblMeals do
+  isFound := False;
+
+  {
+    Steps:
+    1. Loop through the food table to find the meal name
+    - If found then:
+    1.1. Open the meals table to create a new record
+    1.2. Add record with all relevent data
+    1.3. Close Meal table
+    1.4. Stop the loop
+    1.5. Close the foods table
+  }
+  with dbmData.tblFoods do
   begin
     Open;
-    Append;
-    FieldValues['FoodName'] := Foodname;
-    FieldValues['TotalCalories'] := Calories;
-    FieldValues['DateEaten'] := currentDate;
-    FieldValues['UserID'] := currentUser.UserID;
-    FieldValues['MealIndex'] := iMealIndex;
-    Post;
+    First;
+    repeat
+      if Foodname = FieldValues['Foodname'] then
+      begin
+        isFound := true;
+        sFoodname := FieldValues['Foodname'];
+        with dbmData.tblMeals do
+        begin
+          Open;
+          Append;
+          FieldValues['FoodName'] := sFoodname;
+          FieldValues['TotalCalories'] := Calories;
+          FieldValues['DateEaten'] := date;
+          FieldValues['TimeEaten'] := Time;
+          FieldValues['UserID'] := currentUser.UserID;
+          FieldValues['UserMealID'] := iMealIndex;
+          FieldValues['MealType'] := MealType;
+          FieldValues['PortionSize'] := PortionSize;
+          Post;
+          Close;
+        end;  // end tblMeals with
+      end else next; // endif
+    until EOF or isFound;
     Close;
-  end;
+  end; // end tblFoods with
 end;
 procedure TMeal.GetNutrients;
 var

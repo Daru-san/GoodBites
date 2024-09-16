@@ -15,6 +15,7 @@ type
       FCarbPer100G : integer;
       FFatPer100G : integer;
       FNumServings : Integer;
+      FPortion : Integer;
 
       procedure AddFoodToDB(sFoodname: string; numCalories : integer);
       procedure GetNutrients(sFoodname:string);
@@ -30,6 +31,7 @@ type
       property ProteinPer100G : integer read FProteinPer100G write FProteinPer100G;
       property CarbPer100G : integer read FCarbPer100G write FCarbPer100G;
       property FatPer100G : integer read FFatPer100G write FFatPer100G;
+      property PortionSize : Integer read FPortion write FPortion;
 
       procedure EatMeal(currentUser : TUser);
 
@@ -39,7 +41,7 @@ type
 
 implementation
 
-constructor TMeal.Create(sFoodname: string; portionSize:integer = 0; Calories: Integer = 0;NewMeal:Boolean = false);
+constructor TMeal.Create(sFoodname : string; sMealType: string = 'Other'; iPortionSize:integer = 0; iCalories: Integer = 0;NewMeal:Boolean = false);
 begin
   sFoodname.Trim;
 
@@ -54,6 +56,7 @@ begin
   if Calories = 0 then
   CalcCalories(portionSize);
   Foodname := sFoodname;
+  PortionSize := iPortionSize;
 end;
 
 function TMeal.ValidateFood(sFoodname:string;Calories:Integer): boolean;

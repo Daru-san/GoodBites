@@ -86,7 +86,7 @@ var
   selectedOpt,iCalories,iCheckInt,iPortion : integer;
   sMealName,sMealType : string;
   Meal : TMeal;
-	FoodItem : TFood;
+	FoodItem : TFoodItem;
 begin
   if cmbMeals.ItemIndex = -1 then
   exit;
@@ -101,15 +101,14 @@ begin
 
   if selectedOpt = mrYes then
   begin
-		FoodItem := TFood.Create(sFoodname);
+		FoodItem := TFoodItem.Create(sMealName);
 
 		//TODO: GET Data on food nutrients 
 		if cbxNewFood.Checked then
-			FoodItem.AddToDB;
+			FoodItem.AddFoodToDB;
 
-		Meal := TMeal.Create(sMealType,iPortion);
-		Meal.FoodItem := FoodItem;
-		Meal.EatMeal(currentUser);
+		Meal := TMeal.Create(FoodItem,sMealType,iPortion);
+		Meal.EatMeal(currentUser,FoodItem);
   end;
 
 end;
@@ -170,7 +169,7 @@ var
   i: Integer;
   isFound : boolean;
   iProteins,iCarbs,iFat,iCalories: integer;
-	FoodItem : TFood;
+	FoodItem : TFoodItem;
 begin
 	if edtSearchMeal.text = '' then
 		exit;
@@ -183,11 +182,11 @@ begin
     if UpperCase(sFoodname) = foodList[i] then
     begin
 			isFound := true;
-			FoodItem := TFood.Create(foodList[i]);
+			FoodItem := TFoodItem.Create(foodList[i]);
       iProteins := FoodItem.ProteinPer100G;
       iCarbs := FoodItem.CarbPer100G;
       iFat := FoodItem.FatPer100G;
-      iCalories := FoodItem.CaloriesPer100G;
+      iCalories := FoodItem.CaloriePer100G;
 			FoodItem.Free;
     end else inc(i);
   until (i = gFoodCount) or isFound;

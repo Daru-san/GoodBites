@@ -26,6 +26,7 @@ object frmDashboard: TfrmDashboard
       Height = 25
       Cancel = True
       Caption = 'Log Out'
+      ModalResult = 8
       TabOrder = 0
       OnClick = btnLogOutClick
     end

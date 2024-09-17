@@ -83,10 +83,10 @@ begin
     );
     if iConf = mrYes then
     begin
-      currentUser.SaveUserInfo(currentUser.UserID,sFullname,iAge);
+      currentUser.SaveUserInfo(sFullname,iAge);
       ShowMessage('Welcome to ' + Application.Name + '!');
-    end else exit;
-  end else exit;
+    end else self.ModalResult := mrNone;
+  end else self.ModalResult := mrNone;
 end;
 
 end.

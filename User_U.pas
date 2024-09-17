@@ -8,52 +8,61 @@ uses system.SysUtils,conDBBites, Vcl.Dialogs, Utils_U,Classes,Math;
 type
   TUser = class(TObject)
   private
-    Fusername : string;
-    FisAdmin : boolean;
+    FUsername : string;
+    FIsAdmin : boolean;
     FUserID : string;
     FLoggedIn : boolean;
-    FPassword : string;
     FDailyCalories : integer;
     FFullname : string;
     FAge : integer;
 
+    // User creation
     function GenerateUserID(sUsername:string): string;
     function CheckUserID(sUserID:string) : boolean;
     function CheckUsername(sUsername:string) : boolean;
-    function CheckDatabase(sUsername:string):boolean;
-    function WriteUserPassFile(sUsername,sPassword:string): boolean;
-    function DeleteUserPassFile(sUsername :string) :boolean;
-    function CheckPresence(sUsername,sPassword:string): boolean;
-    function CheckLoginDetails(sUsername: string; sPassword: string): boolean;
-    function CheckAdmin(sUserID : string) : boolean;
-    function GetUserId(sUsername:string):string;
     function CheckPassword(sPassword:string):Boolean;
+    function CheckDatabase(sUsername:string):boolean;
     function CheckUserExisting(sUsername:string):Boolean;
+    function WriteUserPassFile(sUsername,sPassword:string): boolean;
+
+    procedure RegisterUserInDB(sPassword,sUsername,userID : string);
+
+    // User Login
+    function DeleteUserPassFile(sUsername :string) :boolean;
+    function CheckPresence(sPassword:string): boolean;
+    function CheckLoginDetails(sPassword: string): boolean;
+    function CheckAdmin(sUserID : string) : boolean;
+    function GetUserID:string;
     function GetLastLogin:string;
     function GetUsername : string;
 
-    procedure SaveLastLogin(sUsername,userID : string; userIsAdmin : Boolean);
-    procedure CreateUser(sUsername,sPassword: string);
-    procedure RegisterUserInDB(sPassword,sUsername,userID : string);
+    procedure SaveLastLogin(userID : string; userIsAdmin : Boolean);
   public
-    constructor Create(sUsername : string;Password:string;NewUser:Boolean = false;LoggingIn : boolean = true);
+    constructor Create(Username : string);
 
-    property isAdmin: Boolean read FisAdmin write FisAdmin;
-    property Username: string read Fusername write Fusername;
+    property isAdmin: Boolean read FIsAdmin write FIsAdmin;
+    property Username: string read FUsername write FUsername;
     property Fullname: string read FFullname write FFullname;
     property Age: Integer read FAge write FAge;
     property UserID: string read FUserID write FUserID;
 
-    function CheckLogIn : boolean;
+    // Used by external procedures to get user login information
+    function CheckLogin : boolean;
     function GetFirstLogin : boolean;
+
+    // Meal related procedures
     function GetDailyCalories(currentDate:Tdate):integer;
     function GetTotalMeals:integer;
     function GetMeal(mealIndex: Integer;ValueIndex:integer = 0): string;
 
-
-    procedure RemoveUser(userID : string);
     procedure AddCalories(numCalories : Integer);
-    procedure SaveUserInfo(sUserID,sFullname : string;iAge : integer);
+
+    // User modification: creation,deletion and login
+    procedure RemoveUser(userID : string);
+    procedure Login(sPassword:String);
+    procedure SignUp(sPassword:String);
+
+    procedure SaveUserInfo(sFullname : string;iAge : integer);
   end;
 
   var
@@ -62,91 +71,30 @@ type
     UtilObj : TUtils;
 
     // Stores all accumulated user-creation errors
+    // An array would not work since the number of errors can change
     errorsList : TStringList;
 implementation
 
 { The main constructor }
 {$REGION constructor}
+
+// Creates an empty user object
+// Data is populated after login
 constructor TUser.Create;
-var
-  isCorrect,isValid,passFileExists,loginSuccessful : boolean;
-  sFullName : string;
-  iAge : Integer;
 begin
   loggerObj := TLogs.Create;
   UtilObj := TUtils.Create;
-  loginSuccessful := false;
-
-  if NewUser then
-  begin
-    CreateUser(sUsername,Password);
-  end;
-
-  {
-    Process:
-    1. Validate the user by ensuring data is present
-    2. Check if the data is correct(username and password)
-    3. Get the user ID, using the username
-    4. Check for administrator privilage using the user ID
-    5. Get the username from the database to ensure the username is the original
-      - Just ensuring if user Mat logs in as MAT, the username remains as Mat
-    6. Save the last login entry in the database to the current date and time
-    7. Update the logged in status to show that they are logged in incase any other procedure needs that info
-      - These procedures being found in the main unit
-
-    On failure:
-    1. If username or password are invalid, inform the user to enter them properly
-    2. If the username or password are incorrect, inform the user to correct them
-    }
-  if LoggingIn then
-  begin
-    isValid := CheckPresence(sUsername,Password);
-
-    if isValid then
-    begin
-      isCorrect := CheckLoginDetails(sUsername,Password);
-      if isCorrect then
-      begin
-        UserID := GetUserID(sUsername);
-        isAdmin := CheckAdmin(UserID);
-        Username := GetUsername;
-        SaveLastLogin(Username,UserID,isAdmin);
-        loginSuccessful := true;
-      end
-      else
-      begin
-        ShowMessage('The username or password are incorrect');
-      end;
-      // end if
-    end;
-    //end if
-  end else
-  begin
-    UserID := 'Bob';
-    FisAdmin := false;
-    loginSuccessful := false;
-  end;
-  //end if
-
-  Fusername := Username;
-  FisAdmin := IsAdmin;
-  FLoggedIn := loginSuccessful;
-  if loginSuccessful then
-  begin
-    { This may be a big security vulnerability }
-    FPassword := Password;
-
-
-    FUserID := UserID;
-    FDailyCalories := GetDailyCalories(date);
-  end;
+  FLoggedIn := false;
+  FIsAdmin := false;
+  FUserID := '';
+  FUsername := Username;
 end;
 {$ENDREGION}
 
 { User account creation  }
 {$REGION Account creation }
 
-procedure TUser.CreateUser;
+procedure TUser.SignUp;
 var
   isUserValid,userInDB, userInPassFile,isPassValid,userExistsing,isCorrect,isPresent: boolean;
   userID : string;
@@ -156,7 +104,7 @@ begin
   isPassValid := False;
   isCorrect := false;
 
-  isPresent := CheckPresence(sUsername,sPassword);
+  isPresent := CheckPresence(sPassword);
 
   {
     Steps, if one of these fails the process stops
@@ -169,11 +117,11 @@ begin
   if isPresent then
   begin
     errorsList := TStringList.Create;
-    isUserValid := CheckUsername(sUsername);
+    isUserValid := CheckUsername(Username);
     ShowMessage(isUserValid.ToString);
     if isUserValid then
     begin
-      userExistsing := CheckUserExisting(sUsername);
+      userExistsing := CheckUserExisting(Username);
       if not(userExistsing) then
       begin
         isPassValid := CheckPassword(sPassword);
@@ -197,22 +145,22 @@ begin
   }
   if isCorrect then
   begin
-    userID := GenerateUserID(sUsername);
-    RegisterUserInDB(sPassword,sUsername,userID);
-    userInDB := CheckDatabase(sUsername);
+    userID := GenerateUserID(Username);
+    RegisterUserInDB(sPassword,Username,userID);
+    userInDB := CheckDatabase(Username);
     if userInDB then
     begin
-      userInPassFile := writeUserPassFile(sUsername,sPassword);
+      userInPassFile := writeUserPassFile(Username,sPassword);
       if userInPassFile then
       begin
-        LoggerObj.WriteUserLog('The user ' + sUsername + ', uid ' + userID + ' has registered successfully');
+        LoggerObj.WriteUserLog('The user ' + Username + ', uid ' + userID + ' has registered successfully');
         ShowMessage('You have successfully been registered, happy eating!');
       end;
     end
     else
     begin
       LoggerObj.WriteUserLog(
-        'The user ' + sUsername + ',uid ' + userID +
+        'The user ' + Username + ',uid ' + userID +
         ' attempted to register, but were not found in the database afterward.'
         + #13 + #9 + 'Something must have gone wrong'
       );
@@ -348,7 +296,6 @@ begin
       // Copy the username in the file
       sUserinFile := Copy(fileString,1,delimPos-1);
 
-
       if UpperCase(sUserinFile) = UpperCase(sUsername) then
       begin
         hasPassword := true;
@@ -380,7 +327,7 @@ begin
 
 {
   Will check if the user ID exists in the database already, incase of multiple users with similar details
-  Looping until the ID is completely unique
+  Looping until the ID is completely unique, there may be a better way to do this, but this works for me
 }
   isExisting := false;
   repeat
@@ -390,7 +337,6 @@ begin
   Result := sUserID;
 end;
 
-// Check if a UserID already exists in the database
 function TUser.CheckUserID;
 var
   isFound : boolean;
@@ -409,7 +355,6 @@ begin
   end;
   Result := isFound;
 end;
-
 
 {
   Write the user into the passwords file,
@@ -438,9 +383,9 @@ begin
   begin
     AssignFile(passFile,FILENAME);
     Append(passFile);
-    WriteLn(passFile,sUsername + '#' + sPassword);
+    WriteLn(passFile,Username + '#' + sPassword);
     CloseFile(passFile);
-    LoggerObj.WriteUserLog('User ' + sUsername + ' has been saved in the PASSWORDS file');
+    LoggerObj.WriteUserLog('User ' + Username + ' has been saved in the PASSWORDS file');
     isSuccessful:= true;
   end;
   WriteUserPassFile := isSuccessful;
@@ -453,7 +398,7 @@ begin
     Open;
     Append;
     FieldValues['userID'] := userID;
-    FieldValues['Username'] := sUsername;
+    FieldValues['Username'] := Username;
     FieldValues['RegisterDate'] := date;
     FieldValues['isAdmin'] := false;
     FieldValues['Age'] := 0;
@@ -469,6 +414,60 @@ end;
 // Ensure that the username is the same as in the database
 // This prevents quircks from entering capitalized usernames
 // That are still valid but misplaced after login
+//
+procedure TUser.Login;
+var
+  isCorrect,isValid,passFileExists,isSuccess : boolean;
+  sFullName : string;
+  iAge : Integer;
+begin
+
+  {
+    Process:
+    1. Validate the user by ensuring data is present
+    2. Check if the data is correct(username and password)
+    3. Get the user ID, using the username
+    4. Check for administrator privilage using the user ID
+    5. Get the username from the database to ensure the username is the original
+      - Just ensuring if user Mat logs in as MAT, the username remains as Mat
+    6. Save the last login entry in the database to the current date and time
+    7. Update the logged in status to show that they are logged in incase any other procedure needs that info
+      - These procedures being found in the main unit
+
+    On failure:
+    1. If username or password are invalid, inform the user to enter them properly
+    2. If the username or password are incorrect, inform the user to correct them
+  }
+  isSuccess := false;
+  isValid := CheckPresence(sPassword);
+
+  if isValid then
+  begin
+    isCorrect := CheckLoginDetails(sPassword);
+    if isCorrect then
+    begin
+      UserID := GetUserID;
+      isAdmin := CheckAdmin(UserID);
+      Username := GetUsername;
+      SaveLastLogin(Username,isAdmin);
+      isSuccess := true;
+    end
+    else
+    begin
+      ShowMessage('The username or password are incorrect');
+    end;
+  end;
+
+  FUsername := Username;
+  FIsAdmin := IsAdmin;
+  FLoggedIn := isSuccess;
+  if isSuccess then
+  begin
+    FUserID := UserID;
+    FDailyCalories := GetDailyCalories(date);
+  end;
+end;
+
 function TUser.GetUsername : string;
 var
   isFound : Boolean;
@@ -501,7 +500,7 @@ begin
     Open;
     First;
     repeat
-      if UpperCase(sUsername) = UpperCase(FieldValues['Username']) then
+      if UpperCase(Username) = UpperCase(FieldValues['Username']) then
       begin
         isFound := true;
         sUserId := FieldValues['UserID'];
@@ -510,29 +509,30 @@ begin
     Close;
   end;
   if not isFound then
-  ShowMessage('User not found?' + sUsername);
+  ShowMessage('User not found?' + Username);
   result := sUserId;
 end;
 
+
 function TUser.CheckPresence;
 var
-  isValid : boolean;
+  isPresent : boolean;
 begin
 
-  if sUsername.isEmpty then
+  if Username.isEmpty then
   begin
     ShowMessage('Please enter a username');
-    isValid := false;
+    isPresent := false;
   end
     else
   if sPassword.isEmpty then
   begin
     ShowMessage('Please enter a valid password');
-    isValid := false;
+    isPresent := false;
   end
    else
-    isValid := true;
-  CheckPresence := isValid;
+    isPresent := true;
+  Result := isPresent;
 end;
 
 // Check if a user exists in the database already
@@ -601,11 +601,11 @@ begin
   Reset(passFile);
 
   isCorrect := false;
-  inDatabase := CheckDatabase(sUsername);
+  inDatabase := CheckDatabase(Username);
 
   if not inDatabase then
   begin
-    ShowMessage('The user ' + sUsername + ' is not found');
+    ShowMessage('The user ' + Username + ' is not found');
   end
   else
   try
@@ -615,7 +615,7 @@ begin
       sUserInFile := copy(fileString,1,delPos-1);
       delete(fileString,1,delPos);
       sPassInFile := fileString;
-      if ((UPPERCASE(sUserInFile) = UPPERCASE(sUsername)) and (sPassInFile = sPassword)) then
+      if ((UPPERCASE(sUserInFile) = UPPERCASE(Username)) and (sPassInFile = sPassword)) then
         isCorrect := true;
     until EOF(passFile) or isCorrect;
   finally
@@ -649,11 +649,11 @@ begin
   end;
   if userIsAdmin then
   begin
-    LoggerObj.WriteUserLog('Administrator ' + sUsername + ' uid ' + userID + ' logged in.');
+    LoggerObj.WriteUserLog('Administrator ' + Username + ' uid ' + userID + ' logged in.');
   end
   else
   begin
-    LoggerObj.WriteUserLog('User ' + sUsername + ' uid ' + userID + ' logged in.');
+    LoggerObj.WriteUserLog('User ' + Username + ' uid ' + userID + ' logged in.');
   end;
 end;
 {$ENDREGION}
@@ -715,7 +715,7 @@ begin
     Open;
     First;
     repeat
-      if sUserID = FieldValues['UserID'] then
+      if UserID = FieldValues['UserID'] then
       userFound := true else next;
     until (Eof) or userFound;
     Edit;

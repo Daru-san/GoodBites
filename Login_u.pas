@@ -41,7 +41,12 @@ var
   LoginForm : TfrmLogin;
 begin
   LoginForm.visible := false;
-  currentUser.Create('','',false,false);
+  self.ModalResult := mrCancel;
+
+  // Create an empty user 
+  // The object will return false upon checking login 
+  // on the main form
+  currentUser.Create('');
 end;
 
 procedure TfrmLogin.btnLoginClick(Sender: TObject);
@@ -54,8 +59,20 @@ begin
   sUsername := edtUser.Text;
   sPassword := edtPassword.Text;
 
-  // Call the constructor, (username,password,is new user,are they loggin in)
-  currentUser := TUser.Create(sUsername.Trim,sPassword.Trim,False);
+  // Call the constructor
+  currentUser := TUser.Create(sUsername.Trim);
+  currentUser.Login(sPassword.trim);
+
+  // Closes the form when login is successful using modalresult
+  // Closing manually using self.Close() does not work properly
+  // so this is the best approach to use
+  if currentUser.CheckLogin then
+    self.ModalResult := mrOk
+  else
+  begin
+    self.ModalResult := mrNone;
+    currentUser.Free;
+  end;
 end;
 
 procedure TfrmLogin.btnSignUpClick(Sender: TObject);
@@ -65,7 +82,13 @@ var
 begin
   sUsername := edtUser.text;
   sPassword := edtPassword.text;
-  currentUser := TUser.Create(sUsername.Trim,sPassword.Trim,true,False);
+
+  // Since the user is only created when signing up, the currentUser 
+  // object is freed from memory immediately after account creation
+  // The user signs up and logs in sequentially
+  currentUser := TUser.Create(sUsername.Trim);
+  currentUser.SignUp(sPassword.Trim);
+  currentUser.Free;
 end;
 
 procedure TfrmLogin.FormShow(Sender: TObject);
@@ -79,8 +102,6 @@ begin
     Alignment := taCenter;
   end;
   edtUser.SetFocus;
-
 end;
 
 end.
-

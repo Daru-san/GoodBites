@@ -157,10 +157,8 @@ end;
 procedure TfrmDashboard.btnLogOutClick(Sender: TObject);
 begin
   // Get closing to work properly
-  Application.MainForm.Visible := true;
+  self.CloseModal;
   currentUser.Free;
-  frmDashboard.Close;
-  frmDashboard.Destroy;
 end;
 
 procedure TfrmDashboard.btnMealSearchClick(Sender: TObject);

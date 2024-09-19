@@ -24,6 +24,8 @@ type
     property CarbPer100G : integer read FCarbPer100G write FCarbPer100G;
     property FatPer100G : integer read FFatPer100G write FFatPer100G;
 
+    function CheckExists : Boolean;
+
     procedure AddFoodToDB;
     //function GetFoodname(sFoodname:string) : string;
   end;
@@ -35,7 +37,6 @@ type
       FNumServings : Integer;
       FMealType : String;
       FPortion : Integer;
-
       FFoodItem : TFoodItem;
 
       function CalcCalories(iPortionSize:integer; numCalories: Integer) : Integer;
@@ -54,6 +55,7 @@ type
 implementation
 
 { Food procedures }
+
 {$REGION FOODS }
 constructor TFoodItem.Create(sFoodname: string);
 begin
@@ -81,6 +83,7 @@ begin
       end else Next;
     until EOF or isFoodFound;
     Close;
+
     {
       My idea here is that it is better to assign the food
       item with `default` values in the case where it is not
@@ -95,6 +98,24 @@ begin
       CaloriePer100G := 0;
     end;
   end;
+end;
+
+function TFoodItem.CheckExists : boolean;
+var isFound : boolean;
+begin
+  isFound := false;
+  with dbmData.tblFoods do
+  begin
+    Open;
+    First;
+    repeat
+      if Foodname = FieldValues['Foodname'] then
+	isFound := true
+        else next;
+    until isFound or EOF;
+    Close;
+  end;
+  Result := isFound;
 end;
 
 // So far the idea here is to check if the values of nutrients are

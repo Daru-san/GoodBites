@@ -41,7 +41,7 @@ type
 
       function CalcCalories(iPortionSize:integer; numCalories: Integer) : Integer;
     public
-      constructor Create(FoodItem : TFoodItem; sMealType: string = 'Other'; iPortionSize:integer = 0);
+      constructor Create(FoodItem : TFoodItem;PortionSize:Integer; sMealType: string = 'Other');
 
       property Calories : Integer read FCalories write FCalories;
       property NumServings : Integer read FNumServings write FNumServings;
@@ -196,7 +196,7 @@ end;
 { Meal procedures}
 
 {$REGION MEALS}
-constructor TMeal.Create(FoodItem : TFoodItem; sMealType: string = 'Other'; iPortionSize:integer = 0);
+constructor TMeal.Create(FoodItem : TFoodItem; PortionSize : Integer;sMealType: string = 'Other');
 begin
   Calories := CalcCalories(iPortionSize,FoodItem.CaloriePer100G);
   PortionSize := iPortionSize;

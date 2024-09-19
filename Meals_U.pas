@@ -11,6 +11,7 @@ type
     FProteinPer100G : integer;
     FCarbPer100G : integer;
     FFatPer100G : integer;
+    //TODO: Add energy (maybe) FEnergyPer100G : real;
 
     function ValidateFood(sFoodname:string;Calories:Integer): boolean;
 

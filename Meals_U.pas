@@ -36,13 +36,16 @@ type
       FMealType : String;
       FPortion : Integer;
 
+      FFoodItem : TFoodItem;
 
       function CalcCalories(iPortionSize:integer; numCalories: Integer) : Integer;
     public
       constructor Create(FoodItem : TFoodItem; sMealType: string = 'Other'; iPortionSize:integer = 0);
+
       property Calories : Integer read FCalories write FCalories;
       property NumServings : Integer read FNumServings write FNumServings;
       property MealType : string read FMealType write FMealType;
+      property FoodItem : TFoodItem read FFoodItem write FFoodItem;
       property PortionSize : Integer read FPortion write FPortion;
 
       procedure EatMeal(currentUser : TUser; eatenFood:TFoodItem);

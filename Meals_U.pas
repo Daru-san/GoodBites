@@ -78,6 +78,19 @@ begin
       end else Next;
     until EOF or isFoodFound;
     Close;
+    {
+      My idea here is that it is better to assign the food
+      item with `default` values in the case where it is not
+      found in the database, ensuring that the values do
+      in fact exist (solves no problem now that I think about it)
+    }
+    if not isFoodFound then
+    begin
+      ProteinPer100G := 0;
+      CarbPer100G := 0;
+      FatPer100G := 0;
+      CaloriePer100G := 0;
+    end;
   end;
 end;
 

@@ -49,7 +49,7 @@ type
       property FoodItem : TFoodItem read FFoodItem write FFoodItem;
       property PortionSize : Integer read FPortion write FPortion;
 
-      procedure EatMeal(currentUser : TUser; eatenFood:TFoodItem);
+      procedure EatMeal(UserID : String);
   end;
 
 implementation
@@ -222,7 +222,7 @@ begin
   Result := iTotalCalories;
 end;
 
-procedure TMeal.EatMeal(currentUser : TUser;eatenFood:TFoodItem);
+procedure TMeal.EatMeal(UserID : String);
 var
   sFoodname : string;
   iMealIndex : integer;
@@ -252,7 +252,7 @@ begin
     Open;
     First;
     repeat
-      if eatenFood.Foodname = FieldValues['Foodname'] then
+      if FoodItem.Foodname = FieldValues['Foodname'] then
       begin
         isFound := true;
         sFoodname := FieldValues['Foodname'];
@@ -264,7 +264,7 @@ begin
           FieldValues['TotalCalories'] := Calories;
           FieldValues['DateEaten'] := date;
           FieldValues['TimeEaten'] := Time;
-          FieldValues['UserID'] := currentUser.UserID;
+          FieldValues['UserID'] := UserID;
           FieldValues['UserMealID'] := iMealIndex;
           FieldValues['MealType'] := MealType;
           FieldValues['PortionSize'] := PortionSize;

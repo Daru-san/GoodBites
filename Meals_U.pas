@@ -97,14 +97,53 @@ begin
   end;
 end;
 
+// So far the idea here is to check if the values of nutrients are
+// numbers above 0 and below an unexpected number
+// Preventing odd values, so far I only plan to prompt the user in this case
+// Asking them for confirmation, validation will be done in another way
+
 //TODO: Complete validateFood() function
 function TFoodItem.ValidateFood(sFoodname:string;Calories:Integer): boolean;
 var
-  nameCorrect,nutrientCorrect,calorieCorrect : Boolean;
-  isLong : Boolean;
+  nameCorrect,nutCheck : Boolean;
+	proteinCheck,carbCheck,fatCheck,calCheck : boolean;
 begin
   nameCorrect := utilObj.ValidateString(Foodname,'Meal',2,20);
-  //Validate nutrients and calorie counts
+
+  {
+    This is still an early prototype of the thing I want to do
+    but it attempts to validate whether the food item has the correct
+    amount of each nutrient value
+    It can probably be improved
+  }
+  calCheck := false;
+  proteinCheck := false;
+  carbCheck := false;
+  fatCheck := false;
+
+  if (CaloriesPer100G < 0) or (CaloriesPer10G > 100000) then
+  begin
+    calCheck := true;
+  end;
+
+  if (ProteinPer100G < 0) or (ProteinPer100G > 100000) then
+  begin
+    proteinCheck := true;
+  end;
+
+  if (CarbPer100G < 0) or (CarbPer100G > 100000) then
+  begin
+    carbCheck := true;
+  end;
+
+  if (FatPer100G < 0) or (FatPer100G > 100000) then
+  begin
+    fatCheck := true;
+  end;
+
+  nutCheck := calCheck and proteinCheck and carbCheck and fatCheck;
+
+  Result := nutCheck and nameCorrect;
 end;
 
 {

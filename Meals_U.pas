@@ -39,7 +39,7 @@ type
       FPortion : Integer;
       FFoodItem : TFoodItem;
 
-      function CalcCalories(iPortionSize:integer; numCalories: Integer) : Integer;
+      function CalcCalories(iCalories: Integer) : Integer;
     public
       constructor Create(FoodItem : TFoodItem;PortionSize:Integer; sMealType: string = 'Other');
 
@@ -198,8 +198,8 @@ end;
 {$REGION MEALS}
 constructor TMeal.Create(FoodItem : TFoodItem; PortionSize : Integer;sMealType: string = 'Other');
 begin
-  Calories := CalcCalories(iPortionSize,FoodItem.CaloriePer100G);
   PortionSize := iPortionSize;
+  Calories := CalcCalories(FoodItem.CaloriePer100G);
   MealType := sMealType;
 end;
 
@@ -216,7 +216,7 @@ begin
   }
 
   iTotalCalories := Round(
-      (numCalories/100)*iPortionSize
+      (iCalories/100)*iPortionSize
   ); //*FNumServings;
 
   Result := iTotalCalories;

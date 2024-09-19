@@ -198,7 +198,6 @@ end;
 {$REGION MEALS}
 constructor TMeal.Create(FoodItem : TFoodItem; PortionSize : Integer;sMealType: string = 'Other');
 begin
-  PortionSize := iPortionSize;
   Calories := CalcCalories(FoodItem.CaloriePer100G);
   MealType := sMealType;
 end;

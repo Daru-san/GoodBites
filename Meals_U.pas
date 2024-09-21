@@ -180,7 +180,8 @@ end;
 }
 procedure TFoodItem.AddFoodToDB;
 begin
-  if ValidateFood(Foodname,CaloriePer100G) then
+  if ValidateFood then
+  begin
     with dbData.tblFoods do
     begin
       Open;
@@ -193,6 +194,7 @@ begin
       FieldValues['EnergyPer100G'] := EnergyPer100G;
       Post;
     end;
+	end;
 end;
 
 {$ENDREGION}

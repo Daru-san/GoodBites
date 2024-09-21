@@ -190,6 +190,7 @@ begin
       FieldValues['CarbohydratePer100g'] := CarbPer100G;
       FieldValues['ProteinPer100g'] := ProteinPer100G;
       FieldValues['FatPer100g'] := FatPer100G;
+      FieldValues['EnergyPer100G'] := EnergyPer100G;
       Post;
     end;
 end;
@@ -277,6 +278,7 @@ begin
           FieldValues['UserMealID'] := iMealIndex;
           FieldValues['MealType'] := MealType;
           FieldValues['PortionSize'] := PortionSize;
+          FieldValues['TotalEnergy'] := CalcEnergy;
           Post;
           Close;
         end;  // end tblMeals with

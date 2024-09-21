@@ -13,7 +13,7 @@ type
     FFatPer100G : real;
     FEnergyPer100G : real;
 
-    function ValidateFood(sFoodname:string;Calories:Integer): boolean;
+    function ValidateFood: boolean;
 
     procedure GetNutrients(sFoodname:string);
   public
@@ -127,10 +127,10 @@ end;
 // Asking them for confirmation, validation will be done in another way
 
 //TODO: Complete validateFood() function
-function TFoodItem.ValidateFood(sFoodname:string;Calories:Integer): boolean;
+function TFoodItem.ValidateFood: boolean;
 var
   nameCorrect,nutCheck : Boolean;
-	proteinCheck,carbCheck,fatCheck,calCheck : boolean;
+  proteinCheck,carbCheck,fatCheck,calCheck : boolean;
 begin
   nameCorrect := utilObj.ValidateString(Foodname,'Meal',2,20);
 
@@ -145,7 +145,7 @@ begin
   carbCheck := false;
   fatCheck := false;
 
-  if (CaloriesPer100G < 0) or (CaloriesPer10G > 100000) then
+  if (CaloriePer100G < 0) or (CaloriePer100G > 100000) then
   begin
     calCheck := true;
   end;

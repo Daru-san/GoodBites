@@ -53,7 +53,7 @@ type
     // Meal related procedures
     function GetDailyCalories(currentDate:Tdate):integer;
     function GetTotalMeals:integer;
-    function GetMeal(mealIndex: Integer;ValueIndex:integer = 0): string;
+    function GetMealInfo(mealIndex: Integer;infoType : String = ''): string;
 
     procedure AddCalories(numCalories : Integer);
 
@@ -852,13 +852,14 @@ begin
 end;
 
 // Get information on a specific meal eaten by the user, i.e the food they ate, time they ate it
-function TUser.GetMeal(mealIndex: Integer;ValueIndex:integer = 0): string;
+function TUser.GetMealInfo(mealIndex: Integer;infoType : String = ''): string;
 var
   sFoodName,sMealType : string;
   eatenDate,eatenTime : TDate;
   isMealFound : boolean;
 begin
 {
+
   ValueIndex is the index of the specific value one is looking for:
   1 = name of the food eaten during the meal
   2 = Type of mean i.e dinner, breakfast etc.
@@ -872,7 +873,7 @@ begin
     repeat
       if UserID = FieldValues['UserID'] then
       begin
-        if mealIndex = FieldValues['MealIndex'] then
+        if mealIndex = FieldValues['UserMealID'] then
         begin
           isMealFound := true;
           eatenDate := FieldValues['DateEaten'];
@@ -884,11 +885,13 @@ begin
     until EOF or isMealFound;
     Close;
   end;
-  case ValueIndex of
-  1 : Result := sFoodName;
-  2 : Result := sMealType;
-  3 : Result := DateToStr(eatenDate);
-  4 : Result := FormatDateTime('tt',eatenTime);
+ // ShowMessage(DateToStr(eatenDate));
+  // Breakfast is not a valid date!
+  case IndexStr(LowerCase(infoType),['name','type','date','time']) of
+  0 : Result := sFoodName;
+  1 : Result := sMealType;
+  2 : Result := DateToStr(eatenDate);
+  3 : Result := FormatDateTime('tt',eatenTime);
   end;
 end;
 {$ENDREGION}

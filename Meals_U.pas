@@ -7,11 +7,11 @@ type
   TFoodItem = class(TObject)
   private
     FFoodname : String;
-    FCaloriePer100G : integer;
-    FProteinPer100G : integer;
-    FCarbPer100G : integer;
-    FFatPer100G : integer;
     //TODO: Add energy (maybe) FEnergyPer100G : real;
+    FCaloriePer100G : real;
+    FProteinPer100G : real;
+    FCarbPer100G : real;
+    FFatPer100G : real;
 
     function ValidateFood(sFoodname:string;Calories:Integer): boolean;
 
@@ -20,10 +20,10 @@ type
     constructor Create(sFoodname:string);
 
     property Foodname : String read FFoodname write FFoodname;
-    property CaloriePer100G : Integer read FCaloriePer100G write FCaloriePer100G;
-    property ProteinPer100G : integer read FProteinPer100G write FProteinPer100G;
-    property CarbPer100G : integer read FCarbPer100G write FCarbPer100G;
-    property FatPer100G : integer read FFatPer100G write FFatPer100G;
+    property CaloriePer100G : real read FCaloriePer100G write FCaloriePer100G;
+    property ProteinPer100G : real read FProteinPer100G write FProteinPer100G;
+    property CarbPer100G : real read FCarbPer100G write FCarbPer100G;
+    property FatPer100G : real read FFatPer100G write FFatPer100G;
 
     function CheckExists : Boolean;
 
@@ -40,7 +40,7 @@ type
       FPortion : Integer;
       FFoodItem : TFoodItem;
 
-      function CalcCalories(iCalories: Integer) : Integer;
+      function CalcCalories(iCalories: Real) : Integer;
     public
       constructor Create(FoodItem : TFoodItem;PortionSize:Integer; sMealType: string = 'Other');
 
@@ -76,7 +76,7 @@ begin
     repeat
       if sFoodname = FieldValues['FoodName'] then
       begin
-	isFoodFound := true;
+	      isFoodFound := true;
         ProteinPer100G := FieldValues['ProteinPer100g'];
         CarbPer100G := FieldValues['CarbohydratePer100g'];
         FatPer100G := FieldValues['FatPer100g'];
@@ -111,7 +111,7 @@ begin
     First;
     repeat
       if Foodname = FieldValues['Foodname'] then
-	isFound := true
+	      isFound := true
         else next;
     until isFound or EOF;
     Close;

@@ -53,7 +53,6 @@ begin
   fileString := GetFileStr(nutrientIndex);
   if fileString.IsEmpty then
   exit;
-  TDataFetcher.Create.FetchData(fileString,nutrientName);
 end;
 
 function TfrmInfo.GetNutrient;

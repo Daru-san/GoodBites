@@ -212,16 +212,15 @@ var
   iTotalCalories : Integer;
 begin
   {
-    Say calories are measured in cl, num calories would be 100 grams per cl
-    x = (150/100)g*52cl.100g^-1 * 5, would be about 260 calories?
-    That makes decent sense, I will stick to  this methodology for now
-
-    Too many physics style calculation?
+    Calories per 100g are multiplied by 100 to
+    convert them to calories, then multiplied
+    by the portion size to obtain the total
+    caloires
   }
 
   iTotalCalories := Round(
-      (iCalories/100)*iPortionSize
-  ); //*FNumServings;
+      (FoodItem.CaloriePer100G)*(PortionSize/100)
+  );
 
   Result := iTotalCalories;
 end;

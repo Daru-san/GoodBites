@@ -42,6 +42,7 @@ type
       FFoodItem : TFoodItem;
 
       function CalcCalories(iCalories: Real) : Integer;
+      function CalcEnergy: real;
     public
       constructor Create(FoodItem : TFoodItem;PortionSize:Integer; sMealType: string = 'Other');
 
@@ -224,6 +225,11 @@ begin
 end;
 
 procedure TMeal.EatMeal(UserID : String);
+function TMeal.CalcEnergy: Real;
+begin
+  This in the case that I am able to obtain energy values
+  Result := FoodItem.EnergyPer100G * (PortionSize/100);
+end;
 var
   sFoodname : string;
   iMealIndex : integer;

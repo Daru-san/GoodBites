@@ -75,7 +75,7 @@ var
   frmDashboard: TfrmDashboard;
   username : string;
   foodList : TStringList;
-  gFoodCount : integer;
+  FoodCount : integer;
 
 implementation
 
@@ -83,7 +83,7 @@ implementation
 
 procedure TfrmDashboard.btnEatenClick(Sender: TObject);
 var
-  selectedOpt,iCalories,iCheckInt,iPortion : integer;
+  selectedOpt,iCheckInt,iPortion : integer;
   sMealName,sMealType : string;
   Meal : TMeal;
 	FoodItem : TFoodItem;
@@ -96,19 +96,35 @@ begin
   sMealType := cmbMealType.Text;
 
   Val(edtPortion.Text,iPortion,iCheckInt);
-  Val(edtCaloires.Text,iCalories,iCheckInt);
+
+	if iCheckInt <> 0 then
+	begin
+		ShowMessage('Please enter the portion in grams');
+	end;
+
   selectedOpt := MessageDlg('Are you sure you want to enter this food item',mtConfirmation,mbYesNo,0);
 
   if selectedOpt = mrYes then
   begin
 		FoodItem := TFoodItem.Create(sMealName);
 
-		//TODO: GET Data on food nutrients 
-		if cbxNewFood.Checked then
+		//TODO: GET Data on food nutrients
+		{
+			The idea here is to enter the food item into the database only
+			if it does not already exist at the moment
+		}
+		if cbxNewFood.Checked and not (FoodItem.CheckExists) then
 			FoodItem.AddFoodToDB;
 
-		Meal := TMeal.Create(FoodItem,sMealType,iPortion);
-		Meal.EatMeal(currentUser,FoodItem);
+		if FoodItem.CheckExists then
+		begin
+			Meal := TMeal.Create(FoodItem,iPortion,sMealType);
+			Meal.EatMeal(currentUser.UserID,currentUser.GetTotalMeals);
+		end else
+			ShowMessage('The item ' +  FoodItem.Foodname + ' does not exist in the database');
+
+		Meal.Free;
+		FoodItem.Free;
   end;
 
 end;
@@ -142,12 +158,12 @@ begin
   begin
     for i := 1 to iNumMeals do
     begin
-      sMealName := currentUser.GetMeal(i,1);
-      dateEaten := currentUser.GetMeal(i,3);
-      timeEaten := currentUser.GetMeal(i,4);
+      sMealName := currentUser.GetMealInfo(i,'name');
+      dateEaten := currentUser.GetMealInfo(i,'date');
+      timeEaten := currentUser.GetMealInfo(i,'time');
       if StrToDate(dateEaten) = selectedDate then
       memMealLog.Lines.Add(
-        timeEaten + ': ' + sMealName + ' eaten for '+ currentUser.GetMeal(i,2)
+        timeEaten + ': ' + sMealName + ' eaten for '+ currentUser.GetMealInfo(i,'type')
       );
     end;
     edtCaloires.Text := IntToStr(iTotalCalories);
@@ -166,7 +182,7 @@ var
   sFoodname: string;
   i: Integer;
   isFound : boolean;
-  iProteins,iCarbs,iFat,iCalories: integer;
+  Protein,Carb,Fat,Calories: real;
 	FoodItem : TFoodItem;
 begin
 	if edtSearchMeal.text = '' then
@@ -177,36 +193,37 @@ begin
 	{ Loop through the food list until either i is at the food count or the food is found }
   i := 0;
   repeat
-    if UpperCase(sFoodname) = foodList[i] then
+    if UpperCase(sFoodname) = UpperCase(foodList[i]) then
     begin
 			isFound := true;
 			FoodItem := TFoodItem.Create(foodList[i]);
-      iProteins := FoodItem.ProteinPer100G;
-      iCarbs := FoodItem.CarbPer100G;
-      iFat := FoodItem.FatPer100G;
-      iCalories := FoodItem.CaloriePer100G;
+      Protein := FoodItem.ProteinPer100G;
+      Carb := FoodItem.CarbPer100G;
+      Fat := FoodItem.FatPer100G;
+      Calories := FoodItem.CaloriePer100G;
 			FoodItem.Free;
     end else inc(i);
-  until (i = gFoodCount) or isFound;
+  until (i = FoodCount-1) or isFound;
 
   if isFound then
   with redMealInfo do
   begin
     with Paragraph do
     begin
-      TabCount := 2;
-      Tab[0] := 150;
-      Tab[1] := 250;
+      TabCount := 3;
+      Tab[0] := 250;
+      Tab[1] := 350;
+      Tab[2] := 450;
     end; // end with paragraph
     with Lines do
     begin
       Clear;
       Add('Information on ' + sFoodname);
       Add('----------------------------');
-      Add('Calories per 100g:' + #9 + IntToStr(iCalories));
-      Add('Proteins per 100g:' + #9 + IntToStr(iProteins));
-      Add('Carbohydrates per 100g:' + #9 + IntToStr(iCalories));
-      Add('Fat per 100g:' + #9 + IntToStr(iProteins));
+      Add('Calories per 100g:' + #9 + FloatToStrF(Calories,ffFixed,8,2));
+      Add('Proteins per 100g:' + #9 + FloatToStrF(Protein,ffFixed,8,2));
+      Add('Carbohydrates per 100g:' + #9 + FloatToStrF(Carb,ffFixed,8,2));
+      Add('Fat per 100g:' + #9 + FloatToStrF(Fat,ffFixed,8,2));
     end; // end lines
   end // end with redMealInfo
 	else
@@ -287,6 +304,7 @@ begin
     end;
   until Eof;
   Close;
+  FoodCount := i;
  end;
 end;
 

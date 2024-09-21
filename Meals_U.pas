@@ -80,7 +80,7 @@ begin
       begin
 	      isFoodFound := true;
         ProteinPer100G := FieldValues['ProteinPer100g'];
-        CarbPer100G := FieldValues['CarbohydratePer100g'];
+        CarbPer100G := FieldValues['CarbPer100g'];
         FatPer100G := FieldValues['FatPer100g'];
         CaloriePer100G := FieldValues['CaloriesPer100g'];
       end else Next;
@@ -187,7 +187,7 @@ begin
       Append;
       FieldValues['FoodName'] := Foodname;
       FieldValues['CaloriesPer100g'] := CaloriePer100G;
-      FieldValues['CarbohydratePer100g'] := CarbPer100G;
+      FieldValues['CarbPer100g'] := CarbPer100G;
       FieldValues['ProteinPer100g'] := ProteinPer100G;
       FieldValues['FatPer100g'] := FatPer100G;
       FieldValues['EnergyPer100G'] := EnergyPer100G;

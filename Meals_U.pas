@@ -52,7 +52,7 @@ type
       property FoodItem : TFoodItem read FFoodItem write FFoodItem;
       property PortionSize : Integer read FPortion write FPortion;
 
-      procedure EatMeal(UserID : String);
+      procedure EatMeal(UserID : String;TotalUserMeals:Integer);
   end;
 
 implementation
@@ -225,12 +225,13 @@ begin
   Result := iTotalCalories;
 end;
 
-procedure TMeal.EatMeal(UserID : String);
 function TMeal.CalcEnergy: Real;
 begin
   This in the case that I am able to obtain energy values
   Result := FoodItem.EnergyPer100G * (PortionSize/100);
 end;
+
+procedure TMeal.EatMeal(UserID : String;TotalUserMeals:Integer);
 var
   sFoodname : string;
   iMealIndex : integer;
@@ -240,7 +241,7 @@ begin
   // Increase the index of the meal for the specific user
   // Every user has an index for their meals
   // Making it possible to search through them for a specific one
-  iMealIndex := currentUser.GetTotalMeals;
+  iMealIndex := TotalUserMeals;
   inc(iMealIndex);
 
   isFound := False;
@@ -270,7 +271,7 @@ begin
           Append;
           FieldValues['FoodName'] := sFoodname;
           FieldValues['TotalCalories'] := Calories;
-          FieldValues['DateEaten'] := date;
+          FieldValues['DateEaten'] := Date;
           FieldValues['TimeEaten'] := Time;
           FieldValues['UserID'] := UserID;
           FieldValues['UserMealID'] := iMealIndex;

@@ -131,18 +131,18 @@ end;
 
 procedure TfrmAdmin.btnFirstClick(Sender: TObject);
 begin
-  dbmData.tblUsers.first;
+  dbData.tblUsers.first;
 end;
 
 procedure TfrmAdmin.btnLastClick(Sender: TObject);
 begin
-  dbmData.tblUsers.Last;
+  dbData.tblUsers.Last;
 end;
 
 procedure TfrmAdmin.btnLogoutClick(Sender: TObject);
 begin
   Application.MainForm.Visible := true;
-  with dbmData do
+  with dbData do
   begin
     tblUsers.Close;
   end;
@@ -153,17 +153,17 @@ end;
 
 procedure TfrmAdmin.btnNextClick(Sender: TObject);
 begin
-  dbmData.tblUsers.Next;
+  dbData.tblUsers.Next;
 end;
 
 procedure TfrmAdmin.btnPrevClick(Sender: TObject);
 begin
-  dbmData.tblUsers.Prior;
+  dbData.tblUsers.Prior;
 end;
 
 procedure TfrmAdmin.btnUserDelClick(Sender: TObject);
 begin
-  currentAdmin.RemoveUser(dbmData.tblUsers.FieldValues['UserID']);
+  currentAdmin.RemoveUser(dbData.tblUsers.FieldValues['UserID']);
 end;
 
 //TODO: Filter logs based on type
@@ -177,7 +177,7 @@ end;
 procedure TfrmAdmin.tsUsersShow(Sender: TObject);
 begin
   UtilObj.SetLabel(lblUsers,'User Management',20);
-  with dbmData do
+  with dbData do
   begin
     tblUsers.open;
     dbgUsers.DataSource := dscUsers;

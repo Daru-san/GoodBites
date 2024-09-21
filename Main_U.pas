@@ -4,8 +4,8 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Login_u, conDBBites,
-  Data.DB, Vcl.Grids, Vcl.DBGrids, Dashboard_U,Admin_U,User_u,Helpform, Vcl.Imaging.pngimage;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Login_u,
+  Vcl.Grids, Dashboard_U,Admin_U,User_u,Helpform, Vcl.Imaging.pngimage;
 
 type
   TfrmApp = class(TForm)

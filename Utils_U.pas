@@ -1,9 +1,8 @@
-
 unit Utils_U;
 
 interface
 
-uses System.SysUtils,System.Classes,VCL.StdCtrls,conDBBites;
+uses System.SysUtils,System.Classes,VCL.StdCtrls,conDB;
 
 type
   TUtils = Class(TObject)

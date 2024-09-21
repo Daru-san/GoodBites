@@ -7,11 +7,11 @@ type
   TFoodItem = class(TObject)
   private
     FFoodname : String;
-    //TODO: Add energy (maybe) FEnergyPer100G : real;
     FCaloriePer100G : real;
     FProteinPer100G : real;
     FCarbPer100G : real;
     FFatPer100G : real;
+    FEnergyPer100G : real;
 
     function ValidateFood(sFoodname:string;Calories:Integer): boolean;
 
@@ -24,6 +24,7 @@ type
     property ProteinPer100G : real read FProteinPer100G write FProteinPer100G;
     property CarbPer100G : real read FCarbPer100G write FCarbPer100G;
     property FatPer100G : real read FFatPer100G write FFatPer100G;
+    property EnergyPer100G : real read FEnergyPer100G write FEnergyPer100G;
 
     function CheckExists : Boolean;
 

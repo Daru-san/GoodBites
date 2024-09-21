@@ -250,7 +250,7 @@ end;
 }
 procedure TFoodItem.AddFoodToDB;
 begin
-  if ValidateFood(Foodname,CaloriePer100G) then
+  if ValidateFood then
   begin
     FetchNutrients;
     with dbData.tblFoods do

@@ -3,7 +3,7 @@ unit User_U;
 
 interface
 
-uses system.SysUtils,conDBBites, Vcl.Dialogs, Utils_U,Classes,Math;
+uses system.SysUtils,conDB, Vcl.Dialogs, Utils_U,Classes,Math,StrUtils;
 
 type
   TUser = class(TObject)

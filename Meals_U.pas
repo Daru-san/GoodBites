@@ -14,8 +14,11 @@ type
     FEnergyPer100G : real;
 
     function ValidateFood: boolean;
+    function FetchFood(query:string):string;
 
     procedure GetNutrients(sFoodname:string);
+    procedure FetchNutrients;
+
   public
     constructor Create(sFoodname:string);
 
@@ -170,6 +173,73 @@ begin
   Result := nutCheck and nameCorrect;
 end;
 
+function TFoodItem.FetchFood(query:string) : string;
+var DataFetcher : TfrmFetcher;
+begin
+  DataFetcher := TfrmFetcher.Create(nil);
+  Result := DataFetcher.GetJsonData(query);
+  DataFetcher.Free;
+end;
+
+procedure TFoodItem.FetchNutrients;
+var
+  foodJson,branchJson,nutrientJson: TJSONValue;
+  jsonString,jsonDataType : string;
+  Protein,Carb,Energy,Fat : Real;
+  valuename : string;
+  i,j : integer;
+  JSONObject : TJSONObject;
+  itemFound,itemCorrect : Boolean;
+begin
+  jsonString := FetchFood(Foodname);
+  JSONObject := TJSONObject.Create;
+  foodJson := JsonObject.ParseJsonValue(jsonString);
+  i := 0;
+  repeat
+    inc(i);
+    nutrientJson := ((foodJson as TJsonArray).items[i] as TJsonObject);
+    jsonDataType := (foodJson as TJSONObject).Get('dataType').jsonValue.value;
+    j := 0;
+    repeat
+      inc(j);
+      if jsonDataType.contains('Survery') or jsonDataType.contains('Branded') then
+      begin
+        Protein := 0;
+        Fat := 0;
+        Carb := 0;
+        Energy := 0;
+        itemCorrect := False;
+        for j := 1 to branchJson.value.length do
+        begin
+          valuename := ((branchJson as TJsonArray).items[j] as TJsonObject).Get('name').JsonValue.Value;
+          branchJson := (nutrientJson as TJSONObject).Get('foodNutrients').jsonValue;
+          Case IndexStr(valuename,['Protein','Total lipid (fat)','Carbohydrate, by difference','Energy']) of
+            0 : Protein := ((branchJson as TJSONObject).Get('amount').JsonValue.Value.ToExtended);
+            1 : Fat := ((branchJson as TJSONObject).Get('amount').JsonValue.Value.ToExtended);
+            2 : Carb := ((branchJson as TJSONObject).Get('amount').JsonValue.Value.ToExtended);
+            3 : Energy := ((branchJson as TJSONObject).Get('amount').JsonValue.Value.ToExtended);
+          End;
+        end;
+        if (Protein <> 0) and (Fat <> 0) and (Carb <> 0) and (Energy <> 0) then
+        begin
+          itemCorrect := true;
+        end else itemCorrect := False;
+      end;
+    until itemCorrect or (j = 10);
+  until (i = 10) or itemCorrect;
+
+  //TODO: Handle issue where nutrients are not found
+  JSONObject.Destroy;
+
+  ProteinPer100G := Protein;
+
+  // VERY INACCURATE
+  CaloriePer100G := Fat + Carb + Protein;
+
+  FatPer100G := Fat;
+  CarbPer100G := Carb;
+  EnergyPer100G := Energy;
+end;
 {
   Get validated information from the user to add to the database
   these foods can then be eaten by the user afterwards.
@@ -181,6 +251,8 @@ end;
 procedure TFoodItem.AddFoodToDB;
 begin
   if ValidateFood(Foodname,CaloriePer100G) then
+  begin
+    FetchNutrients;
     with dbData.tblFoods do
     begin
       Open;
@@ -193,6 +265,7 @@ begin
       FieldValues['EnergyPer100G'] := EnergyPer100G;
       Post;
     end;
+  end;
 end;
 
 {$ENDREGION}

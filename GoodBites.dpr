@@ -1,11 +1,11 @@
 program GoodBites;
 
 {$IFDEF FPC}
-  {$MODE Delphi}
+{$MODE Delphi}
 {$ENDIF}
 
 uses
-  {$IFnDEF FPC}
+  {$IFNDEF FPC}
   Vcl.Forms,
   Vcl.Themes,
   Vcl.Styles,
@@ -15,14 +15,14 @@ uses
   Login_u in 'Login_u.pas' {frmLogin},
   Dashboard_U in 'Dashboard_U.pas' {frmDashboard},
   Admin_U in 'Admin_U.pas' {frmAdmin},
-  conDBBites in 'conDBBites.pas' {dbmData: TDataModule},
   InfoBoard in 'InfoBoard.pas' {frmInfo},
   User_U in 'User_U.pas',
-  DataFetcher in 'DataFetcher.pas',
   Utils_U in 'Utils_U.pas',
   HelpForm in 'HelpForm.pas' {frmHelp},
   Meals_U in 'Meals_U.pas',
-  frmGreeter_U in 'frmGreeter_U.pas' {frmGreeter};
+  frmGreeter_U in 'frmGreeter_U.pas' {frmGreeter},
+  frmDataRequest in 'frmDataRequest.pas' {frmFetcher},
+  conDB in 'conDB.pas' {dmData: TDataModule};
 
 {$R *.res}
 
@@ -34,9 +34,11 @@ begin
   Application.CreateForm(TfrmLogin, frmLogin);
   Application.CreateForm(TfrmDashboard, frmDashboard);
   Application.CreateForm(TfrmAdmin, frmAdmin);
-  Application.CreateForm(TdbmData, dbmData);
   Application.CreateForm(TfrmInfo, frmInfo);
   Application.CreateForm(TfrmHelp, frmHelp);
   Application.CreateForm(TfrmGreeter, frmGreeter);
+  Application.CreateForm(TfrmFetcher, frmFetcher);
+  Application.CreateForm(TdmData, dmData);
   Application.Run;
+
 end.

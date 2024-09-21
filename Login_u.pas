@@ -43,8 +43,8 @@ begin
   LoginForm.visible := false;
   self.ModalResult := mrCancel;
 
-  // Create an empty user 
-  // The object will return false upon checking login 
+  // Create an empty user
+  // The object will return false upon checking login
   // on the main form
   currentUser.Create('');
 end;
@@ -83,7 +83,7 @@ begin
   sUsername := edtUser.text;
   sPassword := edtPassword.text;
 
-  // Since the user is only created when signing up, the currentUser 
+  // Since the user is only created when signing up, the currentUser
   // object is freed from memory immediately after account creation
   // The user signs up and logs in sequentially
   currentUser := TUser.Create(sUsername.Trim);

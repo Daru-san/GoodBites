@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls,InfoBoard,Utils_U,User_u,
-  Vcl.ComCtrls,Meals_U,frmGreeter_U;
+  Vcl.ComCtrls,Meals_U,frmGreeter_U,conDB,frmAddFood_U;
 
 type
   TfrmDashboard = class(TForm)
@@ -27,12 +27,6 @@ type
     cmbMeals: TComboBox;
     edtPortion: TEdit;
     btnEaten: TButton;
-    pnlNewMeal: TPanel;
-    lblCustomMeal: TLabel;
-    cbxAddDB: TCheckBox;
-    edtMealName: TEdit;
-    edtNumCalories: TEdit;
-    cbxNewFood: TCheckBox;
     pctDashboard: TPageControl;
     tsProgress: TTabSheet;
     tsEating: TTabSheet;
@@ -48,6 +42,7 @@ type
     btnMealSearch: TButton;
     redMealInfo: TRichEdit;
     cmbMealType: TComboBox;
+    btnAddDB: TButton;
     procedure FormShow(Sender: TObject);
     procedure btnLogOutClick(Sender: TObject);
     procedure pnlInfoClick(Sender: TObject);
@@ -60,6 +55,7 @@ type
     procedure tsSearchShow(Sender: TObject);
     procedure tsSearchHide(Sender: TObject);
     procedure btnMealSearchClick(Sender: TObject);
+    procedure btnAddDBClick(Sender: TObject);
   private
     { Private declarations }
     procedure PopulateFoods;
@@ -80,6 +76,23 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TfrmDashboard.btnAddDBClick(Sender: TObject);
+var
+  frmFood : TfrmAddFood;
+  isSuccess : boolean;
+begin
+  isSuccess := false;
+  frmFood := TfrmAddFood.Create(nil);
+  try
+    frmFood.ShowModal;
+  finally
+    isSuccess := frmFood.ModalResult = mrYes;
+    frmFood.Free;
+  end;
+  if isSuccess then
+  PopulateFoods;
+end;
 
 procedure TfrmDashboard.btnEatenClick(Sender: TObject);
 var
@@ -107,14 +120,6 @@ begin
   if selectedOpt = mrYes then
   begin
 		FoodItem := TFoodItem.Create(sMealName);
-
-		//TODO: GET Data on food nutrients
-		{
-			The idea here is to enter the food item into the database only
-			if it does not already exist at the moment
-		}
-		if cbxNewFood.Checked and not (FoodItem.CheckExists) then
-			FoodItem.AddFoodToDB;
 
 		if FoodItem.CheckExists then
 		begin

@@ -1,7 +1,7 @@
 ﻿unit Meals_U;
 
 interface
-uses conDB,System.Classes,System.SysUtils,User_U,Dialogs,JSON,StrUtils,frmDataRequest;
+uses conDB,System.Classes,System.SysUtils,User_U,Dialogs,StrUtils;
 { Display the meals in an image if possible}
 type
   TFoodItem = class(TObject)
@@ -14,10 +14,8 @@ type
     FEnergyPer100G : real;
 
     function ValidateFood: boolean;
-    function FetchFood(query:string):string;
 
     procedure GetNutrients(sFoodname:string);
-    procedure FetchNutrients;
 
   public
     constructor Create(sFoodname:string);
@@ -137,109 +135,11 @@ var
 begin
   nameCorrect := utilObj.ValidateString(Foodname,'Meal',2,20);
 
-  {
-    This is still an early prototype of the thing I want to do
-    but it attempts to validate whether the food item has the correct
-    amount of each nutrient value
-    It can probably be improved
-  }
-  calCheck := false;
-  proteinCheck := false;
-  carbCheck := false;
-  fatCheck := false;
-
-  if (CaloriePer100G < 0) or (CaloriePer100G > 100000) then
-  begin
-    calCheck := true;
-  end;
-
-  if (ProteinPer100G < 0) or (ProteinPer100G > 100000) then
-  begin
-    proteinCheck := true;
-  end;
-
-  if (CarbPer100G < 0) or (CarbPer100G > 100000) then
-  begin
-    carbCheck := true;
-  end;
-
-  if (FatPer100G < 0) or (FatPer100G > 100000) then
-  begin
-    fatCheck := true;
-  end;
-
-  nutCheck := calCheck and proteinCheck and carbCheck and fatCheck;
-
-  Result := nutCheck and nameCorrect;
+  Result := nameCorrect;
 end;
 
-function TFoodItem.FetchFood(query:string) : string;
-var DataFetcher : TfrmFetcher;
 begin
-  DataFetcher := TfrmFetcher.Create(nil);
-  Result := DataFetcher.GetJsonData(query);
-  DataFetcher.Free;
-end;
-
-procedure TFoodItem.FetchNutrients;
-var
-  foodJson,branchJson,nutrientJson: TJSONValue;
-  jsonString,jsonDataType : string;
-  Protein,Carb,Energy,Fat : Real;
-  valuename : string;
-  i,j : integer;
-  JSONObject : TJSONObject;
-  itemFound,itemCorrect : Boolean;
-begin
-  jsonString := FetchFood(Foodname);
-  JSONObject := TJSONObject.Create;
-  foodJson := JsonObject.ParseJsonValue(jsonString);
-  i := 0;
-  repeat
-    inc(i);
-    nutrientJson := ((foodJson as TJsonArray).items[i] as TJsonObject);
-    jsonDataType := (foodJson as TJSONObject).Get('dataType').jsonValue.value;
-    j := 0;
-    repeat
-      inc(j);
-      if jsonDataType.contains('Survery') or jsonDataType.contains('Branded') then
-      begin
-        Protein := 0;
-        Fat := 0;
-        Carb := 0;
-        Energy := 0;
-        itemCorrect := False;
-        for j := 1 to branchJson.value.length do
-        begin
-          valuename := ((branchJson as TJsonArray).items[j] as TJsonObject).Get('name').JsonValue.Value;
-          branchJson := (nutrientJson as TJSONObject).Get('foodNutrients').jsonValue;
-          Case IndexStr(valuename,['Protein','Total lipid (fat)','Carbohydrate, by difference','Energy']) of
-            0 : Protein := ((branchJson as TJSONObject).Get('amount').JsonValue.Value.ToExtended);
-            1 : Fat := ((branchJson as TJSONObject).Get('amount').JsonValue.Value.ToExtended);
-            2 : Carb := ((branchJson as TJSONObject).Get('amount').JsonValue.Value.ToExtended);
-            3 : Energy := ((branchJson as TJSONObject).Get('amount').JsonValue.Value.ToExtended);
-          End;
-        end;
-        if (Protein <> 0) and (Fat <> 0) and (Carb <> 0) and (Energy <> 0) then
-        begin
-          itemCorrect := true;
-        end else itemCorrect := False;
-      end;
-    until itemCorrect or (j = 10);
-  until (i = 10) or itemCorrect;
-
-  //TODO: Handle issue where nutrients are not found
-  JSONObject.Destroy;
-
-  ProteinPer100G := Protein;
-
-  // VERY INACCURATE
-  CaloriePer100G := Fat + Carb + Protein;
-
-  FatPer100G := Fat;
-  CarbPer100G := Carb;
   EnergyPer100G := Energy;
-end;
 {
   Get validated information from the user to add to the database
   these foods can then be eaten by the user afterwards.
@@ -252,7 +152,6 @@ procedure TFoodItem.AddFoodToDB;
 begin
   if ValidateFood then
   begin
-    FetchNutrients;
     with dmData.tblFoods do
     begin
       Open;

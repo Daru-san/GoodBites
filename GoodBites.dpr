@@ -22,7 +22,9 @@ uses
   Meals_U in 'Meals_U.pas',
   frmGreeter_U in 'frmGreeter_U.pas' {frmGreeter},
   frmDataRequest in 'frmDataRequest.pas' {frmFetcher},
-  conDB in 'conDB.pas' {dmData: TDataModule};
+  conDB in 'conDB.pas' {dmData: TDataModule},
+  OKCANCL2 in 'c:\program files (x86)\embarcadero\studio\23.0\ObjRepos\EN\DelphiWin32\OKCANCL2.PAS' {OKRightDlg},
+  frmAddFood_U in 'frmAddFood_U.pas' {frmAddFood};
 
 {$R *.res}
 
@@ -39,6 +41,7 @@ begin
   Application.CreateForm(TfrmGreeter, frmGreeter);
   Application.CreateForm(TfrmFetcher, frmFetcher);
   Application.CreateForm(TdmData, dmData);
+  Application.CreateForm(TfrmAddFood, frmAddFood);
   Application.Run;
 
 end.

@@ -1,4 +1,5 @@
 object dmData: TdmData
+  OnCreate = DataModuleCreate
   Height = 480
   Width = 640
   object dbConnect: TADOConnection

@@ -15,6 +15,7 @@ type
     dscUsers: TDataSource;
 
     procedure BackUpDB;
+    procedure DataModuleCreate(Sender: TObject);
   private
     { Private declarations }
     procedure ConnectDB;
@@ -76,5 +77,10 @@ end;
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 
 {$R *.dfm}
+
+procedure TdmData.DataModuleCreate(Sender: TObject);
+begin
+  ConnectDB;
+end;
 
 end.

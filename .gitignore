@@ -1,5 +1,3 @@
-
-
 ### Created by https://www.gitignore.io
 ### Delphi ###
 # Uncomment these types if you want even more clean repository. But be careful.
@@ -75,3 +73,5 @@ modules/
 Win32/
 !.passwords 
 !logs
+
+api_key.txt

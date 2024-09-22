@@ -30,6 +30,7 @@ type
     function CheckExists : Boolean;
 
     procedure AddFoodToDB;
+    procedure AddNutrients(Protein,Carb,Fat,Energy,Cal:real);
     //function GetFoodname(sFoodname:string) : string;
   end;
   TMeal = class(TObject)
@@ -138,8 +139,15 @@ begin
   Result := nameCorrect;
 end;
 
+procedure TFoodItem.AddNutrients(Protein: Real; Carb: Real; Fat: Real; Energy: Real; Cal: Real);
 begin
+  CaloriePer100G := Cal;
   EnergyPer100G := Energy;
+  CarbPer100G := Carb;
+  FatPer100G := Fat;
+  ProteinPer100G := Protein;
+end;
+
 {
   Get validated information from the user to add to the database
   these foods can then be eaten by the user afterwards.
@@ -200,7 +208,9 @@ end;
 
 function TMeal.CalcEnergy: Real;
 begin
+{
   This in the case that I am able to obtain energy values
+  }
   Result := FoodItem.EnergyPer100G * (PortionSize/100);
 end;
 

@@ -289,7 +289,7 @@ var
 begin
  i := 0;
  foodList := TStringList.Create;
- with dbmData.tblFoods do
+ with dmData.tblFoods do
  begin
   Open;
   First;

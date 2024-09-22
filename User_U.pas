@@ -342,7 +342,7 @@ var
   isFound : boolean;
 begin
   isFound := false;
-  with dbData.tblUsers do
+  with dmData.tblUsers do
   begin
     Open;
     First;
@@ -393,7 +393,7 @@ end;
 
 procedure TUser.RegisterUserInDB;
 begin
-  with dbData.tblUsers do
+  with dmData.tblUsers do
   begin
     Open;
     Append;
@@ -473,7 +473,7 @@ var
   isFound : Boolean;
   sUsername : string;
 begin
-  with dbData.tblUsers do
+  with dmData.tblUsers do
   begin
     Open;
     First;
@@ -495,7 +495,7 @@ var
   isFound : boolean;
 begin
   isFound := false;
-  with dbData.tblUsers do
+  with dmData.tblUsers do
   begin
     Open;
     First;
@@ -540,7 +540,7 @@ function TUser.CheckDatabase;
 var
   isFound: boolean;
 begin
-  with dbData.tblUsers do
+  with dmData.tblUsers do
   begin
     Open;
     First;
@@ -559,7 +559,7 @@ var
   userIsAdmin,isFound : boolean;
 begin
   isAdmin := false;
-  with dbData.tblUsers do
+  with dmData.tblUsers do
   begin
     Open;
     First;
@@ -630,7 +630,7 @@ procedure TUser.SaveLastLogin;
 var
   userFound : boolean;
 begin
-  with dbData.tblUsers do
+  with dmData.tblUsers do
   begin
     Open;
     repeat
@@ -666,7 +666,7 @@ var
   userFound : Boolean;
   sLastLogin : string;
 begin
- with dbData.tblUsers do
+ with dmData.tblUsers do
  begin
    Open;
    repeat
@@ -691,7 +691,7 @@ function TUser.GetFirstLogin;
 var
   isFound : Boolean;
 begin
-  with dbData.tblUsers do
+  with dmData.tblUsers do
   begin
     Open;
     First;
@@ -710,7 +710,7 @@ procedure TUser.SaveUserInfo;
 var
   userFound : Boolean;
 begin
-  with dbData.tblUsers do
+  with dmData.tblUsers do
   begin
     Open;
     First;
@@ -736,7 +736,7 @@ var
   isFound, isRemoved : boolean;
   sUsername : string;
 begin
-  with dbData.tblUsers do
+  with dmData.tblUsers do
   begin
     Open;
     First;
@@ -805,7 +805,7 @@ var
   numCalories : integer;
 begin
   numCalories := 0;
-  with dbData.tblMeals do
+  with dmData.tblMeals do
   begin
     Open;
     First;
@@ -837,7 +837,7 @@ var
   numMeals : integer;
 begin
   numMeals := 0;
-  with dbData.tblMeals do
+  with dmData.tblMeals do
   begin
     Open;
     First;
@@ -866,7 +866,7 @@ begin
   3 = Day the meal was eaten
   4 = Time the meal was eaten
 }
-  with dbData.tblMeals do
+  with dmData.tblMeals do
   begin
     Open;
     First;

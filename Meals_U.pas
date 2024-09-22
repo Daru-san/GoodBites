@@ -74,7 +74,7 @@ var
   isFoodFound : Boolean;
 begin
   isFoodFound := False;
-  with dbData.tblFoods do
+  with dmData.tblFoods do
   begin
     Open;
     First;
@@ -110,7 +110,7 @@ function TFoodItem.CheckExists : boolean;
 var isFound : boolean;
 begin
   isFound := false;
-  with dbData.tblFoods do
+  with dmData.tblFoods do
   begin
     Open;
     First;
@@ -253,7 +253,7 @@ begin
   if ValidateFood then
   begin
     FetchNutrients;
-    with dbData.tblFoods do
+    with dmData.tblFoods do
     begin
       Open;
       Append;
@@ -330,7 +330,7 @@ begin
     1.4. Stop the loop
     1.5. Close the foods table
   }
-  with dbData.tblFoods do
+  with dmData.tblFoods do
   begin
     Open;
     First;
@@ -339,7 +339,7 @@ begin
       begin
         isFound := true;
         sFoodname := FieldValues['Foodname'];
-        with dbData.tblMeals do
+        with dmData.tblMeals do
         begin
           Open;
           Append;

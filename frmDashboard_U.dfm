@@ -10,6 +10,7 @@ object frmDashboard: TfrmDashboard
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  OnClose = FormClose
   OnShow = FormShow
   TextHeight = 15
   object pnlFoot: TPanel
@@ -36,7 +37,7 @@ object frmDashboard: TfrmDashboard
     Top = 41
     Width = 890
     Height = 384
-    ActivePage = tsEating
+    ActivePage = tsWelcome
     Align = alClient
     MultiLine = True
     TabOrder = 1

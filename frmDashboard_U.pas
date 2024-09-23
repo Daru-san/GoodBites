@@ -1,11 +1,11 @@
-unit Dashboard_U;
+unit frmDashboard_U;
 
 interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls,InfoBoard,Utils_U,User_u,
-  Vcl.ComCtrls,Meals_U,frmGreeter_U,conDB,frmAddFood_U;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, ComCtrls,
+  libUtils_U,libUser_u, libMeals_U,frmGreeter_U,conDB,frmAddFood_U;
 
 type
   TfrmDashboard = class(TForm)

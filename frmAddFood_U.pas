@@ -20,7 +20,7 @@ type
     procedure FormShow(Sender: TObject);
   private
     { Private declarations }
-    function FetchJson(sQuery:string) : string;
+    function FetchJson(sQuery:string;isBranded:Boolean) : string;
 
     procedure SortItems(jsonString:string);
   public
@@ -31,9 +31,11 @@ var
   frmAddFood: TfrmAddFood;
   FoodItem : TFoodItem;
   Util : TUtils;
+  Fetcher : TFetchAPI;
 
   // Store the foods in arrays of 1 to 10, only taking 10 items from a single query
   // These arrays will be linked to each other
+  Foodname : string;
   arrFood : array[1..10] of string;
   arrCategory : array[1..10] of string;
   arrCalories : array[1..10] of real;
@@ -104,32 +106,41 @@ end;
 
 procedure TfrmAddFood.btnQueryClick(Sender: TObject);
 var
-  Foodname : string;
   jsonString : string;
 begin
   inherited;
   Foodname := edtName.Text;
 //  if Utils.ValidateString(Foodname,'foodname',1,20,'letters,numbers') then
   begin
-    jsonString := FetchJson(Foodname);
+
+    if cbxBranded.Checked then
+    jsonString := FetchJson(Foodname,true)
+    else jsonString := FetchJson(Foodname,false);
+
     SortItems(jsonString);
   end;
 end;
 
-function TfrmAddFood.FetchJson(sQuery: string): string;
 var
-  DataFetcher : TfrmFetcher;
 
+function TfrmAddFood.FetchJson(sQuery: string;isBranded: Boolean): string;
 begin
-  DataFetcher := TfrmFetcher.Create(nil);
+  Fetcher := TFetchAPI.Create;
 
   { Having trailing spaces in the query could cause
     problems when fetching, rather prevent that from
     happening than deal with those problems }
   sQuery.Trim;
 
-  Result := DataFetcher.GetJsonData(sQuery);
-  DataFetcher.Free;
+
+  if isBranded then
+    Fetcher.SendQuery(sQuery,'Branded')
+  else
+    Fetcher.SendQuery(sQuery);
+
+  Result := Fetcher.GetJson;
+
+  Fetcher.free;
 end;
 
 

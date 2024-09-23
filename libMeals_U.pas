@@ -30,8 +30,8 @@ type
 
     function CheckExists : Boolean;
 
-    procedure AddFoodToDB;
-    procedure AddNutrients(Protein,Carb,Fat,Energy,Cal:real);
+    procedure AddFoodToDB(FoodDesc:string = 'Lorem ipsum');
+    procedure AddNutrients(Calories:Real;Protein: Real; Carb: Real; Fat: Real; Energy: Real; Sugar:real);
     //function GetFoodname(sFoodname:string) : string;
   end;
   TMeal = class(TObject)
@@ -125,10 +125,10 @@ begin
   Result := isFound;
 end;
 
+{ Add the nutrients for any new food items }
+procedure TFoodItem.AddNutrients(Calories:real;Protein: Real; Carb: Real; Fat: Real; Energy: Real; Sugar:real);
 begin
-procedure TFoodItem.AddNutrients(Protein: Real; Carb: Real; Fat: Real; Energy: Real; Cal: Real);
-begin
-  CaloriePer100G := Cal;
+  CaloriePer100G := Calories;
   EnergyPer100G := Energy;
   CarbPer100G := Carb;
   FatPer100G := Fat;
@@ -136,29 +136,25 @@ begin
   SugarPer100G := Sugar;
 end;
 
-{
-  Get validated information from the user to add to the database
-  these foods can then be eaten by the user afterwards.
-
-  An idea I have is to allow users to search for the foods in some
-  food database which can give them all of the nutrient values 
-  given that the name is correct.
-}
+{ Get validated information from the user to add to the database
+  these foods can then be eaten by the user afterwards.}
 procedure TFoodItem.AddFoodToDB;
 begin
   with dmData.tblFoods do
   begin
-      Open;
-      Append;
-      FieldValues['FoodName'] := Foodname;
-      FieldValues['CaloriesPer100g'] := CaloriePer100G;
-      FieldValues['CarbPer100g'] := CarbPer100G;
-      FieldValues['ProteinPer100g'] := ProteinPer100G;
-      FieldValues['FatPer100g'] := FatPer100G;
-      FieldValues['EnergyPer100G'] := EnergyPer100G;
-      Post;
-    end;
+    Open;
+    Append;
+    FieldValues['FoodName'] := Foodname;
+    FieldValues['CaloriesPer100g'] := CaloriePer100G;
+    FieldValues['CarbPer100g'] := CarbPer100G;
+    FieldValues['ProteinPer100g'] := ProteinPer100G;
+    FieldValues['FatPer100g'] := FatPer100G;
+    FieldValues['EnergyPer100G'] := EnergyPer100G;
+    FieldValues['SugarPer100G'] := SugarPer100G;
+    FieldValues['Desc'] := FoodDesc;
+    Post;
   end;
+  loggerObj.WriteSysLog('Item ' + Foodname + ' has been added to the database');
 end;
 
 {$ENDREGION}

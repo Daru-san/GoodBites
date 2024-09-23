@@ -13,11 +13,13 @@ type
     cbxItems: TComboBox;
     btnQuery: TButton;
     btnAccept: TButton;
+    redItems: TRichEdit;
     procedure HelpBtnClick(Sender: TObject);
     procedure OKBtnClick(Sender: TObject);
     procedure btnQueryClick(Sender: TObject);
     procedure btnAcceptClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure cbxItemsChange(Sender: TObject);
   private
     { Private declarations }
     function FetchJson(sQuery:string;isBranded:Boolean) : string;
@@ -70,29 +72,19 @@ end;
 procedure TfrmAddFood.btnAcceptClick(Sender: TObject);
 var
   FoodIndex : integer;
-  Foodname : string;
   Calories,Energy,Protein,Carbs,Fat: real;
+  FoodDesc : string;
 begin
   inherited;
   FoodIndex := cbxItems.ItemIndex+1;
-
-  Foodname := arrFood[FoodIndex];
+  FoodDesc := arrFood[FoodIndex];
   Calories := arrCalories[FoodIndex];
   Energy := arrEnergy[FoodIndex];
   Protein := arrProtein[FoodIndex];
   Carbs := arrCarb[FoodIndex];
   Fat := arrFat[FoodIndex];
-  ShowMessage(
-    'Please verify this data is correct ' + #13 +
-    'Data for ' + Foodname + #13
-    + 'Calories: ' + FloatToStrF(Calories,ffFixed,8,2) + 'kCal'
-    + 'Energy: ' + FloatToStrF(Energy,ffFixed,8,2) + 'kJ' + #13
-    + 'Protein: ' + FloatToStrF(Protein,ffFixed,8,2)+ 'g'
-    + 'Carbs: ' + FloatToStrF(Carbs,ffFixed,8,2)+ 'g' + #13
-    + 'Fat ' + FloatToStrF(Fat,ffFixed,8,2) + 'g'
-  );
-
   //TODO: Add sugars
+
   if MessageDlg('Are you sure you want to enter this food item?',mtConfirmation,mbYesNo,0) = mrYes then
   begin
     FoodItem.Create(Foodname);
@@ -121,7 +113,52 @@ begin
   end;
 end;
 
+procedure TfrmAddFood.cbxItemsChange(Sender: TObject);
 var
+  FoodIndex : integer;
+  Foodname,FoodDesc,FoodCat : string;
+  Calories,Energy,Protein,Carbs,Fat,Sugar: real;
+begin
+  inherited;
+
+  FoodIndex := cbxItems.ItemIndex+1;
+
+  Foodname := edtName.Text;
+  Foodcat := arrCategory[FoodIndex];
+  FoodDesc := arrFood[FoodIndex];
+  Calories := arrCalories[FoodIndex];
+  Energy := arrEnergy[FoodIndex];
+  Protein := arrProtein[FoodIndex];
+  Carbs := arrCarb[FoodIndex];
+  Fat := arrFat[FoodIndex];
+  Sugar := arrSugar[FoodIndex];
+
+  with redItems do
+  begin
+    Clear;
+    ScrollBars := ssBoth;
+    with Paragraph do
+    begin
+      TabCount := 2;
+      Tab[0] := 100;
+      Tab[1] := 150;
+    end;
+    with lines do
+    begin
+      Add('Data on ' + Foodname + #13);
+      Add('Description' + #9 + FoodDesc);
+      Add('Category' + #9 + FoodCat);
+      Add('');
+      Add('Nutrients:');
+      Add('Calories(Calculated):' + #9 + FloatToStrF(Calories,ffFixed,8,2) + 'kCal');
+      Add('Energy:' + #9 + FloatToStrF(Energy,ffFixed,8,2) + 'kJ');
+      Add('Protein:' + #9 + FloatToStrF(Protein,ffFixed,8,2)+ 'g');
+      Add('Carbs:' + #9 + FloatToStrF(Carbs,ffFixed,8,2)+ 'g');
+      Add('Fat:' + #9 + FloatToStrF(Fat,ffFixed,8,2) + 'g');
+      Add('Sugar:' + #9 + FloatToStrF(Sugar,ffFixed,8,2) + 'g');
+    end;
+  end;
+end;
 
 function TfrmAddFood.FetchJson(sQuery: string;isBranded: Boolean): string;
 begin

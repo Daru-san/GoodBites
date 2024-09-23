@@ -1,5 +1,5 @@
 unit frmAddFood_U;
-
+{ Place for users to input their own food choices and add them to the database, the API search is done in the libFetchAPI_U unit}
 interface
 
 uses Winapi.Windows, System.SysUtils, System.Classes, Vcl.Graphics, Vcl.Forms, StrUtils, Dialogs,
@@ -13,6 +13,7 @@ type
     cbxItems: TComboBox;
     btnQuery: TButton;
     btnAccept: TButton;
+    cbxBranded: TCheckBox;
     redItems: TRichEdit;
     procedure HelpBtnClick(Sender: TObject);
     procedure btnQueryClick(Sender: TObject);
@@ -48,6 +49,7 @@ var
   arrSugar : array[1..10] of real;
 
   numResults : integer;
+
 implementation
 
 {$R *.dfm}
@@ -74,6 +76,7 @@ begin
   Fat := arrFat[FoodIndex];
   Sugar := arrSugar[FoodIndex];
 
+
   if MessageDlg('Are you sure you want to enter this food item?',mtConfirmation,mbYesNo,0) = mrYes then
   begin
     FoodItem := TfoodItem.Create(Foodname);
@@ -91,6 +94,7 @@ var
 begin
   inherited;
   Foodname := edtName.Text;
+
 //  if Utils.ValidateString(Foodname,'foodname',1,20,'letters,numbers') then
   begin
 
@@ -175,10 +179,12 @@ begin
   inherited;
   Util.Free;
 end;
+
 procedure TfrmAddFood.FormShow(Sender: TObject);
 begin
   inherited;
   Util := TUtils.Create;
+  edtName.SetFocus;
 end;
 
 procedure TfrmAddFood.SortItems;

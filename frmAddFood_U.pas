@@ -3,7 +3,8 @@ unit frmAddFood_U;
 interface
 
 uses Winapi.Windows, System.SysUtils, System.Classes, Vcl.Graphics, Vcl.Forms, StrUtils, Dialogs,
-  Vcl.Controls, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, OKCANCL2,Meals_U,JSON,frmDataRequest,Utils_U;
+  Vcl.Controls, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, OKCANCL2, JSON, Vcl.ComCtrls,
+  libFetchAPI_U, libUtils_U, libMeals_U;
 
 type
   TfrmAddFood = class(TOKRightDlg)

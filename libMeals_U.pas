@@ -14,6 +14,7 @@ type
     FEnergyPer100G : real;
 
     function ValidateFood: boolean;
+    FSugarPer100G : real;
 
     procedure GetNutrients(sFoodname:string);
 
@@ -26,6 +27,7 @@ type
     property CarbPer100G : real read FCarbPer100G write FCarbPer100G;
     property FatPer100G : real read FFatPer100G write FFatPer100G;
     property EnergyPer100G : real read FEnergyPer100G write FEnergyPer100G;
+    property SugarPer100G : real read FSugarPer100G write FSugarPer100G;
 
     function CheckExists : Boolean;
 
@@ -85,6 +87,7 @@ begin
         CarbPer100G := FieldValues['CarbPer100g'];
         FatPer100G := FieldValues['FatPer100g'];
         CaloriePer100G := FieldValues['CaloriesPer100g'];
+        SugarPer100G := FieldValues['SugarPer100G'];
       end else Next;
     until EOF or isFoodFound;
     Close;
@@ -146,6 +149,7 @@ begin
   CarbPer100G := Carb;
   FatPer100G := Fat;
   ProteinPer100G := Protein;
+  SugarPer100G := Sugar;
 end;
 
 {

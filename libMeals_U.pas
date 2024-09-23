@@ -1,7 +1,7 @@
-﻿unit Meals_U;
-
+﻿unit libMeals_U;
 interface
-uses conDB,System.Classes,System.SysUtils,User_U,Dialogs,StrUtils;
+
+uses conDB,System.Classes,System.SysUtils,libUser_U,Dialogs,StrUtils;
 { Display the meals in an image if possible}
 type
   TFoodItem = class(TObject)

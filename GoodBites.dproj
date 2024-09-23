@@ -103,39 +103,8 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="Main_U.pas">
-            <Form>frmApp</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="Login_u.pas">
-            <Form>frmLogin</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="Dashboard_U.pas">
-            <Form>frmDashboard</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="Admin_U.pas">
-            <Form>frmAdmin</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="InfoBoard.pas">
-            <Form>frmInfo</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="User_U.pas"/>
-        <DCCReference Include="Utils_U.pas"/>
-        <DCCReference Include="HelpForm.pas">
-            <Form>frmHelp</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="Meals_U.pas"/>
         <DCCReference Include="frmGreeter_U.pas">
             <Form>frmGreeter</Form>
-        </DCCReference>
-        <DCCReference Include="frmDataRequest.pas">
-            <Form>frmFetcher</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="conDB.pas">
             <Form>dmData</Form>
@@ -150,6 +119,25 @@
             <Form>frmAddFood</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="frmAdmin_U.pas">
+            <Form>frmAdmin</Form>
+        </DCCReference>
+        <DCCReference Include="frmDashboard_U.pas">
+            <Form>frmDashboard</Form>
+        </DCCReference>
+        <DCCReference Include="frmHelp_U.pas">
+            <Form>frmHelp</Form>
+        </DCCReference>
+        <DCCReference Include="frmApp_U.pas">
+            <Form>frmApp</Form>
+        </DCCReference>
+        <DCCReference Include="frmLogin_U.pas">
+            <Form>frmLogin</Form>
+        </DCCReference>
+        <DCCReference Include="libUtils_U.pas"/>
+        <DCCReference Include="libUser_U.pas"/>
+        <DCCReference Include="libMeals_U.pas"/>
+        <DCCReference Include="libFetchAPI_U.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

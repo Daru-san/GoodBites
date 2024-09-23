@@ -38,18 +38,18 @@ type
     private
       FMealID : string;
       FFood : String;
-      FCalories : Integer;
+      FCalories : real;
       FNumServings : Integer;
       FMealType : String;
       FPortion : Integer;
       FFoodItem : TFoodItem;
 
-      function CalcCalories(iCalories: Real) : Integer;
+      function CalcCalories(iCalories: Real) : real;
       function CalcEnergy: real;
     public
       constructor Create(F : TFoodItem; P : Integer;M: string = 'Other');
 
-      property Calories : Integer read FCalories write FCalories;
+      property Calories : real read FCalories write FCalories;
       property NumServings : Integer read FNumServings write FNumServings;
       property MealType : string read FMealType write FMealType;
       property FoodItem : TFoodItem read FFoodItem write FFoodItem;
@@ -176,20 +176,17 @@ end;
 
 function TMeal.CalcCalories;
 var
-  iTotalCalories : Integer;
+  rTotalCalories : Real;
 begin
-  {
     Calories per 100g are multiplied by 100 to
     convert them to calories, then multiplied
     by the portion size to obtain the total
     caloires
   }
 
-  iTotalCalories := Round(
-      (FoodItem.CaloriePer100G)*(PortionSize/100)
-  );
+  rTotalCalories := FoodItem.CaloriePer100G*(PortionSize/100);
 
-  Result := iTotalCalories;
+  Result := rTotalCalories;
 end;
 
 function TMeal.CalcEnergy: Real;

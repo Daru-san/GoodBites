@@ -1,4 +1,10 @@
 ﻿unit libMeals_U;
+{ Provides the objects needed for meal (and food) creation and manipulation }
+{
+ I would rather these objects only be used once and destroyed immediately after, retaining them becomes confusing when
+ having to deal with multiple food items at once and I do not yet understand memory management enough to know that may
+ affect performance, unless their memory footprint is too small to make any difference
+}
 interface
 
 uses conDB,System.Classes,System.SysUtils,libUser_U,Dialogs,StrUtils;
@@ -12,7 +18,6 @@ type
     FCarbPer100G : real;
     FFatPer100G : real;
     FEnergyPer100G : real;
-
     FSugarPer100G : real;
 
     procedure GetNutrients(sFoodname:string);
@@ -69,6 +74,7 @@ begin
   GetNutrients(sFoodname);
 end;
 
+{ Obtain food nutrients from the database }
 procedure TFoodItem.GetNutrients;
 var
   isFoodFound : Boolean;
@@ -91,12 +97,8 @@ begin
     until EOF or isFoodFound;
     Close;
 
-    {
-      My idea here is that it is better to assign the food
-      item with `default` values in the case where it is not
-      found in the database, ensuring that the values do
-      in fact exist (solves no problem now that I think about it)
-    }
+    { Assign default values, in case the items are somehow accesed even after validating that the
+      food item does not exist, preventing access violations in that rare case }
     if not isFoodFound then
     begin
       ProteinPer100G := 0;
@@ -107,6 +109,10 @@ begin
   end;
 end;
 
+{ Used best when `eating` or adding new foods,
+  it prevents an issue where a user may be able to eat food
+  that does not exist in the database, or add new foods that
+  are already existant in the database }
 function TFoodItem.CheckExists : boolean;
 var isFound : boolean;
 begin
@@ -174,11 +180,10 @@ function TMeal.CalcCalories;
 var
   rTotalCalories : Real;
 begin
-    Calories per 100g are multiplied by 100 to
+  { Calories per 100g are multiplied by 100 to
     convert them to calories, then multiplied
     by the portion size to obtain the total
-    caloires
-  }
+    caloires }
 
   rTotalCalories := FoodItem.CaloriePer100G*(PortionSize/100);
 
@@ -187,9 +192,7 @@ end;
 
 function TMeal.CalcEnergy: Real;
 begin
-{
-  This in the case that I am able to obtain energy values
-  }
+
   Result := FoodItem.EnergyPer100G * (PortionSize/100);
 end;
 
@@ -207,6 +210,7 @@ begin
   inc(iMealIndex);
 
   isFound := False;
+
 
   {
     Steps:

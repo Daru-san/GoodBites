@@ -75,3 +75,4 @@ Win32/
 !logs
 
 api_key.txt
+*.swp

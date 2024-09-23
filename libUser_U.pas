@@ -1,9 +1,9 @@
 ﻿// User creation and modification functions and procedures
-unit User_U;
+unit libUser_U;
 
 interface
 
-uses system.SysUtils,conDB, Vcl.Dialogs, Utils_U,Classes,Math,StrUtils;
+uses system.SysUtils,conDB, Vcl.Dialogs,libUtils_U,Classes,Math,StrUtils,controls;
 
 type
   TUser = class(TObject)
@@ -39,6 +39,7 @@ type
     procedure SaveLastLogin(userID : string; userIsAdmin : Boolean);
   public
     constructor Create(Username : string);
+    destructor Destroy; override;
 
     property isAdmin: Boolean read FIsAdmin write FIsAdmin;
     property Username: string read FUsername write FUsername;
@@ -75,7 +76,7 @@ type
     errorsList : TStringList;
 implementation
 
-{ The main constructor }
+{ The main constructor and destructor }
 {$REGION constructor}
 
 // Creates an empty user object
@@ -88,6 +89,12 @@ begin
   FIsAdmin := false;
   FUserID := '';
   FUsername := Username;
+end;
+
+destructor TUser.Destroy;
+begin
+  UtilObj.Free;
+  loggerObj.Free;
 end;
 {$ENDREGION}
 
@@ -130,6 +137,7 @@ begin
     if not (isPassValid) or not(isUserValid) then
       ShowMessage('User creation errors ' + #13+#13+ errorsList.Text);
   end;
+  errorsList.free;
 
   isCorrect := isPassValid and isUserValid and isPresent and not(userExistsing);
 
@@ -448,6 +456,11 @@ begin
     begin
       UserID := GetUserID;
       isAdmin := CheckAdmin(UserID);
+
+      if isAdmin then
+      if MessageDlg('Log in as a normal user?',mtConfirmation,mbYesNo,0) = mrYes then
+       isAdmin := false;
+
       Username := GetUsername;
       SaveLastLogin(Username,isAdmin);
       isSuccess := true;

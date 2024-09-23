@@ -1,10 +1,12 @@
-unit Login_u;
+unit frmLogin_U;
+{ Provides the login screen for users and creates the `currentUser` object in memory,
+ from there the object is passed between units as needed }
 
 interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, User_u;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, libUser_U;
 
 type
   TfrmLogin = class(TForm)
@@ -22,6 +24,7 @@ type
 
     procedure btnSignUpClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
   public
@@ -88,6 +91,12 @@ begin
   // The user signs up and logs in sequentially
   currentUser := TUser.Create(sUsername.Trim);
   currentUser.SignUp(sPassword.Trim);
+  currentUser.Free;
+end;
+
+procedure TfrmLogin.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  if self.ModalResult <> mrOk then
   currentUser.Free;
 end;
 

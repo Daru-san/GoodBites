@@ -72,7 +72,7 @@ end;
 procedure TfrmAddFood.btnAcceptClick(Sender: TObject);
 var
   FoodIndex : integer;
-  Calories,Energy,Protein,Carbs,Fat: real;
+  Calories,Energy,Protein,Carbs,Fat,Sugar: real;
   FoodDesc : string;
 begin
   inherited;
@@ -83,7 +83,7 @@ begin
   Protein := arrProtein[FoodIndex];
   Carbs := arrCarb[FoodIndex];
   Fat := arrFat[FoodIndex];
-  //TODO: Add sugars
+  Sugar := arrSugar[FoodIndex];
 
   if MessageDlg('Are you sure you want to enter this food item?',mtConfirmation,mbYesNo,0) = mrYes then
   begin

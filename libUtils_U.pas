@@ -1,4 +1,4 @@
-unit Utils_U;
+unit libUtils_U;
 
 interface
 
@@ -12,7 +12,6 @@ type
      maxLength: Integer = 0; allowedChars : String = 'letters'): Boolean;
 
     procedure SetLabel(LabelComponent:TLabel;labelMsg:string;fontSize : integer);
-    procedure EditInDB(fieldName,fieldData : string);
 
   end;
   TLogs = Class(TObject)
@@ -107,17 +106,6 @@ begin
     Layout := tlCenter;
     Alignment := taCenter;
     Caption := labelMsg;
-  end;
-end;
-
-procedure TUtils.EditInDB;
-begin
-  with dbmData.tblUsers do
-  begin
-    Edit;
-    FieldValues[fieldName] := fieldData;
-    Post;
-    TLogs.Create.WriteSysLog('An entry has been modified in the database');
   end;
 end;
 

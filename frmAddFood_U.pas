@@ -35,12 +35,15 @@ var
   // Store the foods in arrays of 1 to 10, only taking 10 items from a single query
   // These arrays will be linked to each other
   arrFood : array[1..10] of string;
+  arrCategory : array[1..10] of string;
   arrCalories : array[1..10] of real;
   arrCarb : array[1..10] of real;
   arrFat : array[1..10] of real;
   arrProtein : array[1..10] of real;
   arrEnergy : array[1..10] of real;
+  arrSugar : array[1..10] of real;
 
+  numResults : integer;
 implementation
 
 {$R *.dfm}
@@ -138,59 +141,148 @@ end;
 
 procedure TfrmAddFood.SortItems;
 var
-  foodJson,branchJson,nutrientJson: TJSONValue;
-  jsonDataType : string;
-  Protein,Carb,Energy,Fat : Real;
-  valuename : string;
   i,j : integer;
-  JSONObject : TJSONObject;
-  itemFound,itemCorrect : Boolean;
+  jsonObj : TJSONObject;
+  jsonArrFoods,jsonArrNutrients : TJSONArray;
+  jsonFood : TJSONValue;
+  jsonValue,jsonNutrientValue : TJSONValue;
+  jsonData,jsonNutrients : TJSONValue;
 begin
-  JSONObject := TJSONObject.Create;
-  foodJson := JsonObject.ParseJsonValue(jsonString);
-  i := 0;
-  repeat
-    inc(i);
-    nutrientJson := ((foodJson as TJsonArray).items[i] as TJsonObject);
-    jsonDataType := (foodJson as TJSONObject).Get('dataType').jsonValue.value;
-    j := 0;
-    repeat
-      inc(j);
-      if jsonDataType.contains('Survery') or jsonDataType.contains('Branded') then
+
+  {
+    This allows us to parse json data easily
+    Destroying the object immediately after conversion
+    as a way of freeing memory
+  }
+
+//    When data is retrieved it is in a json file format
+//    Looking something like this
+//    ```json
+//    {
+//      "description": "item-desc";
+//      "foodNutrients : [
+//          {
+//            nutrientName: "";
+//            value: "";
+//          }
+//      ];
+//     }
+//     ``` end json
+//  
+//    
+//	Thus we need to navigate the file going doing the heiarchy each time
+//	through looping through each json array
+//	Each food item as an item in the json array, the same goes for the nutrients
+
+
+  jsonObj := TJSONObject.Create;
+  jsonData := jsonObj.ParseJSONValue(jsonString);
+  jsonObj.Destroy;
+
+
+  { I hope to prevent type casting errors that may come up when the json
+    file does not come out as expected, exiting seems to prevent any issues
+    from arising very quickly }
+  if (jsonData as TJSONObject).Get('foods').JsonValue is TJSONArray then
+  begin
+    jsonArrFoods := (jsonData as TJSONObject).Get('foods').JsonValue as TJSONArray;
+  end
+  else
+  begin
+    ShowMessage('Something weird happened..');
+    exit;
+  end;
+
+  { Better to count on the number of actual results based on the json array and not the maximum size of the arrays(delphi arrays) }
+  numResults := jsonArrFoods.size;
+
+
+  for i := 1 to numResults do
+  begin
+    for jsonFood in jsonArrFoods do
+    begin
+
+      jsonValue := jsonFood.FindValue('description');
+
+      { The nil check on every value prevents instances where values are assigned to nil, causing errors down the line }
+      if jsonValue <> nil then
+        arrFood[i] := jsonValue.GetValue<string>;
+
+      jsonValue := jsonFood.FindValue('foodCategory');
+
+      if jsonValue <> nil then
+        arrCategory[I] := jsonValue.GetValue<string>;
+
+      jsonNutrients := (jsonFood as TJSONObject).Get('foodNutrients').JsonValue;
+
+      jsonArrNutrients := jsonNutrients as TJSONArray;
+
+      for jsonNutrients in jsonArrNutrients do
       begin
-        Protein := 0;
-        Fat := 0;
-        Carb := 0;
-        Energy := 0;
-        itemCorrect := False;
-        for j := 1 to branchJson.value.length do
+        // Each nutrient has a name value that I can use to get the position in the json array
+        // where I can find the nutrient values I am looking for
+        jsonValue := jsonNutrients.FindValue('nutrientName');
+
+        if (jsonValue.ToString = 'Total lipid (fat)') or (LowerCase(jsonValue.ToString).Contains('lipid')) then
         begin
-          valuename := ((branchJson as TJsonArray).items[j] as TJsonObject).Get('name').JsonValue.Value;
-          branchJson := (nutrientJson as TJSONObject).Get('foodNutrients').jsonValue;
-          Case IndexStr(valuename,['Protein','Total lipid (fat)','Carbohydrate, by difference','Energy']) of
-            0 : Protein := ((branchJson as TJSONObject).Get('amount').JsonValue.Value.ToExtended);
-            1 : Fat := ((branchJson as TJSONObject).Get('amount').JsonValue.Value.ToExtended);
-            2 : Carb := ((branchJson as TJSONObject).Get('amount').JsonValue.Value.ToExtended);
-            3 : Energy := ((branchJson as TJSONObject).Get('amount').JsonValue.Value.ToExtended);
-          End;
+          jsonNutrientValue := jsonNutrients.FindValue('value');
+
+          if jsonNutrientValue <> nil then
+          arrFat[i] := jsonNutrientValue.GetValue<Extended>;
         end;
-        if (Protein <> 0) and (Fat <> 0) and (Carb <> 0) and (Energy <> 0) then
+
+        if (jsonValue.ToString = 'Carbohydrate, by difference') or (LowerCase(jsonValue.ToString).Contains('carbohydrate')) then
         begin
-          itemCorrect := true;
-        end else itemCorrect := False;
+          jsonNutrientValue := jsonNutrients.FindValue('value');
+
+          if jsonNutrientValue <> nil then
+          arrCarb[i] := jsonNutrientValue.GetValue<Extended>;
+        end;
+
+        if (jsonValue.ToString = 'Protein') or (LowerCase(jsonValue.ToString).Contains('protein')) then
+        begin
+          jsonNutrientValue := jsonNutrients.FindValue('value');
+
+          if jsonNutrientValue <> nil then
+          arrProtein[i] := jsonNutrientValue.GetValue<Extended>;
+        end;
+
+        if (jsonValue.ToString = 'Energy (Atwater General Factors)') or (LowerCase(jsonValue.ToString).Contains('energy')) then
+        begin
+          jsonNutrientValue := jsonNutrients.FindValue('value');
+
+          if jsonNutrientValue <> nil then
+          arrEnergy[i] := jsonNutrientValue.GetValue<Extended>;
+        end;
+
+        if (jsonValue.ToString = 'Sugars, Total') or (LowerCase(jsonValue.ToString).Contains('sugar') and LowerCase(jsonValue.ToString).Contains('total')) then
+        begin
+          jsonNutrientValue := jsonNutrients.FindValue('value');
+
+          if jsonNutrientValue <> nil then
+          arrSugar[i] := jsonNutrientValue.GetValue<Extended>;
+        end;
       end;
-    until itemCorrect or (j = 10);
-  until (i = 10) or itemCorrect;
 
-  //TODO: Handle issue where nutrients are not found
-  JSONObject.Destroy;
+      // Calculate calories since they are not provided by the API
+      {
+        Their values may not be absolutely accurate due to lack of total coverage
+        in terms of nutrients - I do not plan on adding the dozens of micronutrients in some formula :(
+        The though is that they may be accurate enough by a small margin of error
+      }
+      { Formula: Calories = protein*4 + carbohydrate*4 + lipid*9 }
+      arrCalories[i] := arrProtein[i]*4+arrCarb[i]*4+arrFat[i]*9;
+    end;
+  end;
 
-  for i := 1 to Length(arrFood) do
+  for i := 1 to numResults do
   begin
     cbxItems.Items.Add(arrFood[i]);
   end;
+
 end;
 
 
 end.
  
+

@@ -1,10 +1,10 @@
 unit libFetchAPI_U;
 {
- Searching the API provided by https://www.usda.gov/
+ Query the API provided by https://www.usda.gov/
  Details on the API at https://fdc.nal.usda.gov/api-guide.html
 
  This works quite nicely, I am very pleased by how this turned out ^.^
- I still have quite a bit to learn about putting these together but this was an amazing learning experience :)
+ I still have quite a bit to learn about web apis but putting this together was an amazing learning experience :)
 }
 
 interface
@@ -48,12 +48,16 @@ var
   api_key : string;
   searchParams : TStringStream;
 begin
+	NHClient := TNetHTTPClient.Create(nil);
+	NHREQ := TNetHTTPRequest.Create(nil);
+  NHREQ.Client := NHClient;
+
   NHClient.ContentType := 'application/json';
   NHClient.AcceptEncoding := 'UTF-8';
 
-  { From a safety standpoint, providing the API key as a variable or constan would be very unsafe,
-    I assume this approach of obtaining the key from a separate file works best, although it may make
-    it difficult to update the API key. I at least hope the key won'will not expire for a long time :) }
+  { Providing the api key through a variable or constant would be insecure,
+    so I assume this approach of obtaining the key from a separate file works best,
+    it would also make updating the key easier since a rebuild is not necessary. }
   api_key := GetApiKey;
 
   { Limit the maximum queries to 10, preventing a huge string that would take
@@ -63,12 +67,14 @@ begin
     TEncoding.UTF8
   );
 
-  { GET was also an option, but POST allows for greater customizability in terms of parameters }
+  { GET was also an option, but POST allows for greater customizability in terms of search parameters }
   ResultString := NHREQ.Post(
     'https://api.nal.usda.gov/fdc/v1/foods/search?api_key=' + api_key,searchParams
   ).ContentAsString(TEncoding.UTF8);
 
-  Params.Free;
+  searchParams.Free;
+  NHClient.free;
+  NHREQ.free;
 end;
 
 function TFetchAPI.GetJson: string;

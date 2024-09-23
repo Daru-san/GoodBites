@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Classes, Data.DB, Data.Win.ADODB,Windows,libUtils_U,
-  Vcl.ExtCtrls;
+  Vcl.ExtCtrls,Dialogs;
 
 type
   TdmData = class(TDataModule)
@@ -69,14 +69,23 @@ end;
 procedure TdmData.BackUpDB;
 var
   isFailed : Boolean;
+  dbPathCharBK,dlPathCharBK : PWideChar;
+  dbPathChar, dlPathChar : PWideChar;
 begin
 
   { Only backup if the `database.ldb` file is NOT present,
     issues can come up when the database is backed up while still in use,
     I would rather back it up frequently but not when it is in use }
-  if not Util.CheckFileExists(dlPath) then
-  DeleteFile(dbPath + '.backup');
-  CopyFile(dbPath,dbPath+'.backup',isFailed);
+
+  // Converts the strings to widechar which can be read by DeleteFile()
+  StringToWideChar(dbPath + '.backup',dbPathCharBK,(dbPath+'.backup').Length);
+  StringToWideChar(dlPath + '.backup',dlPathCharBK,(dlPath+'.backup').Length);
+  StringToWideChar(dbPath,dbPathChar,dbPath.Length);
+  StringToWideChar(dlPath,dlPathChar,dlPath.Length);
+
+  if not Utils.CheckFileExists(dlPath) then
+  DeleteFile(dbPathCharBK);
+  CopyFile(dbPathChar,dbPathCharBK,isFailed);
 
   if isFailed then
     logger.WriteErrorLog('Error backing up the database')
@@ -122,16 +131,18 @@ begin
   if dbExists then
   begin
     ConnectDB;
-
+    {    ShowMessage('A');
     // Nice to keep the database backup up often, every 5 minutes, unless the `.ldb` file exists, which would mean the database is still in use
     timeBackup.Enabled := true;
+    ShowMessage('b');
     timeBackup.Interval := 5*60;
+    ShowMessage('c');}
   end;
 end;
 
 procedure TdmData.DataModuleDestroy(Sender: TObject);
 begin
-  Util.Free;
+  Utils.Free;
   logger.Free;
 end;
 

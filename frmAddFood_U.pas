@@ -87,9 +87,9 @@ begin
 
   if MessageDlg('Are you sure you want to enter this food item?',mtConfirmation,mbYesNo,0) = mrYes then
   begin
-    FoodItem.Create(Foodname);
-    FoodItem.AddNutrients(Protein,Carbs,Fat,Energy,Calories);
-    FoodItem.AddFoodToDB;
+    FoodItem := TfoodItem.Create(Foodname);
+    FoodItem.AddNutrients(Calories,Protein,Carbs,Fat,Energy,Sugar);
+    FoodItem.AddFoodToDB(FoodDesc);
     FoodItem.Free;
     ShowMessage(Foodname + ' has been added to the database!' + #13 + 'Happy eating!');
     OKBtn.ModalResult := mrYes;

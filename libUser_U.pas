@@ -871,14 +871,6 @@ var
   eatenDate,eatenTime : TDate;
   isMealFound : boolean;
 begin
-{
-
-  ValueIndex is the index of the specific value one is looking for:
-  1 = name of the food eaten during the meal
-  2 = Type of mean i.e dinner, breakfast etc.
-  3 = Day the meal was eaten
-  4 = Time the meal was eaten
-}
   with dmData.tblMeals do
   begin
     Open;
@@ -898,8 +890,9 @@ begin
     until EOF or isMealFound;
     Close;
   end;
- // ShowMessage(DateToStr(eatenDate));
+
   // Breakfast is not a valid date!
+  // Infotype dictates the type of information we are to return based on a few options
   case IndexStr(LowerCase(infoType),['name','type','date','time']) of
   0 : Result := sFoodName;
   1 : Result := sMealType;

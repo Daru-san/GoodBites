@@ -15,11 +15,11 @@ type
     btnAccept: TButton;
     redItems: TRichEdit;
     procedure HelpBtnClick(Sender: TObject);
-    procedure OKBtnClick(Sender: TObject);
     procedure btnQueryClick(Sender: TObject);
     procedure btnAcceptClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure cbxItemsChange(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
     function FetchJson(sQuery:string;isBranded:Boolean) : string;
@@ -58,17 +58,6 @@ begin
   Application.HelpContext(HelpContext);
 end;
 
-procedure TfrmAddFood.OKBtnClick(Sender: TObject);
-begin
-  inherited;
-
-end;
-
-{
-  Create the data fetcher form,
-  Allows me to free the form once
-  it has been used, and cleanly
-}
 procedure TfrmAddFood.btnAcceptClick(Sender: TObject);
 var
   FoodIndex : integer;
@@ -181,6 +170,11 @@ begin
 end;
 
 
+procedure TfrmAddFood.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  inherited;
+  Util.Free;
+end;
 procedure TfrmAddFood.FormShow(Sender: TObject);
 begin
   inherited;

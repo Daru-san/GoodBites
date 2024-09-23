@@ -13,7 +13,6 @@ type
     FFatPer100G : real;
     FEnergyPer100G : real;
 
-    function ValidateFood: boolean;
     FSugarPer100G : real;
 
     procedure GetNutrients(sFoodname:string);
@@ -126,22 +125,7 @@ begin
   Result := isFound;
 end;
 
-// So far the idea here is to check if the values of nutrients are
-// numbers above 0 and below an unexpected number
-// Preventing odd values, so far I only plan to prompt the user in this case
-// Asking them for confirmation, validation will be done in another way
-
-//TODO: Complete validateFood() function
-function TFoodItem.ValidateFood: boolean;
-var
-  nameCorrect,nutCheck : Boolean;
-  proteinCheck,carbCheck,fatCheck,calCheck : boolean;
 begin
-  nameCorrect := utilObj.ValidateString(Foodname,'Meal',2,20);
-
-  Result := nameCorrect;
-end;
-
 procedure TFoodItem.AddNutrients(Protein: Real; Carb: Real; Fat: Real; Energy: Real; Cal: Real);
 begin
   CaloriePer100G := Cal;
@@ -162,10 +146,8 @@ end;
 }
 procedure TFoodItem.AddFoodToDB;
 begin
-  if ValidateFood then
+  with dmData.tblFoods do
   begin
-    with dmData.tblFoods do
-    begin
       Open;
       Append;
       FieldValues['FoodName'] := Foodname;

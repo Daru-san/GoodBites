@@ -175,7 +175,7 @@ end;
 
 procedure TfrmDashboard.btnLogOutClick(Sender: TObject);
 begin
-  self.CloseModal;
+  self.ModalResult := mrClose;
 end;
 
 procedure TfrmDashboard.btnMealSearchClick(Sender: TObject);

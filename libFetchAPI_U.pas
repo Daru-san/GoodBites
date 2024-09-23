@@ -48,8 +48,8 @@ var
   api_key : string;
   searchParams : TStringStream;
 begin
-	NHClient := TNetHTTPClient.Create(nil);
-	NHREQ := TNetHTTPRequest.Create(nil);
+  NHClient := TNetHTTPClient.Create(nil);
+  NHREQ := TNetHTTPRequest.Create(nil);
   NHREQ.Client := NHClient;
 
   NHClient.ContentType := 'application/json';
@@ -72,9 +72,9 @@ begin
     'https://api.nal.usda.gov/fdc/v1/foods/search?api_key=' + api_key,searchParams
   ).ContentAsString(TEncoding.UTF8);
 
-  searchParams.Free;
-  NHClient.free;
-  NHREQ.free;
+  searchParams.Destroy;
+  NHClient.Destroy;
+  NHREQ.Destroy;
 end;
 
 function TFetchAPI.GetJson: string;

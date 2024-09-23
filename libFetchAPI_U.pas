@@ -46,7 +46,7 @@ end;
 procedure TFetchAPI.SendQuery(sQuery: string; dataType: string = 'Foundation');
 var
   api_key : string;
-  Params : TStringStream;
+  searchParams : TStringStream;
 begin
   NHClient.ContentType := 'application/json';
   NHClient.AcceptEncoding := 'UTF-8';
@@ -58,14 +58,14 @@ begin
 
   { Limit the maximum queries to 10, preventing a huge string that would take
     ages to parse to be returned }
-  Params := TStringStream.Create(
+  searchParams := TStringStream.Create(
     '{"query":"'+sQuery+'","pageSize":10,"dataType": ["'+dataType+'"]}',
     TEncoding.UTF8
   );
 
   { GET was also an option, but POST allows for greater customizability in terms of parameters }
   ResultString := NHREQ.Post(
-    'https://api.nal.usda.gov/fdc/v1/foods/search?api_key=' + api_key,Params
+    'https://api.nal.usda.gov/fdc/v1/foods/search?api_key=' + api_key,searchParams
   ).ContentAsString(TEncoding.UTF8);
 
   Params.Free;

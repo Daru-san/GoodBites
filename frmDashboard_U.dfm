@@ -10,69 +10,34 @@ object frmDashboard: TfrmDashboard
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
-  OnClose = FormClose
   OnShow = FormShow
   TextHeight = 15
-  object pnlFoot: TPanel
-    Left = 0
-    Top = 425
-    Width = 890
-    Height = 41
-    Align = alBottom
-    TabOrder = 0
-    object btnLogOut: TButton
-      Left = 784
-      Top = 16
-      Width = 75
-      Height = 25
-      Cancel = True
-      Caption = 'Log Out'
-      ModalResult = 8
-      TabOrder = 0
-      OnClick = btnLogOutClick
-    end
-  end
   object pctDashboard: TPageControl
-    Left = 0
-    Top = 41
-    Width = 890
-    Height = 384
-    ActivePage = tsWelcome
+    Left = 50
+    Top = 0
+    Width = 840
+    Height = 466
+    ActivePage = tsProgress
     Align = alClient
     MultiLine = True
-    TabOrder = 1
-    TabPosition = tpBottom
-    object tsWelcome: TTabSheet
-      Caption = 'Welcome'
-      ImageIndex = 2
-      OnShow = tsWelcomeShow
-    end
+    TabOrder = 0
+    TabPosition = tpLeft
+    ExplicitLeft = 0
+    ExplicitTop = 41
+    ExplicitWidth = 890
+    ExplicitHeight = 384
     object tsProgress: TTabSheet
       Caption = 'Progress'
       OnShow = tsProgressShow
       object pnlCenter: TPanel
         Left = 0
         Top = 0
-        Width = 882
-        Height = 356
+        Width = 809
+        Height = 458
         Align = alClient
         TabOrder = 0
-        object lblHeading: TLabel
-          Left = 1
-          Top = 1
-          Width = 880
-          Height = 23
-          Align = alTop
-          Alignment = taCenter
-          Caption = 'Progress'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -17
-          Font.Name = 'Segoe UI'
-          Font.Style = [fsBold]
-          ParentFont = False
-          ExplicitWidth = 68
-        end
+        ExplicitWidth = 659
+        ExplicitHeight = 376
         object btnLoadData: TButton
           Left = 288
           Top = 302
@@ -151,14 +116,16 @@ object frmDashboard: TfrmDashboard
       object pnlCent: TPanel
         Left = 0
         Top = 0
-        Width = 882
-        Height = 356
+        Width = 809
+        Height = 458
         Align = alClient
         TabOrder = 0
+        ExplicitWidth = 659
+        ExplicitHeight = 376
         object lblEats: TLabel
           Left = 1
           Top = 1
-          Width = 880
+          Width = 807
           Height = 23
           Align = alTop
           Alignment = taCenter
@@ -230,15 +197,6 @@ object frmDashboard: TfrmDashboard
           TabOrder = 5
           Text = 'Meal type'
         end
-        object btnAddDB: TButton
-          Left = 328
-          Top = 297
-          Width = 75
-          Height = 25
-          Caption = 'Add new Item'
-          TabOrder = 6
-          OnClick = btnAddDBClick
-        end
       end
     end
     object tsSearch: TTabSheet
@@ -246,17 +204,24 @@ object frmDashboard: TfrmDashboard
       ImageIndex = 3
       OnHide = tsSearchHide
       OnShow = tsSearchShow
-      object edtSearchMeal: TEdit
+      object lblFoodname: TLabel
         Left = 40
-        Top = 112
+        Top = 83
+        Width = 115
+        Height = 15
+        Caption = 'Enter your food name'
+      end
+      object edtSearchMeal: TEdit
+        Left = 176
+        Top = 80
         Width = 121
         Height = 23
         TabOrder = 0
         TextHint = 'Enter Meal name'
       end
       object btnMealSearch: TButton
-        Left = 40
-        Top = 168
+        Left = 222
+        Top = 128
         Width = 75
         Height = 25
         Caption = 'Search Meals'
@@ -278,45 +243,62 @@ object frmDashboard: TfrmDashboard
         ParentFont = False
         TabOrder = 2
       end
+      object btnAddDB: TButton
+        Left = 174
+        Top = 297
+        Width = 123
+        Height = 25
+        Caption = 'Search for new meal'
+        TabOrder = 3
+        OnClick = btnAddDBClick
+      end
     end
   end
-  object pnlHeader: TPanel
+  object SplitView1: TSplitView
     Left = 0
     Top = 0
-    Width = 890
-    Height = 41
-    Align = alTop
-    TabOrder = 2
-    object lblHeader: TLabel
-      Left = 1
-      Top = 1
-      Width = 703
-      Height = 39
-      Align = alClient
-      Alignment = taCenter
-      Caption = 'Welcome'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -24
-      Font.Name = 'Noto Sans'
-      Font.Style = []
-      ParentFont = False
-      ExplicitWidth = 105
-      ExplicitHeight = 36
+    Width = 50
+    Height = 466
+    CloseStyle = svcCompact
+    Opened = False
+    OpenedWidth = 200
+    Placement = svpLeft
+    TabOrder = 1
+    OnClosing = SplitView1Closing
+    OnOpened = SplitView1Opened
+    ExplicitLeft = -6
+    object btnLogOut: TButton
+      Left = -10
+      Top = 437
+      Width = 75
+      Height = 25
+      Cancel = True
+      Caption = 'Log Out'
+      ModalResult = 8
+      TabOrder = 0
+      OnClick = btnLogOutClick
     end
     object pnlUser: TPanel
-      Left = 704
-      Top = 1
-      Width = 185
-      Height = 39
-      Align = alRight
-      TabOrder = 0
+      Left = 0
+      Top = 4
+      Width = 73
+      Height = 41
+      TabOrder = 1
       object lblUser: TLabel
-        Left = 72
+        Left = 24
         Top = 16
         Width = 3
         Height = 15
       end
+    end
+    object btnSplit: TButton
+      Left = -4
+      Top = 416
+      Width = 75
+      Height = 25
+      Caption = 'Open'
+      TabOrder = 2
+      OnClick = btnSplitClick
     end
   end
 end

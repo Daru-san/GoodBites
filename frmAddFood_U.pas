@@ -163,6 +163,8 @@ begin
   sQuery.Trim;
 
 
+  { The default argument is foundation, which is basic food items
+  }
   if isBranded then
     Fetcher.SendQuery(sQuery,'Branded')
   else
@@ -325,6 +327,7 @@ begin
 
   for i := 1 to numResults do
   begin
+    cbxItems.clear;
     cbxItems.Items.Add(arrFood[i]);
   end;
 

@@ -47,6 +47,7 @@ inherited frmAddFood: TfrmAddFood
     Hint = 'Choose from a list of results'
     TabOrder = 4
     Text = 'Choose an Item'
+    OnChange = cbxItemsChange
   end
   object btnQuery: TButton
     Left = 192

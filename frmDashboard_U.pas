@@ -5,19 +5,14 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, ComCtrls,
-  libUtils_U,libUser_u, libMeals_U,frmGreeter_U,conDB,frmAddFood_U;
+  libUtils_U,libUser_u, libMeals_U,frmGreeter_U,conDB,frmAddFood_U,
+  Vcl.WinXCtrls;
 
 type
   TfrmDashboard = class(TForm)
     pnlCenter: TPanel;
-    pnlHeader: TPanel;
-    lblHeader: TLabel;
-    lblHeading: TLabel;
     lblEats: TLabel;
-    pnlFoot: TPanel;
     btnLogOut: TButton;
-    pnlUser: TPanel;
-    lblUser: TLabel;
     dpcDay: TDateTimePicker;
     btnLoadData: TButton;
     pnlProgIndicator: TPanel;
@@ -33,7 +28,6 @@ type
     pnlCent: TPanel;
     memMeal: TMemo;
     lblMeal: TLabel;
-    tsWelcome: TTabSheet;
     memGoals: TMemo;
     pnlGoal: TPanel;
     btnSearch: TButton;
@@ -43,6 +37,11 @@ type
     redMealInfo: TRichEdit;
     cmbMealType: TComboBox;
     btnAddDB: TButton;
+    lblFoodname: TLabel;
+    SplitView1: TSplitView;
+    pnlUser: TPanel;
+    lblUser: TLabel;
+    btnSplit: TButton;
     procedure FormShow(Sender: TObject);
     procedure btnLogOutClick(Sender: TObject);
     procedure btnEatenClick(Sender: TObject);
@@ -55,7 +54,9 @@ type
     procedure tsSearchHide(Sender: TObject);
     procedure btnMealSearchClick(Sender: TObject);
     procedure btnAddDBClick(Sender: TObject);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure SplitView1Closing(Sender: TObject);
+    procedure SplitView1Opened(Sender: TObject);
+    procedure btnSplitClick(Sender: TObject);
   private
     { Private declarations }
     procedure PopulateFoods;
@@ -242,12 +243,11 @@ begin
   pctDashboard.TabIndex := 3;
 end;
 
-procedure TfrmDashboard.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure TfrmDashboard.btnSplitClick(Sender: TObject);
 begin
-  foodList.Free;
-  currentUser.Free;
-  UtilObj.Free;
-  loggerObj.Free;
+  if SplitView1.Opened then
+  SplitView1.Close
+  else SplitView1.Open;
 end;
 
 procedure TfrmDashboard.FormShow(Sender: TObject);
@@ -255,15 +255,15 @@ var
   userGreeter : TfrmGreeter;
 begin
   utilObj := TUtils.Create;
-  utilObj.SetLabel(lblHeading,'Dashboard',15);
+  loggerObj := TLOGS.Create;
+ // utilObj.SetLabel(lblHeading,'Dashboard',15);
   username := currentUser.Username;
-  utilObj.SetLabel(lblUser,'Logged in as ' + username,8);
+  utilObj.SetLabel(lblUser,username,8);
   PopulateFoods;
   PopulateMealType;
   pctDashboard.TabIndex := 0;
   tsSearch.TabVisible := false;
   dpcDay.Date := Date;
-  GetInfo;
 
   if currentUser.GetFirstLogin then
   begin
@@ -295,6 +295,18 @@ begin
   end;
 end;
 
+procedure TfrmDashboard.SplitView1Closing(Sender: TObject);
+begin
+  btnLogOut.Caption := 'L';
+  btnSplit.Caption := 'Open';
+end;
+
+procedure TfrmDashboard.SplitView1Opened(Sender: TObject);
+begin
+  btnLogOut.Caption := 'Log out';
+  btnSplit.Caption := 'Close';
+end;
+
 procedure TfrmDashboard.PopulateFoods;
 var
  currentMeal : string;
@@ -306,17 +318,20 @@ begin
  with dmData.tblFoods do
  begin
   Open;
-  First;
-  repeat
-    inc(i);
-    currentMeal := FieldValues['Foodname'];
-    if not (currentMeal = '') then
-    begin
-      foodList.Add(currentMeal);
-      cmbMeals.Items.Add(currentMeal);
+  if FieldCount <> 0 then
+  begin
+    First;
+    repeat
+      currentMeal := FieldValues['Foodname'];
+      if not ((currentMeal = '') or (currentMeal = 'Default')) then
+      begin
+        inc(i);
+        foodList.Add(currentMeal);
+        cmbMeals.Items.Add(currentMeal);
+      end;
       Next;
-    end;
-  until Eof;
+    until Eof;
+  end;
   Close;
   FoodCount := i;
  end;
@@ -324,12 +339,13 @@ end;
 
 procedure TfrmDashboard.tsEatingShow(Sender: TObject);
 begin
-  utilObj.SetLabel(lblHeading,'What are you eating?',15);
+  //utilObj.SetLabel(lblHeading,'What are you eating?',15);
+  GetInfo;
 end;
 
 procedure TfrmDashboard.tsProgressShow(Sender: TObject);
 begin
-  utilObj.SetLabel(lblHeading,'Your current progress?',15);
+ // utilObj.SetLabel(lblHeading,'Your current progress?',15);
 end;
 
 procedure TfrmDashboard.tsSearchHide(Sender: TObject);
@@ -339,12 +355,12 @@ end;
 
 procedure TfrmDashboard.tsSearchShow(Sender: TObject);
 begin
-  utilObj.SetLabel(lblHeading,'Search foods',15);
+  //utilObj.SetLabel(lblHeading,'Search foods',15);
 end;
 
 procedure TfrmDashboard.tsWelcomeShow(Sender: TObject);
 begin
-  utilObj.SetLabel(lblHeading,'Welcome to ' + Application.MainForm.Caption + '!',15);
+  //utilObj.SetLabel(lblHeading,'Welcome to ' + Application.MainForm.Caption + '!',15);
 end;
 
 end.

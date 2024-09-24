@@ -6,7 +6,9 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, libUser_U;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, libUser_U,
+  Vcl.ToolWin, Vcl.ComCtrls, Vcl.Menus, Vcl.ExtActns, System.Actions,
+  Vcl.ActnList;
 
 type
   TfrmLogin = class(TForm)
@@ -14,13 +16,14 @@ type
     edtPassword: TEdit;
     pnlCenter: TPanel;
     btnLogin: TButton;
-    btnCancel: TButton;
-    pnlFooter: TPanel;
+    btnHome: TButton;
     btnSignUp: TButton;
     pnlHead: TPanel;
-    lblHead: TLabel;
+    btnGoLogin: TButton;
+    btnGoSignUp: TButton;
+    ToolBar1: TToolBar;
     procedure btnLoginClick(Sender: TObject);
-    procedure btnCancelClick(Sender: TObject);
+    procedure btnHomeClick(Sender: TObject);
 
     procedure btnSignUpClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -39,17 +42,12 @@ implementation
 
 {$R *.dfm}
 
-procedure TfrmLogin.btnCancelClick(Sender: TObject);
+procedure TfrmLogin.btnHomeClick(Sender: TObject);
 var
   LoginForm : TfrmLogin;
 begin
   LoginForm.visible := false;
   self.ModalResult := mrCancel;
-
-  // Create an empty user
-  // The object will return false upon checking login
-  // on the main form
-  currentUser.Create('');
 end;
 
 procedure TfrmLogin.btnLoginClick(Sender: TObject);
@@ -102,14 +100,14 @@ end;
 
 procedure TfrmLogin.FormShow(Sender: TObject);
 begin
-  with lblHead do
+ { with lblHead do
   begin
     Caption := 'Login or create account';
     Font.Name := 'Noto Sans';
     AutoSize := true;
     font.Style := [fsBold];
     Alignment := taCenter;
-  end;
+  end; }
   edtUser.SetFocus;
 end;
 

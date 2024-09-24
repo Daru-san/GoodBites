@@ -3,7 +3,8 @@ unit conDB;
 interface
 
 uses
-  System.SysUtils, System.Classes, Data.DB, Data.Win.ADODB,Windows,Utils_U;
+  System.SysUtils, System.Classes, Data.DB, Data.Win.ADODB,Windows,libUtils_U,
+  Vcl.ExtCtrls,Dialogs;
 
 type
   TdmData = class(TDataModule)
@@ -13,18 +14,25 @@ type
     tblUsers: TADOTable;
     dscFoods: TDataSource;
     dscUsers: TDataSource;
+    timeBackup: TTimer;
 
     procedure BackUpDB;
+    procedure DataModuleCreate(Sender: TObject);
+    procedure timeBackupTimer(Sender: TObject);
+    procedure DataModuleDestroy(Sender: TObject);
   private
     { Private declarations }
     procedure ConnectDB;
   public
     { Public declarations }
   end;
-
+// DL refers to the name of the database file when in use
+const DBFILENAME = 'dbBites.mdb'; DLFILENAME = 'dbBites.ldb';
 var
   dmData: TdmData;
+  dbPath,dlPath : String;
   logger : TLogs;
+  Utils : TUtils;
 
 implementation
 
@@ -34,7 +42,7 @@ begin
   dbConnect.Connected := False;
   dbConnect.LoginPrompt := False;
 
-  dbConnect.ConnectionString := 'Provider=Microsoft.Jet.OLEDB.4.0;Data Source=dbBites.mdb;Mode=ReadWrite;Persist Security Info=False;Jet OLEDB:New Database Password="";';
+  dbConnect.ConnectionString := 'Provider=Microsoft.Jet.OLEDB.4.0;Data Source='+dbPath+';Mode=ReadWrite;Persist Security Info=False;Jet OLEDB:New Database Password="";';
 
   dbConnect.Provider := 'Provider=Microsoft.Jet.OLEDB.4.0;';
   dbConnect.Open;
@@ -59,22 +67,88 @@ begin
 end;
 
 procedure TdmData.BackUpDB;
-const FILENAME = 'dbBites.mdb';
 var
   isFailed : Boolean;
-
+  dbPathCharBK,dlPathCharBK : PWideChar;
+  dbPathChar, dlPathChar : PWideChar;
 begin
-  logger := TLogs.Create;
-  DeleteFile(FILENAME + '.backup');
-  CopyFile(FILENAME,FILENAME+'.backup',isFailed);
+
+  { Only backup if the `database.ldb` file is NOT present,
+    issues can come up when the database is backed up while still in use,
+    I would rather back it up frequently but not when it is in use }
+
+  // Converts the strings to widechar which can be read by DeleteFile()
+  StringToWideChar(dbPath + '.backup',dbPathCharBK,(dbPath+'.backup').Length);
+  StringToWideChar(dlPath + '.backup',dlPathCharBK,(dlPath+'.backup').Length);
+  StringToWideChar(dbPath,dbPathChar,dbPath.Length);
+  StringToWideChar(dlPath,dlPathChar,dlPath.Length);
+
+  if not Utils.CheckFileExists(dlPath) then
+  DeleteFile(dbPathCharBK);
+  CopyFile(dbPathChar,dbPathCharBK,isFailed);
+
   if isFailed then
     logger.WriteErrorLog('Error backing up the database')
-	else
-		logger.WriteErrorLog('Database backup successful!');
+  else
+    logger.WriteErrorLog('Database backup successful!');
 end;
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 
 {$R *.dfm}
+
+procedure TdmData.DataModuleCreate(Sender: TObject);
+var dbExists : Boolean;
+begin
+  Utils := TUtils.Create;
+  logger := TLogs.Create;
+
+  {
+    A series of checks ensuring that the database file exists
+    and stopping the app in the instance that it does not exist
+  }
+  dbExists := false;
+  if Utils.CheckFileExists(DBFILENAME) then
+  begin
+    dbPath := DBFILENAME;
+    dlPath := DLFILENAME;
+    dbExists := true;
+  end
+  else
+  // Checking whether the database is in a higher directory, when running in debug mode
+  if Utils.CheckFileExists('..\..\'+DBFILENAME) then
+  begin
+    dbPath := '..\..\'+DBFILENAME;
+    dlPath := '..\..\'+DLFILENAME;
+    dbExists := true;
+  end
+  else
+  begin
+    logger.WriteErrorLog('The database file is missing');
+    dbExists := false;
+   end;
+
+  if dbExists then
+  begin
+    ConnectDB;
+    {    ShowMessage('A');
+    // Nice to keep the database backup up often, every 5 minutes, unless the `.ldb` file exists, which would mean the database is still in use
+    timeBackup.Enabled := true;
+    ShowMessage('b');
+    timeBackup.Interval := 5*60;
+    ShowMessage('c');}
+  end;
+end;
+
+procedure TdmData.DataModuleDestroy(Sender: TObject);
+begin
+  Utils.Free;
+  logger.Free;
+end;
+
+procedure TdmData.timeBackupTimer(Sender: TObject);
+begin
+  BackUpDB;
+end;
 
 end.

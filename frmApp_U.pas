@@ -1,11 +1,11 @@
-unit Main_U;
+unit frmApp_U;
 
 interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Login_u,
-  Vcl.Grids, Dashboard_U,Admin_U,User_u,Helpform, Vcl.Imaging.pngimage;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, frmLogin_U,
+  Vcl.Grids, frmDashboard_U,frmAdmin_U,libUser_U,frmHelp_U, Vcl.Imaging.pngimage;
 
 type
   TfrmApp = class(TForm)
@@ -42,7 +42,7 @@ end;
 
 procedure TfrmApp.btnHelpClick(Sender: TObject);
 var
-  HelperForm : Helpform.TfrmHelp;
+  HelperForm : TfrmHelp;
 begin
   HelperForm := TfrmHelp.Create(nil);
   Self.Visible := false;

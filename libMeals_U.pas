@@ -1,7 +1,13 @@
-﻿unit Meals_U;
-
+﻿unit libMeals_U;
+{ Provides the objects needed for meal (and food) creation and manipulation }
+{
+ I would rather these objects only be used once and destroyed immediately after, retaining them becomes confusing when
+ having to deal with multiple food items at once and I do not yet understand memory management enough to know that may
+ affect performance, unless their memory footprint is too small to make any difference
+}
 interface
-uses conDB,System.Classes,System.SysUtils,User_U,Dialogs,JSON,StrUtils,frmDataRequest;
+
+uses conDB,System.Classes,System.SysUtils,libUser_U,Dialogs,StrUtils;
 { Display the meals in an image if possible}
 type
   TFoodItem = class(TObject)
@@ -12,10 +18,10 @@ type
     FCarbPer100G : real;
     FFatPer100G : real;
     FEnergyPer100G : real;
-
-    function ValidateFood: boolean;
+    FSugarPer100G : real;
 
     procedure GetNutrients(sFoodname:string);
+
   public
     constructor Create(sFoodname:string);
 
@@ -25,28 +31,30 @@ type
     property CarbPer100G : real read FCarbPer100G write FCarbPer100G;
     property FatPer100G : real read FFatPer100G write FFatPer100G;
     property EnergyPer100G : real read FEnergyPer100G write FEnergyPer100G;
+    property SugarPer100G : real read FSugarPer100G write FSugarPer100G;
 
     function CheckExists : Boolean;
 
-    procedure AddFoodToDB;
+    procedure AddFoodToDB(FoodDesc:string = 'Lorem ipsum');
+    procedure AddNutrients(Calories:Real;Protein: Real; Carb: Real; Fat: Real; Energy: Real; Sugar:real);
     //function GetFoodname(sFoodname:string) : string;
   end;
   TMeal = class(TObject)
     private
       FMealID : string;
       FFood : String;
-      FCalories : Integer;
+      FCalories : real;
       FNumServings : Integer;
       FMealType : String;
       FPortion : Integer;
       FFoodItem : TFoodItem;
 
-      function CalcCalories(iCalories: Real) : Integer;
+      function CalcCalories(iCalories: Real) : real;
       function CalcEnergy: real;
     public
       constructor Create(F : TFoodItem; P : Integer;M: string = 'Other');
 
-      property Calories : Integer read FCalories write FCalories;
+      property Calories : real read FCalories write FCalories;
       property NumServings : Integer read FNumServings write FNumServings;
       property MealType : string read FMealType write FMealType;
       property FoodItem : TFoodItem read FFoodItem write FFoodItem;
@@ -66,12 +74,13 @@ begin
   GetNutrients(sFoodname);
 end;
 
+{ Obtain food nutrients from the database }
 procedure TFoodItem.GetNutrients;
 var
   isFoodFound : Boolean;
 begin
   isFoodFound := False;
-  with dbData.tblFoods do
+  with dmData.tblFoods do
   begin
     Open;
     First;
@@ -83,16 +92,13 @@ begin
         CarbPer100G := FieldValues['CarbPer100g'];
         FatPer100G := FieldValues['FatPer100g'];
         CaloriePer100G := FieldValues['CaloriesPer100g'];
+        SugarPer100G := FieldValues['SugarPer100G'];
       end else Next;
     until EOF or isFoodFound;
     Close;
 
-    {
-      My idea here is that it is better to assign the food
-      item with `default` values in the case where it is not
-      found in the database, ensuring that the values do
-      in fact exist (solves no problem now that I think about it)
-    }
+    { Assign default values, in case the items are somehow accesed even after validating that the
+      food item does not exist, preventing access violations in that rare case }
     if not isFoodFound then
     begin
       ProteinPer100G := 0;
@@ -103,11 +109,15 @@ begin
   end;
 end;
 
+{ Used best when `eating` or adding new foods,
+  it prevents an issue where a user may be able to eat food
+  that does not exist in the database, or add new foods that
+  are already existant in the database }
 function TFoodItem.CheckExists : boolean;
 var isFound : boolean;
 begin
   isFound := false;
-  with dbData.tblFoods do
+  with dmData.tblFoods do
   begin
     Open;
     First;
@@ -121,80 +131,36 @@ begin
   Result := isFound;
 end;
 
-// So far the idea here is to check if the values of nutrients are
-// numbers above 0 and below an unexpected number
-// Preventing odd values, so far I only plan to prompt the user in this case
-// Asking them for confirmation, validation will be done in another way
-
-//TODO: Complete validateFood() function
-function TFoodItem.ValidateFood: boolean;
-var
-  nameCorrect,nutCheck : Boolean;
-  proteinCheck,carbCheck,fatCheck,calCheck : boolean;
+{ Add the nutrients for any new food items }
+procedure TFoodItem.AddNutrients(Calories:real;Protein: Real; Carb: Real; Fat: Real; Energy: Real; Sugar:real);
 begin
-  nameCorrect := utilObj.ValidateString(Foodname,'Meal',2,20);
-
-  {
-    This is still an early prototype of the thing I want to do
-    but it attempts to validate whether the food item has the correct
-    amount of each nutrient value
-    It can probably be improved
-  }
-  calCheck := false;
-  proteinCheck := false;
-  carbCheck := false;
-  fatCheck := false;
-
-  if (CaloriePer100G < 0) or (CaloriePer100G > 100000) then
-  begin
-    calCheck := true;
-  end;
-
-  if (ProteinPer100G < 0) or (ProteinPer100G > 100000) then
-  begin
-    proteinCheck := true;
-  end;
-
-  if (CarbPer100G < 0) or (CarbPer100G > 100000) then
-  begin
-    carbCheck := true;
-  end;
-
-  if (FatPer100G < 0) or (FatPer100G > 100000) then
-  begin
-    fatCheck := true;
-  end;
-
-  nutCheck := calCheck and proteinCheck and carbCheck and fatCheck;
-
-  Result := nutCheck and nameCorrect;
+  CaloriePer100G := Calories;
+  EnergyPer100G := Energy;
+  CarbPer100G := Carb;
+  FatPer100G := Fat;
+  ProteinPer100G := Protein;
+  SugarPer100G := Sugar;
 end;
 
-{
-  Get validated information from the user to add to the database
-  these foods can then be eaten by the user afterwards.
-
-  An idea I have is to allow users to search for the foods in some
-  food database which can give them all of the nutrient values 
-  given that the name is correct.
-}
+{ Get validated information from the user to add to the database
+  these foods can then be eaten by the user afterwards.}
 procedure TFoodItem.AddFoodToDB;
 begin
-  if ValidateFood then
+  with dmData.tblFoods do
   begin
-    with dbData.tblFoods do
-    begin
-      Open;
-      Append;
-      FieldValues['FoodName'] := Foodname;
-      FieldValues['CaloriesPer100g'] := CaloriePer100G;
-      FieldValues['CarbPer100g'] := CarbPer100G;
-      FieldValues['ProteinPer100g'] := ProteinPer100G;
-      FieldValues['FatPer100g'] := FatPer100G;
-      FieldValues['EnergyPer100G'] := EnergyPer100G;
-      Post;
-    end;
-	end;
+    Open;
+    Append;
+    FieldValues['FoodName'] := Foodname;
+    FieldValues['CaloriesPer100g'] := CaloriePer100G;
+    FieldValues['CarbPer100g'] := CarbPer100G;
+    FieldValues['ProteinPer100g'] := ProteinPer100G;
+    FieldValues['FatPer100g'] := FatPer100G;
+    FieldValues['EnergyPer100G'] := EnergyPer100G;
+    FieldValues['SugarPer100G'] := SugarPer100G;
+    FieldValues['Desc'] := FoodDesc;
+    Post;
+  end;
+  loggerObj.WriteSysLog('Item ' + Foodname + ' has been added to the database');
 end;
 
 {$ENDREGION}
@@ -212,25 +178,21 @@ end;
 
 function TMeal.CalcCalories;
 var
-  iTotalCalories : Integer;
+  rTotalCalories : Real;
 begin
-  {
-    Calories per 100g are multiplied by 100 to
+  { Calories per 100g are multiplied by 100 to
     convert them to calories, then multiplied
     by the portion size to obtain the total
-    caloires
-  }
+    caloires }
 
-  iTotalCalories := Round(
-      (FoodItem.CaloriePer100G)*(PortionSize/100)
-  );
+  rTotalCalories := FoodItem.CaloriePer100G*(PortionSize/100);
 
-  Result := iTotalCalories;
+  Result := rTotalCalories;
 end;
 
 function TMeal.CalcEnergy: Real;
 begin
-  This in the case that I am able to obtain energy values
+
   Result := FoodItem.EnergyPer100G * (PortionSize/100);
 end;
 
@@ -249,6 +211,7 @@ begin
 
   isFound := False;
 
+
   {
     Steps:
     1. Loop through the food table to find the meal name
@@ -259,7 +222,7 @@ begin
     1.4. Stop the loop
     1.5. Close the foods table
   }
-  with dbData.tblFoods do
+  with dmData.tblFoods do
   begin
     Open;
     First;
@@ -268,7 +231,7 @@ begin
       begin
         isFound := true;
         sFoodname := FieldValues['Foodname'];
-        with dbData.tblMeals do
+        with dmData.tblMeals do
         begin
           Open;
           Append;

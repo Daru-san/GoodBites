@@ -1,4 +1,6 @@
 object dmData: TdmData
+  OnCreate = DataModuleCreate
+  OnDestroy = DataModuleDestroy
   Height = 480
   Width = 640
   object dbConnect: TADOConnection
@@ -24,5 +26,11 @@ object dmData: TdmData
   object dscUsers: TDataSource
     Left = 184
     Top = 296
+  end
+  object timeBackup: TTimer
+    Enabled = False
+    OnTimer = timeBackupTimer
+    Left = 296
+    Top = 304
   end
 end

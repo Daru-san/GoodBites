@@ -10,6 +10,7 @@ object frmDashboard: TfrmDashboard
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  OnClose = FormClose
   OnShow = FormShow
   TextHeight = 15
   object pnlFoot: TPanel
@@ -36,7 +37,7 @@ object frmDashboard: TfrmDashboard
     Top = 41
     Width = 890
     Height = 384
-    ActivePage = tsProgress
+    ActivePage = tsWelcome
     Align = alClient
     MultiLine = True
     TabOrder = 1
@@ -203,53 +204,6 @@ object frmDashboard: TfrmDashboard
           TabOrder = 2
           TextHint = 'Portion size(g)'
         end
-        object pnlNewMeal: TPanel
-          Left = 21
-          Top = 110
-          Width = 434
-          Height = 193
-          TabOrder = 3
-          object lblCustomMeal: TLabel
-            Left = 128
-            Top = 9
-            Width = 103
-            Height = 15
-            Caption = 'Add a custom meal'
-          end
-          object cbxAddDB: TCheckBox
-            Left = 40
-            Top = 160
-            Width = 169
-            Height = 17
-            Caption = 'Add to database'
-            TabOrder = 0
-          end
-          object edtMealName: TEdit
-            Left = 32
-            Top = 48
-            Width = 121
-            Height = 23
-            TabOrder = 1
-            TextHint = 'Meal name'
-          end
-          object edtNumCalories: TEdit
-            Left = 32
-            Top = 87
-            Width = 177
-            Height = 23
-            NumbersOnly = True
-            TabOrder = 2
-            TextHint = 'Number of calories'
-          end
-          object cbxNewFood: TCheckBox
-            Left = 40
-            Top = 126
-            Width = 177
-            Height = 17
-            Caption = 'Add this food item'
-            TabOrder = 3
-          end
-        end
         object memMeal: TMemo
           Left = 499
           Top = 110
@@ -257,7 +211,7 @@ object frmDashboard: TfrmDashboard
           Height = 235
           Lines.Strings = (
             'memMeal')
-          TabOrder = 4
+          TabOrder = 3
         end
         object btnSearch: TButton
           Left = 227
@@ -265,7 +219,7 @@ object frmDashboard: TfrmDashboard
           Width = 75
           Height = 25
           Caption = 'Search Foods'
-          TabOrder = 5
+          TabOrder = 4
           OnClick = btnSearchClick
         end
         object cmbMealType: TComboBox
@@ -273,8 +227,17 @@ object frmDashboard: TfrmDashboard
           Top = 81
           Width = 145
           Height = 23
-          TabOrder = 6
+          TabOrder = 5
           Text = 'Meal type'
+        end
+        object btnAddDB: TButton
+          Left = 328
+          Top = 297
+          Width = 75
+          Height = 25
+          Caption = 'Add new Item'
+          TabOrder = 6
+          OnClick = btnAddDBClick
         end
       end
     end

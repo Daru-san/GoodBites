@@ -12,6 +12,7 @@ object frmAdmin: TfrmAdmin
   Font.Name = 'Segoe UI'
   Font.Style = []
   Position = poMainFormCenter
+  OnClose = FormClose
   OnShow = FormShow
   TextHeight = 15
   object pnlFooter: TPanel
@@ -22,12 +23,11 @@ object frmAdmin: TfrmAdmin
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitTop = 515
     DesignSize = (
       907
       37)
     object btnLogout: TButton
-      Left = 820
+      Left = 828
       Top = 6
       Width = 75
       Height = 25
@@ -44,10 +44,9 @@ object frmAdmin: TfrmAdmin
     Top = 25
     Width = 907
     Height = 519
-    ActivePage = tsUsers
+    ActivePage = tsHome
     Align = alClient
     TabOrder = 1
-    ExplicitHeight = 490
     object tsHome: TTabSheet
       Caption = 'Home'
       ImageIndex = 3
@@ -293,6 +292,24 @@ object frmAdmin: TfrmAdmin
         OnClick = btnFilterClick
       end
     end
+    object tsFoods: TTabSheet
+      Caption = 'Manage Foods'
+      ImageIndex = 3
+      OnShow = tsFoodsShow
+      object dbgFoods: TDBGrid
+        Left = 48
+        Top = 40
+        Width = 785
+        Height = 361
+        TabOrder = 0
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -12
+        TitleFont.Name = 'Segoe UI'
+        TitleFont.Style = []
+        OnDrawColumnCell = dbgFoodsDrawColumnCell
+      end
+    end
   end
   object pnlHead: TPanel
     Left = 0
@@ -301,6 +318,7 @@ object frmAdmin: TfrmAdmin
     Height = 25
     Align = alTop
     TabOrder = 2
+    ExplicitTop = -6
     object pnlUser: TPanel
       Left = 721
       Top = 1

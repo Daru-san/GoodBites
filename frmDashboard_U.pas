@@ -1,11 +1,11 @@
-unit Dashboard_U;
+unit frmDashboard_U;
 
 interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls,InfoBoard,Utils_U,User_u,
-  Vcl.ComCtrls,Meals_U,frmGreeter_U;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, ComCtrls,
+  libUtils_U,libUser_u, libMeals_U,frmGreeter_U,conDB,frmAddFood_U;
 
 type
   TfrmDashboard = class(TForm)
@@ -27,12 +27,6 @@ type
     cmbMeals: TComboBox;
     edtPortion: TEdit;
     btnEaten: TButton;
-    pnlNewMeal: TPanel;
-    lblCustomMeal: TLabel;
-    cbxAddDB: TCheckBox;
-    edtMealName: TEdit;
-    edtNumCalories: TEdit;
-    cbxNewFood: TCheckBox;
     pctDashboard: TPageControl;
     tsProgress: TTabSheet;
     tsEating: TTabSheet;
@@ -48,9 +42,9 @@ type
     btnMealSearch: TButton;
     redMealInfo: TRichEdit;
     cmbMealType: TComboBox;
+    btnAddDB: TButton;
     procedure FormShow(Sender: TObject);
     procedure btnLogOutClick(Sender: TObject);
-    procedure pnlInfoClick(Sender: TObject);
     procedure btnEatenClick(Sender: TObject);
     procedure btnLoadDataClick(Sender: TObject);
     procedure tsEatingShow(Sender: TObject);
@@ -60,6 +54,8 @@ type
     procedure tsSearchShow(Sender: TObject);
     procedure tsSearchHide(Sender: TObject);
     procedure btnMealSearchClick(Sender: TObject);
+    procedure btnAddDBClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
     procedure PopulateFoods;
@@ -81,12 +77,29 @@ implementation
 
 {$R *.dfm}
 
+procedure TfrmDashboard.btnAddDBClick(Sender: TObject);
+var
+  frmFood : TfrmAddFood;
+  isSuccess : boolean;
+begin
+  isSuccess := false;
+  frmFood := TfrmAddFood.Create(nil);
+  try
+    frmFood.ShowModal;
+  finally
+    isSuccess := frmFood.ModalResult = mrYes;
+    frmFood.Free;
+  end;
+  if isSuccess then
+  PopulateFoods;
+end;
+
 procedure TfrmDashboard.btnEatenClick(Sender: TObject);
 var
-  selectedOpt,iCheckInt,iPortion : integer;
+  iCheckInt,iPortion : integer;
   sMealName,sMealType : string;
   Meal : TMeal;
-	FoodItem : TFoodItem;
+  FoodItem : TFoodItem;
 begin
   if cmbMeals.ItemIndex = -1 then
   exit;
@@ -97,34 +110,24 @@ begin
 
   Val(edtPortion.Text,iPortion,iCheckInt);
 
-	if iCheckInt <> 0 then
-	begin
-		ShowMessage('Please enter the portion in grams');
-	end;
-
-  selectedOpt := MessageDlg('Are you sure you want to enter this food item',mtConfirmation,mbYesNo,0);
-
-  if selectedOpt = mrYes then
+  if iCheckInt <> 0 then
   begin
-		FoodItem := TFoodItem.Create(sMealName);
+    ShowMessage('Please enter the portion in grams');
+  end;
 
-		//TODO: GET Data on food nutrients
-		{
-			The idea here is to enter the food item into the database only
-			if it does not already exist at the moment
-		}
-		if cbxNewFood.Checked and not (FoodItem.CheckExists) then
-			FoodItem.AddFoodToDB;
+  if MessageDlg('Are you sure you want to enter this food item',mtConfirmation,mbYesNo,0) = mrYes then
+  begin
+    FoodItem := TFoodItem.Create(sMealName);
 
-		if FoodItem.CheckExists then
-		begin
-			Meal := TMeal.Create(FoodItem,iPortion,sMealType);
-			Meal.EatMeal(currentUser.UserID,currentUser.GetTotalMeals);
-		end else
-			ShowMessage('The item ' +  FoodItem.Foodname + ' does not exist in the database');
+    if FoodItem.CheckExists then
+    begin
+    Meal := TMeal.Create(FoodItem,iPortion,sMealType);
+    Meal.EatMeal(currentUser.UserID,currentUser.GetTotalMeals);
+    end else
+    ShowMessage('The item ' +  FoodItem.Foodname + ' does not exist in the database');
 
-		Meal.Free;
-		FoodItem.Free;
+   Meal.Free;
+   FoodItem.Free;
   end;
 
 end;
@@ -172,9 +175,7 @@ end;
 
 procedure TfrmDashboard.btnLogOutClick(Sender: TObject);
 begin
-  // Get closing to work properly
-  self.CloseModal;
-  currentUser.Free;
+  self.ModalResult := mrClose;
 end;
 
 procedure TfrmDashboard.btnMealSearchClick(Sender: TObject);
@@ -182,25 +183,27 @@ var
   sFoodname: string;
   i: Integer;
   isFound : boolean;
-  Protein,Carb,Fat,Calories: real;
-	FoodItem : TFoodItem;
+  Protein,Carb,Fat,Calories,Sugar,Energy: real;
+  FoodItem : TFoodItem;
 begin
-	if edtSearchMeal.text = '' then
-		exit;
+  if edtSearchMeal.text = '' then
+    exit;
   sFoodname := edtSearchMeal.text;
-	isFound := false;
+  isFound := false;
 
-	{ Loop through the food list until either i is at the food count or the food is found }
+  { Loop through the food list until either i is at the food count or the food is found }
   i := 0;
   repeat
     if UpperCase(sFoodname) = UpperCase(foodList[i]) then
     begin
-			isFound := true;
-			FoodItem := TFoodItem.Create(foodList[i]);
+      isFound := true;
+      FoodItem := TFoodItem.Create(foodList[i]);
       Protein := FoodItem.ProteinPer100G;
       Carb := FoodItem.CarbPer100G;
       Fat := FoodItem.FatPer100G;
       Calories := FoodItem.CaloriePer100G;
+      Sugar := FoodItem.SugarPer100G;
+      Energy := FoodItem.EnergyPer100G;
 			FoodItem.Free;
     end else inc(i);
   until (i = FoodCount-1) or isFound;
@@ -208,12 +211,12 @@ begin
   if isFound then
   with redMealInfo do
   begin
+    Clear;
     with Paragraph do
     begin
-      TabCount := 3;
-      Tab[0] := 250;
-      Tab[1] := 350;
-      Tab[2] := 450;
+      TabCount := 2;
+      Tab[0] := 100;
+      Tab[1] := 150;
     end; // end with paragraph
     with Lines do
     begin
@@ -221,12 +224,14 @@ begin
       Add('Information on ' + sFoodname);
       Add('----------------------------');
       Add('Calories per 100g:' + #9 + FloatToStrF(Calories,ffFixed,8,2));
+      Add('Energy per 100g: ' + #9 + FloatToStrF(Energy,ffFixed,8,2));
       Add('Proteins per 100g:' + #9 + FloatToStrF(Protein,ffFixed,8,2));
       Add('Carbohydrates per 100g:' + #9 + FloatToStrF(Carb,ffFixed,8,2));
       Add('Fat per 100g:' + #9 + FloatToStrF(Fat,ffFixed,8,2));
+      Add('Sugar per 100g:' + #9 + FloatToStrF(Sugar,ffFixed,8,2));
     end; // end lines
   end // end with redMealInfo
-	else
+  else
   ShowMessage('Meal not found');
 
 end;
@@ -235,6 +240,14 @@ procedure TfrmDashboard.btnSearchClick(Sender: TObject);
 begin
   tsSearch.TabVisible := true;
   pctDashboard.TabIndex := 3;
+end;
+
+procedure TfrmDashboard.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  foodList.Free;
+  currentUser.Free;
+  UtilObj.Free;
+  loggerObj.Free;
 end;
 
 procedure TfrmDashboard.FormShow(Sender: TObject);
@@ -289,7 +302,8 @@ var
 begin
  i := 0;
  foodList := TStringList.Create;
- with dbmData.tblFoods do
+ cmbMeals.Clear;
+ with dmData.tblFoods do
  begin
   Open;
   First;
@@ -331,21 +345,6 @@ end;
 procedure TfrmDashboard.tsWelcomeShow(Sender: TObject);
 begin
   utilObj.SetLabel(lblHeading,'Welcome to ' + Application.MainForm.Caption + '!',15);
-end;
-
-procedure TfrmDashboard.pnlInfoClick(Sender: TObject);
-var
-  infoForm : InfoBoard.TfrmInfo;
-begin
- infoForm := TfrmInfo.Create(nil);
- try
-  infoForm.ShowModal;
-  self.hide;
- finally
-   infoForm.Free;
-//   Self.Show;
- end;
-
 end;
 
 end.

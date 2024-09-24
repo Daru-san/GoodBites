@@ -1,9 +1,9 @@
 ﻿// User creation and modification functions and procedures
-unit User_U;
+unit libUser_U;
 
 interface
 
-uses system.SysUtils,conDB, Vcl.Dialogs, Utils_U,Classes,Math,StrUtils;
+uses system.SysUtils,conDB, Vcl.Dialogs,libUtils_U,Classes,Math,StrUtils,controls;
 
 type
   TUser = class(TObject)
@@ -39,6 +39,7 @@ type
     procedure SaveLastLogin(userID : string; userIsAdmin : Boolean);
   public
     constructor Create(Username : string);
+    destructor Destroy; override;
 
     property isAdmin: Boolean read FIsAdmin write FIsAdmin;
     property Username: string read FUsername write FUsername;
@@ -75,7 +76,7 @@ type
     errorsList : TStringList;
 implementation
 
-{ The main constructor }
+{ The main constructor and destructor }
 {$REGION constructor}
 
 // Creates an empty user object
@@ -88,6 +89,12 @@ begin
   FIsAdmin := false;
   FUserID := '';
   FUsername := Username;
+end;
+
+destructor TUser.Destroy;
+begin
+  UtilObj.Free;
+  loggerObj.Free;
 end;
 {$ENDREGION}
 
@@ -130,6 +137,7 @@ begin
     if not (isPassValid) or not(isUserValid) then
       ShowMessage('User creation errors ' + #13+#13+ errorsList.Text);
   end;
+  errorsList.free;
 
   isCorrect := isPassValid and isUserValid and isPresent and not(userExistsing);
 
@@ -342,7 +350,7 @@ var
   isFound : boolean;
 begin
   isFound := false;
-  with dbData.tblUsers do
+  with dmData.tblUsers do
   begin
     Open;
     First;
@@ -393,7 +401,7 @@ end;
 
 procedure TUser.RegisterUserInDB;
 begin
-  with dbData.tblUsers do
+  with dmData.tblUsers do
   begin
     Open;
     Append;
@@ -448,6 +456,11 @@ begin
     begin
       UserID := GetUserID;
       isAdmin := CheckAdmin(UserID);
+
+      if isAdmin then
+      if MessageDlg('Log in as a normal user?',mtConfirmation,mbYesNo,0) = mrYes then
+       isAdmin := false;
+
       Username := GetUsername;
       SaveLastLogin(Username,isAdmin);
       isSuccess := true;
@@ -473,7 +486,7 @@ var
   isFound : Boolean;
   sUsername : string;
 begin
-  with dbData.tblUsers do
+  with dmData.tblUsers do
   begin
     Open;
     First;
@@ -495,7 +508,7 @@ var
   isFound : boolean;
 begin
   isFound := false;
-  with dbData.tblUsers do
+  with dmData.tblUsers do
   begin
     Open;
     First;
@@ -540,7 +553,7 @@ function TUser.CheckDatabase;
 var
   isFound: boolean;
 begin
-  with dbData.tblUsers do
+  with dmData.tblUsers do
   begin
     Open;
     First;
@@ -559,7 +572,7 @@ var
   userIsAdmin,isFound : boolean;
 begin
   isAdmin := false;
-  with dbData.tblUsers do
+  with dmData.tblUsers do
   begin
     Open;
     First;
@@ -630,7 +643,7 @@ procedure TUser.SaveLastLogin;
 var
   userFound : boolean;
 begin
-  with dbData.tblUsers do
+  with dmData.tblUsers do
   begin
     Open;
     repeat
@@ -666,7 +679,7 @@ var
   userFound : Boolean;
   sLastLogin : string;
 begin
- with dbData.tblUsers do
+ with dmData.tblUsers do
  begin
    Open;
    repeat
@@ -691,7 +704,7 @@ function TUser.GetFirstLogin;
 var
   isFound : Boolean;
 begin
-  with dbData.tblUsers do
+  with dmData.tblUsers do
   begin
     Open;
     First;
@@ -710,7 +723,7 @@ procedure TUser.SaveUserInfo;
 var
   userFound : Boolean;
 begin
-  with dbData.tblUsers do
+  with dmData.tblUsers do
   begin
     Open;
     First;
@@ -736,7 +749,7 @@ var
   isFound, isRemoved : boolean;
   sUsername : string;
 begin
-  with dbData.tblUsers do
+  with dmData.tblUsers do
   begin
     Open;
     First;
@@ -805,7 +818,7 @@ var
   numCalories : integer;
 begin
   numCalories := 0;
-  with dbData.tblMeals do
+  with dmData.tblMeals do
   begin
     Open;
     First;
@@ -837,7 +850,7 @@ var
   numMeals : integer;
 begin
   numMeals := 0;
-  with dbData.tblMeals do
+  with dmData.tblMeals do
   begin
     Open;
     First;
@@ -858,15 +871,7 @@ var
   eatenDate,eatenTime : TDate;
   isMealFound : boolean;
 begin
-{
-
-  ValueIndex is the index of the specific value one is looking for:
-  1 = name of the food eaten during the meal
-  2 = Type of mean i.e dinner, breakfast etc.
-  3 = Day the meal was eaten
-  4 = Time the meal was eaten
-}
-  with dbData.tblMeals do
+  with dmData.tblMeals do
   begin
     Open;
     First;
@@ -885,8 +890,9 @@ begin
     until EOF or isMealFound;
     Close;
   end;
- // ShowMessage(DateToStr(eatenDate));
+
   // Breakfast is not a valid date!
+  // Infotype dictates the type of information we are to return based on a few options
   case IndexStr(LowerCase(infoType),['name','type','date','time']) of
   0 : Result := sFoodName;
   1 : Result := sMealType;

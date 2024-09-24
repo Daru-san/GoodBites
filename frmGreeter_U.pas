@@ -3,7 +3,7 @@ unit frmGreeter_U;
 interface
 
 uses Winapi.Windows, System.SysUtils, System.Classes, Vcl.Graphics, Vcl.Forms,
-  Vcl.Controls, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, Vcl.Samples.Spin,vcl.Dialogs,User_u;
+  Vcl.Controls, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, Vcl.Samples.Spin,vcl.Dialogs,libUser_U;
 
 type
   TfrmGreeter = class(TForm)

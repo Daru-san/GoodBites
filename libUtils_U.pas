@@ -1,18 +1,17 @@
-unit Utils_U;
+unit libUtils_U;
 
 interface
 
-uses System.SysUtils,System.Classes,VCL.StdCtrls,conDB;
+uses System.SysUtils,System.Classes,VCL.StdCtrls,Dialogs;
 
 type
   TUtils = Class(TObject)
   public
     function CheckFileExists(filename: string;isLogFile:boolean = false) : boolean;
     function ValidateString(S,StringName: string; minLength: Integer = 0;
-     maxLength: Integer = 0; AllowChars : Boolean = false; AllowNum : Boolean = false): Boolean;
+     maxLength: Integer = 0; allowedChars : String = 'letters'): Boolean;
 
     procedure SetLabel(LabelComponent:TLabel;labelMsg:string;fontSize : integer);
-    procedure EditInDB(fieldName,fieldData : string);
 
   end;
   TLogs = Class(TObject)
@@ -27,17 +26,30 @@ type
 implementation
 
 function TUtils.ValidateString(S,StringName: string; minLength: Integer = 0;
-     maxLength: Integer = 0; AllowChars : Boolean = false; AllowNum : Boolean = false): Boolean;
+     maxLength: Integer = 0; allowedChars : String = 'letters'): Boolean;
 const
 NUMS = ['1'..'9'];
 SPECIAL = ['.',',','/','\','!','@','#','%','&','*'];
 LETTERS = ['A'..'Z'];
 var
-  isPresent,isLong:Boolean;
-  hasNum : Integer;
-  hasSpecial : Integer;
+  isPresent,isLong,isValid:Boolean;
+  hasNum : Boolean;
+  hasSpecial : Boolean;
   hasLetters : Boolean;
+  allowNum,allowSpecial,allowLetters : Boolean;
+  i: Integer;
 begin
+
+  allowLetters := false;
+  allowNum := false;
+  allowLetters := false;
+  if LowerCase(allowedChars).Contains('letters') then
+  allowLetters := true;
+  if LowerCase(allowedChars).Contains('numbers') then
+  allowNum := true;
+  if LowerCase(allowedChars).Contains('other') then
+  allowSpecial := true;
+
   if S = '' then
   begin
     isPresent := false;
@@ -45,8 +57,28 @@ begin
   if (S.Length < minLength) or (S.Length > maxLength) then
   isLong := false;
 
-  Result := isPresent and isLong;
+  for i := 1 to S.Length do
+  begin
+    if allowLetters then
+      if (s[i] in LETTERS) then
+      hasLetters := True;
+    if allowNum then
+      if (s[i] in NUMS) then
+      hasNum := True;
+    if allowSpecial then
+     if s[i] in SPECIAL then
+     hasSpecial := true;
+  end;
+
+  if not(allowLetters and hasLetters) then
+    ShowMessage(StringName + ' must have letters');
+  { Only return true if both conditions being allowing and having are correct }
+  //Methodology still to be determined
+  isValid := (allowLetters and hasLetters) or (allowNum and hasNum) or (allowSpecial and hasSpecial);
+
+  Result := isPresent and isLong and isValid;
 end;
+
 
 function TUtils.CheckFileExists;
 var
@@ -74,17 +106,6 @@ begin
     Layout := tlCenter;
     Alignment := taCenter;
     Caption := labelMsg;
-  end;
-end;
-
-procedure TUtils.EditInDB;
-begin
-  with dbmData.tblUsers do
-  begin
-    Edit;
-    FieldValues[fieldName] := fieldData;
-    Post;
-    TLogs.Create.WriteSysLog('An entry has been modified in the database');
   end;
 end;
 

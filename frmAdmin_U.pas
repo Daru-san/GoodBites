@@ -65,6 +65,7 @@ type
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
   private
     { Private declarations }
+    FAdminUser : TUser;
 
     procedure ClearLogs();
     procedure InitializeWidth(dbGrid:TDBGrid);
@@ -75,7 +76,7 @@ type
     { Public declarations }
 
     // Obtained from the app form upon login
-    currentAdmin : TUser;
+    property AdminUser : TUser read FAdminUser write FAdminUser;
   end;
 
 var

@@ -21,9 +21,10 @@ type
     procedure FormResize(Sender: TObject);
   private
     { Private declarations }
-    currentUser : TUser;
+    FCurrentUser : TUser;
   public
     { Public declarations }
+    property CurrentUser : TUser read FCurrentUser write FCurrentUser;
   end;
 
 var
@@ -49,9 +50,9 @@ begin
     //Obtain the currently logged in user from the login form, all data is filled in the object if login was successful
     if LoginForm.ModalResult = mrOk then
     begin
-      currentUser := LoginForm.currentUser;
-      didLogin := currentUser.CheckLogIn;
-      isAdmin := currentUser.isAdmin;
+      CurrentUser := LoginForm.CurrentUser;
+      didLogin := CurrentUser.CheckLogIn;
+      isAdmin := CurrentUser.isAdmin;
     end else didLogin := false;
   finally
     LoginForm.Free;
@@ -61,7 +62,7 @@ begin
       begin
         Application.CreateForm(TfrmDashboard,DashForm);
         try
-          DashForm.currentUser := currentUser;
+          DashForm.CurrentUser := CurrentUser;
           DashForm.ShowModal;
           Self.Hide;
         finally
@@ -74,7 +75,7 @@ begin
       begin
         Application.CreateForm(TfrmAdmin,AdminForm);
         try
-          AdminForm.currentAdmin := currentUser;
+          AdminForm.AdminUser := CurrentUser;
           AdminForm.ShowModal;
           self.Hide;
         finally

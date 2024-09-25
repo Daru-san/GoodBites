@@ -62,10 +62,10 @@ type
     procedure PopulateFoods;
     procedure GetInfo;
     procedure PopulateMealType;
+    FCurrentUser : TUser;
   public
     { Public declarations }
-    currentUser : TUser;
-    currentMeal : TMeal;
+    property CurrentUser : TUser read FCurrentUser write FCurrentUser;
   end;
 
 var

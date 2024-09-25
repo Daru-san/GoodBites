@@ -55,9 +55,10 @@ type
   private
     { Private declarations }
     procedure CheckFields(sState : String = 'Login');
+    FCurrentUser : TUser;
   public
     { Public declarations }
-    currentUser : TUser;
+    property CurrentUser : TUser read FCurrentUser write FCurrentUser;
   end;
 
 var

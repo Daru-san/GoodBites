@@ -85,10 +85,10 @@ constructor TUser.Create;
 begin
   loggerObj := TLogs.Create;
   UtilObj := TUtils.Create;
-  FLoggedIn := false;
+  FLoggedIn := False;
   FIsAdmin := false;
-  FUserID := '';
-  FUsername := Username;
+  UserID := '';
+  Username := Username;
 end;
 
 destructor TUser.Destroy;

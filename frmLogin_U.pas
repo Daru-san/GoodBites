@@ -8,28 +8,53 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, libUser_U,
   Vcl.ToolWin, Vcl.ComCtrls, Vcl.Menus, Vcl.ExtActns, System.Actions,
-  Vcl.ActnList;
+  Vcl.ActnList, Vcl.Mask, Vcl.WinXPanels,StrUtils, System.ImageList, Vcl.ImgList;
 
 type
   TfrmLogin = class(TForm)
-    edtUser: TEdit;
-    edtPassword: TEdit;
-    pnlCenter: TPanel;
     btnLogin: TButton;
-    btnHome: TButton;
-    btnSignUp: TButton;
-    pnlHead: TPanel;
-    btnGoLogin: TButton;
     btnGoSignUp: TButton;
-    ToolBar1: TToolBar;
+    btnMain: TToolBar;
+    edtUser: TLabeledEdit;
+    edtPassword: TLabeledEdit;
+    lblWelcome: TLabel;
+    pnlLogin: TPanel;
+    crplLogin: TCardPanel;
+    crdLogin: TCard;
+    crdSign: TCard;
+    lblNew: TLabel;
+    edtNewPassword: TLabeledEdit;
+    edtNewPassConf: TLabeledEdit;
+    edtNewUser: TLabeledEdit;
+    btnCreate: TButton;
+    cbxTerms: TCheckBox;
+    lblCreate: TLabel;
+    btnGoLogin: TButton;
+    pnlGoSignup: TPanel;
+    pnlNewUser: TPanel;
+    pnlNewSub: TPanel;
+    cbxReveal: TCheckBox;
+    tbtHome: TToolButton;
+    imgLst: TImageList;
     procedure btnLoginClick(Sender: TObject);
-    procedure btnHomeClick(Sender: TObject);
-
-    procedure btnSignUpClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure btnGoSignUpClick(Sender: TObject);
+    procedure btnCreateClick(Sender: TObject);
+    procedure edtUserChange(Sender: TObject);
+    procedure edtPasswordChange(Sender: TObject);
+    procedure edtNewUserChange(Sender: TObject);
+    procedure edtNewPasswordChange(Sender: TObject);
+    procedure edtNewPassConfChange(Sender: TObject);
+    procedure cbxTermsClick(Sender: TObject);
+    procedure btnGoLoginClick(Sender: TObject);
+    procedure edtUserKeyPress(Sender: TObject; var Key: Char);
+    procedure edtPasswordKeyPress(Sender: TObject; var Key: Char);
+    procedure cbxRevealClick(Sender: TObject);
+    procedure tbtHomeClick(Sender: TObject);
   private
     { Private declarations }
+    procedure CheckFields(sState : String = 'Login');
   public
     { Public declarations }
     currentUser : TUser;
@@ -42,12 +67,27 @@ implementation
 
 {$R *.dfm}
 
-procedure TfrmLogin.btnHomeClick(Sender: TObject);
-var
-  LoginForm : TfrmLogin;
+procedure TfrmLogin.btnGoLoginClick(Sender: TObject);
 begin
-  LoginForm.visible := false;
-  self.ModalResult := mrCancel;
+  crplLogin.ActiveCard := crdLogin;
+  edtNewUser.Text := '';
+  edtNewPassword.Text := '';
+  edtNewPassConf.Text := '';
+  cbxTerms.Checked := false;
+  btnCreate.Enabled := false;
+  edtNewPassword.PasswordChar := CharLower('*');
+  edtNewPassword.PasswordChar := CharLower('*');
+  edtNewPassword.Enabled := false;
+  edtNewPassConf.Enabled := false;
+  cbxReveal.Checked := false;
+end;
+
+procedure TfrmLogin.btnGoSignUpClick(Sender: TObject);
+begin
+  crplLogin.ActiveCard := crdSign;
+  edtUser.Text := '';
+  edtPassword.Text := '';
+  btnLogin.Enabled := false;
 end;
 
 procedure TfrmLogin.btnLoginClick(Sender: TObject);
@@ -76,20 +116,118 @@ begin
   end;
 end;
 
-procedure TfrmLogin.btnSignUpClick(Sender: TObject);
-var
-  confirm : integer;
-  sUsername,sPassword:string;
+procedure TfrmLogin.cbxRevealClick(Sender: TObject);
 begin
-  sUsername := edtUser.text;
-  sPassword := edtPassword.text;
+  if cbxReveal.Checked then
+  begin
+    edtNewPassword.PasswordChar := #0;
+    edtNewPassConf.PasswordChar := #0;
+  end
+  else
+  begin
+    edtNewPassword.PasswordChar := CharLower('*');
+    edtNewPassConf.PasswordChar := CharLower('*');
+  end;
+end;
+
+procedure TfrmLogin.cbxTermsClick(Sender: TObject);
+begin
+  CheckFields('Signup');
+end;
+
+procedure TfrmLogin.edtNewPassConfChange(Sender: TObject);
+begin
+  CheckFields('Signup');
+end;
+
+procedure TfrmLogin.edtNewPasswordChange(Sender: TObject);
+begin
+  CheckFields('Signup');
+end;
+
+procedure TfrmLogin.edtNewUserChange(Sender: TObject);
+begin
+  CheckFields('Signup');
+end;
+
+procedure TfrmLogin.edtPasswordChange(Sender: TObject);
+begin
+  CheckFields('Login');
+end;
+
+procedure TfrmLogin.edtPasswordKeyPress(Sender: TObject; var Key: Char);
+begin
+  CheckFields('Login');
+end;
+
+procedure TfrmLogin.edtUserChange(Sender: TObject);
+begin
+  CheckFields('Login');
+end;
+
+procedure TfrmLogin.edtUserKeyPress(Sender: TObject; var Key: Char);
+begin
+  CheckFields('Login');
+end;
+
+procedure TfrmLogin.btnCreateClick(Sender: TObject);
+var
+  sUsername,sPassword,sPassConf:string;
+begin
+  sUsername := edtNewUser.text;
+  sPassword := edtNewPassword.text;
+  sPassConf := edtNewPassConf.Text;
+
+  if sPassword <> sPassConf then
+  begin
+    ShowMessage('Passwords do not match');
+    edtNewPassConf.Color := clRed;
+    edtNewPassConf.SetFocus;
+    exit;
+  end;
 
   // Since the user is only created when signing up, the currentUser
   // object is freed from memory immediately after account creation
   // The user signs up and logs in sequentially
+
   currentUser := TUser.Create(sUsername.Trim);
   currentUser.SignUp(sPassword.Trim);
   currentUser.Free;
+end;
+
+procedure TfrmLogin.CheckFields;
+begin
+  { Only enable certain elements when the other fields are active }
+   case IndexStr(LowerCase(sState),['login','signup']) of
+    0: begin
+        if (edtUser.Text <> '') and (edtPassword.Text <> '') then
+          btnLogin.Enabled := true
+        else
+          btnLogin.Enabled := false;
+      end;
+    1: begin
+        if edtNewUser.Text <> '' then
+        begin
+          edtNewPassword.Enabled := true;
+          cbxReveal.Enabled := true;
+          if (edtNewUser.Text <> '') and (edtNewPassword.Text <> '') then
+          begin
+            edtNewPassConf.Enabled := true;
+            if (edtNewPassword.Text <> '') and (edtNewPassConf.Text <> '') then
+            begin
+              cbxTerms.Enabled := true;
+              if cbxTerms.Checked then
+                btnCreate.Enabled := true
+              else
+                btnCreate.Enabled := false;
+            end else cbxTerms.Enabled := false;
+          end
+          else
+            edtNewPassConf.Enabled := false;
+        end;
+      end;
+   end;
+
 end;
 
 procedure TfrmLogin.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -100,15 +238,12 @@ end;
 
 procedure TfrmLogin.FormShow(Sender: TObject);
 begin
- { with lblHead do
-  begin
-    Caption := 'Login or create account';
-    Font.Name := 'Noto Sans';
-    AutoSize := true;
-    font.Style := [fsBold];
-    Alignment := taCenter;
-  end; }
-  edtUser.SetFocus;
+ crplLogin.ActiveCard := crdLogin;
+end;
+
+procedure TfrmLogin.tbtHomeClick(Sender: TObject);
+begin
+  self.ModalResult := mrCancel;
 end;
 
 end.

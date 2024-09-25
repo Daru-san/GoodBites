@@ -93,6 +93,7 @@ begin
         FatPer100G := FieldValues['FatPer100g'];
         CaloriePer100G := FieldValues['CaloriesPer100g'];
         SugarPer100G := FieldValues['SugarPer100G'];
+        EnergyPer100G := FieldValues['EnergyPer100g'];
       end else Next;
     until EOF or isFoodFound;
     Close;
@@ -105,6 +106,8 @@ begin
       CarbPer100G := 0;
       FatPer100G := 0;
       CaloriePer100G := 0;
+      SugarPer100G := 0;
+      EnergyPer100G := 0;
     end;
   end;
 end;

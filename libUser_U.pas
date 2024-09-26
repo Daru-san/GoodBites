@@ -64,7 +64,7 @@ type
     procedure Login(sPassword:String);
     procedure SignUp(sPassword:String);
 
-    procedure SaveUserInfo(sFullname : string;iAge : integer);
+    procedure SaveUserInfo(sFullname : string;iAge : integer; rWeight : Real);
   end;
 
   var

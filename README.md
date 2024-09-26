@@ -10,13 +10,18 @@
 
 ## Milestones
 
+### Alpha
+
 - [ ] Database design
   - [x] Users table
   - [x] Meals table
+  - [x] Goals table
+  - [x] Progress table
   - [ ] Nutrients table
-  - [ ] Foods table
+  - [x] Foods table
 - [ ] GUI design
   - [x] Functional interface(useful, not pretty)
+  - [ ] Responsive login screen
   - [ ] Good looking interface
   - [ ] Splash screen and completed landing screen
   - [ ] Dashboard
@@ -32,18 +37,27 @@
       - [x] Searching
     - [x] Data checking(Looking at the database tables)
 - [ ] Tracking and eating
-  - [ ] Store meals
+  - [x] Store meals
   - [x] Log meals
-  - [ ] Store calories and nutrients
-  - [ ] Get daily user stats
+  - [x] Store calories and nutrients
+  - [x] Get daily user stats
   - [ ] Allow users to search stats
-- [ ] Information display
-  - [ ] Fetching data on foods and nutrients on the internet
+  - [ ] Goals and progress
+- [x] Information display
+  - [x] Fetching data on foods and nutrients on the internet
+
+### Beta
+
 - [ ] Documentation
   - [ ] Help form
   - [ ] Comments
   - [ ] New user help screen
+- [ ] Bug fixes
+
+### Pre-release
+
 - [ ] Finalizations
   - [ ] Everything works
   - [ ] Everything works well
   - [ ] Tested for bugs and edge cases
+  - [ ] Unit tests

@@ -43,18 +43,19 @@ type
     private
       FMealID : string;
       FFood : String;
-      FCalories : real;
+      FTotalCalories : real;
+      FTotalEnergy : real;
       FNumServings : Integer;
       FMealType : String;
       FPortion : Integer;
       FFoodItem : TFoodItem;
 
-      function CalcCalories(iCalories: Real) : real;
-      function CalcEnergy: real;
+      procedure CalcTotals;
     public
       constructor Create(F : TFoodItem; P : Integer;M: string = 'Other');
 
-      property Calories : real read FCalories write FCalories;
+      property TotalCalories : real read FTotalCalories write FTotalCalories;
+      property TotalEnergy : real read FTotalEnergy write FTotalEnergy;
       property NumServings : Integer read FNumServings write FNumServings;
       property MealType : string read FMealType write FMealType;
       property FoodItem : TFoodItem read FFoodItem write FFoodItem;
@@ -176,27 +177,13 @@ begin
   FoodItem := F;
   PortionSize := P;
   MealType := M;
-  Calories := CalcCalories(FoodItem.CaloriePer100G);
+  CalcTotals;
 end;
 
-function TMeal.CalcCalories;
-var
-  rTotalCalories : Real;
+procedure TMeal.CalcTotals;
 begin
-  { Calories per 100g are multiplied by 100 to
-    convert them to calories, then multiplied
-    by the portion size to obtain the total
-    caloires }
-
-  rTotalCalories := FoodItem.CaloriePer100G*(PortionSize/100);
-
-  Result := rTotalCalories;
-end;
-
-function TMeal.CalcEnergy: Real;
-begin
-
-  Result := FoodItem.EnergyPer100G * (PortionSize/100);
+  TotalCalories := FoodItem.CaloriePer100G * (PortionSize/100);
+  TotalEnergy := FoodItem.EnergyPer100G * (PortionSize/100);
 end;
 
 procedure TMeal.EatMeal(UserID : String;TotalUserMeals:Integer);
@@ -239,14 +226,14 @@ begin
           Open;
           Append;
           FieldValues['FoodName'] := sFoodname;
-          FieldValues['TotalCalories'] := Calories;
           FieldValues['DateEaten'] := Date;
           FieldValues['TimeEaten'] := Time;
           FieldValues['UserID'] := UserID;
           FieldValues['UserMealID'] := iMealIndex;
           FieldValues['MealType'] := MealType;
           FieldValues['PortionSize'] := PortionSize;
-          FieldValues['TotalEnergy'] := CalcEnergy;
+          FieldValues['TotalCalories'] := TotalCalories;
+          FieldValues['TotalEnergy'] := TotalEnergy;
           Post;
           Close;
         end;  // end tblMeals with

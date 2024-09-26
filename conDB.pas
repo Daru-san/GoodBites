@@ -15,6 +15,8 @@ type
     dscFoods: TDataSource;
     dscUsers: TDataSource;
     timeBackup: TTimer;
+    tblGoals: TADOTable;
+    tblProgress: TADOTable;
 
     procedure BackUpDB;
     procedure DataModuleCreate(Sender: TObject);
@@ -61,9 +63,19 @@ begin
   tblFoods.Connection := dbConnect;
   dscFoods.DataSet := tblFoods;
 
+  tblGoals := TADOTable.Create(self);
+  tblGoals.TableName := 'tblGoals';
+  tblGoals.Connection := dbConnect;
+
+  tblProgress := TADOTable.Create(self);
+  tblProgress.TableName := 'tblProgress';
+  tblProgress.Connection := dbConnect;
+
   tblFoods.Active := True;
   tblMeals.Active := true;
   tblUsers.Active := true;
+  tblGoals.Active := True;
+  tblProgress.Active := True;
 end;
 
 procedure TdmData.BackUpDB;

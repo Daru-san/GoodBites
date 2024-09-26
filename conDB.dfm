@@ -4,8 +4,8 @@ object dmData: TdmData
   Height = 480
   Width = 640
   object dbConnect: TADOConnection
-    Left = 304
-    Top = 216
+    Left = 312
+    Top = 208
   end
   object tblMeals: TADOTable
     Left = 416
@@ -32,5 +32,13 @@ object dmData: TdmData
     OnTimer = timeBackupTimer
     Left = 296
     Top = 304
+  end
+  object tblGoals: TADOTable
+    Left = 264
+    Top = 112
+  end
+  object tblProgress: TADOTable
+    Left = 432
+    Top = 120
   end
 end

@@ -9,7 +9,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils,System.StrUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids, Vcl.Samples.Spin, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.ComCtrls,
-  libUtils_U, libUser_U, conDB;
+  libUtils_U, libUser_U, conDB, Vcl.ToolWin,frmSettings_U;
 
 type
   TfrmAdmin = class(TForm)
@@ -40,11 +40,11 @@ type
     edtData: TEdit;
     btnFieldEdit: TButton;
     tsHome: TTabSheet;
-    pnlHead: TPanel;
-    pnlUser: TPanel;
-    lblUser: TLabel;
     tsFoods: TTabSheet;
     dbgFoods: TDBGrid;
+    tbTop: TToolBar;
+    tbtUser: TToolButton;
+
     procedure btnLogoutClick(Sender: TObject);
     procedure tsLogsShow(Sender: TObject);
     procedure btnClearClick(Sender: TObject);
@@ -63,6 +63,7 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure dbgFoodsDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure tbtUserClick(Sender: TObject);
   private
     { Private declarations }
     FAdminUser : TUser;
@@ -167,7 +168,19 @@ begin
   AdminUser.RemoveUser(dmData.tblUsers.FieldValues['UserID']);
 end;
 
-//TODO: Filter logs based on type
+procedure TfrmAdmin.tbtUserClick(Sender: TObject);
+var
+  Settings : TfrmSettings;
+begin
+  Settings := TfrmSettings.Create(nil);
+  try
+    Settings.CurrentUser := AdminUser;
+    Settings.ShowModal;
+  finally
+    Settings.Free;
+  end;
+end;
+
 procedure TfrmAdmin.tsFoodsShow(Sender: TObject);
 begin
   InitializeWidth(dbgFoods);

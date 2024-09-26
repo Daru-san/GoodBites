@@ -54,8 +54,9 @@ type
     procedure tbtHomeClick(Sender: TObject);
   private
     { Private declarations }
-    procedure CheckFields(sState : String = 'Login');
     FCurrentUser : TUser;
+
+    procedure CheckFields(sState : String = 'Login');
   public
     { Public declarations }
     property CurrentUser : TUser read FCurrentUser write FCurrentUser;
@@ -92,11 +93,8 @@ begin
 end;
 
 procedure TfrmLogin.btnLoginClick(Sender: TObject);
-const
-  FILENAME = '.passwords';
 var
   sUsername,sPassword : string;
-  isCorrect,isValid,passFileExists : boolean;
 begin
   sUsername := edtUser.Text;
   sPassword := edtPassword.Text;

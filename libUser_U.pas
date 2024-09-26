@@ -59,6 +59,7 @@ type
     procedure AddCalories(numCalories : Integer);
 
     // User modification: creation,deletion and login
+    procedure ChangeUsername(sNewUsername: string);
     procedure RemoveUser(userID : string);
     procedure Login(sPassword:String);
     procedure SignUp(sPassword:String);
@@ -88,7 +89,7 @@ begin
   FLoggedIn := False;
   FIsAdmin := false;
   UserID := '';
-  Username := Username;
+  FUsername := Username;
 end;
 
 destructor TUser.Destroy;
@@ -735,6 +736,23 @@ begin
     FieldValues['Fullname'] := sFullname;
     FieldValues['Age'] := iAge;
     FieldValues['FirstLogin'] := false;
+    Post;
+  end;
+end;
+procedure TUser.ChangeUsername;
+var
+  isFound : Boolean;
+begin
+  with dmData.tblUsers do
+  begin
+    Open;
+    First;
+    repeat
+      if UserID = FieldValues['UserID'] then
+        isFound := true else Next;
+    until (Eof) or isFound;
+    Edit;
+    FieldValues['Username'] := sNewUsername;
     Post;
   end;
 end;

@@ -7,7 +7,7 @@
 }
 interface
 
-uses conDB,System.Classes,System.SysUtils,libUser_U,Dialogs,StrUtils;
+uses conDB,System.Classes,System.SysUtils,Dialogs,StrUtils,libUtils_U;
 { Display the meals in an image if possible}
 type
   TFoodItem = class(TObject)
@@ -63,6 +63,8 @@ type
 
       procedure EatMeal(UserID : String;TotalUserMeals:Integer);
   end;
+  var
+    loggerObj : TLogs;
 
 implementation
 

@@ -6,42 +6,69 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, ComCtrls,
   libUtils_U,libUser_u, libMeals_U,frmGreeter_U,conDB,frmAddFood_U,
-  Vcl.WinXCtrls;
+  Vcl.WinXCtrls, Vcl.Buttons, System.ImageList, Vcl.ImgList, Vcl.Mask,
+  Vcl.WinXPanels, Vcl.Menus, Vcl.ToolWin,frmSettings_U,Math,libGoals_U,StrUtils,
+  Vcl.DBCtrls;
 
 type
   TfrmDashboard = class(TForm)
-    pnlCenter: TPanel;
     lblEats: TLabel;
-    btnLogOut: TButton;
-    dpcDay: TDateTimePicker;
-    btnLoadData: TButton;
     pnlProgIndicator: TPanel;
-    memMealLog: TMemo;
-    lblDayCalorie: TLabel;
-    edtCaloires: TEdit;
     cmbMeals: TComboBox;
     edtPortion: TEdit;
     btnEaten: TButton;
-    pctDashboard: TPageControl;
-    tsProgress: TTabSheet;
-    tsEating: TTabSheet;
     pnlCent: TPanel;
-    memMeal: TMemo;
-    lblMeal: TLabel;
-    memGoals: TMemo;
-    pnlGoal: TPanel;
-    btnSearch: TButton;
-    tsSearch: TTabSheet;
-    edtSearchMeal: TEdit;
-    btnMealSearch: TButton;
-    redMealInfo: TRichEdit;
     cmbMealType: TComboBox;
     btnAddDB: TButton;
-    lblFoodname: TLabel;
-    SplitView1: TSplitView;
-    pnlUser: TPanel;
-    lblUser: TLabel;
-    btnSplit: TButton;
+    pnlDate: TPanel;
+    sbtnPrev: TSpeedButton;
+    sbtnNext: TSpeedButton;
+    edtCalories: TLabeledEdit;
+    crplDashboard: TCardPanel;
+    crdProgress: TCard;
+    crdEating: TCard;
+    tbDashboard: TToolBar;
+    tbtSidebar: TToolButton;
+    pnlGoal: TPanel;
+    prgCalories: TProgressBar;
+    pnlCal: TPanel;
+    dpcDay: TDateTimePicker;
+    crdGoals: TCard;
+    redMeals: TRichEdit;
+    pnlMeals: TPanel;
+    pnlMealBottom: TPanel;
+    btnShow: TButton;
+    btnReset: TButton;
+    btnEating: TButton;
+    Panel1: TPanel;
+    edtWater: TLabeledEdit;
+    prgWater: TProgressBar;
+    Panel3: TPanel;
+    edtFat: TLabeledEdit;
+    prgFat: TProgressBar;
+    pnlCarb: TPanel;
+    edtCarb: TLabeledEdit;
+    prgCarb: TProgressBar;
+    Panel5: TPanel;
+    edtProtein: TLabeledEdit;
+    prgProtein: TProgressBar;
+    lblGoal: TLabel;
+    pnlProgTop: TPanel;
+    btnChange: TButton;
+    RichEdit1: TRichEdit;
+    pnlFood: TPanel;
+    pnlDisplay: TPanel;
+    redMeal: TRichEdit;
+    svSidebar: TSplitView;
+    edtSVCalorie: TLabeledEdit;
+    edtSVWater: TLabeledEdit;
+    btnReturn: TButton;
+    lblHello: TLabel;
+    btnSettings: TButton;
+    btnLogOut: TButton;
+    lblProg: TLabel;
+    cbxFood: TComboBox;
+
     procedure FormShow(Sender: TObject);
     procedure btnLogOutClick(Sender: TObject);
     procedure btnEatenClick(Sender: TObject);
@@ -49,30 +76,41 @@ type
     procedure tsEatingShow(Sender: TObject);
     procedure tsProgressShow(Sender: TObject);
     procedure tsWelcomeShow(Sender: TObject);
-    procedure btnSearchClick(Sender: TObject);
     procedure tsSearchShow(Sender: TObject);
     procedure tsSearchHide(Sender: TObject);
     procedure btnMealSearchClick(Sender: TObject);
     procedure btnAddDBClick(Sender: TObject);
-    procedure SplitView1Closing(Sender: TObject);
-    procedure SplitView1Opened(Sender: TObject);
-    procedure btnSplitClick(Sender: TObject);
+    procedure sbtnNextClick(Sender: TObject);
+    procedure sbtnPrevClick(Sender: TObject);
+    procedure dpcDayChange(Sender: TObject);
+    procedure btnResetClick(Sender: TObject);
+    procedure btnEatingClick(Sender: TObject);
+    procedure btnChangeClick(Sender: TObject);
+    procedure btnReturnClick(Sender: TObject);
+    procedure svSidebarMouseEnter(Sender: TObject);
+    procedure tbtSidebarClick(Sender: TObject);
+    procedure btnSettingsClick(Sender: TObject);
+    procedure FormResize(Sender: TObject);
+    procedure svSidebarResize(Sender: TObject);
   private
     { Private declarations }
+    FCurrentUser : TUser;
     procedure PopulateFoods;
     procedure GetInfo;
     procedure PopulateMealType;
-    FCurrentUser : TUser;
+    procedure SetProgressBar(sItem : String; rValue, rTarget : Real);
+    procedure ShowProgress(RecDate:TDate);
   public
     { Public declarations }
     property CurrentUser : TUser read FCurrentUser write FCurrentUser;
+
   end;
 
 var
   frmDashboard: TfrmDashboard;
-  username : string;
   foodList : TStringList;
   FoodCount : integer;
+  currentMeal : TMeal;
 
 implementation
 
@@ -93,6 +131,11 @@ begin
   end;
   if isSuccess then
   PopulateFoods;
+end;
+
+procedure TfrmDashboard.btnChangeClick(Sender: TObject);
+begin
+  crplDashboard.ActiveCard := crdGoals;
 end;
 
 procedure TfrmDashboard.btnEatenClick(Sender: TObject);
@@ -133,6 +176,12 @@ begin
 
 end;
 
+procedure TfrmDashboard.btnEatingClick(Sender: TObject);
+begin
+  crplDashboard.ActiveCard := crdEating;
+  btnReturn.Enabled := true;
+end;
+
 procedure TfrmDashboard.btnLoadDataClick(Sender: TObject);
 var
   selectedDate,dEatenDate : TDate;
@@ -146,31 +195,128 @@ end;
 procedure TfrmDashboard.GetInfo;
 var
   selectedDate : TDate;
-  iTotalCalories,iNumMeals : integer;
+  iNumMeals : integer;
   i: Integer;
   sMealName,dateEaten,timeEaten : string;
+  rTotalCalories, rTargetCalories : Real;
 begin
-  memMealLog.Clear;
+  redMeals.Clear;
   selectedDate := dpcDay.Date;
-  iTotalCalories := currentUser.GetDailyCalories(selectedDate);
+  ShowProgress(selectedDate);
+  rTotalCalories := currentUser.GetDailyCalories(selectedDate);
+  lblProg.Caption := 'Progress for ' + FormatDateTime('dd mmm',selectedDate);
   iNumMeals := currentUser.GetTotalMeals;
   if iNumMeals = 0 then
-    begin
-    memMealLog.Lines.Add('Nothing to see here! ' + #13 + 'Start eating!');
-    edtCaloires.Text := 0.ToString;
+  begin
+    redMeals.Lines.Add('Nothing to see here! ' + #13 + 'Start eating!');
   end else
   begin
+    cbxFood.Items.Clear;
+    cbxFood.Text := 'Choose a meal';
     for i := 1 to iNumMeals do
     begin
       sMealName := currentUser.GetMealInfo(i,'name');
       dateEaten := currentUser.GetMealInfo(i,'date');
       timeEaten := currentUser.GetMealInfo(i,'time');
       if StrToDate(dateEaten) = selectedDate then
-      memMealLog.Lines.Add(
-        timeEaten + ': ' + sMealName + ' eaten for '+ currentUser.GetMealInfo(i,'type')
-      );
+      begin
+        redMeals.Lines.Add('Meal: #' + i.ToString + ' at ' + timeEaten);
+        redMeals.Lines.Add('Name:' + #9 + sMealName);
+        redMeals.Lines.Add('Total Energy:' + #9 + currentUser.GetMealInfo(i,'energy'));
+        redMeals.Lines.Add('');
+        cbxFood.Items.Add('#'+i.ToString + ' ' + sMealName);
+      end;
     end;
-    edtCaloires.Text := IntToStr(iTotalCalories);
+  end;
+end;
+
+procedure TfrmDashboard.ShowProgress;
+const ITEMS : array[1..5] of string = ('Calorie','Water','Carbohydrate','Protein','Fat');
+var
+  Goal : TGoal;
+  rTarget,rValue : Real;
+  i: Integer;
+begin
+  for i := 1 to Length(ITEMS) do
+  begin
+    Goal := TGoal.Create(CurrentUser.UserID,ITEMS[i]);
+    rTarget := Goal.Target;
+    rValue := Goal.GetProgress(RecDate);
+
+    SetProgressBar(Goal.Item,rValue,rTarget);
+    Goal.free;
+  end;
+
+  Goal := TGoal.Create(CurrentUser.UserID,'Calorie');
+  rValue := Goal.GetProgress(Date);
+  rTarget := Goal.Target;
+  edtSVCalorie.Text := FloatToStrF(rValue,ffFixed,8,2) +  '/'+ FloatToStrF(rTarget,ffFixed,8,2);
+
+  Goal := TGoal.Create(CurrentUser.UserID,'Water');
+  rValue := Goal.GetProgress(Date);
+  rTarget := Goal.Target;
+  edtSVWater.Text := FloatToStrF(rValue,ffFixed,8,2) +  '/'+ FloatToStrF(rTarget,ffFixed,8,2);
+end;
+
+procedure TfrmDashboard.svSidebarMouseEnter(Sender: TObject);
+begin
+  svSidebar.open;
+end;
+
+procedure TfrmDashboard.svSidebarResize(Sender: TObject);
+begin
+  with svSidebar do
+  begin
+    edtSVCalorie.Top := Ceil(Height - Height*5.5/6.5);
+    edtSVWater.top := Ceil(Height - Height*4.5/6.5);
+
+    btnSettings.Top := Ceil(Height - Height * 2.5/6.5);
+    btnReturn.Top := Ceil(Height - Height * 1.5/6.5);
+    btnLogout.Top := Ceil(Height - Height * 0.5/6.5);
+
+    edtSVCalorie.Width := Ceil(Width*5/7);
+    edtSVWater.Width := Ceil(Width*5/7);
+    btnSettings.Width := Ceil(width*5/7);
+    btnReturn.Width := Ceil(Width*5/7);
+    btnLogout.Width := Ceil(Width*5/7);
+  end;
+end;
+
+procedure TfrmDashboard.SetProgressBar(sItem : String;rValue, rTarget : Real);
+begin
+  rTarget := 300;
+  rValue := RandomRange(10,300);
+  case IndexStr(LowerCase(sItem),['calorie','water','carbohydrate','protein','fat']) of
+  0: // Calorie
+    begin
+      edtCalories.Text := FloatToStrF(rValue,ffFixed,8,2) +'/'+ FloatToStrF(rTarget,ffFixed,8,2) + 'cal';
+      prgCalories.Max := Ceil(rTarget);;
+      prgCalories.Position := Ceil(rValue);
+     end;
+  1:  // Water
+    begin
+      edtWater.Text := FloatToStrF(rValue,ffFixed,8,2) +'/'+ FloatToStrF(rTarget,ffFixed,8,2)+' cups';
+      prgWater.Max := Ceil(rTarget);
+      prgWater.Position := Ceil(rValue);
+    end;
+  2: // Carbs
+    begin
+      edtCarb.Text := FloatToStrF(rValue,ffFixed,8,2) +'/'+ FloatToStrF(rTarget,ffFixed,8,2) + 'g';
+      prgCarb.Max := Ceil(rTarget);
+      prgCarb.Position := Ceil(rValue);
+    end;
+  3: // Protein
+    begin
+      edtProtein.Text := FloatToStrF(rValue,ffFixed,8,2) + '/'+FloatToStrF(rTarget,ffFixed,8,2) + 'g';
+      prgProtein.Max := Ceil(rTarget);
+      prgProtein.Position := Ceil(rValue);
+    end;
+  4: // Fat
+    begin
+     edtFat.Text := FloatToStrF(rValue,ffFixed,8,2) + '/'+FloatToStrF(rTarget,ffFixed,8,2) +'g';
+     prgFat.Max := Ceil(rTarget);
+     prgFat.Position := Ceil(rValue);
+    end;
   end;
 end;
 
@@ -187,9 +333,7 @@ var
   Protein,Carb,Fat,Calories,Sugar,Energy: real;
   FoodItem : TFoodItem;
 begin
-  if edtSearchMeal.text = '' then
-    exit;
-  sFoodname := edtSearchMeal.text;
+
   isFound := false;
 
   { Loop through the food list until either i is at the food count or the food is found }
@@ -210,7 +354,7 @@ begin
   until (i = FoodCount-1) or isFound;
 
   if isFound then
-  with redMealInfo do
+  with redMeal do
   begin
     Clear;
     with Paragraph do
@@ -237,17 +381,46 @@ begin
 
 end;
 
-procedure TfrmDashboard.btnSearchClick(Sender: TObject);
+procedure TfrmDashboard.btnReturnClick(Sender: TObject);
 begin
-  tsSearch.TabVisible := true;
-  pctDashboard.TabIndex := 3;
+  crplDashboard.ActiveCard := crdProgress;
+  btnReturn.Enabled := false;
 end;
 
-procedure TfrmDashboard.btnSplitClick(Sender: TObject);
+procedure TfrmDashboard.btnResetClick(Sender: TObject);
 begin
-  if SplitView1.Opened then
-  SplitView1.Close
-  else SplitView1.Open;
+  GetInfo;
+end;
+
+procedure TfrmDashboard.btnSettingsClick(Sender: TObject);
+var
+ Settings : TfrmSettings;
+begin
+  Settings := TfrmSettings.Create(nil);
+  try
+    Settings.currentUser := currentUser;
+    Settings.ShowModal;
+  finally
+    Settings.free;
+  end;
+end;
+
+procedure TfrmDashboard.dpcDayChange(Sender: TObject);
+begin
+  if dpcDay.Date = Date then
+    sbtnNext.Enabled := False
+  else
+    sbtnNext.Enabled := True;
+  GetInfo;
+end;
+
+procedure TfrmDashboard.FormResize(Sender: TObject);
+begin
+  if svSidebar.Opened then
+  begin
+    svSidebar.OpenedWidth := Ceil(self.Width*7/48);
+    crplDashboard.Width := Ceil(self.Width*41/48);
+  end;
 end;
 
 procedure TfrmDashboard.FormShow(Sender: TObject);
@@ -256,19 +429,24 @@ var
 begin
   utilObj := TUtils.Create;
   loggerObj := TLOGS.Create;
- // utilObj.SetLabel(lblHeading,'Dashboard',15);
-  username := currentUser.Username;
-  utilObj.SetLabel(lblUser,username,8);
+
   PopulateFoods;
   PopulateMealType;
-  pctDashboard.TabIndex := 0;
-  tsSearch.TabVisible := false;
+
+
   dpcDay.Date := Date;
+  dpcDay.MaxDate := Date;
+
+  GetInfo;
+
+  crplDashboard.ActiveCard := crdProgress;
+
+  lblHello.Caption := 'Hello, ' + CurrentUser.Username;
 
   if currentUser.GetFirstLogin then
   begin
    userGreeter := TfrmGreeter.Create(nil);
-   userGreeter.currentUser := currentUser;
+ //  userGreeter.currentUser := currentUser;
    with userGreeter do
    begin
     try
@@ -279,6 +457,12 @@ begin
    end;
   end;
 
+  with redMeals.Paragraph do
+  begin
+    TabCount := 2;
+    Tab[0] := 200;
+    Tab[1] := 400;
+  end;
 end;
 
 procedure TfrmDashboard.PopulateMealType;
@@ -295,16 +479,19 @@ begin
   end;
 end;
 
-procedure TfrmDashboard.SplitView1Closing(Sender: TObject);
+procedure TfrmDashboard.sbtnNextClick(Sender: TObject);
 begin
-  btnLogOut.Caption := 'L';
-  btnSplit.Caption := 'Open';
+  if dpcDay.Date < Date then
+    dpcDay.Date := dpcDay.Date+1;
+  dpcDayChange(self);
+  GetInfo;
 end;
 
-procedure TfrmDashboard.SplitView1Opened(Sender: TObject);
+procedure TfrmDashboard.sbtnPrevClick(Sender: TObject);
 begin
-  btnLogOut.Caption := 'Log out';
-  btnSplit.Caption := 'Close';
+  dpcDay.Date := dpcDay.Date-1;
+  dpcDayChange(self);
+  GetInfo;
 end;
 
 procedure TfrmDashboard.PopulateFoods;
@@ -337,6 +524,20 @@ begin
  end;
 end;
 
+procedure TfrmDashboard.tbtSidebarClick(Sender: TObject);
+begin
+  if not svSidebar.Opened then
+  begin
+    svSidebar.Open;
+    tbtSidebar.Caption := 'Close Sidebar';
+  end
+  else
+  begin
+    svSidebar.Close;
+    tbtSidebar.Caption := 'Open sidebar';
+  end;
+end;
+
 procedure TfrmDashboard.tsEatingShow(Sender: TObject);
 begin
   //utilObj.SetLabel(lblHeading,'What are you eating?',15);
@@ -350,7 +551,7 @@ end;
 
 procedure TfrmDashboard.tsSearchHide(Sender: TObject);
 begin
-  tsSearch.TabVisible := false;
+//  tsSearch.TabVisible := false;
 end;
 
 procedure TfrmDashboard.tsSearchShow(Sender: TObject);

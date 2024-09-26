@@ -41,12 +41,14 @@ object frmAdmin: TfrmAdmin
   end
   object pageCtrl: TPageControl
     Left = 0
-    Top = 25
+    Top = 29
     Width = 907
-    Height = 519
-    ActivePage = tsHome
+    Height = 515
+    ActivePage = tsUsers
     Align = alClient
     TabOrder = 1
+    ExplicitTop = 25
+    ExplicitHeight = 519
     object tsHome: TTabSheet
       Caption = 'Home'
       ImageIndex = 3
@@ -311,28 +313,22 @@ object frmAdmin: TfrmAdmin
       end
     end
   end
-  object pnlHead: TPanel
+  object tbTop: TToolBar
     Left = 0
     Top = 0
     Width = 907
-    Height = 25
-    Align = alTop
+    Height = 29
+    ButtonHeight = 23
+    ButtonWidth = 30
+    Caption = 'ToolBar1'
+    ShowCaptions = True
     TabOrder = 2
-    ExplicitTop = -6
-    object pnlUser: TPanel
-      Left = 721
-      Top = 1
-      Width = 185
-      Height = 23
-      Align = alRight
-      TabOrder = 0
-      object lblUser: TLabel
-        Left = 72
-        Top = 8
-        Width = 34
-        Height = 15
-        Caption = 'Label1'
-      end
+    object tbtUser: TToolButton
+      Left = 0
+      Top = 0
+      Caption = 'User'
+      ImageIndex = 0
+      OnClick = tbtUserClick
     end
   end
 end

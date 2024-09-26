@@ -54,8 +54,6 @@ object frmLogin: TfrmLogin
       Caption = 'Login'
       CardIndex = 0
       TabOrder = 0
-      ExplicitLeft = 2
-      ExplicitTop = -1
       object lblWelcome: TLabel
         Left = 146
         Top = 16
@@ -76,6 +74,7 @@ object frmLogin: TfrmLogin
           Width = 75
           Height = 25
           Caption = 'Login'
+          Default = True
           Enabled = False
           TabOrder = 0
           OnClick = btnLoginClick
@@ -94,6 +93,7 @@ object frmLogin: TfrmLogin
           ShowHint = True
           TabOrder = 1
           Text = ''
+          TextHint = 'Lorem Ipsum'
           OnChange = edtUserChange
           OnKeyPress = edtUserKeyPress
         end
@@ -112,6 +112,7 @@ object frmLogin: TfrmLogin
           ShowHint = True
           TabOrder = 2
           Text = ''
+          TextHint = 'Strong password'
           OnChange = edtPasswordChange
           OnKeyPress = edtPasswordKeyPress
         end
@@ -149,8 +150,6 @@ object frmLogin: TfrmLogin
       Caption = 'Sign Up'
       CardIndex = 1
       TabOrder = 1
-      ExplicitLeft = 2
-      ExplicitTop = 6
       object pnlNewUser: TPanel
         Left = 16
         Top = 30
@@ -164,6 +163,7 @@ object frmLogin: TfrmLogin
           Width = 97
           Height = 25
           Caption = 'Create Account'
+          Default = True
           Enabled = False
           TabOrder = 0
           OnClick = btnCreateClick
@@ -188,9 +188,11 @@ object frmLogin: TfrmLogin
           EditLabel.Height = 15
           EditLabel.Caption = 'Repeat that password'
           Enabled = False
+          MaxLength = 20
           PasswordChar = '*'
           TabOrder = 2
           Text = ''
+          TextHint = 'Really, really strong password'
           OnChange = edtNewPassConfChange
         end
         object edtNewPassword: TLabeledEdit
@@ -203,9 +205,11 @@ object frmLogin: TfrmLogin
           EditLabel.Height = 15
           EditLabel.Caption = 'Enter a strong password'
           Enabled = False
+          MaxLength = 20
           PasswordChar = '*'
           TabOrder = 3
           Text = ''
+          TextHint = 'Really strong password'
           OnChange = edtNewPasswordChange
         end
         object edtNewUser: TLabeledEdit
@@ -217,8 +221,10 @@ object frmLogin: TfrmLogin
           EditLabel.Width = 109
           EditLabel.Height = 15
           EditLabel.Caption = 'Enter your username'
+          MaxLength = 12
           TabOrder = 4
           Text = ''
+          TextHint = 'Lorem Ipsum'
           OnChange = edtNewUserChange
         end
         object cbxReveal: TCheckBox
@@ -260,8 +266,8 @@ object frmLogin: TfrmLogin
   end
   object imgLst: TImageList
     ShareImages = True
-    Left = 473
-    Top = 267
+    Left = 497
+    Top = 251
     Bitmap = {
       494C010101000800040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010

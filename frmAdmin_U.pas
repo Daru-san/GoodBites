@@ -81,7 +81,6 @@ type
 
 var
   frmAdmin: TfrmAdmin;
-  adminName : string;
   LoggerObj : TLogs;
   UtilObj : TUtils;
 
@@ -165,14 +164,14 @@ end;
 
 procedure TfrmAdmin.btnUserDelClick(Sender: TObject);
 begin
-  currentAdmin.RemoveUser(dmData.tblUsers.FieldValues['UserID']);
+  AdminUser.RemoveUser(dmData.tblUsers.FieldValues['UserID']);
 end;
 
 //TODO: Filter logs based on type
 procedure TfrmAdmin.tsFoodsShow(Sender: TObject);
 begin
   InitializeWidth(dbgFoods);
-  LoggerObj.WriteSysLog('The database table `tblFoods` was accessed by administrator ' + adminName);
+  LoggerObj.WriteSysLog('The database table `tblFoods` was accessed by administrator ' + AdminUser.Username);
 end;
 
 procedure TfrmAdmin.tsLogsShow(Sender: TObject);
@@ -186,7 +185,7 @@ procedure TfrmAdmin.tsUsersShow(Sender: TObject);
 begin
   UtilObj.SetLabel(lblUsers,'User Management',20);
   InitializeWidth(dbgUsers);
-  LoggerObj.WriteSysLog('The database table `tblUsers` was accessed by administrator ' + adminName);
+  LoggerObj.WriteSysLog('The database table `tblUsers` was accessed by administrator ' + AdminUser.Username);
 end;
 
 procedure TfrmAdmin.ShowLogs;
@@ -256,7 +255,7 @@ begin
 
     // Logged in admin is still logged when clearing the log file to keep them accountable for the clearing
     // In case anything may come up and logs were needed or some ambiguous circumstance
-    LoggerObj.WriteUserLog('The administrator ' + adminName + ' was logged in');
+    LoggerObj.WriteUserLog('The administrator ' + AdminUser.Username + ' was logged in');
     ShowLogs;
   end
   else
@@ -307,7 +306,7 @@ begin
     which indicates that the database is still in use even when the app has been closed,
     rather only open the tables when needed and close when not
   }
-  currentAdmin.Free;
+  AdminUser.Free;
   with dmData do
   begin
     tblUsers.Close;
@@ -317,11 +316,10 @@ end;
 
 procedure TfrmAdmin.FormShow(Sender: TObject);
 begin
-  adminName := currentAdmin.Username;
   LoggerObj := TLogs.Create;
   UtilObj := TUtils.Create;
   pageCtrl.TabIndex := 0;
-  UtilObj.SetLabel(lblUser,'[Admin]Logged in as ' + adminName,7);
+  tbtUser.Caption := AdminUser.Username;
 
   { Open tables when opening but close them when the form closes, preventing `read` locks as I call them }
   with dmData do

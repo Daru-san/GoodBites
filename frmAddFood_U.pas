@@ -96,7 +96,7 @@ begin
   inherited;
   Foodname := edtName.Text;
 
-//  if Utils.ValidateString(Foodname,'foodname',1,20,'letters,numbers') then
+  if Util.ValidateString(Foodname,'foodname',1,20,'letters,numbers') then
   begin
 
     if cbxBranded.Checked then
@@ -104,6 +104,10 @@ begin
     else jsonString := FetchJson(Foodname,false);
 
     SortItems(jsonString);
+  end
+  else
+  begin
+    ShowMessage('Food name must be between 1 to 20 characters and not have special characters');
   end;
 end;
 
@@ -114,7 +118,6 @@ var
   Calories,Energy,Protein,Carbs,Fat,Sugar: real;
 begin
   inherited;
-
   if cbxItems.ItemIndex <> -1 then
     btnAccept.Enabled := true
   else btnAccept.Enabled := false;
@@ -173,6 +176,7 @@ begin
     cbxItems.Enabled := false;
   end;
 end;
+
 function TfrmAddFood.FetchJson(sQuery: string;isBranded: Boolean): string;
 begin
   Fetcher := TFetchAPI.Create;

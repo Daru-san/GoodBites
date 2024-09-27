@@ -91,6 +91,7 @@ type
     procedure btnSettingsClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure svSidebarResize(Sender: TObject);
+    procedure btnShowClick(Sender: TObject);
     procedure cbxFoodsChange(Sender: TObject);
   private
     { Private declarations }
@@ -441,6 +442,68 @@ begin
   end;
 end;
 
+procedure TfrmDashboard.btnShowClick(Sender: TObject);
+var
+  sFoodname,sMealType,sTime: string;
+  iFoodIndex : Integer;
+  dDate : TDate;
+  isFound : Boolean;
+  rPortion : Real;
+  Meal : TMeal;
+  FoodItem : TFoodItem;
+begin
+  if cbxMeals.ItemIndex = -1 then
+  begin
+    cbxMeals.SetFocus;
+    exit;
+  end;
+
+  iFoodIndex := cbxMeals.ItemIndex+1;
+  dDate := dpcDay.date;
+
+  rPortion := StrToFloat(CurrentUser.GetMealInfo(iFoodIndex,dDate,'portion'));
+  sMealType := CurrentUser.GetMealInfo(iFoodIndex,dDate,'type');
+  sFoodname := CurrentUser.GetMealInfo(iFoodIndex,dDate,'name');
+  sTime := CurrentUser.GetMealInfo(iFoodIndex,dDate,'time');
+
+  FoodItem := TFoodItem.Create(sFoodname);
+  Meal := TMeal.Create(FoodItem,rPortion,sMealType);
+
+  redMeals.Clear;
+  with redMeals.Paragraph do
+  begin
+    TabCount := 1;
+    Tab[0] := 100;
+  end;
+  with redMeals.Lines do
+  begin
+    Add(sFoodname + ', eaten at ' + sTime);
+    Add('=================================');
+    Add('');
+    Add('Eaten for '+ sMealType);
+    Add('Portion size:' + #9 + FloatToStrF(rPortion,ffFixed,8,2)+'g');
+    Add('Total calories:' + #9 + FloatToStrF(Meal.TotalCalories,ffFixed,8,2)+'kcal');
+    Add('Total energy:' + #9 + FloatToStrF(Meal.TotalEnergy,ffFixed,8,2)+'kJ');
+
+    Add('Total carb:' + #9 + FloatToStrF(
+      FoodItem.CarbPer100G*(rPortion/100),
+      ffFixed,
+      8,2) + 'g'
+    );
+
+    Add('Total protein:' + #9 + FloatToStrF(
+      FoodItem.ProteinPer100G*(rPortion/100),
+      ffFixed,
+      8,2) + 'g'
+    );
+
+    Add('Total Fat:' + #9 + FloatToStrF(
+      FoodItem.FatPer100G*(rPortion/100),
+      ffFixed,
+      8,2) + 'g'
+      );
+  end;
+end;
 procedure TfrmDashboard.dpcDayChange(Sender: TObject);
 begin
   if dpcDay.Date = Date then

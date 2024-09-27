@@ -202,39 +202,45 @@ end;
 
 procedure TfrmDashboard.GetInfo;
 var
-  selectedDate : TDate;
-  iNumMeals : integer;
-  i: Integer;
-  sMealName,dateEaten,timeEaten : string;
+  dDate : TDate;
+  iDayMeals,i : integer;
+  sMealName,timeEaten : string;
   rTotalCalories, rTargetCalories : Real;
 begin
   redMeals.Clear;
-  selectedDate := dpcDay.Date;
-  ShowProgress(selectedDate);
-  rTotalCalories := currentUser.GetDailyCalories(selectedDate);
-  lblProg.Caption := 'Progress for ' + FormatDateTime('dd mmm',selectedDate);
-  iNumMeals := currentUser.GetTotalMeals;
-  if iNumMeals = 0 then
+
+  dDate := dpcDay.Date;
+
+  rTotalCalories := currentUser.GetDailyCalories(dDate);
+
+
+  cbxMeals.Items.Clear;
+  cbxMeals.Text := 'Choose a meal';
+
+  iDayMeals := currentUser.GetMealCount(dDate);
+
+  if iDayMeals = 0 then
   begin
     redMeals.Lines.Add('Nothing to see here! ' + #13 + 'Start eating!');
+    cbxMeals.Enabled := false;
+    btnShow.Enabled := false;
   end else
   begin
-    cbxFood.Items.Clear;
-    cbxFood.Text := 'Choose a meal';
-    for i := 1 to iNumMeals do
+    cbxMeals.Enabled := true;
+    btnShow.Enabled := true;
+    with redMeals.Paragraph do
     begin
-      sMealName := currentUser.GetMealInfo(i,'name');
-      dateEaten := currentUser.GetMealInfo(i,'date');
-      timeEaten := currentUser.GetMealInfo(i,'time');
-      if StrToDate(dateEaten) = selectedDate then
-      begin
-        redMeals.Lines.Add('Meal: #' + i.ToString + ' at ' + timeEaten);
-        redMeals.Lines.Add('Name:' + #9 + sMealName);
-        redMeals.Lines.Add('Total Energy:' + #9 + currentUser.GetMealInfo(i,'energy'));
-        redMeals.Lines.Add('');
-        cbxFood.Items.Add('#'+i.ToString + ' ' + sMealName);
-      end;
+      TabCount := 1;
+      Tab[0] := 50;
     end;
+    redMeals.Lines.Add('Meal logs for ' + FormatDateTime('dd mmm',dDate));
+    redMeals.Lines.Add('=============');
+    redMeals.Lines.Add('');
+    for i := 1 to iDayMeals do
+    begin
+      sMealName := currentUser.GetMealInfo(i,dDate,'name');
+      timeEaten := currentUser.GetMealInfo(i,dDate,'time');
+      redMeals.Lines.Add('Meal: #' + i.ToString + ' at ' + timeEaten);
   end;
 end;
 

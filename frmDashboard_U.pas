@@ -380,26 +380,24 @@ begin
   until (i = FoodCount) or isFound;
 
   if isFound then
-  with redMeal do
+  with redFoodInfo do
   begin
     Clear;
     with Paragraph do
     begin
-      TabCount := 2;
-      Tab[0] := 100;
-      Tab[1] := 150;
+      TabCount := 1;
+      Tab[0] := 150;
     end; // end with paragraph
     with Lines do
     begin
-      Clear;
       Add('Information on ' + sFoodname);
-      Add('----------------------------');
-      Add('Calories per 100g:' + #9 + FloatToStrF(Calories,ffFixed,8,2));
-      Add('Energy per 100g: ' + #9 + FloatToStrF(Energy,ffFixed,8,2));
-      Add('Proteins per 100g:' + #9 + FloatToStrF(Protein,ffFixed,8,2));
-      Add('Carbohydrates per 100g:' + #9 + FloatToStrF(Carb,ffFixed,8,2));
-      Add('Fat per 100g:' + #9 + FloatToStrF(Fat,ffFixed,8,2));
-      Add('Sugar per 100g:' + #9 + FloatToStrF(Sugar,ffFixed,8,2));
+      Add('----------------------------------------------------');
+      Add('Calories per 100g:' + #9 + FloatToStrF(Calories,ffFixed,8,2)+'kcal');
+      Add('Energy per 100g: ' + #9 + FloatToStrF(Energy,ffFixed,8,2)+'kJ');
+      Add('Proteins per 100g:' + #9 + FloatToStrF(Protein,ffFixed,8,2)+'g');
+      Add('Carbohydrates per 100g:' + #9 + FloatToStrF(Carb,ffFixed,8,2)+'g');
+      Add('Fat per 100g:' + #9 + FloatToStrF(Fat,ffFixed,8,2)+'g');
+      Add('Sugar per 100g:' + #9 + FloatToStrF(Sugar,ffFixed,8,2)+'g');
     end; // end lines
   end // end with redMealInfo
   else

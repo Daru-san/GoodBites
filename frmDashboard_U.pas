@@ -410,6 +410,13 @@ begin
 
 end;
 
+procedure TfrmDashboard.cbxMealTypeChange(Sender: TObject);
+begin
+  if (cbxMealType.ItemIndex <> -1) and (cbxFoods.ItemIndex <> -1) then
+    btnEaten.Enabled := true
+  else
+    btnEaten.Enabled := false;
+end;
 procedure TfrmDashboard.btnReturnClick(Sender: TObject);
 begin
   crplDashboard.ActiveCard := crdProgress;

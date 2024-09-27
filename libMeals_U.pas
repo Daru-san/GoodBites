@@ -47,19 +47,19 @@ type
       FTotalEnergy : real;
       FNumServings : Integer;
       FMealType : String;
-      FPortion : Integer;
+      FPortion : Real;
       FFoodItem : TFoodItem;
 
       procedure CalcTotals;
     public
-      constructor Create(F : TFoodItem; P : Integer;M: string = 'Other');
+      constructor Create(F : TFoodItem; P : Real;M: string = 'Other');
 
       property TotalCalories : real read FTotalCalories write FTotalCalories;
       property TotalEnergy : real read FTotalEnergy write FTotalEnergy;
       property NumServings : Integer read FNumServings write FNumServings;
       property MealType : string read FMealType write FMealType;
       property FoodItem : TFoodItem read FFoodItem write FFoodItem;
-      property PortionSize : Integer read FPortion write FPortion;
+      property PortionSize : Real read FPortion write FPortion;
 
       procedure EatMeal(UserID : String;TotalUserMeals:Integer);
   end;
@@ -174,7 +174,7 @@ end;
 { Meal procedures}
 
 {$REGION MEALS}
-constructor TMeal.Create(F : TFoodItem; P : Integer;M: string = 'Other');
+constructor TMeal.Create(F : TFoodItem; P : Real;M: string = 'Other');
 begin
   FoodItem := F;
   PortionSize := P;

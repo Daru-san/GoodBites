@@ -21,6 +21,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure cbxItemsChange(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure edtNameChange(Sender: TObject);
   private
     { Private declarations }
     function FetchJson(sQuery:string;isBranded:Boolean) : string;

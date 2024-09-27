@@ -1,4 +1,4 @@
-unit frmDashboard_U;
+﻿unit frmDashboard_U;
 
 interface
 
@@ -68,6 +68,9 @@ type
     btnLogOut: TButton;
     lblProg: TLabel;
     cbxMeals: TComboBox;
+    pnlDisplayBottom: TPanel;
+    pnlEating: TPanel;
+    pnlEatBottom: TPanel;
 
     procedure FormShow(Sender: TObject);
     procedure btnLogOutClick(Sender: TObject);
@@ -93,6 +96,7 @@ type
     procedure svSidebarResize(Sender: TObject);
     procedure btnShowClick(Sender: TObject);
     procedure cbxFoodsChange(Sender: TObject);
+    procedure cbxMealTypeChange(Sender: TObject);
   private
     { Private declarations }
     FCurrentUser : TUser;
@@ -182,7 +186,6 @@ begin
    Meal.Free;
    FoodItem.Free;
   end;
-
 end;
 
 procedure TfrmDashboard.btnEatingClick(Sender: TObject);
@@ -211,6 +214,7 @@ begin
   redMeals.Clear;
 
   dDate := dpcDay.Date;
+  ShowProgress(dDate);
 
   rTotalCalories := currentUser.GetDailyCalories(dDate);
 

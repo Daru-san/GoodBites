@@ -15,6 +15,7 @@ type
     lblEats: TLabel;
     pnlProgIndicator: TPanel;
     cmbMeals: TComboBox;
+    cbxFoods: TComboBox;
     edtPortion: TEdit;
     btnEaten: TButton;
     pnlCent: TPanel;
@@ -67,7 +68,6 @@ type
     btnSettings: TButton;
     btnLogOut: TButton;
     lblProg: TLabel;
-    cbxFood: TComboBox;
 
     procedure FormShow(Sender: TObject);
     procedure btnLogOutClick(Sender: TObject);
@@ -78,7 +78,6 @@ type
     procedure tsWelcomeShow(Sender: TObject);
     procedure tsSearchShow(Sender: TObject);
     procedure tsSearchHide(Sender: TObject);
-    procedure btnMealSearchClick(Sender: TObject);
     procedure btnAddDBClick(Sender: TObject);
     procedure sbtnNextClick(Sender: TObject);
     procedure sbtnPrevClick(Sender: TObject);
@@ -92,6 +91,7 @@ type
     procedure btnSettingsClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure svSidebarResize(Sender: TObject);
+    procedure cbxFoodsChange(Sender: TObject);
   private
     { Private declarations }
     FCurrentUser : TUser;
@@ -339,7 +339,7 @@ begin
   self.ModalResult := mrClose;
 end;
 
-procedure TfrmDashboard.btnMealSearchClick(Sender: TObject);
+procedure TfrmDashboard.cbxFoodsChange(Sender: TObject);
 var
   sFoodname: string;
   i: Integer;
@@ -348,6 +348,18 @@ var
   FoodItem : TFoodItem;
 begin
 
+  if cbxFoods.ItemIndex <> -1 then
+  begin
+    cbxMealType.Enabled := true;
+    if cbxMealType.ItemIndex <> -1 then
+      btnEaten.Enabled := true;
+  end
+  else
+  begin
+    btnEaten.Enabled := false;
+    cbxMealType.Enabled := false;
+  end;
+  sFoodname := cbxFoods.Text;
   isFound := false;
 
   { Loop through the food list until either i is at the food count or the food is found }
@@ -365,7 +377,7 @@ begin
       Energy := FoodItem.EnergyPer100G;
 			FoodItem.Free;
     end else inc(i);
-  until (i = FoodCount-1) or isFound;
+  until (i = FoodCount) or isFound;
 
   if isFound then
   with redMeal do

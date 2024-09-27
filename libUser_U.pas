@@ -939,7 +939,7 @@ begin
 
   // Breakfast is not a valid date!
   // Infotype dictates the type of information we are to return based on a few options
-  case IndexStr(LowerCase(infoType),['name','type','time','portion'            ]) of
+  case IndexStr(LowerCase(infoType),['name','type','time','portion']) of
   0 : Result := sFoodName;
   1 : Result := sMealType;
   2 : Result := FormatDateTime('tt',tEaten);

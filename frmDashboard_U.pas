@@ -14,12 +14,11 @@ type
   TfrmDashboard = class(TForm)
     lblEats: TLabel;
     pnlProgIndicator: TPanel;
-    cmbMeals: TComboBox;
     cbxFoods: TComboBox;
     edtPortion: TEdit;
     btnEaten: TButton;
     pnlCent: TPanel;
-    cmbMealType: TComboBox;
+    cbxMealType: TComboBox;
     btnAddDB: TButton;
     pnlDate: TPanel;
     sbtnPrev: TSpeedButton;
@@ -59,7 +58,7 @@ type
     RichEdit1: TRichEdit;
     pnlFood: TPanel;
     pnlDisplay: TPanel;
-    redMeal: TRichEdit;
+    redFoodInfo: TRichEdit;
     svSidebar: TSplitView;
     edtSVCalorie: TLabeledEdit;
     edtSVWater: TLabeledEdit;
@@ -68,6 +67,7 @@ type
     btnSettings: TButton;
     btnLogOut: TButton;
     lblProg: TLabel;
+    cbxMeals: TComboBox;
 
     procedure FormShow(Sender: TObject);
     procedure btnLogOutClick(Sender: TObject);

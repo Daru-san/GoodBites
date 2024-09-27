@@ -271,11 +271,13 @@ begin
   rValue := Goal.GetProgress(Date);
   rTarget := Goal.Target;
   edtSVCalorie.Text := FloatToStrF(rValue,ffFixed,8,2) +  '/'+ FloatToStrF(rTarget,ffFixed,8,2);
+  Goal.Free;
 
   Goal := TGoal.Create(CurrentUser.UserID,'Water');
   rValue := Goal.GetProgress(Date);
   rTarget := Goal.Target;
   edtSVWater.Text := FloatToStrF(rValue,ffFixed,8,2) +  '/'+ FloatToStrF(rTarget,ffFixed,8,2);
+  Goal.Free;
 end;
 
 procedure TfrmDashboard.svSidebarMouseEnter(Sender: TObject);

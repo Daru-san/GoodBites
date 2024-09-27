@@ -55,6 +55,7 @@ type
     function GetDailyCalories(currentDate:Tdate):integer;
     function GetTotalMeals:integer;
     function GetMealInfo(mealIndex: Integer;infoType : String = ''): string;
+    function GetMealCount(dDate : TDate): Integer;
 
     procedure AddCalories(numCalories : Integer);
 
@@ -882,6 +883,24 @@ begin
   result := numMeals;
 end;
 
+function TUser.GetMealCount(dDate: TDate): Integer;
+var
+  numMeals : Integer;
+begin
+  numMeals := 0;
+  with dmData.tblMeals do
+  begin
+    Open;
+    First;
+    repeat
+      if (UserID = FieldValues['UserID']) and (dDate = FieldValues['DateEaten']) then
+        inc(numMeals);
+      next;
+    until EOF;
+    Close;
+  end;
+  Result := numMeals;
+end;
 // Get information on a specific meal eaten by the user, i.e the food they ate, time they ate it
 function TUser.GetMealInfo(mealIndex: Integer;infoType : String = ''): string;
 var

@@ -54,7 +54,7 @@ type
     prgProtein: TProgressBar;
     lblGoal: TLabel;
     pnlProgTop: TPanel;
-    btnChange: TButton;
+    btnGoGoals: TButton;
     RichEdit1: TRichEdit;
     pnlFood: TPanel;
     pnlDisplay: TPanel;
@@ -85,7 +85,7 @@ type
     procedure dpcDayChange(Sender: TObject);
     procedure btnResetClick(Sender: TObject);
     procedure btnEatingClick(Sender: TObject);
-    procedure btnChangeClick(Sender: TObject);
+    procedure btnGoGoalsClick(Sender: TObject);
     procedure btnReturnClick(Sender: TObject);
     procedure svSidebarMouseEnter(Sender: TObject);
     procedure tbtSidebarClick(Sender: TObject);
@@ -133,7 +133,7 @@ begin
   PopulateFoods;
 end;
 
-procedure TfrmDashboard.btnChangeClick(Sender: TObject);
+procedure TfrmDashboard.btnGoGoalsClick(Sender: TObject);
 begin
   crplDashboard.ActiveCard := crdGoals;
 end;

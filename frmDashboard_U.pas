@@ -140,19 +140,26 @@ end;
 
 procedure TfrmDashboard.btnEatenClick(Sender: TObject);
 var
-  iCheckInt,iPortion : integer;
+  iCheckInt : integer;
   sMealName,sMealType : string;
+  rPortion : Real;
   Meal : TMeal;
   FoodItem : TFoodItem;
 begin
-  if cmbMeals.ItemIndex = -1 then
-  exit;
-  if cmbMealType.ItemIndex = -1 then
-  exit;
-  sMealName := cmbMeals.text;
-  sMealType := cmbMealType.Text;
+  if cbxFoods.ItemIndex = -1 then
+  begin
+    cbxFoods.SetFocus;
+    exit;
+  end;
+  if cbxMealType.ItemIndex = -1 then
+  begin
+    cbxMealType.SetFocus;
+    exit;
+  end;
+  sMealName := cbxFoods.text;
+  sMealType := cbxMealType.Text;
 
-  Val(edtPortion.Text,iPortion,iCheckInt);
+  Val(edtPortion.Text,rPortion,iCheckInt);
 
   if iCheckInt <> 0 then
   begin

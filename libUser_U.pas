@@ -53,8 +53,8 @@ type
 
     // Meal related procedures
     function GetDailyCalories(currentDate:Tdate):integer;
-    function GetTotalMeals:integer;
     function GetMealCount(dDate : TDate): Integer;
+    function GetTotalMeals : Integer;
     function GetMealInfo(mealIndex: Integer ;dDate : TDate; infoType : String = ''): string;
 
     procedure AddCalories(numCalories : Integer);
@@ -901,6 +901,7 @@ begin
   end;
   Result := numMeals;
 end;
+
 // Get information on a specific meal eaten by the user, i.e the food they ate, time they ate it
 function TUser.GetMealInfo(mealIndex: Integer;dDate : TDate; infoType : String = ''): string;
 var

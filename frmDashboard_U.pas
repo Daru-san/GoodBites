@@ -556,12 +556,9 @@ begin
    end;
   end;
 
-  with redMeals.Paragraph do
-  begin
-    TabCount := 2;
-    Tab[0] := 200;
-    Tab[1] := 400;
-  end;
+  redFoodInfo.Text := 'Select an item ad get information!';
+
+
 end;
 
 procedure TfrmDashboard.PopulateMealType;

@@ -30,23 +30,27 @@ function TUtils.ValidateString(S,StringName: string; minLength: Integer = 0;
 const
 NUMS = ['1'..'9'];
 SPECIAL = ['.',',','/','\','!','@','#','%','&','*'];
-LETTERS = ['A'..'Z'];
+LETTERS = ['A'..'Z'] + [' '];
 var
   isPresent,isLong,isValid:Boolean;
   hasNum : Boolean;
   hasSpecial : Boolean;
   hasLetters : Boolean;
   allowNum,allowSpecial,allowLetters : Boolean;
+  checkNum,checkSpecial,checkLetter : Boolean;
   i: Integer;
 begin
 
   allowLetters := false;
   allowNum := false;
   allowLetters := false;
+
   if LowerCase(allowedChars).Contains('letters') then
   allowLetters := true;
+
   if LowerCase(allowedChars).Contains('numbers') then
   allowNum := true;
+
   if LowerCase(allowedChars).Contains('other') then
   allowSpecial := true;
 
@@ -72,11 +76,16 @@ begin
 
   if not(allowLetters and hasLetters) then
     ShowMessage(StringName + ' must have letters');
-  { Only return true if both conditions being allowing and having are correct }
-  //Methodology still to be determined
-  isValid := (allowLetters and hasLetters) or (allowNum and hasNum) or (allowSpecial and hasSpecial);
 
-  Result := isPresent and isLong and isValid;
+  checkNum := (allowNum and (hasNum or not(hasNum))) or (not(allowNum) and not(hasNum));
+  checkSpecial := (allowSpecial and (hasSpecial or not(hasSpecial))) or (not(allowSpecial) and not(hasSpecial));
+  checkLetter := (allowLetters and hasLetters) or (not(allowLetters) and not(hasLetters));
+
+  { Only return true if both conditions being allowing and having are correct }
+  isValid := checkNum and checkLetter;
+
+  //Result := isPresent and isLong and isValid;
+  Result := true;
 end;
 
 

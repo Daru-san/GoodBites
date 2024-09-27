@@ -38,6 +38,7 @@ inherited frmAddFood: TfrmAddFood
     Height = 23
     TabOrder = 3
     TextHint = 'Food name'
+    OnChange = edtNameChange
   end
   object cbxItems: TComboBox
     Left = 304
@@ -45,6 +46,7 @@ inherited frmAddFood: TfrmAddFood
     Width = 145
     Height = 23
     Hint = 'Choose from a list of results'
+    Enabled = False
     TabOrder = 4
     Text = 'Choose an Item'
     OnChange = cbxItemsChange
@@ -55,6 +57,7 @@ inherited frmAddFood: TfrmAddFood
     Width = 75
     Height = 25
     Caption = 'Query'
+    Enabled = False
     TabOrder = 5
     OnClick = btnQueryClick
   end
@@ -64,6 +67,7 @@ inherited frmAddFood: TfrmAddFood
     Width = 75
     Height = 25
     Caption = 'Accept Item'
+    Enabled = False
     TabOrder = 6
     OnClick = btnAcceptClick
   end
@@ -73,6 +77,7 @@ inherited frmAddFood: TfrmAddFood
     Width = 97
     Height = 17
     Caption = 'Branded'
+    Enabled = False
     TabOrder = 7
   end
   object redItems: TRichEdit

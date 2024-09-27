@@ -243,10 +243,16 @@ begin
 //	through looping through each json array
 //	Each food item as an item in the json array, the same goes for the nutrients
 
+  if jsonString = '' then
+  exit;
 
-  jsonObj := TJSONObject.Create;
-  jsonData := jsonObj.ParseJSONValue(jsonString);
-  jsonObj.Destroy;
+	try
+    jsonObj := TJSONObject.Create;
+    jsonData := jsonObj.ParseJSONValue(jsonString);
+    jsonObj.Destroy;
+  except on E: Exception do
+    exit;
+  end;
 
 
   { I hope to prevent type casting errors that may come up when the json

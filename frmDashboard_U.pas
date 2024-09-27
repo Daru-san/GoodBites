@@ -172,8 +172,9 @@ begin
 
     if FoodItem.CheckExists then
     begin
-    Meal := TMeal.Create(FoodItem,iPortion,sMealType);
-    Meal.EatMeal(currentUser.UserID,currentUser.GetTotalMeals);
+      Meal := TMeal.Create(FoodItem,rPortion,sMealType);
+      Meal.EatMeal(currentUser.UserID,currentUser.GetTotalMeals);
+      GetInfo;
     end else
     ShowMessage('The item ' +  FoodItem.Foodname + ' does not exist in the database');
 

@@ -213,6 +213,7 @@ begin
 
   rTotalCalories := currentUser.GetDailyCalories(dDate);
 
+  lblProg.Caption := 'Progress for ' + FormatDateTime('dd mmm',dDate);
 
   cbxMeals.Items.Clear;
   cbxMeals.Text := 'Choose a meal';
@@ -241,6 +242,10 @@ begin
       sMealName := currentUser.GetMealInfo(i,dDate,'name');
       timeEaten := currentUser.GetMealInfo(i,dDate,'time');
       redMeals.Lines.Add('Meal: #' + i.ToString + ' at ' + timeEaten);
+      redMeals.Lines.Add('Name:' + #9 + sMealName);
+      redMeals.Lines.Add('');
+      cbxMeals.Items.Add('#'+i.ToString + ' ' + sMealName);
+    end;
   end;
 end;
 

@@ -54,8 +54,8 @@ type
     // Meal related procedures
     function GetDailyCalories(currentDate:Tdate):integer;
     function GetTotalMeals:integer;
-    function GetMealInfo(mealIndex: Integer;infoType : String = ''): string;
     function GetMealCount(dDate : TDate): Integer;
+    function GetMealInfo(mealIndex: Integer ;dDate : TDate; infoType : String = ''): string;
 
     procedure AddCalories(numCalories : Integer);
 
@@ -902,12 +902,14 @@ begin
   Result := numMeals;
 end;
 // Get information on a specific meal eaten by the user, i.e the food they ate, time they ate it
-function TUser.GetMealInfo(mealIndex: Integer;infoType : String = ''): string;
+function TUser.GetMealInfo(mealIndex: Integer;dDate : TDate; infoType : String = ''): string;
 var
   sFoodName,sMealType : string;
   eatenDate,eatenTime : TDate;
   isMealFound : boolean;
+  i : Integer;
 begin
+  i := 0;
   with dmData.tblMeals do
   begin
     Open;
@@ -915,14 +917,19 @@ begin
     repeat
       if UserID = FieldValues['UserID'] then
       begin
-        if mealIndex = FieldValues['UserMealID'] then
+        if (dDate = FieldValues['DateEaten']) and (mealIndex = i) then
         begin
           isMealFound := true;
           eatenDate := FieldValues['DateEaten'];
           eatenTime := FieldValues['TimeEaten'];
           sFoodName := FieldValues['FoodName'];
           sMealType := FieldValues['MealType'];
-        end else next;
+        end
+        else
+        begin
+          next;
+          inc(i);
+        end;
       end else next;
     until EOF or isMealFound;
     Close;

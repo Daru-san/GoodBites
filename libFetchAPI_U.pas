@@ -9,7 +9,7 @@ unit libFetchAPI_U;
 
 interface
 
-uses System.Net.HttpClient, System.Net.HttpClientComponent, libUtils_U, Classes, SysUtils;
+uses System.Net.HttpClient, System.Net.HttpClientComponent, libUtils_U, Classes, SysUtils,Dialogs;
 
 type
   TFetchAPI = class(TObject)
@@ -48,33 +48,41 @@ var
   api_key : string;
   searchParams : TStringStream;
 begin
-  NHClient := TNetHTTPClient.Create(nil);
-  NHREQ := TNetHTTPRequest.Create(nil);
-  NHREQ.Client := NHClient;
-
-  NHClient.ContentType := 'application/json';
-  NHClient.AcceptEncoding := 'UTF-8';
 
   { Providing the api key through a variable or constant would be insecure,
     so I assume this approach of obtaining the key from a separate file works best,
     it would also make updating the key easier since a rebuild is not necessary. }
   api_key := GetApiKey;
 
-  { Limit the maximum queries to 10, preventing a huge string that would take
-    ages to parse to be returned }
-  searchParams := TStringStream.Create(
-    '{"query":"'+sQuery+'","pageSize":10,"dataType": ["'+dataType+'"]}',
-    TEncoding.UTF8
-  );
+  try
+    NHClient := TNetHTTPClient.Create(nil);
+    NHREQ := TNetHTTPRequest.Create(nil);
 
-  { GET was also an option, but POST allows for greater customizability in terms of search parameters }
-  ResultString := NHREQ.Post(
-    'https://api.nal.usda.gov/fdc/v1/foods/search?api_key=' + api_key,searchParams
-  ).ContentAsString(TEncoding.UTF8);
+    { Limit the maximum queries to 10, preventing a huge string that would take
+      ages to parse to be returned }
+    searchParams := TStringStream.Create(
+      '{"query":"'+sQuery+'","pageSize":10,"dataType": ["'+dataType+'"]}',
+      TEncoding.UTF8
+    );
+    try
+      NHClient.ContentType := 'application/json';
+      NHClient.AcceptEncoding := 'UTF-8';
 
-  searchParams.Destroy;
-  NHClient.Destroy;
-  NHREQ.Destroy;
+      NHREQ.Client := NHClient;
+
+      { GET was also an option, but POST allows for greater customizability in terms of search parameters }
+      ResultString := NHREQ.Post(
+        'https://api.nal.usda.gov/fdc/v1/foods/search?api_key=' + api_key,searchParams
+      ).ContentAsString(TEncoding.UTF8);
+    except on E: ENetHTTPClientException do
+      // I want to ensure I can avoid any access voilations due to internet connection
+      ShowMessage('An error occured, please check your internet connection');
+    end;
+  finally
+    searchParams.Free;
+    NHClient.Free;
+    NHREQ.Free;
+  end;
 end;
 
 function TFetchAPI.GetJson: string;

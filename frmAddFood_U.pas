@@ -114,6 +114,9 @@ var
 begin
   inherited;
 
+  if cbxItems.ItemIndex <> -1 then
+    btnAccept.Enabled := true
+  else btnAccept.Enabled := false;
   FoodIndex := cbxItems.ItemIndex+1;
 
   Foodname := edtName.Text;
@@ -153,6 +156,22 @@ begin
   end;
 end;
 
+procedure TfrmAddFood.edtNameChange(Sender: TObject);
+begin
+  inherited;
+  if edtName.Text <> '' then
+  begin
+    btnQuery.Enabled := True;
+    cbxBranded.Enabled := True;
+    cbxItems.Enabled := true;
+  end
+  else
+  begin
+    btnQuery.Enabled := False;
+    cbxBranded.Enabled := false;
+    cbxItems.Enabled := false;
+  end;
+end;
 function TfrmAddFood.FetchJson(sQuery: string;isBranded: Boolean): string;
 begin
   Fetcher := TFetchAPI.Create;

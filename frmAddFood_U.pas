@@ -206,6 +206,7 @@ begin
   inherited;
   Util := TUtils.Create;
   edtName.SetFocus;
+  redItems.Text := 'Food information goes here';
 end;
 
 procedure TfrmAddFood.SortItems;
@@ -352,10 +353,11 @@ begin
 
   for i := 1 to numResults do
   begin
-    cbxItems.clear;
+    cbxItems.Items.clear;
+    cbxItems.Text := 'Choose an item';
     cbxItems.Items.Add(arrFood[i]);
   end;
-
+  btnAccept.Enabled := false;
 end;
 
 

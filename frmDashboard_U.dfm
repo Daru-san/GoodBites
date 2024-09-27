@@ -126,14 +126,14 @@ object frmDashboard: TfrmDashboard
               Smooth = True
               TabOrder = 1
             end
-            object btnChange: TButton
-              Left = 282
+            object btnGoGoals: TButton
+              Left = 256
               Top = 72
               Width = 89
               Height = 25
-              Caption = 'Change Goals?'
+              Caption = 'View Goals'
               TabOrder = 2
-              OnClick = btnChangeClick
+              OnClick = btnGoGoalsClick
             end
           end
           object Panel1: TPanel
@@ -143,7 +143,6 @@ object frmDashboard: TfrmDashboard
             Height = 60
             Align = alTop
             TabOrder = 1
-            ExplicitTop = 237
             object edtWater: TLabeledEdit
               Left = 21
               Top = 28
@@ -171,7 +170,6 @@ object frmDashboard: TfrmDashboard
             Height = 60
             Align = alTop
             TabOrder = 2
-            ExplicitTop = 177
             object edtFat: TLabeledEdit
               Left = 21
               Top = 28
@@ -200,8 +198,6 @@ object frmDashboard: TfrmDashboard
             Align = alTop
             Locked = True
             TabOrder = 3
-            ExplicitLeft = 4
-            ExplicitTop = 63
             object edtCarb: TLabeledEdit
               Left = 21
               Top = 28
@@ -229,7 +225,6 @@ object frmDashboard: TfrmDashboard
             Height = 60
             Align = alTop
             TabOrder = 4
-            ExplicitTop = 117
             object edtProtein: TLabeledEdit
               Left = 21
               Top = 23
@@ -300,7 +295,6 @@ object frmDashboard: TfrmDashboard
               'redMeals')
             ParentFont = False
             TabOrder = 0
-            ExplicitLeft = 6
             ExplicitTop = 4
           end
           object pnlMealBottom: TPanel
@@ -316,7 +310,9 @@ object frmDashboard: TfrmDashboard
               Width = 75
               Height = 25
               Caption = 'Show info'
+              Enabled = False
               TabOrder = 0
+              OnClick = btnShowClick
             end
             object btnReset: TButton
               Left = 304
@@ -327,11 +323,12 @@ object frmDashboard: TfrmDashboard
               TabOrder = 1
               OnClick = btnResetClick
             end
-            object cbxFood: TComboBox
+            object cbxMeals: TComboBox
               Left = 41
               Top = 16
               Width = 145
               Height = 23
+              Enabled = False
               TabOrder = 2
               Text = 'Choose a meal'
             end
@@ -392,48 +389,72 @@ object frmDashboard: TfrmDashboard
           Height = 417
           Align = alLeft
           TabOrder = 1
-          object btnAddDB: TButton
-            Left = 32
-            Top = 153
-            Width = 123
-            Height = 25
-            Caption = 'Search for new meal'
+          object pnlEating: TPanel
+            Left = 1
+            Top = 1
+            Width = 430
+            Height = 216
+            Align = alClient
             TabOrder = 0
-            OnClick = btnAddDBClick
+            ExplicitLeft = 4
+            ExplicitTop = 6
+            object btnAddDB: TButton
+              Left = 26
+              Top = 160
+              Width = 123
+              Height = 25
+              Caption = 'Search for new meal'
+              TabOrder = 0
+              OnClick = btnAddDBClick
+            end
+            object btnEaten: TButton
+              Left = 262
+              Top = 96
+              Width = 75
+              Height = 25
+              Caption = 'Eaten'
+              Enabled = False
+              TabOrder = 1
+              OnClick = btnEatenClick
+            end
+            object cbxFoods: TComboBox
+              Left = 24
+              Top = 50
+              Width = 153
+              Height = 23
+              TabOrder = 2
+              Text = 'Choose a food'
+              OnChange = cbxFoodsChange
+            end
+            object cbxMealType: TComboBox
+              Left = 26
+              Top = 97
+              Width = 145
+              Height = 23
+              Enabled = False
+              TabOrder = 3
+              Text = 'Meal type'
+              OnChange = cbxMealTypeChange
+            end
+            object edtPortion: TEdit
+              Left = 216
+              Top = 50
+              Width = 137
+              Height = 23
+              NumbersOnly = True
+              TabOrder = 4
+              TextHint = 'Portion size(g)'
+            end
           end
-          object btnEaten: TButton
-            Left = 311
-            Top = 114
-            Width = 75
-            Height = 25
-            Caption = 'Eaten'
+          object pnlEatBottom: TPanel
+            Left = 1
+            Top = 217
+            Width = 430
+            Height = 199
+            Align = alBottom
             TabOrder = 1
-            OnClick = btnEatenClick
-          end
-          object cmbMeals: TComboBox
-            Left = 32
-            Top = 56
-            Width = 153
-            Height = 23
-            TabOrder = 2
-            Text = 'Choose a food'
-          end
-          object cmbMealType: TComboBox
-            Left = 32
-            Top = 85
-            Width = 145
-            Height = 23
-            TabOrder = 3
-            Text = 'Meal type'
-          end
-          object edtPortion: TEdit
-            Left = 240
-            Top = 56
-            Width = 137
-            Height = 23
-            NumbersOnly = True
-            TabOrder = 4
-            TextHint = 'Portion size(g)'
+            ExplicitLeft = 4
+            ExplicitTop = 200
           end
         end
         object pnlDisplay: TPanel
@@ -443,11 +464,12 @@ object frmDashboard: TfrmDashboard
           Height = 417
           Align = alClient
           TabOrder = 2
-          object redMeal: TRichEdit
-            Left = 16
-            Top = 16
-            Width = 425
-            Height = 195
+          object redFoodInfo: TRichEdit
+            Left = 1
+            Top = 1
+            Width = 382
+            Height = 216
+            Align = alTop
             Font.Charset = ANSI_CHARSET
             Font.Color = clWindowText
             Font.Height = -12
@@ -457,6 +479,18 @@ object frmDashboard: TfrmDashboard
               'redMeal')
             ParentFont = False
             TabOrder = 0
+            ExplicitLeft = 5
+            ExplicitTop = 6
+          end
+          object pnlDisplayBottom: TPanel
+            Left = 1
+            Top = 217
+            Width = 382
+            Height = 199
+            Align = alClient
+            TabOrder = 1
+            ExplicitLeft = -7
+            ExplicitTop = 223
           end
         end
       end

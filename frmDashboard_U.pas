@@ -492,7 +492,7 @@ end;
 procedure TfrmDashboard.PopulateMealType;
 begin
 // Populating the combo box with meal types
-  with cmbMealType.Items do
+  with cbxMealType.Items do
   begin
     Add('Breakfast');
     Add('Lunch');
@@ -525,7 +525,7 @@ var
 begin
  i := 0;
  foodList := TStringList.Create;
- cmbMeals.Clear;
+ cbxFoods.Items.Clear;
  with dmData.tblFoods do
  begin
   Open;
@@ -538,7 +538,7 @@ begin
       begin
         inc(i);
         foodList.Add(currentMeal);
-        cmbMeals.Items.Add(currentMeal);
+        cbxFoods.Items.Add(currentMeal);
       end;
       Next;
     until Eof;

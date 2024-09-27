@@ -905,8 +905,9 @@ end;
 function TUser.GetMealInfo(mealIndex: Integer;dDate : TDate; infoType : String = ''): string;
 var
   sFoodName,sMealType : string;
-  eatenDate,eatenTime : TDate;
+  tEaten : TDate;
   isMealFound : boolean;
+  rPortion : Real;
   i : Integer;
 begin
   i := 0;
@@ -920,10 +921,10 @@ begin
         if (dDate = FieldValues['DateEaten']) and (mealIndex = i) then
         begin
           isMealFound := true;
-          eatenDate := FieldValues['DateEaten'];
-          eatenTime := FieldValues['TimeEaten'];
+          tEaten := FieldValues['TimeEaten'];
           sFoodName := FieldValues['FoodName'];
           sMealType := FieldValues['MealType'];
+          rPortion := FieldValues['PortionSize'];
         end
         else
         begin
@@ -937,11 +938,15 @@ begin
 
   // Breakfast is not a valid date!
   // Infotype dictates the type of information we are to return based on a few options
-  case IndexStr(LowerCase(infoType),['name','type','date','time']) of
+  case IndexStr(LowerCase(infoType),['name','type','time','portion'            ]) of
   0 : Result := sFoodName;
   1 : Result := sMealType;
-  2 : Result := DateToStr(eatenDate);
-  3 : Result := FormatDateTime('tt',eatenTime);
+  2 : Result := FormatDateTime('tt',tEaten);
+  3 : Result := FloatToStr(rPortion);
+  else
+  begin
+    ShowMessage('GetMealInfo() parameter is not one of: name, type, time or portion');
+  end;
   end;
 end;
 {$ENDREGION}

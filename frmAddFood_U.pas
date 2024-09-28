@@ -24,7 +24,7 @@ type
     procedure edtQueryChange(Sender: TObject);
   private
 
-    procedure SortItems(jsonString:string);
+    procedure SortItems(JSONResponse : TStringStream;ResponseLength : Integer);
   public
     { Public declarations }
   end;
@@ -134,6 +134,7 @@ begin
       cbxItems.Text := 'Choose an item';
 
       btnAccept.Enabled := false;
+      SortItems(JSONResponse,iResponseLength);
     end; // end if fetched
   end // end if valid
   else

@@ -115,7 +115,6 @@ begin
       begin
         FetchAPI.SendQuery(sQuery);
       end; // end if
-
       isFetched := FetchAPI.QuerySuccessful;
 
       if isFetched then
@@ -130,6 +129,7 @@ begin
     if isFetched then
     begin
       Foodname := sQuery;
+      cbxItems.Enabled := True;
       cbxItems.Items.clear;
       cbxItems.Text := 'Choose an item';
 
@@ -199,17 +199,15 @@ begin
 
   isEditEmpty := (edtQuery.text = '');
 
-  if isEditEmpty then
+  if not isEditEmpty then
   begin
     btnQuery.Enabled := True;
     cbxBranded.Enabled := True;
-    cbxItems.Enabled := true;
   end
   else
   begin
     btnQuery.Enabled := False;
     cbxBranded.Enabled := false;
-    cbxItems.Enabled := false;
   end;
 end;
 

@@ -692,6 +692,8 @@ begin
 end;
 {$ENDREGION}
 
+{ Goals and goal modification }
+{$REGION GOALS }
 
 procedure TfrmDashboard.ShowGoalInfo(sGoalName: string);
 var
@@ -879,4 +881,5 @@ begin
   ResetGoalInfo;
   ShowGoalOverview;
 end;
+{$ENDREGION}
 end.

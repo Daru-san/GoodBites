@@ -20,6 +20,7 @@ type
       Util : TUtils;
 
       ResultString : string;
+      FQuerySuccessful : Boolean;
 
       function GetAPIKey : string;
     public
@@ -27,6 +28,7 @@ type
       destructor Destroy; override;
 
       procedure SendQuery(sQuery:string;dataType :string = 'Foundation');
+      property QuerySuccessful : Boolean read FQuerySuccessful write FQuerySuccessful;
 
       function GetJson : string;
   end;
@@ -51,6 +53,7 @@ begin
 
   sAPIKey := GetAPIKey;
 
+  QuerySuccessful := False;
   try
     HTPPClient := TNetHTTPClient.Create(nil);
     HTTPRequest := TNetHTTPRequest.Create(nil);
@@ -71,10 +74,12 @@ begin
       sResult := HTTPRequest.Post(
         'https://api.nal.usda.gov/fdc/v1/foods/search?api_key=' + sAPIKey,strSearchParams
       ).ContentAsString(TEncoding.UTF8);
+      QuerySuccessful := true;
     except on E: ENetHTTPClientException do
       // I want to ensure I can avoid any access voilations due to internet connection
       ShowMessage('An error occured, please check your internet connection');
     end;
+      QuerySuccessful := false;
   finally
     strSearchParams.Free;
     HTPPClient.Free;

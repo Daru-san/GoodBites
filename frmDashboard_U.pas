@@ -681,33 +681,6 @@ begin
 end;
 {$ENDREGION}
 
-procedure TfrmDashboard.btnGoalCaloriesClick(Sender: TObject);
-begin
-  ShowGoalInfo('Calorie');
-end;
-
-procedure TfrmDashboard.btnGoalCarbClick(Sender: TObject);
-begin
-  ShowGoalInfo('Carbohydrate');
-end;
-
-begin
-end;
-
-var
-begin
-  begin
-  end;
-end;
-
-begin
-end;
-
-begin
-end;
-
-begin
-end;
 
 procedure TfrmDashboard.ShowGoalInfo(sGoalName: string);
 var

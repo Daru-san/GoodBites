@@ -121,88 +121,8 @@ implementation
 
 {$R *.dfm}
 
-procedure TfrmDashboard.btnAddDBClick(Sender: TObject);
-var
-  frmFood : TfrmAddFood;
-  isSuccess : boolean;
-begin
-  isSuccess := false;
-  frmFood := TfrmAddFood.Create(nil);
-  try
-    frmFood.ShowModal;
-  finally
-    isSuccess := frmFood.ModalResult = mrYes;
-    frmFood.Free;
-  end;
-  if isSuccess then
-  PopulateFoods;
-end;
-
-procedure TfrmDashboard.btnGoGoalsClick(Sender: TObject);
-begin
-  crplDashboard.ActiveCard := crdGoals;
-end;
-
-procedure TfrmDashboard.btnEatenClick(Sender: TObject);
-var
-  iCheckInt : integer;
-  sMealName,sMealType : string;
-  rPortion : Real;
-  Meal : TMeal;
-  FoodItem : TFoodItem;
-begin
-  if cbxFoods.ItemIndex = -1 then
-  begin
-    cbxFoods.SetFocus;
-    exit;
-  end;
-  if cbxMealType.ItemIndex = -1 then
-  begin
-    cbxMealType.SetFocus;
-    exit;
-  end;
-  sMealName := cbxFoods.text;
-  sMealType := cbxMealType.Text;
-
-  Val(edtPortion.Text,rPortion,iCheckInt);
-
-  if iCheckInt <> 0 then
-  begin
-    ShowMessage('Please enter the portion in grams');
-  end;
-
-  if MessageDlg('Are you sure you want to enter this food item',mtConfirmation,mbYesNo,0) = mrYes then
-  begin
-    FoodItem := TFoodItem.Create(sMealName);
-
-    if FoodItem.CheckExists then
-    begin
-      Meal := TMeal.Create(FoodItem,rPortion,sMealType);
-      Meal.EatMeal(currentUser.UserID,currentUser.GetTotalMeals);
-      GetInfo;
-    end else
-    ShowMessage('The item ' +  FoodItem.Foodname + ' does not exist in the database');
-
-   Meal.Free;
-   FoodItem.Free;
-  end;
-end;
-
-procedure TfrmDashboard.btnEatingClick(Sender: TObject);
-begin
-  crplDashboard.ActiveCard := crdEating;
-  btnReturn.Enabled := true;
-end;
-
-procedure TfrmDashboard.btnLoadDataClick(Sender: TObject);
-var
-  selectedDate,dEatenDate : TDate;
-  iTotalCalories,iNumMeals : integer;
-  i: Integer;
-  sMealName,sMealString,sEatenDate : string;
-begin
-  GetInfo;
-end;
+{ Progress panel}
+{$REGION PROGRESS}
 
 procedure TfrmDashboard.GetInfo;
 var
@@ -284,30 +204,6 @@ begin
   Goal.Free;
 end;
 
-procedure TfrmDashboard.svSidebarMouseEnter(Sender: TObject);
-begin
-  svSidebar.open;
-end;
-
-procedure TfrmDashboard.svSidebarResize(Sender: TObject);
-begin
-  with svSidebar do
-  begin
-    edtSVCalorie.Top := Ceil(Height - Height*5.5/6.5);
-    edtSVWater.top := Ceil(Height - Height*4.5/6.5);
-
-    btnSettings.Top := Ceil(Height - Height * 2.5/6.5);
-    btnReturn.Top := Ceil(Height - Height * 1.5/6.5);
-    btnLogout.Top := Ceil(Height - Height * 0.5/6.5);
-
-    edtSVCalorie.Width := Ceil(Width*5/7);
-    edtSVWater.Width := Ceil(Width*5/7);
-    btnSettings.Width := Ceil(width*5/7);
-    btnReturn.Width := Ceil(Width*5/7);
-    btnLogout.Width := Ceil(Width*5/7);
-  end;
-end;
-
 procedure TfrmDashboard.SetProgressBar(sItem : String;rValue, rTarget : Real);
 begin
   rTarget := 300;
@@ -346,9 +242,257 @@ begin
   end;
 end;
 
+procedure TfrmDashboard.btnResetClick(Sender: TObject);
+begin
+  GetInfo;
+end;
+
+procedure TfrmDashboard.btnShowClick(Sender: TObject);
+var
+  sFoodname,sMealType,sTime: string;
+  iFoodIndex : Integer;
+  dDate : TDate;
+  isFound : Boolean;
+  rPortion : Real;
+  Meal : TMeal;
+  FoodItem : TFoodItem;
+begin
+  if cbxMeals.ItemIndex = -1 then
+  begin
+    cbxMeals.SetFocus;
+    exit;
+  end;
+
+  iFoodIndex := cbxMeals.ItemIndex+1;
+  dDate := dpcDay.date;
+
+  rPortion := StrToFloat(CurrentUser.GetMealInfo(iFoodIndex,dDate,'portion'));
+  sMealType := CurrentUser.GetMealInfo(iFoodIndex,dDate,'type');
+  sFoodname := CurrentUser.GetMealInfo(iFoodIndex,dDate,'name');
+  sTime := CurrentUser.GetMealInfo(iFoodIndex,dDate,'time');
+
+  FoodItem := TFoodItem.Create(sFoodname);
+  Meal := TMeal.Create(FoodItem,rPortion,sMealType);
+
+  redMeals.Clear;
+  with redMeals.Paragraph do
+  begin
+    TabCount := 1;
+    Tab[0] := 100;
+  end;
+  with redMeals.Lines do
+  begin
+    Add(sFoodname + ', eaten at ' + sTime);
+    Add('=================================');
+    Add('');
+    Add('Eaten for '+ sMealType);
+    Add('Portion size:' + #9 + FloatToStrF(rPortion,ffFixed,8,2)+'g');
+    Add('Total calories:' + #9 + FloatToStrF(Meal.TotalCalories,ffFixed,8,2)+'kcal');
+    Add('Total energy:' + #9 + FloatToStrF(Meal.TotalEnergy,ffFixed,8,2)+'kJ');
+
+    Add('Total carb:' + #9 + FloatToStrF(
+      FoodItem.CarbPer100G*(rPortion/100),
+      ffFixed,
+      8,2) + 'g'
+    );
+
+    Add('Total protein:' + #9 + FloatToStrF(
+      FoodItem.ProteinPer100G*(rPortion/100),
+      ffFixed,
+      8,2) + 'g'
+    );
+
+    Add('Total Fat:' + #9 + FloatToStrF(
+      FoodItem.FatPer100G*(rPortion/100),
+      ffFixed,
+      8,2) + 'g'
+      );
+  end;
+end;
+
+procedure TfrmDashboard.dpcDayChange(Sender: TObject);
+begin
+  if dpcDay.Date = Date then
+    sbtnNext.Enabled := False
+  else
+    sbtnNext.Enabled := True;
+  GetInfo;
+end;
+
+procedure TfrmDashboard.PopulateFoods;
+var
+ currentMeal : string;
+ i : Integer;
+begin
+ i := 0;
+ foodList := TStringList.Create;
+ cbxFoods.Items.Clear;
+ with dmData.tblFoods do
+ begin
+  Open;
+  if FieldCount <> 0 then
+  begin
+    First;
+    repeat
+      currentMeal := FieldValues['Foodname'];
+      if not ((currentMeal = '') or (currentMeal = 'Default')) then
+      begin
+        inc(i);
+        foodList.Add(currentMeal);
+        cbxFoods.Items.Add(currentMeal);
+      end;
+      Next;
+    until Eof;
+  end;
+  Close;
+  FoodCount := i;
+ end;
+end;
+
+procedure TfrmDashboard.sbtnNextClick(Sender: TObject);
+begin
+  if dpcDay.Date < Date then
+    dpcDay.Date := dpcDay.Date+1;
+  dpcDayChange(self);
+  GetInfo;
+end;
+
+procedure TfrmDashboard.sbtnPrevClick(Sender: TObject);
+begin
+  dpcDay.Date := dpcDay.Date-1;
+  dpcDayChange(self);
+  GetInfo;
+end;
+{$ENDREGION}
+
+{ Sidebar }
+{$REGION SIDEBAR}
+
+procedure TfrmDashboard.svSidebarMouseEnter(Sender: TObject);
+begin
+  svSidebar.open;
+end;
+
+procedure TfrmDashboard.svSidebarResize(Sender: TObject);
+begin
+  with svSidebar do
+  begin
+    edtSVCalorie.Top := Ceil(Height - Height*5.5/6.5);
+    edtSVWater.top := Ceil(Height - Height*4.5/6.5);
+
+    btnSettings.Top := Ceil(Height - Height * 2.5/6.5);
+    btnReturn.Top := Ceil(Height - Height * 1.5/6.5);
+    btnLogout.Top := Ceil(Height - Height * 0.5/6.5);
+
+    edtSVCalorie.Width := Ceil(Width*5/7);
+    edtSVWater.Width := Ceil(Width*5/7);
+    btnSettings.Width := Ceil(width*5/7);
+    btnReturn.Width := Ceil(Width*5/7);
+    btnLogout.Width := Ceil(Width*5/7);
+  end;
+end;
+
+procedure TfrmDashboard.btnReturnClick(Sender: TObject);
+begin
+  crplDashboard.ActiveCard := crdProgress;
+  btnReturn.Enabled := false;
+end;
+
+procedure TfrmDashboard.btnSettingsClick(Sender: TObject);
+var
+ Settings : TfrmSettings;
+begin
+  Settings := TfrmSettings.Create(nil);
+  try
+    Settings.currentUser := currentUser;
+    Settings.ShowModal;
+  finally
+    Settings.free;
+  end;
+end;
+
 procedure TfrmDashboard.btnLogOutClick(Sender: TObject);
 begin
   self.ModalResult := mrClose;
+end;
+
+procedure TfrmDashboard.tbtSidebarClick(Sender: TObject);
+begin
+  if not svSidebar.Opened then
+  begin
+    svSidebar.Open;
+    tbtSidebar.Caption := 'Close Sidebar';
+  end
+  else
+  begin
+    svSidebar.Close;
+    tbtSidebar.Caption := 'Open sidebar';
+  end;
+end;
+{$ENDREGION}
+
+{ Form navigation }
+{$REGION NAVIGATION}
+
+
+procedure TfrmDashboard.btnGoGoalsClick(Sender: TObject);
+begin
+  crplDashboard.ActiveCard := crdGoals;
+  crplGoals.ActiveCard := crdGoalOV;
+end;
+
+procedure TfrmDashboard.btnEatingClick(Sender: TObject);
+begin
+  crplDashboard.ActiveCard := crdEating;
+  btnReturn.Enabled := true;
+end;
+{$ENDREGION}
+
+{ Meal eating }
+{$REGION MEAL EATING }
+procedure TfrmDashboard.btnEatenClick(Sender: TObject);
+var
+  iCheckInt : integer;
+  sMealName,sMealType : string;
+  rPortion : Real;
+  Meal : TMeal;
+  FoodItem : TFoodItem;
+begin
+  if cbxFoods.ItemIndex = -1 then
+  begin
+    cbxFoods.SetFocus;
+    exit;
+  end;
+  if cbxMealType.ItemIndex = -1 then
+  begin
+    cbxMealType.SetFocus;
+    exit;
+  end;
+  sMealName := cbxFoods.text;
+  sMealType := cbxMealType.Text;
+
+  Val(edtPortion.Text,rPortion,iCheckInt);
+
+  if iCheckInt <> 0 then
+  begin
+    ShowMessage('Please enter the portion in grams');
+  end;
+
+  if MessageDlg('Are you sure you want to enter this food item',mtConfirmation,mbYesNo,0) = mrYes then
+  begin
+    FoodItem := TFoodItem.Create(sMealName);
+
+    if FoodItem.CheckExists then
+    begin
+      Meal := TMeal.Create(FoodItem,rPortion,sMealType);
+      Meal.EatMeal(currentUser.UserID,currentUser.GetTotalMeals);
+      GetInfo;
+    end else
+    ShowMessage('The item ' +  FoodItem.Foodname + ' does not exist in the database');
+
+   Meal.Free;
+   FoodItem.Free;
+  end;
 end;
 
 procedure TfrmDashboard.cbxFoodsChange(Sender: TObject);
@@ -424,101 +568,41 @@ begin
   else
     btnEaten.Enabled := false;
 end;
-procedure TfrmDashboard.btnReturnClick(Sender: TObject);
+
+procedure TfrmDashboard.PopulateMealType;
 begin
-  crplDashboard.ActiveCard := crdProgress;
-  btnReturn.Enabled := false;
+// Populating the combo box with meal types
+  with cbxMealType.Items do
+  begin
+    Add('Breakfast');
+    Add('Lunch');
+    Add('Brunch');
+    Add('Supper');
+    Add('Snack');
+    Add('Other');
+  end;
 end;
 
-procedure TfrmDashboard.btnResetClick(Sender: TObject);
-begin
-  GetInfo;
-end;
-
-procedure TfrmDashboard.btnSettingsClick(Sender: TObject);
+procedure TfrmDashboard.btnAddDBClick(Sender: TObject);
 var
- Settings : TfrmSettings;
+  frmFood : TfrmAddFood;
+  isSuccess : boolean;
 begin
-  Settings := TfrmSettings.Create(nil);
+  isSuccess := false;
+  frmFood := TfrmAddFood.Create(nil);
   try
-    Settings.currentUser := currentUser;
-    Settings.ShowModal;
+    frmFood.ShowModal;
   finally
-    Settings.free;
+    isSuccess := frmFood.ModalResult = mrYes;
+    frmFood.Free;
   end;
+  if isSuccess then
+  PopulateFoods;
 end;
+{$ENDREGION}
 
-procedure TfrmDashboard.btnShowClick(Sender: TObject);
-var
-  sFoodname,sMealType,sTime: string;
-  iFoodIndex : Integer;
-  dDate : TDate;
-  isFound : Boolean;
-  rPortion : Real;
-  Meal : TMeal;
-  FoodItem : TFoodItem;
-begin
-  if cbxMeals.ItemIndex = -1 then
-  begin
-    cbxMeals.SetFocus;
-    exit;
-  end;
-
-  iFoodIndex := cbxMeals.ItemIndex+1;
-  dDate := dpcDay.date;
-
-  rPortion := StrToFloat(CurrentUser.GetMealInfo(iFoodIndex,dDate,'portion'));
-  sMealType := CurrentUser.GetMealInfo(iFoodIndex,dDate,'type');
-  sFoodname := CurrentUser.GetMealInfo(iFoodIndex,dDate,'name');
-  sTime := CurrentUser.GetMealInfo(iFoodIndex,dDate,'time');
-
-  FoodItem := TFoodItem.Create(sFoodname);
-  Meal := TMeal.Create(FoodItem,rPortion,sMealType);
-
-  redMeals.Clear;
-  with redMeals.Paragraph do
-  begin
-    TabCount := 1;
-    Tab[0] := 100;
-  end;
-  with redMeals.Lines do
-  begin
-    Add(sFoodname + ', eaten at ' + sTime);
-    Add('=================================');
-    Add('');
-    Add('Eaten for '+ sMealType);
-    Add('Portion size:' + #9 + FloatToStrF(rPortion,ffFixed,8,2)+'g');
-    Add('Total calories:' + #9 + FloatToStrF(Meal.TotalCalories,ffFixed,8,2)+'kcal');
-    Add('Total energy:' + #9 + FloatToStrF(Meal.TotalEnergy,ffFixed,8,2)+'kJ');
-
-    Add('Total carb:' + #9 + FloatToStrF(
-      FoodItem.CarbPer100G*(rPortion/100),
-      ffFixed,
-      8,2) + 'g'
-    );
-
-    Add('Total protein:' + #9 + FloatToStrF(
-      FoodItem.ProteinPer100G*(rPortion/100),
-      ffFixed,
-      8,2) + 'g'
-    );
-
-    Add('Total Fat:' + #9 + FloatToStrF(
-      FoodItem.FatPer100G*(rPortion/100),
-      ffFixed,
-      8,2) + 'g'
-      );
-  end;
-end;
-procedure TfrmDashboard.dpcDayChange(Sender: TObject);
-begin
-  if dpcDay.Date = Date then
-    sbtnNext.Enabled := False
-  else
-    sbtnNext.Enabled := True;
-  GetInfo;
-end;
-
+{ Form creation and showing }
+{$REGION FORM CREATION AND SHOW}
 procedure TfrmDashboard.FormResize(Sender: TObject);
 begin
   if svSidebar.Opened then
@@ -566,78 +650,24 @@ begin
 
 
 end;
+{$ENDREGION}
 
-procedure TfrmDashboard.PopulateMealType;
 begin
-// Populating the combo box with meal types
-  with cbxMealType.Items do
-  begin
-    Add('Breakfast');
-    Add('Lunch');
-    Add('Brunch');
-    Add('Supper');
-    Add('Snack');
-    Add('Other');
-  end;
 end;
 
-procedure TfrmDashboard.sbtnNextClick(Sender: TObject);
 begin
-  if dpcDay.Date < Date then
-    dpcDay.Date := dpcDay.Date+1;
-  dpcDayChange(self);
-  GetInfo;
 end;
 
-procedure TfrmDashboard.sbtnPrevClick(Sender: TObject);
 begin
-  dpcDay.Date := dpcDay.Date-1;
-  dpcDayChange(self);
-  GetInfo;
 end;
 
-procedure TfrmDashboard.PopulateFoods;
 var
- currentMeal : string;
- i : Integer;
 begin
- i := 0;
- foodList := TStringList.Create;
- cbxFoods.Items.Clear;
- with dmData.tblFoods do
- begin
-  Open;
-  if FieldCount <> 0 then
   begin
-    First;
-    repeat
-      currentMeal := FieldValues['Foodname'];
-      if not ((currentMeal = '') or (currentMeal = 'Default')) then
-      begin
-        inc(i);
-        foodList.Add(currentMeal);
-        cbxFoods.Items.Add(currentMeal);
-      end;
-      Next;
-    until Eof;
   end;
-  Close;
-  FoodCount := i;
- end;
 end;
 
-procedure TfrmDashboard.tbtSidebarClick(Sender: TObject);
 begin
-  if not svSidebar.Opened then
-  begin
-    svSidebar.Open;
-    tbtSidebar.Caption := 'Close Sidebar';
-  end
-  else
-  begin
-    svSidebar.Close;
-    tbtSidebar.Caption := 'Open sidebar';
-  end;
 end;
 
 procedure TfrmDashboard.tsEatingShow(Sender: TObject);

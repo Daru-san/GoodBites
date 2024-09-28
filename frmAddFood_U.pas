@@ -4,7 +4,7 @@ interface
 
 uses Winapi.Windows, System.SysUtils, System.Classes, Vcl.Graphics, Vcl.Forms, StrUtils, Dialogs,
   Vcl.Controls, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, OKCANCL2, JSON, Vcl.ComCtrls,
-  libFetchAPI_U, libUtils_U, libMeals_U, Vcl.Mask;
+  libFetchAPI_U, libUtils_U, libMeals_U, Vcl.Mask, Vcl.WinXCtrls;
 
 type
   TfrmAddFood = class(TOKRightDlg)
@@ -15,6 +15,7 @@ type
     cbxBranded: TCheckBox;
     redItems: TRichEdit;
     edtQuery: TLabeledEdit;
+    actvLoad: TActivityIndicator;
     procedure HelpBtnClick(Sender: TObject);
     procedure btnQueryClick(Sender: TObject);
     procedure btnAcceptClick(Sender: TObject);
@@ -98,6 +99,7 @@ begin
   sQuery := edtQuery.Text;
   Trim(sQuery);
 
+  actvLoad.StartAnimation;
   if Util.ValidateString(sQuery,'foodname',1,20,'letters,numbers') then
   begin
     FetchAPI := TFetchAPI.Create;
@@ -138,6 +140,7 @@ begin
   end // end if valid
   else
     ShowMessage('Food name must be between 1 to 20 characters and not have special characters');
+  actvLoad.StopAnimation;
 end;
 
 procedure TfrmAddFood.cbxItemsChange(Sender: TObject);

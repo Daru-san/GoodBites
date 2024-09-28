@@ -1,9 +1,11 @@
 inherited frmAddFood: TfrmAddFood
   Caption = 'Add food to database'
   ClientHeight = 338
-  ClientWidth = 668
+  ClientWidth = 669
+  Constraints.MinHeight = 377
+  Constraints.MinWidth = 685
   OnShow = FormShow
-  ExplicitWidth = 684
+  ExplicitWidth = 685
   ExplicitHeight = 377
   TextHeight = 15
   inherited Bevel1: TBevel
@@ -97,5 +99,10 @@ inherited frmAddFood: TfrmAddFood
     TabOrder = 8
     Text = ''
     TextHint = 'Food name'
+    OnChange = edtQueryChange
+  end
+  object actvLoad: TActivityIndicator
+    Left = 609
+    Top = 265
   end
 end

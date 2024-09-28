@@ -76,16 +76,16 @@ begin
       ).ContentAsString(TEncoding.UTF8);
       QuerySuccessful := true;
     except on E: ENetHTTPClientException do
-      // I want to ensure I can avoid any access voilations due to internet connection
+    begin
       ShowMessage('An error occured, please check your internet connection');
-    end;
       QuerySuccessful := false;
+    end;  // end except
+    end; // end try
   finally
     strSearchParams.Free;
     HTPPClient.Free;
     HTTPRequest.Free;
   end;
-end;
 
 function TFetchAPI.GetJson: string;
 begin
@@ -100,7 +100,6 @@ var keyFile : textfile; sAPIKey : string;
 begin
   sAPIKey := '';
 
-  { This check is in the assumption that a missing key file would mean that the key does not work anymore, hence would use default }
   if Util.CheckFileExists(FILENAME) then
   try
     AssignFile(keyFile,FILENAME);

@@ -25,6 +25,7 @@ type
   private
     { Private declarations }
     procedure ConnectDB;
+    procedure LocateDatabase;
   public
     { Public declarations }
   end;
@@ -110,7 +111,7 @@ end;
 
 {$R *.dfm}
 
-procedure TdmData.FindDatabase : String;
+procedure TdmData.LocateDatabase;
 var 
   isExist,isDebugExist : Boolean;
   isInCurrentDir,isInUpperDir : Boolean;
@@ -134,10 +135,11 @@ begin
     dlPath := '..\..\'+DLFILENAME;
   end;
 
-  if not(isInCurrentDir) and not(isInUpperDir) then
+  DatabaseExists := isInCurrentDir or isInUpperDir;
+
+  if not DatabaseExists then
   begin
     logger.WriteErrorLog('The database file is missing');
-    DatabaseExists := false;
   end;
 end;
 
@@ -146,7 +148,7 @@ begin
   Utils := TUtils.Create;
   logger := TLogs.Create;
 
-
+  LocateDatabase;
   if DatabaseExists then
   begin
     ConnectDB;

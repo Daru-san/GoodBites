@@ -92,11 +92,13 @@ end;
 procedure TfrmAddFood.btnQueryClick(Sender: TObject);
 var
   jsonString : string;
+  sQuery : string;
 begin
   inherited;
-  Foodname := edtName.Text;
 
   if Util.ValidateString(Foodname,'foodname',1,20,'letters,numbers') then
+  sQuery := edtQuery.Text;
+  Trim(sQuery);
   begin
 
     if cbxBranded.Checked then
@@ -123,7 +125,6 @@ begin
   else btnAccept.Enabled := false;
   FoodIndex := cbxItems.ItemIndex+1;
 
-  Foodname := edtName.Text;
   Foodcat := arrCategory[FoodIndex];
   FoodDesc := arrFood[FoodIndex];
   Calories := arrCalories[FoodIndex];

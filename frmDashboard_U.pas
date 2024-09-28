@@ -124,6 +124,7 @@ type
     procedure btnShowClick(Sender: TObject);
     procedure cbxFoodsChange(Sender: TObject);
     procedure cbxMealTypeChange(Sender: TObject);
+    procedure crdGoalOVEnter(Sender: TObject);
   private
     { Private declarations }
     FCurrentUser : TUser;
@@ -807,5 +808,10 @@ begin
       ShowMessage('FillGoalEditBox parameter `sGoalItem` is not one of `Calorie`, `Water`, `Carbohydrate`, `Protein` or `Fat`');
     end;
   end;
+end;
+procedure TfrmDashboard.crdGoalOVEnter(Sender: TObject);
+begin
+  ResetGoalInfo;
+  ShowGoalOverview;
 end;
 end.

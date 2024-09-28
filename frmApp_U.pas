@@ -109,10 +109,10 @@ end;
 
 procedure TfrmApp.FormResize(Sender: TObject);
 begin
-  with self do
+  with pnlCenter do
   begin
-    btnEnter.Left := Ceil(Width/2);
-    btnEnter.Top := Ceil(Height - Height/4);
+    btnEnter.Left := Round(Width/2);
+    btnEnter.Top := Round(Height - Height/4);
   end;
 end;
 

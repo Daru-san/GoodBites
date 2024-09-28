@@ -124,6 +124,7 @@ type
     procedure btnShowClick(Sender: TObject);
     procedure cbxFoodsChange(Sender: TObject);
     procedure cbxMealTypeChange(Sender: TObject);
+    procedure btnEditGoalClick(Sender: TObject);
     procedure crdGoalOVEnter(Sender: TObject);
   private
     { Private declarations }
@@ -747,6 +748,39 @@ procedure TfrmDashboard.btnGoalWaterClick(Sender: TObject);
 begin
   ShowGoalInfo('Water');
 end;
+procedure TfrmDashboard.btnEditGoalClick(Sender: TObject);
+var
+  sTargetStr,sGoalUnit : String;
+  rNewTarget : real;
+  iCheckNum : Integer;
+  Goal : TGoal;
+begin
+  sGoalUnit := cbxGoalUnit.Text;
+  sTargetStr := InputBox('Enter a new goal target','New target','');
+
+  if sTargetStr = '' then
+  begin
+    ShowMessage('Please enter a value for goal target');
+    exit;
+  end;
+
+  Val(sTargetStr,rNewTarget,iCheckNum);
+
+  if iCheckNum <> 0 then
+  begin
+    ShowMessage('Please ensure that the goal target is a number');
+    exit;
+  end;
+
+  if MessageDlg('Are you sure you want to change this value to ' + sTargetStr,mtConfirmation,mbYesNo,0) = mrYes then
+  begin
+    Goal.Target := rNewTarget;
+    Goal.SetGoalTarget;
+    ShowMessage('Goal changed successfully!');
+    GetInfo;
+  end;
+end;
+
 procedure TfrmDashboard.ResetGoalInfo;
 begin
   btnGoalDescPost.Enabled := false;
@@ -780,6 +814,7 @@ begin
     Goal.Free;
   end;
 end;
+
 procedure TfrmDashboard.FillGoalEditBox(sGoalItem,sGoalUnit : String;rTarget:Real);
 begin
   case IndexStr(LowerCase(sGoalItem),['calorie','water','carbohydrate','protein','fat']) of
@@ -809,6 +844,7 @@ begin
     end;
   end;
 end;
+
 procedure TfrmDashboard.crdGoalOVEnter(Sender: TObject);
 begin
   ResetGoalInfo;

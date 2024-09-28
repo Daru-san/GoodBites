@@ -133,6 +133,7 @@ type
     procedure SetProgressBar(sItem : String; rValue, rTarget : Real);
     procedure ShowProgress(RecDate:TDate);
     procedure ShowGoalOverview;
+    procedure FillGoalEditBox(sGoalItem,sGoalUnit : String;rTarget:Real);
     procedure ShowGoalInfo(sGoalName : string);
     procedure ResetGoalInfo;
   public
@@ -776,6 +777,35 @@ begin
     sGoalUnit := Goal.GoalUnit;
     FillGoalEditBox(GOALITEMS[i],sGoalUnit,rTarget);
     Goal.Free;
+  end;
+end;
+procedure TfrmDashboard.FillGoalEditBox(sGoalItem,sGoalUnit : String;rTarget:Real);
+begin
+  case IndexStr(LowerCase(sGoalItem),['calorie','water','carbohydrate','protein','fat']) of
+  0: begin
+    edtGoalCal.Text := FloatToStrF(rTarget,ffGeneral,8,2);
+    cbxGoalUnit.Items[0] := sGoalUnit;
+  end;
+  1: begin
+    edtGoalWater.Text := FloatToStrF(rTarget,ffGeneral,8,2);
+    cbxGoalUnit.Items[0] := sGoalUnit;
+  end;
+  2: begin
+    edtGoalCarb.Text := FloatToStrF(rTarget,ffGeneral,8,2);
+    cbxGoalUnit.Items[0] := sGoalUnit;
+  end;
+  3: begin
+    edtGoalProtein.Text := FloatToStrF(rTarget,ffGeneral,8,2);
+    cbxGoalUnit.Items[0] := sGoalUnit;
+  end;
+  4: begin
+    edtGoalFat.Text := FloatToStrF(rTarget,ffGeneral,8,2);
+    cbxGoalUnit.Items[0] := sGoalUnit;
+  end;
+  else
+    begin
+      ShowMessage('FillGoalEditBox parameter `sGoalItem` is not one of `Calorie`, `Water`, `Carbohydrate`, `Protein` or `Fat`');
+    end;
   end;
 end;
 end.

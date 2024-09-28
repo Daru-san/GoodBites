@@ -24,6 +24,7 @@ type
       property Target : Real read FTarget write FTarget;
 
       constructor Create(U,I : String);
+      destructor Destroy; override;
 
       // Progress
       procedure SetProgress(rAmount : Real);
@@ -44,6 +45,10 @@ begin
   GetGoalID;
 end;
 
+destructor TGoal.Destroy;
+begin
+
+end;
 { Goals }
 
 {$REGION Goals }

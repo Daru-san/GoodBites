@@ -25,6 +25,7 @@ type
   private
 
     procedure SortItems(JSONResponse : TStringStream;ResponseLength : Integer);
+    function GetNutrientValue(jsonNutrient : TJSONValue) : real;
   public
     { Public declarations }
   end;
@@ -371,6 +372,10 @@ begin
   btnAccept.Enabled := false;
 end;
 
+function TfrmAddFood.GetNutrientValue(jsonNutrient: TJSONValue): Real;
+begin
+  Result := jsonNutrient.FindValue('value').GetValue<extended>;
+end;
 
 end.
  

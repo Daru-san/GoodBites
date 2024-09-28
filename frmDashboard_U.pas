@@ -236,6 +236,8 @@ begin
   Goal := TGoal.Create(CurrentUser.UserID,'Calorie');
   rValue := Goal.GetProgress(Date);
   rTarget := Goal.Target;
+  rTarget := 300;
+  rValue := RandomRange(10,300);
   edtSVCalorie.Text := FloatToStrF(rValue,ffFixed,8,2) +  '/'+ FloatToStrF(rTarget,ffFixed,8,2);
   Goal.Free;
 
@@ -243,6 +245,8 @@ begin
   rValue := Goal.GetProgress(Date);
   rTarget := Goal.Target;
 
+  rTarget := 300;
+  rValue := RandomRange(10,300);
   edtSVWater.Text := FloatToStrF(rValue,ffFixed,8,2) +  '/'+ FloatToStrF(rTarget,ffFixed,8,2);
   Goal.Free;
 end;

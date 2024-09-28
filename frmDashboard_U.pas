@@ -8,7 +8,7 @@ uses
   libUtils_U,libUser_u, libMeals_U,frmGreeter_U,conDB,frmAddFood_U,
   Vcl.WinXCtrls, Vcl.Buttons, System.ImageList, Vcl.ImgList, Vcl.Mask,
   Vcl.WinXPanels, Vcl.Menus, Vcl.ToolWin,frmSettings_U,Math,libGoals_U,StrUtils,
-  Vcl.DBCtrls;
+  Vcl.DBCtrls, Vcl.NumberBox;
 
 type
   TfrmDashboard = class(TForm)
@@ -71,6 +71,39 @@ type
     pnlDisplayBottom: TPanel;
     pnlEating: TPanel;
     pnlEatBottom: TPanel;
+    crplGoals: TCardPanel;
+    pnlGoalTop: TPanel;
+    crdGoalOV: TCard;
+    edtGoalCal: TLabeledEdit;
+    btnGoalCalories: TButton;
+    btnGoalWater: TButton;
+    edtGoalWater: TLabeledEdit;
+    edtGoalProtein: TLabeledEdit;
+    btnGoalProtein: TButton;
+    edtGoalCarb: TLabeledEdit;
+    btnGoalCarb: TButton;
+    edtGoalFat: TLabeledEdit;
+    btnGoalFat: TButton;
+    crdGoalView: TCard;
+    edtGoalTarget: TLabeledEdit;
+    edtAverageProg: TLabeledEdit;
+    prgAverage: TProgressBar;
+    pnlGoalDesc: TPanel;
+    redGoalDesc: TRichEdit;
+    pnlGoalOV: TPanel;
+    pnlGoalHead: TPanel;
+    pnlDesc: TPanel;
+    pnlGoalAve: TPanel;
+    edtGoalDays: TLabeledEdit;
+    prgDays: TProgressBar;
+    btnEditGoal: TButton;
+    pnlDescBottom: TPanel;
+    btnGoalDescEdit: TButton;
+    btnGoalDescPost: TButton;
+    lblDescMaxChar: TLabel;
+    btnBackOV: TButton;
+    edtGoalDate: TLabeledEdit;
+    cbxGoalUnit: TComboBox;
 
     procedure FormShow(Sender: TObject);
     procedure btnLogOutClick(Sender: TObject);

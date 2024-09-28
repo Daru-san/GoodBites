@@ -23,8 +23,6 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure edtQueryChange(Sender: TObject);
   private
-    { Private declarations }
-    function FetchJson(sQuery:string;isBranded:Boolean) : string;
 
     procedure SortItems(jsonString:string);
   public
@@ -101,9 +99,6 @@ begin
   Trim(sQuery);
   begin
 
-    if cbxBranded.Checked then
-    jsonString := FetchJson(Foodname,true)
-    else jsonString := FetchJson(Foodname,false);
 
     SortItems(jsonString);
   end
@@ -177,29 +172,6 @@ begin
     cbxItems.Enabled := false;
   end;
 end;
-
-function TfrmAddFood.FetchJson(sQuery: string;isBranded: Boolean): string;
-begin
-  Fetcher := TFetchAPI.Create;
-
-  { Having trailing spaces in the query could cause
-    problems when fetching, rather prevent that from
-    happening than deal with those problems }
-  sQuery.Trim;
-
-
-  { The default argument is foundation, which is basic food items
-  }
-  if isBranded then
-    Fetcher.SendQuery(sQuery,'Branded')
-  else
-    Fetcher.SendQuery(sQuery);
-
-  Result := Fetcher.GetJson;
-
-  Fetcher.free;
-end;
-
 
 procedure TfrmAddFood.FormClose(Sender: TObject; var Action: TCloseAction);
 begin

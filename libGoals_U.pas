@@ -32,6 +32,7 @@ type
 
       function CalcAverage : Real;
       function CalcDaysAchieved : Integer;
+      function GetTotalDays : Integer;
       procedure SetGoalTarget;
       procedure AddGoal;
       procedure GetGoalTarget;
@@ -194,6 +195,10 @@ begin
   Result := rValue;
 end;
 
+function TGoal.GetTotalDays: Integer;
+begin
+  Result := Round(Date - StartDate);
+end;
 function TGoal.CalcAverage: Real;
 var
   rTotalVal : real;

@@ -2,8 +2,8 @@ object frmDashboard: TfrmDashboard
   Left = 0
   Top = 0
   Caption = 'Dashboard'
-  ClientHeight = 465
-  ClientWidth = 960
+  ClientHeight = 472
+  ClientWidth = 995
   Color = clBtnFace
   Constraints.MinHeight = 465
   Constraints.MinWidth = 960
@@ -18,24 +18,26 @@ object frmDashboard: TfrmDashboard
   object crplDashboard: TCardPanel
     Left = 140
     Top = 21
-    Width = 820
-    Height = 444
+    Width = 855
+    Height = 451
     Align = alClient
     ActiveCard = crdGoals
     Caption = 'CardPanel1'
     TabOrder = 0
+    ExplicitWidth = 820
+    ExplicitHeight = 444
     object crdProgress: TCard
       Left = 1
       Top = 1
-      Width = 818
-      Height = 442
+      Width = 853
+      Height = 449
       Caption = 'Progress'
       CardIndex = 0
       TabOrder = 0
       object pnlDate: TPanel
         Left = 0
-        Top = 401
-        Width = 818
+        Top = 408
+        Width = 853
         Height = 41
         Align = alBottom
         TabOrder = 0
@@ -81,8 +83,8 @@ object frmDashboard: TfrmDashboard
       object pnlProgIndicator: TPanel
         Left = 0
         Top = 0
-        Width = 818
-        Height = 401
+        Width = 853
+        Height = 408
         Hint = 'Select the date of progress'
         Align = alClient
         TabOrder = 1
@@ -90,12 +92,12 @@ object frmDashboard: TfrmDashboard
           Left = 1
           Top = 1
           Width = 408
-          Height = 399
+          Height = 406
           Align = alLeft
           TabOrder = 0
           object pnlCal: TPanel
             Left = 1
-            Top = 287
+            Top = 294
             Width = 406
             Height = 111
             Align = alBottom
@@ -275,16 +277,16 @@ object frmDashboard: TfrmDashboard
         object pnlMeals: TPanel
           Left = 409
           Top = 1
-          Width = 408
-          Height = 399
+          Width = 443
+          Height = 406
           Align = alClient
           Caption = 'Panel1'
           TabOrder = 1
           object redMeals: TRichEdit
             Left = 1
             Top = 1
-            Width = 406
-            Height = 342
+            Width = 441
+            Height = 349
             Align = alClient
             Font.Charset = ANSI_CHARSET
             Font.Color = clWindowText
@@ -298,8 +300,8 @@ object frmDashboard: TfrmDashboard
           end
           object pnlMealBottom: TPanel
             Left = 1
-            Top = 343
-            Width = 406
+            Top = 350
+            Width = 441
             Height = 55
             Align = alBottom
             TabOrder = 1
@@ -338,22 +340,22 @@ object frmDashboard: TfrmDashboard
     object crdEating: TCard
       Left = 1
       Top = 1
-      Width = 818
-      Height = 442
+      Width = 853
+      Height = 449
       Caption = 'Eating'
       CardIndex = 1
       TabOrder = 1
       object pnlCent: TPanel
         Left = 0
         Top = 0
-        Width = 818
-        Height = 442
+        Width = 853
+        Height = 449
         Align = alClient
         TabOrder = 0
         object lblEats: TLabel
           Left = 1
           Top = 1
-          Width = 816
+          Width = 851
           Height = 23
           Align = alTop
           Alignment = taCenter
@@ -385,14 +387,14 @@ object frmDashboard: TfrmDashboard
           Left = 1
           Top = 24
           Width = 432
-          Height = 417
+          Height = 424
           Align = alLeft
           TabOrder = 1
           object pnlEating: TPanel
             Left = 1
             Top = 1
             Width = 430
-            Height = 216
+            Height = 223
             Align = alClient
             TabOrder = 0
             object btnAddDB: TButton
@@ -445,7 +447,7 @@ object frmDashboard: TfrmDashboard
           end
           object pnlEatBottom: TPanel
             Left = 1
-            Top = 217
+            Top = 224
             Width = 430
             Height = 199
             Align = alBottom
@@ -455,14 +457,14 @@ object frmDashboard: TfrmDashboard
         object pnlDisplay: TPanel
           Left = 433
           Top = 24
-          Width = 384
-          Height = 417
+          Width = 419
+          Height = 424
           Align = alClient
           TabOrder = 2
           object redFoodInfo: TRichEdit
             Left = 1
             Top = 1
-            Width = 382
+            Width = 417
             Height = 216
             Align = alTop
             Font.Charset = ANSI_CHARSET
@@ -478,8 +480,8 @@ object frmDashboard: TfrmDashboard
           object pnlDisplayBottom: TPanel
             Left = 1
             Top = 217
-            Width = 382
-            Height = 199
+            Width = 417
+            Height = 206
             Align = alClient
             TabOrder = 1
           end
@@ -489,24 +491,28 @@ object frmDashboard: TfrmDashboard
     object crdGoals: TCard
       Left = 1
       Top = 1
-      Width = 818
-      Height = 442
+      Width = 853
+      Height = 449
       Caption = 'Edit goals'
       CardIndex = 2
       TabOrder = 2
+      ExplicitWidth = 818
+      ExplicitHeight = 442
       object crplGoals: TCardPanel
         Left = 0
         Top = 41
-        Width = 818
-        Height = 401
+        Width = 853
+        Height = 408
         Align = alClient
         ActiveCard = crdGoalView
         TabOrder = 0
+        ExplicitWidth = 818
+        ExplicitHeight = 401
         object crdGoalOV: TCard
           Left = 1
           Top = 1
-          Width = 816
-          Height = 399
+          Width = 851
+          Height = 406
           Caption = 'Goals Overview'
           CardIndex = 0
           TabOrder = 0
@@ -620,23 +626,27 @@ object frmDashboard: TfrmDashboard
         object crdGoalView: TCard
           Left = 1
           Top = 1
-          Width = 816
-          Height = 399
+          Width = 851
+          Height = 406
           Caption = 'View Goal'
           CardIndex = 1
           TabOrder = 1
+          ExplicitWidth = 816
+          ExplicitHeight = 399
           object pnlGoalDesc: TPanel
-            Left = 512
+            Left = 547
             Top = 0
             Width = 304
-            Height = 399
+            Height = 406
             Align = alRight
             TabOrder = 0
+            ExplicitLeft = 512
+            ExplicitHeight = 399
             object redGoalDesc: TRichEdit
               Left = 1
               Top = 42
               Width = 302
-              Height = 260
+              Height = 267
               Align = alClient
               Font.Charset = ANSI_CHARSET
               Font.Color = clWindowText
@@ -649,6 +659,7 @@ object frmDashboard: TfrmDashboard
               ParentFont = False
               ReadOnly = True
               TabOrder = 0
+              ExplicitHeight = 260
             end
             object pnlDesc: TPanel
               Left = 1
@@ -661,11 +672,12 @@ object frmDashboard: TfrmDashboard
             end
             object pnlDescBottom: TPanel
               Left = 1
-              Top = 302
+              Top = 309
               Width = 302
               Height = 96
               Align = alBottom
               TabOrder = 2
+              ExplicitTop = 302
               object lblDescMaxChar: TLabel
                 Left = 184
                 Top = 72
@@ -697,11 +709,11 @@ object frmDashboard: TfrmDashboard
           object pnlGoalOV: TPanel
             Left = 0
             Top = 0
-            Width = 512
-            Height = 399
+            Width = 547
+            Height = 406
             Align = alClient
             TabOrder = 1
-            ExplicitLeft = -5
+            ExplicitLeft = 4
             ExplicitTop = 5
             object edtGoalTarget: TLabeledEdit
               Left = 72
@@ -718,11 +730,12 @@ object frmDashboard: TfrmDashboard
             object pnlGoalHead: TPanel
               Left = 1
               Top = 1
-              Width = 510
+              Width = 545
               Height = 41
               Align = alTop
               Caption = 'Goal'
               TabOrder = 1
+              ExplicitWidth = 510
             end
             object pnlGoalAve: TPanel
               Left = 72
@@ -813,18 +826,19 @@ object frmDashboard: TfrmDashboard
       object pnlGoalTop: TPanel
         Left = 0
         Top = 0
-        Width = 818
+        Width = 853
         Height = 41
         Align = alTop
         Caption = 'Goals'
         TabOrder = 1
+        ExplicitWidth = 818
       end
     end
   end
   object tbDashboard: TToolBar
     Left = 0
     Top = 0
-    Width = 960
+    Width = 995
     Height = 21
     AutoSize = True
     ButtonHeight = 21
@@ -834,6 +848,7 @@ object frmDashboard: TfrmDashboard
     List = True
     ShowCaptions = True
     TabOrder = 1
+    ExplicitWidth = 960
     object tbtSidebar: TToolButton
       Left = 0
       Top = 0
@@ -846,12 +861,13 @@ object frmDashboard: TfrmDashboard
     Left = 0
     Top = 21
     Width = 140
-    Height = 444
+    Height = 451
     OpenedWidth = 140
     Placement = svpLeft
     TabOrder = 2
     OnMouseEnter = svSidebarMouseEnter
     OnResize = svSidebarResize
+    ExplicitHeight = 444
     object lblHello: TLabel
       Left = 0
       Top = 0

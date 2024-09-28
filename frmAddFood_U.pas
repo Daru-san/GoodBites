@@ -89,23 +89,55 @@ end;
 
 procedure TfrmAddFood.btnQueryClick(Sender: TObject);
 var
-  jsonString : string;
   sQuery : string;
+  JSONResponse : TStringStream;
+  FetchAPI : TFetchAPI;
+  isFetched : Boolean;
+  iResponseLength : Integer;
 begin
   inherited;
 
-  if Util.ValidateString(Foodname,'foodname',1,20,'letters,numbers') then
   sQuery := edtQuery.Text;
   Trim(sQuery);
+
+  if Util.ValidateString(sQuery,'foodname',1,20,'letters,numbers') then
   begin
+    FetchAPI := TFetchAPI.Create;
+    try
+      if cbxBranded.Checked then
+      begin
+        // Send the `branded` search parameter in the case of searching
+        // for foods that are branded, like pizzas.
+        // Default is `foundation`, which is basic everyday food items like apples
+        FetchAPI.SendQuery(sQuery,'Branded');
+      end
+        else
+      begin
+        FetchAPI.SendQuery(sQuery);
+      end; // end if
 
+      isFetched := FetchAPI.QuerySuccessful;
 
-    SortItems(jsonString);
-  end
+      if isFetched then
+      begin
+        JSONResponse := FetchAPI.JSONResponse;
+        iResponseLength := FetchAPI.ResponseLength;
+      end; // end if
+    finally
+      FetchAPI.Free;
+    end; // end try
+
+    if isFetched then
+    begin
+      Foodname := sQuery;
+      cbxItems.Items.clear;
+      cbxItems.Text := 'Choose an item';
+
+      btnAccept.Enabled := false;
+    end; // end if fetched
+  end // end if valid
   else
-  begin
     ShowMessage('Food name must be between 1 to 20 characters and not have special characters');
-  end;
 end;
 
 procedure TfrmAddFood.cbxItemsChange(Sender: TObject);

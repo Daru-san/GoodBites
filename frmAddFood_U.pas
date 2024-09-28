@@ -301,13 +301,10 @@ begin
     end;
   end;
 
-  for i := 1 to numResults do
+  for j := 1 to numResults do
   begin
-    cbxItems.Items.clear;
-    cbxItems.Text := 'Choose an item';
-    cbxItems.Items.Add(arrFood[i]);
+    cbxItems.Items.Add(arrFood[j]);
   end;
-  btnAccept.Enabled := false;
 end;
 
 function TfrmAddFood.GetNutrientValue(jsonNutrient: TJSONValue): Real;

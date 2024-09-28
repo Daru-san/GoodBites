@@ -14,8 +14,8 @@ uses System.Net.HttpClient, System.Net.HttpClientComponent, libUtils_U, Classes,
 type
   TFetchAPI = class(TObject)
     private
-      NHClient : TNetHTTPClient;
-      NHREQ : TNetHTTPRequest;
+      HTPPClient : TNetHTTPClient;
+      HTTPRequest : TNetHTTPRequest;
 
       Util : TUtils;
 
@@ -45,43 +45,40 @@ end;
 
 procedure TFetchAPI.SendQuery(sQuery: string; dataType: string = 'Foundation');
 var
-  api_key : string;
-  searchParams : TStringStream;
+  sAPIKey,sResult : string;
+  strSearchParams : TStringStream;
 begin
 
-  { Providing the api key through a variable or constant would be insecure,
-    so I assume this approach of obtaining the key from a separate file works best,
-    it would also make updating the key easier since a rebuild is not necessary. }
-  api_key := GetApiKey;
+  sAPIKey := GetAPIKey;
 
   try
-    NHClient := TNetHTTPClient.Create(nil);
-    NHREQ := TNetHTTPRequest.Create(nil);
+    HTPPClient := TNetHTTPClient.Create(nil);
+    HTTPRequest := TNetHTTPRequest.Create(nil);
 
     { Limit the maximum queries to 10, preventing a huge string that would take
       ages to parse to be returned }
-    searchParams := TStringStream.Create(
+    strSearchParams := TStringStream.Create(
       '{"query":"'+sQuery+'","pageSize":10,"dataType": ["'+dataType+'"]}',
       TEncoding.UTF8
     );
     try
-      NHClient.ContentType := 'application/json';
-      NHClient.AcceptEncoding := 'UTF-8';
+      HTPPClient.ContentType := 'application/json';
+      HTPPClient.AcceptEncoding := 'UTF-8';
 
-      NHREQ.Client := NHClient;
+      HTTPRequest.Client := HTPPClient;
 
       { GET was also an option, but POST allows for greater customizability in terms of search parameters }
-      ResultString := NHREQ.Post(
-        'https://api.nal.usda.gov/fdc/v1/foods/search?api_key=' + api_key,searchParams
+      sResult := HTTPRequest.Post(
+        'https://api.nal.usda.gov/fdc/v1/foods/search?api_key=' + sAPIKey,strSearchParams
       ).ContentAsString(TEncoding.UTF8);
     except on E: ENetHTTPClientException do
       // I want to ensure I can avoid any access voilations due to internet connection
       ShowMessage('An error occured, please check your internet connection');
     end;
   finally
-    searchParams.Free;
-    NHClient.Free;
-    NHREQ.Free;
+    strSearchParams.Free;
+    HTPPClient.Free;
+    HTTPRequest.Free;
   end;
 end;
 
@@ -92,18 +89,18 @@ begin
   Result := ResultString;
 end;
 
-function TFetchAPI.GetApiKey : string;
+function TFetchAPI.GetAPIKey : string;
 const FILENAME = 'files\api_key.txt';
-var keyFile : textfile; sKey : string;
+var keyFile : textfile; sAPIKey : string;
 begin
-  sKey := '';
+  sAPIKey := '';
 
   { This check is in the assumption that a missing key file would mean that the key does not work anymore, hence would use default }
   if Util.CheckFileExists(FILENAME) then
   try
     AssignFile(keyFile,FILENAME);
     Reset(keyFile);
-    Readln(keyFile,sKey);
+    Readln(keyFile,sAPIKey);
   finally
     CloseFile(keyFile);
   end;
@@ -113,10 +110,9 @@ begin
     If by any chance the key does not exist, we will
     default to the DEMO_KEY which can be used, albeit
     at a much lower rate per hour than a specialized key }
-  if sKey = '' then
-   Result := 'DEMO_KEY'
-   else
-   Result := sKey;
-
+  if sAPIKey = '' then
+    Result := 'DEMO_KEY'
+  else
+    Result := sAPIKey;
 end;
 end.

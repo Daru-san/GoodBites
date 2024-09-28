@@ -132,6 +132,7 @@ type
     procedure PopulateMealType;
     procedure SetProgressBar(sItem : String; rValue, rTarget : Real);
     procedure ShowProgress(RecDate:TDate);
+    procedure ShowGoalOverview;
     procedure ShowGoalInfo(sGoalName : string);
     procedure ResetGoalInfo;
   public
@@ -758,4 +759,23 @@ begin
   pnlGoal.Caption := 'Goal';
 end;
 
+procedure TfrmDashboard.ShowGoalOverview;
+const GOALITEMS :array[1..5] of string = ('Calorie','Water','Carbohydrate','Protein','Fat');
+var
+  Goal : TGoal;
+  sUserID,sGoalUnit : String;
+  i: Integer;
+  rTarget : real;
+begin
+  sUserID := CurrentUser.UserID;
+
+  for i := 1 to Length(GOALITEMS) do
+	begin
+    Goal := TGoal.Create(sUserID,GOALITEMS[I]);
+    rTarget := Goal.Target;
+    sGoalUnit := Goal.GoalUnit;
+    FillGoalEditBox(GOALITEMS[i],sGoalUnit,rTarget);
+    Goal.Free;
+  end;
+end;
 end.

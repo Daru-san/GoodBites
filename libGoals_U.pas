@@ -72,7 +72,7 @@ begin
     repeat
       if FieldValues['UserID'] = UserID then
       begin
-        if Item = FieldValues['Valuename'] then
+        if Item = FieldValues['Item'] then
         begin
           iGoalID := FieldValues['GoalID'];
           with dmData.tblProgress do
@@ -134,6 +134,7 @@ var
   rTarget : Real;
 begin
   rTarget := 0;
+  isFound := false;
   with dmData.tblGoals do
   begin
     Open;
@@ -180,7 +181,8 @@ var
   rValue : Real;
 begin
   rValue := 0;
-  iGoalID := GetGoalID;
+  iGoalID := GoalID;
+  isFound := false;
   with dmData.tblProgress do
   begin
     Open;

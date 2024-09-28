@@ -191,9 +191,14 @@ begin
 end;
 
 procedure TfrmAddFood.edtQueryChange(Sender: TObject);
+var
+  isEditEmpty : Boolean;
 begin
   inherited;
-  if edtName.Text <> '' then
+
+  isEditEmpty := (edtQuery.text = '');
+
+  if isEditEmpty then
   begin
     btnQuery.Enabled := True;
     cbxBranded.Enabled := True;

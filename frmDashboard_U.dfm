@@ -21,7 +21,7 @@ object frmDashboard: TfrmDashboard
     Width = 820
     Height = 444
     Align = alClient
-    ActiveCard = crdProgress
+    ActiveCard = crdGoals
     Caption = 'CardPanel1'
     TabOrder = 0
     object crdProgress: TCard
@@ -70,7 +70,7 @@ object frmDashboard: TfrmDashboard
         end
         object btnEating: TButton
           Left = 712
-          Top = 4
+          Top = 5
           Width = 75
           Height = 25
           Caption = 'Eating'
@@ -295,7 +295,6 @@ object frmDashboard: TfrmDashboard
               'redMeals')
             ParentFont = False
             TabOrder = 0
-            ExplicitTop = 4
           end
           object pnlMealBottom: TPanel
             Left = 1
@@ -396,8 +395,6 @@ object frmDashboard: TfrmDashboard
             Height = 216
             Align = alClient
             TabOrder = 0
-            ExplicitLeft = 4
-            ExplicitTop = 6
             object btnAddDB: TButton
               Left = 26
               Top = 160
@@ -453,8 +450,6 @@ object frmDashboard: TfrmDashboard
             Height = 199
             Align = alBottom
             TabOrder = 1
-            ExplicitLeft = 4
-            ExplicitTop = 200
           end
         end
         object pnlDisplay: TPanel
@@ -479,8 +474,6 @@ object frmDashboard: TfrmDashboard
               'redMeal')
             ParentFont = False
             TabOrder = 0
-            ExplicitLeft = 5
-            ExplicitTop = 6
           end
           object pnlDisplayBottom: TPanel
             Left = 1
@@ -489,8 +482,6 @@ object frmDashboard: TfrmDashboard
             Height = 199
             Align = alClient
             TabOrder = 1
-            ExplicitLeft = -7
-            ExplicitTop = 223
           end
         end
       end
@@ -503,6 +494,331 @@ object frmDashboard: TfrmDashboard
       Caption = 'Edit goals'
       CardIndex = 2
       TabOrder = 2
+      object crplGoals: TCardPanel
+        Left = 0
+        Top = 41
+        Width = 818
+        Height = 401
+        Align = alClient
+        ActiveCard = crdGoalView
+        TabOrder = 0
+        object crdGoalOV: TCard
+          Left = 1
+          Top = 1
+          Width = 816
+          Height = 399
+          Caption = 'Goals Overview'
+          CardIndex = 0
+          TabOrder = 0
+          OnEnter = crdGoalOVEnter
+          object edtGoalCal: TLabeledEdit
+            Left = 72
+            Top = 48
+            Width = 121
+            Height = 23
+            EditLabel.Width = 42
+            EditLabel.Height = 15
+            EditLabel.Caption = 'Calories'
+            ReadOnly = True
+            TabOrder = 0
+            Text = ''
+          end
+          object btnGoalCalories: TButton
+            Left = 72
+            Top = 120
+            Width = 105
+            Height = 25
+            Caption = 'View Calorie Goal'
+            TabOrder = 1
+            OnClick = btnGoalCaloriesClick
+          end
+          object edtGoalCarb: TLabeledEdit
+            Left = 72
+            Top = 200
+            Width = 121
+            Height = 23
+            EditLabel.Width = 77
+            EditLabel.Height = 15
+            EditLabel.Caption = 'Carbohydrates'
+            ReadOnly = True
+            TabOrder = 2
+            Text = ''
+          end
+          object btnGoalCarb: TButton
+            Left = 72
+            Top = 272
+            Width = 105
+            Height = 25
+            Caption = 'View Carbs Goal'
+            TabOrder = 3
+            OnClick = btnGoalCarbClick
+          end
+          object edtGoalFat: TLabeledEdit
+            Left = 282
+            Top = 200
+            Width = 121
+            Height = 23
+            EditLabel.Width = 57
+            EditLabel.Height = 15
+            EditLabel.Caption = 'Fats/Lipids'
+            ReadOnly = True
+            TabOrder = 4
+            Text = ''
+          end
+          object btnGoalFat: TButton
+            Left = 282
+            Top = 272
+            Width = 95
+            Height = 25
+            Caption = 'View Fats Goal'
+            TabOrder = 5
+            OnClick = btnGoalFatClick
+          end
+          object edtGoalProtein: TLabeledEdit
+            Left = 528
+            Top = 48
+            Width = 121
+            Height = 23
+            EditLabel.Width = 38
+            EditLabel.Height = 15
+            EditLabel.Caption = 'Protein'
+            ReadOnly = True
+            TabOrder = 6
+            Text = ''
+          end
+          object edtGoalWater: TLabeledEdit
+            Left = 282
+            Top = 48
+            Width = 121
+            Height = 23
+            EditLabel.Width = 66
+            EditLabel.Height = 15
+            EditLabel.Caption = 'Water intake'
+            ReadOnly = True
+            TabOrder = 7
+            Text = ''
+          end
+          object btnGoalProtein: TButton
+            Left = 528
+            Top = 120
+            Width = 105
+            Height = 25
+            Caption = 'View Protein Goal'
+            TabOrder = 8
+            OnClick = btnGoalProteinClick
+          end
+          object btnGoalWater: TButton
+            Left = 282
+            Top = 120
+            Width = 105
+            Height = 25
+            Caption = 'View Water Goal'
+            TabOrder = 9
+            OnClick = btnGoalWaterClick
+          end
+        end
+        object crdGoalView: TCard
+          Left = 1
+          Top = 1
+          Width = 816
+          Height = 399
+          Caption = 'View Goal'
+          CardIndex = 1
+          TabOrder = 1
+          object pnlGoalDesc: TPanel
+            Left = 512
+            Top = 0
+            Width = 304
+            Height = 399
+            Align = alRight
+            TabOrder = 0
+            object redGoalDesc: TRichEdit
+              Left = 1
+              Top = 42
+              Width = 302
+              Height = 260
+              Align = alClient
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -12
+              Font.Name = 'Segoe UI'
+              Font.Style = []
+              Lines.Strings = (
+                'redGoalDesc')
+              MaxLength = 100
+              ParentFont = False
+              ReadOnly = True
+              TabOrder = 0
+            end
+            object pnlDesc: TPanel
+              Left = 1
+              Top = 1
+              Width = 302
+              Height = 41
+              Align = alTop
+              Caption = 'Goal Description'
+              TabOrder = 1
+            end
+            object pnlDescBottom: TPanel
+              Left = 1
+              Top = 302
+              Width = 302
+              Height = 96
+              Align = alBottom
+              TabOrder = 2
+              object lblDescMaxChar: TLabel
+                Left = 184
+                Top = 72
+                Width = 103
+                Height = 15
+                Caption = '100 Characters max'
+              end
+              object btnGoalDescEdit: TButton
+                Left = 40
+                Top = 32
+                Width = 89
+                Height = 25
+                Caption = 'Enable Editing'
+                TabOrder = 0
+                OnClick = btnGoalDescEditClick
+              end
+              object btnGoalDescPost: TButton
+                Left = 160
+                Top = 32
+                Width = 121
+                Height = 25
+                Caption = 'Post new description'
+                Enabled = False
+                TabOrder = 1
+                OnClick = btnGoalDescPostClick
+              end
+            end
+          end
+          object pnlGoalOV: TPanel
+            Left = 0
+            Top = 0
+            Width = 512
+            Height = 399
+            Align = alClient
+            TabOrder = 1
+            ExplicitLeft = -5
+            ExplicitTop = 5
+            object edtGoalTarget: TLabeledEdit
+              Left = 72
+              Top = 76
+              Width = 121
+              Height = 23
+              EditLabel.Width = 32
+              EditLabel.Height = 15
+              EditLabel.Caption = 'Target'
+              ReadOnly = True
+              TabOrder = 0
+              Text = ''
+            end
+            object pnlGoalHead: TPanel
+              Left = 1
+              Top = 1
+              Width = 510
+              Height = 41
+              Align = alTop
+              Caption = 'Goal'
+              TabOrder = 1
+            end
+            object pnlGoalAve: TPanel
+              Left = 72
+              Top = 121
+              Width = 345
+              Height = 216
+              TabOrder = 2
+              object edtAverageProg: TLabeledEdit
+                Left = 24
+                Top = 40
+                Width = 121
+                Height = 23
+                EditLabel.Width = 91
+                EditLabel.Height = 15
+                EditLabel.Caption = 'Average Progress'
+                ReadOnly = True
+                TabOrder = 0
+                Text = ''
+              end
+              object prgAverage: TProgressBar
+                Left = 24
+                Top = 69
+                Width = 298
+                Height = 20
+                TabOrder = 1
+              end
+              object edtGoalDays: TLabeledEdit
+                Left = 176
+                Top = 120
+                Width = 121
+                Height = 23
+                EditLabel.Width = 97
+                EditLabel.Height = 15
+                EditLabel.Caption = 'No. Days achieved'
+                ReadOnly = True
+                TabOrder = 2
+                Text = ''
+              end
+              object prgDays: TProgressBar
+                Left = 24
+                Top = 160
+                Width = 289
+                Height = 17
+                TabOrder = 3
+              end
+              object edtGoalDate: TLabeledEdit
+                Left = 24
+                Top = 120
+                Width = 121
+                Height = 23
+                EditLabel.Width = 51
+                EditLabel.Height = 15
+                EditLabel.Caption = 'Start Date'
+                ReadOnly = True
+                TabOrder = 4
+                Text = ''
+              end
+            end
+            object btnEditGoal: TButton
+              Left = 72
+              Top = 360
+              Width = 209
+              Height = 25
+              Caption = 'Edit Goal(Resets previous progress)'
+              TabOrder = 3
+              OnClick = btnEditGoalClick
+            end
+            object btnBackOV: TButton
+              Left = 320
+              Top = 360
+              Width = 99
+              Height = 25
+              Caption = 'Back to overview'
+              TabOrder = 4
+              OnClick = btnBackOVClick
+            end
+            object cbxGoalUnit: TComboBox
+              Left = 240
+              Top = 76
+              Width = 145
+              Height = 23
+              TabOrder = 5
+              Text = 'Unit of measurement'
+            end
+          end
+        end
+      end
+      object pnlGoalTop: TPanel
+        Left = 0
+        Top = 0
+        Width = 818
+        Height = 41
+        Align = alTop
+        Caption = 'Goals'
+        TabOrder = 1
+      end
     end
   end
   object tbDashboard: TToolBar
@@ -603,6 +919,7 @@ object frmDashboard: TfrmDashboard
       Caption = 'Log Out'
       ModalResult = 8
       TabOrder = 4
+      OnClick = btnLogOutClick
     end
   end
 end

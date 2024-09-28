@@ -31,6 +31,7 @@ type
       function GetProgress(RecDate : TDate) : Real;
 
       function CalcAverage : Real;
+      function CalcDaysAchieved : Integer;
       procedure SetGoalTarget;
       procedure AddGoal;
       procedure GetGoalTarget;
@@ -214,5 +215,28 @@ begin
     Close;
   end;
   Result := rTotalVal/iNumDays;
+end;
+function TGoal.CalcDaysAchieved: Integer;
+var
+  rTarget, rAmount : Real;
+  iDays : Integer;
+begin
+  iDays := 0;
+  with dmData.tblProgress do
+  begin
+    Open;
+    First;
+    repeat
+      if (GoalID = FieldValues['GoalID']) then
+      begin
+        rAmount := FieldValues['Amount'];
+        if rAmount >= rTarget then
+          inc(iDays);
+      end;
+      Next;
+    until EOF;
+    Close;
+  end;
+  Result := iDays;
 end;
 end.

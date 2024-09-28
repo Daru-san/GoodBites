@@ -4,7 +4,7 @@ interface
 
 uses Winapi.Windows, System.SysUtils, System.Classes, Vcl.Graphics, Vcl.Forms, StrUtils, Dialogs,
   Vcl.Controls, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, OKCANCL2, JSON, Vcl.ComCtrls,
-  libFetchAPI_U, libUtils_U, libMeals_U;
+  libFetchAPI_U, libUtils_U, libMeals_U, Vcl.Mask;
 
 type
   TfrmAddFood = class(TOKRightDlg)
@@ -23,18 +23,15 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure edtQueryChange(Sender: TObject);
   private
-
     procedure SortItems(JSONResponse : TStringStream;ResponseLength : Integer);
     function GetNutrientValue(jsonNutrient : TJSONValue) : real;
   public
-    { Public declarations }
   end;
 
 var
   frmAddFood: TfrmAddFood;
   FoodItem : TFoodItem;
   Util : TUtils;
-  Fetcher : TFetchAPI;
 
   // Store the foods in arrays of 1 to 10, only taking 10 items from a single query
   // These arrays will be linked to each other
@@ -135,6 +132,7 @@ begin
       cbxItems.Text := 'Choose an item';
 
       btnAccept.Enabled := false;
+
       SortItems(JSONResponse,iResponseLength);
     end; // end if fetched
   end // end if valid
@@ -166,7 +164,7 @@ begin
   with redItems do
   begin
     Clear;
-    ScrollBars := ssBoth;
+    ScrollBars := ssVertical;
     with Paragraph do
     begin
       TabCount := 2;
@@ -222,7 +220,7 @@ procedure TfrmAddFood.FormShow(Sender: TObject);
 begin
   inherited;
   Util := TUtils.Create;
-  edtName.SetFocus;
+  edtQuery.SetFocus;
   redItems.Text := 'Food information goes here';
 end;
 
@@ -318,5 +316,3 @@ begin
 end;
 
 end.
- 
-

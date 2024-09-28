@@ -8,9 +8,9 @@ inherited frmAddFood: TfrmAddFood
   TextHeight = 15
   inherited Bevel1: TBevel
     Width = 574
-    Height = 313
+    Height = 322
     ExplicitWidth = 574
-    ExplicitHeight = 313
+    ExplicitHeight = 322
   end
   inherited OKBtn: TButton
     Left = 588
@@ -31,58 +31,49 @@ inherited frmAddFood: TfrmAddFood
     TabOrder = 2
     OnClick = HelpBtnClick
   end
-  object edtName: TEdit
-    Left = 40
-    Top = 38
-    Width = 121
-    Height = 23
-    TabOrder = 3
-    TextHint = 'Food name'
-    OnChange = edtNameChange
-  end
   object cbxItems: TComboBox
-    Left = 304
-    Top = 38
+    Left = 368
+    Top = 52
     Width = 145
     Height = 23
     Hint = 'Choose from a list of results'
     Enabled = False
-    TabOrder = 4
+    TabOrder = 3
     Text = 'Choose an Item'
     OnChange = cbxItemsChange
   end
   object btnQuery: TButton
-    Left = 192
-    Top = 37
+    Left = 200
+    Top = 51
     Width = 75
     Height = 25
     Caption = 'Query'
     Enabled = False
-    TabOrder = 5
+    TabOrder = 4
     OnClick = btnQueryClick
   end
   object btnAccept: TButton
-    Left = 374
-    Top = 77
+    Left = 438
+    Top = 93
     Width = 75
     Height = 25
     Caption = 'Accept Item'
     Enabled = False
-    TabOrder = 6
+    TabOrder = 5
     OnClick = btnAcceptClick
   end
   object cbxBranded: TCheckBox
-    Left = 48
-    Top = 71
+    Left = 40
+    Top = 97
     Width = 97
     Height = 17
     Caption = 'Branded'
     Enabled = False
-    TabOrder = 7
+    TabOrder = 6
   end
   object redItems: TRichEdit
     Left = 24
-    Top = 108
+    Top = 133
     Width = 545
     Height = 185
     Font.Charset = ANSI_CHARSET
@@ -93,6 +84,18 @@ inherited frmAddFood: TfrmAddFood
     Lines.Strings = (
       'redItems')
     ParentFont = False
+    TabOrder = 7
+  end
+  object edtQuery: TLabeledEdit
+    Left = 40
+    Top = 52
+    Width = 121
+    Height = 23
+    EditLabel.Width = 62
+    EditLabel.Height = 15
+    EditLabel.Caption = 'Enter Query'
     TabOrder = 8
+    Text = ''
+    TextHint = 'Food name'
   end
 end

@@ -128,6 +128,7 @@ type
     procedure btnEditGoalClick(Sender: TObject);
     procedure crdGoalOVEnter(Sender: TObject);
     procedure btnGoalDescPostClick(Sender: TObject);
+    procedure btnBackOVClick(Sender: TObject);
   private
     { Private declarations }
     FCurrentUser : TUser;
@@ -480,6 +481,10 @@ procedure TfrmDashboard.btnEatingClick(Sender: TObject);
 begin
   crplDashboard.ActiveCard := crdEating;
   btnReturn.Enabled := true;
+end;
+procedure TfrmDashboard.btnBackOVClick(Sender: TObject);
+begin
+  crplGoals.ActiveCard := crdGoalOV;
 end;
 {$ENDREGION}
 

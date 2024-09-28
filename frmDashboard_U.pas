@@ -133,6 +133,7 @@ type
     procedure SetProgressBar(sItem : String; rValue, rTarget : Real);
     procedure ShowProgress(RecDate:TDate);
     procedure ShowGoalInfo(sGoalName : string);
+    procedure ResetGoalInfo;
   public
     { Public declarations }
     property CurrentUser : TUser read FCurrentUser write FCurrentUser;
@@ -745,7 +746,18 @@ end;
 begin
 end;
 
+procedure TfrmDashboard.ResetGoalInfo;
 begin
+  btnGoalDescPost.Enabled := false;
+  btnGoalDescEdit.Enabled := true;
+  redGoalDesc.ReadOnly := true;
+  cbxGoalUnit.Text := 'Unit of measurement';
+  edtGoalDate.Text := '';
+  edtGoalDays.Text := '';
+  prgDays.Position := 0;
+  prgAverage.Position := 0;
+  redGoalDesc.Lines.Clear;
+  pnlGoal.Caption := 'Goal';
 end;
 
 end.

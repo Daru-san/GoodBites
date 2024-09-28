@@ -75,12 +75,6 @@ type
     procedure FormShow(Sender: TObject);
     procedure btnLogOutClick(Sender: TObject);
     procedure btnEatenClick(Sender: TObject);
-    procedure btnLoadDataClick(Sender: TObject);
-    procedure tsEatingShow(Sender: TObject);
-    procedure tsProgressShow(Sender: TObject);
-    procedure tsWelcomeShow(Sender: TObject);
-    procedure tsSearchShow(Sender: TObject);
-    procedure tsSearchHide(Sender: TObject);
     procedure btnAddDBClick(Sender: TObject);
     procedure sbtnNextClick(Sender: TObject);
     procedure sbtnPrevClick(Sender: TObject);
@@ -670,30 +664,19 @@ end;
 begin
 end;
 
-procedure TfrmDashboard.tsEatingShow(Sender: TObject);
 begin
-  //utilObj.SetLabel(lblHeading,'What are you eating?',15);
-  GetInfo;
 end;
 
-procedure TfrmDashboard.tsProgressShow(Sender: TObject);
 begin
- // utilObj.SetLabel(lblHeading,'Your current progress?',15);
 end;
 
-procedure TfrmDashboard.tsSearchHide(Sender: TObject);
 begin
-//  tsSearch.TabVisible := false;
 end;
 
-procedure TfrmDashboard.tsSearchShow(Sender: TObject);
 begin
-  //utilObj.SetLabel(lblHeading,'Search foods',15);
 end;
 
-procedure TfrmDashboard.tsWelcomeShow(Sender: TObject);
 begin
-  //utilObj.SetLabel(lblHeading,'Welcome to ' + Application.MainForm.Caption + '!',15);
 end;
 
 end.

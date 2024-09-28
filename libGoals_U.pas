@@ -29,11 +29,13 @@ type
       function GetDesc : String;
       // Progress
       procedure SetProgress(rAmount : Real);
+
       function GetProgress(RecDate : TDate) : Real;
 
       function CalcAverage : Real;
       function CalcDaysAchieved : Integer;
       function GetTotalDays : Integer;
+
       procedure SetGoalTarget;
       procedure AddGoal;
       procedure GetGoalTarget;
@@ -148,6 +150,7 @@ begin
     Close;
   end;
 end;
+
 procedure TGoal.SetGoalTarget;
 var isFound : Boolean;
 begin
@@ -261,6 +264,7 @@ begin
   end;
   Result := sDesc;
 end;
+
 procedure TGoal.EditDesc(S: string);
 var isFound : Boolean;
 begin
@@ -281,10 +285,15 @@ begin
     Close;
   end;
 end;
+{$ENDREGION}
+
+{ Calculations }
+{$REGION Calculations}
 function TGoal.GetTotalDays: Integer;
 begin
   Result := Round(Date - StartDate);
 end;
+
 function TGoal.CalcAverage: Real;
 var
   rTotalVal : real;
@@ -307,6 +316,7 @@ begin
   end;
   Result := rTotalVal/iNumDays;
 end;
+
 function TGoal.CalcDaysAchieved: Integer;
 var
   rTarget, rAmount : Real;
@@ -330,4 +340,6 @@ begin
   end;
   Result := iDays;
 end;
+{$ENDREGION}
+
 end.

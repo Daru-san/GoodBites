@@ -681,10 +681,14 @@ begin
 end;
 {$ENDREGION}
 
+procedure TfrmDashboard.btnGoalCaloriesClick(Sender: TObject);
 begin
+  ShowGoalInfo('Calorie');
 end;
 
+procedure TfrmDashboard.btnGoalCarbClick(Sender: TObject);
 begin
+  ShowGoalInfo('Carbohydrate');
 end;
 
 begin
@@ -743,9 +747,30 @@ begin
   Goal.Free;
 end;
 
+procedure TfrmDashboard.btnGoalCaloriesClick(Sender: TObject);
 begin
+  ShowGoalInfo('Calorie');
 end;
 
+procedure TfrmDashboard.btnGoalCarbClick(Sender: TObject);
+begin
+  ShowGoalInfo('Carbohydrate');
+end;
+
+procedure TfrmDashboard.btnGoalFatClick(Sender: TObject);
+begin
+  ShowGoalInfo('Fat');
+end;
+
+procedure TfrmDashboard.btnGoalProteinClick(Sender: TObject);
+begin
+  ShowGoalInfo('Protein');
+end;
+
+procedure TfrmDashboard.btnGoalWaterClick(Sender: TObject);
+begin
+  ShowGoalInfo('Water');
+end;
 procedure TfrmDashboard.ResetGoalInfo;
 begin
   btnGoalDescPost.Enabled := false;

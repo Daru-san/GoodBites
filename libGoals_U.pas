@@ -26,6 +26,7 @@ type
       constructor Create(U,I : String);
       destructor Destroy; override;
 
+      function GetDesc : String;
       // Progress
       procedure SetProgress(rAmount : Real);
       function GetProgress(RecDate : TDate) : Real;
@@ -36,6 +37,7 @@ type
       procedure SetGoalTarget;
       procedure AddGoal;
       procedure GetGoalTarget;
+      procedure EditDesc(S: String);
   end;
 
 implementation
@@ -195,6 +197,48 @@ begin
   Result := rValue;
 end;
 
+function TGoal.GetDesc: string;
+var
+  sDesc : String;
+  isFound : Boolean;
+begin
+  sDesc := '';
+  isFound := False;
+  with dmData.tblGoals do
+  begin
+    Open;
+    First;
+    repeat
+      if (UserID = FieldValues['UserID']) and (GoalID = FieldValues['GoalID']) then
+      begin
+        isFound := true;
+        sDesc := FieldValues['Desc'];
+      end;
+    until EOF or isFound;
+    Close;
+  end;
+  Result := sDesc;
+end;
+procedure TGoal.EditDesc(S: string);
+var isFound : Boolean;
+begin
+  isFound := False;
+  with dmData.tblGoals do
+  begin
+    Open;
+    First;
+    repeat
+      if (UserID = FieldValues['UserID']) and (GoalID = FieldValues['GoalID']) then
+      begin
+        isFound := true;
+        Edit;
+        FieldValues['Desc'] := S;
+        Post;
+      end;
+    until EOF or isFound;
+    Close;
+  end;
+end;
 function TGoal.GetTotalDays: Integer;
 begin
   Result := Round(Date - StartDate);

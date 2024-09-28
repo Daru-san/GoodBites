@@ -19,18 +19,20 @@ type
 
       Util : TUtils;
 
-      ResultString : string;
+      FResponseLength : Integer;
       FQuerySuccessful : Boolean;
+      FJSONResponse : TStringStream;
 
       function GetAPIKey : string;
     public
       constructor Create;
       destructor Destroy; override;
 
-      procedure SendQuery(sQuery:string;dataType :string = 'Foundation');
+      property ResponseLength : Integer read FResponseLength write FResponseLength;
       property QuerySuccessful : Boolean read FQuerySuccessful write FQuerySuccessful;
+      property JSONResponse : TStringStream read FJSONResponse write FJSONResponse;
 
-      function GetJson : string;
+      procedure SendQuery(sQuery:string;dataType :string = 'Foundation');
   end;
 
 implementation
@@ -54,6 +56,7 @@ begin
   sAPIKey := GetAPIKey;
 
   QuerySuccessful := False;
+
   try
     HTPPClient := TNetHTTPClient.Create(nil);
     HTTPRequest := TNetHTTPRequest.Create(nil);
@@ -64,6 +67,7 @@ begin
       '{"query":"'+sQuery+'","pageSize":10,"dataType": ["'+dataType+'"]}',
       TEncoding.UTF8
     );
+
     try
       HTPPClient.ContentType := 'application/json';
       HTPPClient.AcceptEncoding := 'UTF-8';
@@ -74,6 +78,7 @@ begin
       sResult := HTTPRequest.Post(
         'https://api.nal.usda.gov/fdc/v1/foods/search?api_key=' + sAPIKey,strSearchParams
       ).ContentAsString(TEncoding.UTF8);
+
       QuerySuccessful := true;
     except on E: ENetHTTPClientException do
     begin
@@ -87,11 +92,11 @@ begin
     HTTPRequest.Free;
   end;
 
-function TFetchAPI.GetJson: string;
-begin
-  //TODO: Validate the output
-
-  Result := ResultString;
+  if QuerySuccessful then
+  begin
+    JSONResponse := TStringStream.Create(sResult);
+    ResponseLength := Length(sResult);
+  end;
 end;
 
 function TFetchAPI.GetAPIKey : string;

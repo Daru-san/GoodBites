@@ -127,6 +127,11 @@ type
     procedure btnGoalDescEditClick(Sender: TObject);
     procedure btnEditGoalClick(Sender: TObject);
     procedure crdGoalOVEnter(Sender: TObject);
+    procedure btnGoalCaloriesClick(Sender: TObject);
+    procedure btnGoalWaterClick(Sender: TObject);
+    procedure btnGoalProteinClick(Sender: TObject);
+    procedure btnGoalCarbClick(Sender: TObject);
+    procedure btnGoalFatClick(Sender: TObject);
     procedure btnGoalDescPostClick(Sender: TObject);
     procedure btnBackOVClick(Sender: TObject);
   private
@@ -139,6 +144,7 @@ type
     procedure ShowProgress(RecDate:TDate);
     procedure ShowGoalOverview;
     procedure FillGoalEditBox(sGoalItem,sGoalUnit : String;rTarget:Real);
+
     procedure ShowGoalInfo(sGoalName : string);
     procedure ResetGoalInfo;
   public
@@ -236,6 +242,7 @@ begin
   Goal := TGoal.Create(CurrentUser.UserID,'Water');
   rValue := Goal.GetProgress(Date);
   rTarget := Goal.Target;
+
   edtSVWater.Text := FloatToStrF(rValue,ffFixed,8,2) +  '/'+ FloatToStrF(rTarget,ffFixed,8,2);
   Goal.Free;
 end;
@@ -482,10 +489,12 @@ begin
   crplDashboard.ActiveCard := crdEating;
   btnReturn.Enabled := true;
 end;
+
 procedure TfrmDashboard.btnBackOVClick(Sender: TObject);
 begin
   crplGoals.ActiveCard := crdGoalOV;
 end;
+
 {$ENDREGION}
 
 { Meal eating }
@@ -757,6 +766,7 @@ procedure TfrmDashboard.btnGoalWaterClick(Sender: TObject);
 begin
   ShowGoalInfo('Water');
 end;
+
 procedure TfrmDashboard.btnGoalDescEditClick(Sender: TObject);
 begin
   btnGoalDescPost.Enabled := True;
@@ -779,6 +789,7 @@ begin
     Goal.EditDesc(sNewDesc);
   end;
 end;
+
 procedure TfrmDashboard.btnEditGoalClick(Sender: TObject);
 var
   sTargetStr,sGoalUnit : String;

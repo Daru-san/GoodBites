@@ -14,7 +14,7 @@ type
     FTarget : Real;
 
     private
-      function GetGoalID: Integer;
+      procedure GetGoalID;
     public
       property GoalID : Integer read FGoalID write FGoalID;
       property UserID : String read FUserID write FUserID;
@@ -140,7 +140,7 @@ begin
   Target := rTarget;
 end;
 
-function TGoal.GetGoalID: Integer;
+procedure TGoal.GetGoalID;
 var
   isFound : Boolean;
   iGoalID : Integer;
@@ -152,7 +152,7 @@ begin
     Open;
     First;
     repeat
-      if (FieldValues['UserID'] = UserID) and (Item = FieldValues['Valuename']) and (GoalUnit = FieldValues['Unit'])  then
+      if (FieldValues['UserID'] = UserID) and (Item = FieldValues['Valuename']) then
       begin
         isFound := true;
         iGoalID := FieldValues['GoalID'];
@@ -160,7 +160,7 @@ begin
     until EOF or isFound;
     Close;
   end;
-  Result := iGoalID;
+  GoalID := iGoalID;
 end;
 
 function TGoal.GetProgress;

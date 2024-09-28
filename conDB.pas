@@ -35,6 +35,7 @@ var
   dbPath,dlPath : String;
   logger : TLogs;
   Utils : TUtils;
+  DatabaseExists : Boolean;
 
 implementation
 
@@ -109,38 +110,44 @@ end;
 
 {$R *.dfm}
 
-procedure TdmData.DataModuleCreate(Sender: TObject);
-var dbExists : Boolean;
+procedure TdmData.FindDatabase : String;
+var 
+  isExist,isDebugExist : Boolean;
+  isInCurrentDir,isInUpperDir : Boolean;
 begin
-  Utils := TUtils.Create;
-  logger := TLogs.Create;
-
   {
     A series of checks ensuring that the database file exists
     and stopping the app in the instance that it does not exist
   }
-  dbExists := false;
-  if Utils.CheckFileExists(DBFILENAME) then
+  isInCurrentDir := FileExists(DBFILENAME);
+  isInUpperDir := FileExists('..\..\'+DBFILENAME);
+
+  if isInUpperDir then
   begin
     dbPath := DBFILENAME;
     dlPath := DLFILENAME;
-    dbExists := true;
-  end
-  else
-  // Checking whether the database is in a higher directory, when running in debug mode
-  if Utils.CheckFileExists('..\..\'+DBFILENAME) then
+  end;
+
+  if isInUpperDir and not(isInCurrentDir) then
   begin
     dbPath := '..\..\'+DBFILENAME;
     dlPath := '..\..\'+DLFILENAME;
-    dbExists := true;
-  end
-  else
+  end;
+
+  if not(isInCurrentDir) and not(isInUpperDir) then
   begin
     logger.WriteErrorLog('The database file is missing');
-    dbExists := false;
-   end;
+    DatabaseExists := false;
+  end;
+end;
 
-  if dbExists then
+procedure TdmData.DataModuleCreate(Sender: TObject);
+begin
+  Utils := TUtils.Create;
+  logger := TLogs.Create;
+
+
+  if DatabaseExists then
   begin
     ConnectDB;
     {    ShowMessage('A');

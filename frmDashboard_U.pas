@@ -124,8 +124,10 @@ type
     procedure btnShowClick(Sender: TObject);
     procedure cbxFoodsChange(Sender: TObject);
     procedure cbxMealTypeChange(Sender: TObject);
+    procedure btnGoalDescEditClick(Sender: TObject);
     procedure btnEditGoalClick(Sender: TObject);
     procedure crdGoalOVEnter(Sender: TObject);
+    procedure btnGoalDescPostClick(Sender: TObject);
   private
     { Private declarations }
     FCurrentUser : TUser;
@@ -747,6 +749,28 @@ end;
 procedure TfrmDashboard.btnGoalWaterClick(Sender: TObject);
 begin
   ShowGoalInfo('Water');
+end;
+procedure TfrmDashboard.btnGoalDescEditClick(Sender: TObject);
+begin
+  btnGoalDescPost.Enabled := True;
+  btnGoalDescEdit.Enabled := false;
+  redGoalDesc.ReadOnly := false;
+end;
+
+procedure TfrmDashboard.btnGoalDescPostClick(Sender: TObject);
+var
+  sNewDesc : String;
+  sGoalItem : String;
+  Goal : TGoal;
+begin
+  sGoalItem := pnlGoalHead.Caption;
+  Goal := TGoal.Create(CurrentUser.UserID,sGoalItem);
+
+  sNewDesc := redGoalDesc.Text;
+  if MessageDlg('Are you sure you want to change the goal description?',mtConfirmation,mbYesNoCancel,0) = mrYes then
+  begin
+    Goal.EditDesc(sNewDesc);
+  end;
 end;
 procedure TfrmDashboard.btnEditGoalClick(Sender: TObject);
 var

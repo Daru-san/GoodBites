@@ -9,19 +9,19 @@ uses Winapi.Windows, System.SysUtils, System.Classes, Vcl.Graphics, Vcl.Forms, S
 type
   TfrmAddFood = class(TOKRightDlg)
     HelpBtn: TButton;
-    edtName: TEdit;
     cbxItems: TComboBox;
     btnQuery: TButton;
     btnAccept: TButton;
     cbxBranded: TCheckBox;
     redItems: TRichEdit;
+    edtQuery: TLabeledEdit;
     procedure HelpBtnClick(Sender: TObject);
     procedure btnQueryClick(Sender: TObject);
     procedure btnAcceptClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure cbxItemsChange(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure edtNameChange(Sender: TObject);
+    procedure edtQueryChange(Sender: TObject);
   private
     { Private declarations }
     function FetchJson(sQuery:string;isBranded:Boolean) : string;
@@ -160,7 +160,7 @@ begin
   end;
 end;
 
-procedure TfrmAddFood.edtNameChange(Sender: TObject);
+procedure TfrmAddFood.edtQueryChange(Sender: TObject);
 begin
   inherited;
   if edtName.Text <> '' then

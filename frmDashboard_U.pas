@@ -132,6 +132,7 @@ type
     procedure PopulateMealType;
     procedure SetProgressBar(sItem : String; rValue, rTarget : Real);
     procedure ShowProgress(RecDate:TDate);
+    procedure ShowGoalInfo(sGoalName : string);
   public
     { Public declarations }
     property CurrentUser : TUser read FCurrentUser write FCurrentUser;
@@ -703,7 +704,42 @@ end;
 begin
 end;
 
+procedure TfrmDashboard.ShowGoalInfo(sGoalName: string);
+var
+  Goal : TGoal;
+  rTarget,rAverage : Real;
+  iTotalDays,iAchievedDays : Integer;
+  dStartDate : TDate;
 begin
+  crplGoals.ActiveCard := crdGoalView;
+
+  pnlGoalHead.Caption := sGoalName;
+
+  Goal := TGoal.Create(CurrentUser.UserID,sGoalName);
+  redGoalDesc.Text := Goal.GetDesc;
+
+  rTarget := Goal.Target;
+  rAverage := Goal.CalcAverage;
+
+  prgAverage.Max := Ceil(rTarget);
+  prgAverage.Position := Ceil(rAverage);
+
+  edtAverageProg.ReadOnly := true;
+  edtAverageProg.Text := FloatToStrF(rAverage,ffFixed,8,2)+'/'+FloatToStrF(rTarget,ffFixed,8,2);
+
+  edtGoalTarget.ReadOnly := true;
+  edtGoalTarget.Text := FloatToStrF(rTarget,ffGeneral,8,2);
+
+  iTotalDays := Goal.GetTotalDays;
+  iAchievedDays := GOAL.CalcDaysAchieved;
+  edtGoalDays.ReadOnly := TRUE;
+  edtGoalDays.Text := iAchievedDays.ToString + '/' + iTotalDays.ToString;
+  prgDays.Max := iTotalDays;
+  prgDays.Position := iAchievedDays;
+
+  dStartDate := Goal.StartDate;
+  edtGoalDate.Text := FormatDateTime('dd mmmm yyyy',dStartDate);
+  Goal.Free;
 end;
 
 begin

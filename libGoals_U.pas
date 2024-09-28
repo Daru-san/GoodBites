@@ -38,6 +38,7 @@ type
       procedure AddGoal;
       procedure GetGoalTarget;
       procedure EditDesc(S: String);
+      procedure DeleteGoal;
   end;
 
 implementation
@@ -106,8 +107,47 @@ end;
 
 procedure TGoal.AddGoal;
 begin
+  DeleteGoal;
+  with dmData.tblGoals do
+  begin
+    Open;
+    Append;
+    FieldValues['Item'] := Item;
+    FieldValues['Target'] := Target;
+    FieldValues['StartDate'] := Date;
+    Post;
+    Close;
+  end;
 end;
 
+procedure TGoal.DeleteGoal;
+var isGoalFound : Boolean;
+begin
+  with dmData.tblProgress do
+  begin
+    Open;
+    First;
+    repeat
+      if GoalID = FieldValues['GoalID'] then
+      Delete;
+    until EOF;
+    Close;
+  end;
+  with dmData.tblGoals do
+  begin
+    Open;
+    First;
+    isGoalFound := false;
+    repeat
+      if (UserID = FieldValues['UserID']) and (GoalID = FieldValues['UserID']) then
+      begin
+        isGoalFound := True;
+        Delete;
+      end else Next;
+    until EOF or isGoalFound;
+    Close;
+  end;
+end;
 procedure TGoal.SetGoalTarget;
 var isFound : Boolean;
 begin

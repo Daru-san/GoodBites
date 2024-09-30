@@ -100,6 +100,7 @@ begin
   Trim(sQuery);
 
   actvLoad.StartAnimation;
+  Screen.Cursor := crHourGlass;
   if Util.ValidateString(sQuery,'foodname',1,20,'letters,numbers') then
   begin
     FetchAPI := TFetchAPI.Create;
@@ -141,6 +142,7 @@ begin
   else
     ShowMessage('Food name must be between 1 to 20 characters and not have special characters');
   actvLoad.StopAnimation;
+  Screen.Cursor := crDefault;
 end;
 
 procedure TfrmAddFood.cbxItemsChange(Sender: TObject);

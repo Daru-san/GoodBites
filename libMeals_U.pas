@@ -90,7 +90,7 @@ begin
     repeat
       if sFoodname = FieldValues['FoodName'] then
       begin
-	      isFoodFound := true;
+        isFoodFound := true;
         ProteinPer100G := FieldValues['ProteinPer100g'];
         CarbPer100G := FieldValues['CarbPer100g'];
         FatPer100G := FieldValues['FatPer100g'];

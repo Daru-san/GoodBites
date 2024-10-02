@@ -134,10 +134,11 @@
         <DCCReference Include="frmSettings_U.pas">
             <Form>frmSettings</Form>
         </DCCReference>
+        <DCCReference Include="libGoals_U.pas"/>
         <DCCReference Include="frmGreeter_U.pas">
             <Form>frmGreeter</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="libGoals_U.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

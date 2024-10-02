@@ -9,7 +9,7 @@ uses
   Vcl.Forms,
   Vcl.Themes,
   Vcl.Styles,
-  {$ENDIF}
+  {$ENDIF }
   conDB in 'conDB.pas' {dmData: TDataModule},
   OKCANCL2 in 'c:\program files (x86)\embarcadero\studio\23.0\ObjRepos\EN\DelphiWin32\OKCANCL2.PAS' {OKRightDlg},
   frmAddFood_U in 'frmAddFood_U.pas' {frmAddFood},
@@ -23,8 +23,8 @@ uses
   libMeals_U in 'libMeals_U.pas',
   libFetchAPI_U in 'libFetchAPI_U.pas',
   frmSettings_U in 'frmSettings_U.pas' {frmSettings},
-  frmGreeter_U in 'frmGreeter_U.pas' {frmGreeter},
-  libGoals_U in 'libGoals_U.pas';
+  libGoals_U in 'libGoals_U.pas',
+  frmGreeter_U in 'frmGreeter_U.pas' {frmGreeter};
 
 {$R *.res}
 

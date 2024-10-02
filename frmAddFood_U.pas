@@ -239,13 +239,11 @@ var
   sNutrientName : String;
   iNutrientID : integer;
 begin
-  {
-    We need to navigate the json text, going down the heiarchy each time
+  { We need to navigate the json text, going down the heiarchy each time
     and loop through each sub-array until we find the required values.
 
     Each food item as an item in the json array, the same goes for the nutrients as a sub-array
-    of foodNutrients.
-  }
+    of foodNutrients. }
 
 
   sJsonResponse := JSONResponse.ReadString(ResponseLength);
@@ -265,6 +263,7 @@ begin
   end;
 
 
+
   { I hope to prevent type casting errors that may come up when the json
     file does not come out as expected, exiting seems to prevent any issues
     from arising very quickly }
@@ -277,7 +276,7 @@ begin
     ShowMessage('Something weird happened..');
     exit;
   end;
-
+  ;
   numResults := jsonArrFoods.Count;
 
   for j := 1 to numResults - 1 do
@@ -304,9 +303,8 @@ begin
       end;
     end;
 
-      { Formula: Calories = protein*4 + carbohydrate*4 + lipid*9 }
+    { Formula: Calories = protein*4 + carbohydrate*4 + lipid*9 }
       arrCalories[j] := arrProtein[j]*4+arrCarb[j]*4+arrFat[j]*9;
-    end;
   end;
 
   for j := 1 to numResults - 1 do

@@ -688,7 +688,7 @@ begin
   if currentUser.GetFirstLogin then
   begin
    userGreeter := TfrmGreeter.Create(nil);
- //  userGreeter.currentUser := currentUser;
+   userGreeter.currentUser := currentUser;
    with userGreeter do
    begin
     try

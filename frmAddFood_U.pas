@@ -237,6 +237,7 @@ var
   sJsonResponse : String;
   isEmpty : Boolean;
   sNutrientName : String;
+  iNutrientID : integer;
 begin
   {
     We need to navigate the json text, going down the heiarchy each time
@@ -292,15 +293,16 @@ begin
     begin
       jsonNutrient := jsonArrNutrients.Items[p] as TJSONValue;
 
-      sNutrientName := LowerCase(jsonNutrient.FindValue('name').ToString);
+      iNutrientID := jsonNutrient.FindValue('nutrientId').GetValue<integer>;
 
-      case IndexStr(sNutrientName,['total lipid (fat)','carbohydrate, by difference','protein','energy','sugars, total']) of
-      0: arrFat[j] := GetNutrientValue(jsonNutrient);
-      1: arrCarb[j] := GetNutrientValue(jsonNutrient);
-      2: arrProtein[j] := GetNutrientValue(jsonNutrient);
-      3: arrEnergy[j] := GetNutrientValue(jsonNutrient);
-      4: arrSugar[j] := GetNutrientValue(jsonNutrient);
+      case iNutrientID of
+      1003: arrProtein[j] := GetNutrientValue(jsonNutrient);
+      1004: arrFat[j] := GetNutrientValue(jsonNutrient);
+      1005: arrCarb[j] := GetNutrientValue(jsonNutrient);
+      1008: arrEnergy[j] := GetNutrientValue(jsonNutrient);
+      2000: arrSugar[j] := GetNutrientValue(jsonNutrient);
       end;
+    end;
 
       { Formula: Calories = protein*4 + carbohydrate*4 + lipid*9 }
       arrCalories[j] := arrProtein[j]*4+arrCarb[j]*4+arrFat[j]*9;

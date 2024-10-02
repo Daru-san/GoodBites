@@ -21,11 +21,9 @@ object frmDashboard: TfrmDashboard
     Width = 855
     Height = 451
     Align = alClient
-    ActiveCard = crdGoals
+    ActiveCard = crdProgress
     Caption = 'CardPanel1'
     TabOrder = 0
-    ExplicitWidth = 820
-    ExplicitHeight = 444
     object crdProgress: TCard
       Left = 1
       Top = 1
@@ -496,8 +494,6 @@ object frmDashboard: TfrmDashboard
       Caption = 'Edit goals'
       CardIndex = 2
       TabOrder = 2
-      ExplicitWidth = 818
-      ExplicitHeight = 442
       object crplGoals: TCardPanel
         Left = 0
         Top = 41
@@ -506,8 +502,6 @@ object frmDashboard: TfrmDashboard
         Align = alClient
         ActiveCard = crdGoalView
         TabOrder = 0
-        ExplicitWidth = 818
-        ExplicitHeight = 401
         object crdGoalOV: TCard
           Left = 1
           Top = 1
@@ -631,8 +625,6 @@ object frmDashboard: TfrmDashboard
           Caption = 'View Goal'
           CardIndex = 1
           TabOrder = 1
-          ExplicitWidth = 816
-          ExplicitHeight = 399
           object pnlGoalDesc: TPanel
             Left = 547
             Top = 0
@@ -640,8 +632,6 @@ object frmDashboard: TfrmDashboard
             Height = 406
             Align = alRight
             TabOrder = 0
-            ExplicitLeft = 512
-            ExplicitHeight = 399
             object redGoalDesc: TRichEdit
               Left = 1
               Top = 42
@@ -659,7 +649,6 @@ object frmDashboard: TfrmDashboard
               ParentFont = False
               ReadOnly = True
               TabOrder = 0
-              ExplicitHeight = 260
             end
             object pnlDesc: TPanel
               Left = 1
@@ -677,7 +666,6 @@ object frmDashboard: TfrmDashboard
               Height = 96
               Align = alBottom
               TabOrder = 2
-              ExplicitTop = 302
               object lblDescMaxChar: TLabel
                 Left = 184
                 Top = 72
@@ -713,8 +701,6 @@ object frmDashboard: TfrmDashboard
             Height = 406
             Align = alClient
             TabOrder = 1
-            ExplicitLeft = 4
-            ExplicitTop = 5
             object edtGoalTarget: TLabeledEdit
               Left = 72
               Top = 76
@@ -735,7 +721,6 @@ object frmDashboard: TfrmDashboard
               Align = alTop
               Caption = 'Goal'
               TabOrder = 1
-              ExplicitWidth = 510
             end
             object pnlGoalAve: TPanel
               Left = 72
@@ -831,7 +816,6 @@ object frmDashboard: TfrmDashboard
         Align = alTop
         Caption = 'Goals'
         TabOrder = 1
-        ExplicitWidth = 818
       end
     end
   end
@@ -848,7 +832,6 @@ object frmDashboard: TfrmDashboard
     List = True
     ShowCaptions = True
     TabOrder = 1
-    ExplicitWidth = 960
     object tbtSidebar: TToolButton
       Left = 0
       Top = 0
@@ -867,7 +850,6 @@ object frmDashboard: TfrmDashboard
     TabOrder = 2
     OnMouseEnter = svSidebarMouseEnter
     OnResize = svSidebarResize
-    ExplicitHeight = 444
     object lblHello: TLabel
       Left = 0
       Top = 0

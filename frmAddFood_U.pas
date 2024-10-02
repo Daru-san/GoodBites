@@ -279,7 +279,7 @@ begin
 
   numResults := jsonArrFoods.Count;
 
-  for j := 1 to numResults do
+  for j := 1 to numResults - 1 do
   begin
     jsonFood := jsonArrFoods[j] as TJSONValue;
 
@@ -288,7 +288,7 @@ begin
 
     jsonArrNutrients := (jsonFood as TJSONObject).Get('foodNutrients').JsonValue as TJSONArray;
 
-    for p := 1 to jsonArrNutrients.Count do
+    for p := 1 to jsonArrNutrients.Count - 1 do
     begin
       jsonNutrient := jsonArrNutrients.Items[p] as TJSONValue;
 
@@ -307,7 +307,7 @@ begin
     end;
   end;
 
-  for j := 1 to numResults do
+  for j := 1 to numResults - 1 do
   begin
     cbxItems.Items.Add(arrFood[j]);
   end;

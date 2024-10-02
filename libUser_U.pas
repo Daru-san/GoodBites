@@ -911,15 +911,16 @@ var
   rPortion : Real;
   i : Integer;
 begin
-  i := 0;
+  i := 1;
+  isMealFound := false;
   with dmData.tblMeals do
   begin
     Open;
     First;
     repeat
-      if UserID = FieldValues['UserID'] then
+      if (UserID = FieldValues['UserID']) and (dDate = FieldValues['DateEaten']) then
       begin
-        if (dDate = FieldValues['DateEaten']) and (mealIndex = i) then
+        if (mealIndex = i) then
         begin
           isMealFound := true;
           tEaten := FieldValues['TimeEaten'];

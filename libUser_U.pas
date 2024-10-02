@@ -65,7 +65,7 @@ type
     procedure Login(sPassword:String);
     procedure SignUp(sPassword:String);
 
-    procedure SaveUserInfo(sFullname : string;iAge : integer; rWeight : Real);
+    procedure SaveUserInfo(sFullname : string;iAge : integer; rWeight,rHeight : Real);
   end;
 
   var
@@ -737,6 +737,8 @@ begin
     FieldValues['Fullname'] := sFullname;
     FieldValues['Age'] := iAge;
     FieldValues['FirstLogin'] := false;
+    FieldValues['Height'] := rHeight;
+    FieldValues['Weight'] := rWeight;
     Post;
   end;
 end;

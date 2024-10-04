@@ -157,7 +157,6 @@ var
   frmDashboard: TfrmDashboard;
   foodList : TStringList;
   FoodCount : integer;
-  currentMeal : TMeal;
 
 implementation
 
@@ -553,7 +552,7 @@ var
   sFoodname: string;
   i: Integer;
   isFound : boolean;
-  Protein,Carb,Fat,Calories,Sugar,Energy: real;
+  rProtein,rCarb,rFat,rCalories,rSugar,rEnergy: real;
   FoodItem : TFoodItem;
 begin
 
@@ -578,12 +577,12 @@ begin
     begin
       isFound := true;
       FoodItem := TFoodItem.Create(foodList[i]);
-      Protein := FoodItem.ProteinPer100G;
-      Carb := FoodItem.CarbPer100G;
-      Fat := FoodItem.FatPer100G;
-      Calories := FoodItem.CaloriePer100G;
-      Sugar := FoodItem.SugarPer100G;
-      Energy := FoodItem.EnergyPer100G;
+      rProtein := FoodItem.ProteinPer100G;
+      rCarb := FoodItem.CarbPer100G;
+      rFat := FoodItem.FatPer100G;
+      rCalories := FoodItem.CaloriePer100G;
+      rSugar := FoodItem.SugarPer100G;
+      rEnergy := FoodItem.EnergyPer100G;
 			FoodItem.Free;
     end else inc(i);
   until (i = FoodCount) or isFound;
@@ -601,12 +600,12 @@ begin
     begin
       Add('Information on ' + sFoodname);
       Add('----------------------------------------------------');
-      Add('Calories per 100g:' + #9 + FloatToStrF(Calories,ffFixed,8,2)+'kcal');
-      Add('Energy per 100g: ' + #9 + FloatToStrF(Energy,ffFixed,8,2)+'kJ');
-      Add('Proteins per 100g:' + #9 + FloatToStrF(Protein,ffFixed,8,2)+'g');
-      Add('Carbohydrates per 100g:' + #9 + FloatToStrF(Carb,ffFixed,8,2)+'g');
-      Add('Fat per 100g:' + #9 + FloatToStrF(Fat,ffFixed,8,2)+'g');
-      Add('Sugar per 100g:' + #9 + FloatToStrF(Sugar,ffFixed,8,2)+'g');
+      Add('Calories per 100g:' + #9 + FloatToStrF(rCalories,ffFixed,8,2)+'kcal');
+      Add('Energy per 100g: ' + #9 + FloatToStrF(rEnergy,ffFixed,8,2)+'kJ');
+      Add('Proteins per 100g:' + #9 + FloatToStrF(rProtein,ffFixed,8,2)+'g');
+      Add('Carbohydrates per 100g:' + #9 + FloatToStrF(rCarb,ffFixed,8,2)+'g');
+      Add('Fat per 100g:' + #9 + FloatToStrF(rFat,ffFixed,8,2)+'g');
+      Add('Sugar per 100g:' + #9 + FloatToStrF(rSugar,ffFixed,8,2)+'g');
     end; // end lines
   end // end with redMealInfo
   else

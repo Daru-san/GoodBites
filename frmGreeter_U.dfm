@@ -23,10 +23,6 @@ object frmGreeter: TfrmGreeter
     ActiveCard = crdWelcome
     Caption = 'Welcome Panel'
     TabOrder = 0
-    ExplicitLeft = 208
-    ExplicitTop = 176
-    ExplicitWidth = 300
-    ExplicitHeight = 200
     object crdLanding: TCard
       Left = 1
       Top = 1
@@ -35,10 +31,6 @@ object frmGreeter: TfrmGreeter
       Caption = '1.Landing'
       CardIndex = 0
       TabOrder = 0
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 185
-      ExplicitHeight = 41
     end
     object crdDetails: TCard
       Left = 1
@@ -48,8 +40,6 @@ object frmGreeter: TfrmGreeter
       Caption = '2.User Details'
       CardIndex = 1
       TabOrder = 1
-      ExplicitLeft = 2
-      ExplicitTop = 6
       object pnlDetailsHead: TPanel
         Left = 0
         Top = 0
@@ -66,10 +56,6 @@ object frmGreeter: TfrmGreeter
         Height = 304
         Align = alClient
         TabOrder = 1
-        ExplicitLeft = 120
-        ExplicitTop = 104
-        ExplicitWidth = 185
-        ExplicitHeight = 41
         object pnlAge: TPanel
           Left = 424
           Top = 73
@@ -91,7 +77,7 @@ object frmGreeter: TfrmGreeter
             MaxValue = 150
             MinValue = 7
             TabOrder = 0
-            Value = 0
+            Value = 7
             OnChange = spnAgeChange
           end
         end
@@ -136,6 +122,7 @@ object frmGreeter: TfrmGreeter
             MinValue = 30.000000000000000000
             MaxValue = 300.000000000000000000
             TabOrder = 0
+            Value = 30.000000000000000000
             StyleName = 'Windows'
             UseMouseWheel = True
             OnChange = nbxHeightChange
@@ -180,95 +167,15 @@ object frmGreeter: TfrmGreeter
       CardIndex = 2
       TabOrder = 2
       OnEnter = crdWelcomeEnter
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 185
-      ExplicitHeight = 41
-      object pcTutorial: TPageControl
-        Left = 0
-        Top = 0
-        Width = 832
-        Height = 361
-        ActivePage = tsDashboard
-        Align = alClient
+      object mpWelcome: TMediaPlayer
+        Left = 312
+        Top = 304
+        Width = 141
+        Height = 30
+        VisibleButtons = [btPlay, btPause, btStop, btPrev, btStep]
+        DoubleBuffered = True
+        ParentDoubleBuffered = False
         TabOrder = 0
-        object tsDashboard: TTabSheet
-          Caption = 'Dashboard'
-          object imgDashboard: TImage
-            Left = 0
-            Top = 41
-            Width = 824
-            Height = 290
-            Align = alClient
-            ExplicitLeft = 264
-            ExplicitTop = 64
-            ExplicitWidth = 105
-            ExplicitHeight = 105
-          end
-          object pnlDashHeader: TPanel
-            Left = 0
-            Top = 0
-            Width = 824
-            Height = 41
-            Align = alTop
-            Caption = 'Dashboard navigation'
-            TabOrder = 0
-            ExplicitLeft = 88
-            ExplicitTop = 56
-            ExplicitWidth = 185
-          end
-        end
-        object tsEating: TTabSheet
-          Caption = 'Eating Screen'
-          ImageIndex = 1
-          object imgEating: TImage
-            Left = 0
-            Top = 41
-            Width = 824
-            Height = 290
-            Align = alClient
-            AutoSize = True
-            Center = True
-            Stretch = True
-            ExplicitWidth = 1004
-            ExplicitHeight = 499
-          end
-          object pnlEating: TPanel
-            Left = 0
-            Top = 0
-            Width = 824
-            Height = 41
-            Align = alTop
-            Caption = 'Eating screen navigation'
-            TabOrder = 0
-            ExplicitTop = 8
-          end
-        end
-        object tsGoals: TTabSheet
-          Caption = 'Goals Screen'
-          ImageIndex = 2
-          object imgGoals: TImage
-            Left = 0
-            Top = 41
-            Width = 824
-            Height = 290
-            Align = alClient
-            ExplicitLeft = 264
-            ExplicitTop = 64
-            ExplicitWidth = 105
-            ExplicitHeight = 105
-          end
-          object pnlGoals: TPanel
-            Left = 0
-            Top = 0
-            Width = 824
-            Height = 41
-            Align = alTop
-            Caption = 'Goals Screen'
-            TabOrder = 0
-            ExplicitTop = 8
-          end
-        end
       end
     end
     object crdGoals: TCard
@@ -279,10 +186,6 @@ object frmGreeter: TfrmGreeter
       Caption = '3.Goals'
       CardIndex = 3
       TabOrder = 3
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 185
-      ExplicitHeight = 41
     end
   end
   object tbTop: TToolBar
@@ -291,7 +194,6 @@ object frmGreeter: TfrmGreeter
     Width = 834
     Height = 29
     TabOrder = 1
-    ExplicitWidth = 831
   end
   object tbNavbar: TToolBar
     Left = 0
@@ -301,9 +203,6 @@ object frmGreeter: TfrmGreeter
     Align = alBottom
     Caption = 'ToolBar1'
     TabOrder = 2
-    ExplicitLeft = 352
-    ExplicitTop = 216
-    ExplicitWidth = 150
     object btnBack: TButton
       Left = 0
       Top = 0

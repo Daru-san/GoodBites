@@ -7,11 +7,10 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.WinXPanels, Vcl.ToolWin,
   Vcl.ComCtrls, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Samples.Spin,
   Vcl.Mask, Vcl.NumberBox,
-  libUser_U,libUtils_U, libGoals_U;
+  libUser_U,libUtils_U, libGoals_U, Vcl.MPlayer;
 
 type
   TfrmGreeter = class(TForm)
-    FCurrentUser : TUser;
     crplWelcome: TCardPanel;
     tbTop: TToolBar;
     crdLanding: TCard;
@@ -33,17 +32,8 @@ type
     pnlWeight: TPanel;
     pnlDetails: TPanel;
     crdWelcome: TCard;
-    pcTutorial: TPageControl;
-    tsDashboard: TTabSheet;
-    tsEating: TTabSheet;
-    tsGoals: TTabSheet;
-    imgDashboard: TImage;
-    pnlDashHeader: TPanel;
-    pnlEating: TPanel;
-    imgEating: TImage;
-    pnlGoals: TPanel;
-    imgGoals: TImage;
     crdGoals: TCard;
+    mpWelcome: TMediaPlayer;
     procedure FormShow(Sender: TObject);
     procedure btnContinueClick(Sender: TObject);
     procedure crdWelcomeEnter(Sender: TObject);
@@ -55,6 +45,7 @@ type
 
   private
     { Private declarations }
+    FCurrentUser : TUser;
     procedure ViewDetailsCard;
     procedure ViewWelcomeCard;
     procedure ViewGoalsCard;
@@ -111,6 +102,7 @@ begin
   begin
     PostGoals;
     crplWelcome.ActiveCard := crdWelcome;
+    mpWelcome.Play;
   end;
   if crplWelcome.ActiveCard <> crdLanding then
     btnBack.Enabled := true;

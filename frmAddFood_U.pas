@@ -229,7 +229,7 @@ end;
 
 procedure TfrmAddFood.SortItems;
 var
-  j,P : integer;
+  j,P,i : integer;
   jsonArrFoods,jsonArrNutrients : TJSONArray;
   jsonFood : TJSONValue;
   jsonValue,jsonNutrientValue : TJSONValue;
@@ -279,35 +279,36 @@ begin
   ;
   numResults := jsonArrFoods.Count;
 
-  for j := 1 to numResults - 1 do
+  for j := 0 to numResults -1 do
   begin
+    i := j+1;
     jsonFood := jsonArrFoods[j] as TJSONValue;
-
-    arrFood[j] := JsonFood.FindValue('description').GetValue<string>;
-    arrCategory[j] := jsonFood.FindValue('foodCategory').GetValue<String>;
+    arrFood[i] := JsonFood.FindValue('description').GetValue<string>;
+    arrCategory[i] := jsonFood.FindValue('foodCategory').GetValue<String>;
 
     jsonArrNutrients := (jsonFood as TJSONObject).Get('foodNutrients').JsonValue as TJSONArray;
 
-    for p := 1 to jsonArrNutrients.Count - 1 do
+    for p := 0 to jsonArrNutrients.Count - 1 do
     begin
       jsonNutrient := jsonArrNutrients.Items[p] as TJSONValue;
 
       iNutrientID := jsonNutrient.FindValue('nutrientId').GetValue<integer>;
 
       case iNutrientID of
-      1003: arrProtein[j] := GetNutrientValue(jsonNutrient);
-      1004: arrFat[j] := GetNutrientValue(jsonNutrient);
-      1005: arrCarb[j] := GetNutrientValue(jsonNutrient);
-      1008: arrEnergy[j] := GetNutrientValue(jsonNutrient);
-      2000: arrSugar[j] := GetNutrientValue(jsonNutrient);
+      1003: arrProtein[i] := GetNutrientValue(jsonNutrient);
+      1004: arrFat[i] := GetNutrientValue(jsonNutrient);
+      1005: arrCarb[i] := GetNutrientValue(jsonNutrient);
+      1010: arrSugar[i] := GetNutrientValue(jsonNutrient);
       end;
     end;
 
     { Formula: Calories = protein*4 + carbohydrate*4 + lipid*9 }
-      arrCalories[j] := arrProtein[j]*4+arrCarb[j]*4+arrFat[j]*9;
+      arrCalories[i] := arrProtein[i]*4+arrCarb[i]*4+arrFat[i]*9;
+
+      arrEnergy[i] := arrCalories[i] * 4.18;
   end;
 
-  for j := 1 to numResults - 1 do
+  for j := 1 to numResults do
   begin
     cbxItems.Items.Add(arrFood[j]);
   end;

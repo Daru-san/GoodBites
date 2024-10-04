@@ -60,26 +60,26 @@ end;
 
 procedure TfrmAddFood.btnAcceptClick(Sender: TObject);
 var
-  FoodIndex : integer;
-  Calories,Energy,Protein,Carbs,Fat,Sugar: real;
-  FoodDesc : string;
+  iFoodIndex : integer;
+  rCalories,rEnergy,rProtein,rCarbs,rFat,rSugar: real;
+  sFoodDesc : string;
 begin
   inherited;
-  FoodIndex := cbxItems.ItemIndex+1;
-  FoodDesc := arrFood[FoodIndex];
-  Calories := arrCalories[FoodIndex];
-  Energy := arrEnergy[FoodIndex];
-  Protein := arrProtein[FoodIndex];
-  Carbs := arrCarb[FoodIndex];
-  Fat := arrFat[FoodIndex];
-  Sugar := arrSugar[FoodIndex];
+  iFoodIndex := cbxItems.ItemIndex+1;
+  sFoodDesc := arrFood[iFoodIndex];
+  rCalories := arrCalories[iFoodIndex];
+  rEnergy := arrEnergy[iFoodIndex];
+  rProtein := arrProtein[iFoodIndex];
+  rCarbs := arrCarb[iFoodIndex];
+  rFat := arrFat[iFoodIndex];
+  rSugar := arrSugar[iFoodIndex];
 
 
   if MessageDlg('Are you sure you want to enter this food item?',mtConfirmation,mbYesNo,0) = mrYes then
   begin
     FoodItem := TfoodItem.Create(Foodname);
-    FoodItem.AddNutrients(Calories,Protein,Carbs,Fat,Energy,Sugar);
-    FoodItem.AddFoodToDB(FoodDesc);
+    FoodItem.AddNutrients(rCalories,rProtein,rCarbs,rFat,rEnergy,rSugar);
+    FoodItem.AddFoodToDB(sFoodDesc);
     FoodItem.Free;
     ShowMessage(Foodname + ' has been added to the database!' + #13 + 'Happy eating!');
     OKBtn.ModalResult := mrYes;
@@ -147,24 +147,24 @@ end;
 
 procedure TfrmAddFood.cbxItemsChange(Sender: TObject);
 var
-  FoodIndex : integer;
-  Foodname,FoodDesc,FoodCat : string;
-  Calories,Energy,Protein,Carbs,Fat,Sugar: real;
+  iFoodIndex : integer;
+  sFoodname,sFoodDesc,sFoodCat : string;
+  rCalories,rEnergy,rProtein,rCarbs,rFat,rSugar: real;
 begin
   inherited;
   if cbxItems.ItemIndex <> -1 then
     btnAccept.Enabled := true
   else btnAccept.Enabled := false;
-  FoodIndex := cbxItems.ItemIndex+1;
+  iFoodIndex := cbxItems.ItemIndex+1;
 
-  Foodcat := arrCategory[FoodIndex];
-  FoodDesc := arrFood[FoodIndex];
-  Calories := arrCalories[FoodIndex];
-  Energy := arrEnergy[FoodIndex];
-  Protein := arrProtein[FoodIndex];
-  Carbs := arrCarb[FoodIndex];
-  Fat := arrFat[FoodIndex];
-  Sugar := arrSugar[FoodIndex];
+  sFoodCat := arrCategory[iFoodIndex];
+  sFoodDesc := arrFood[iFoodIndex];
+  rCalories := arrCalories[iFoodIndex];
+  rEnergy := arrEnergy[iFoodIndex];
+  rProtein := arrProtein[iFoodIndex];
+  rCarbs := arrCarb[iFoodIndex];
+  rFat := arrFat[iFoodIndex];
+  rSugar := arrSugar[iFoodIndex];
 
   with redItems do
   begin
@@ -178,17 +178,17 @@ begin
     end;
     with lines do
     begin
-      Add('Data on ' + Foodname + #13);
-      Add('Description' + #9 + FoodDesc);
-      Add('Category' + #9 + FoodCat);
+      Add('Data on ' + sFoodname + #13);
+      Add('Description' + #9 + sFoodDesc);
+      Add('Category' + #9 + sFoodCat);
       Add('');
       Add('Nutrients:');
-      Add('Calories(Calculated):' + #9 + FloatToStrF(Calories,ffFixed,8,2) + 'kCal');
-      Add('Energy:' + #9 + FloatToStrF(Energy,ffFixed,8,2) + 'kJ');
-      Add('Protein:' + #9 + FloatToStrF(Protein,ffFixed,8,2)+ 'g');
-      Add('Carbs:' + #9 + FloatToStrF(Carbs,ffFixed,8,2)+ 'g');
-      Add('Fat:' + #9 + FloatToStrF(Fat,ffFixed,8,2) + 'g');
-      Add('Sugar:' + #9 + FloatToStrF(Sugar,ffFixed,8,2) + 'g');
+      Add('Calories(Calculated):' + #9 + FloatToStrF(rCalories,ffFixed,8,2) + 'kCal');
+      Add('Energy:' + #9 + FloatToStrF(rEnergy,ffFixed,8,2) + 'kJ');
+      Add('Protein:' + #9 + FloatToStrF(rProtein,ffFixed,8,2)+ 'g');
+      Add('Carbs:' + #9 + FloatToStrF(rCarbs,ffFixed,8,2)+ 'g');
+      Add('Fat:' + #9 + FloatToStrF(rFat,ffFixed,8,2) + 'g');
+      Add('Sugar:' + #9 + FloatToStrF(rSugar,ffFixed,8,2) + 'g');
     end;
   end;
 end;
@@ -303,9 +303,9 @@ begin
     end;
 
     { Formula: Calories = protein*4 + carbohydrate*4 + lipid*9 }
-      arrCalories[i] := arrProtein[i]*4+arrCarb[i]*4+arrFat[i]*9;
+    arrCalories[i] := arrProtein[i]*4+arrCarb[i]*4+arrFat[i]*9;
 
-      arrEnergy[i] := arrCalories[i] * 4.18;
+    arrEnergy[i] := arrCalories[i] * 4.18;
   end;
 
   for j := 1 to numResults do

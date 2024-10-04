@@ -11,7 +11,6 @@ uses
   Vcl.Styles,
   {$ENDIF }
   conDB in 'conDB.pas' {dmData: TDataModule},
-  OKCANCL2 in 'c:\program files (x86)\embarcadero\studio\23.0\ObjRepos\EN\DelphiWin32\OKCANCL2.PAS' {OKRightDlg},
   frmAddFood_U in 'frmAddFood_U.pas' {frmAddFood},
   frmAdmin_U in 'frmAdmin_U.pas' {frmAdmin},
   frmDashboard_U in 'frmDashboard_U.pas' {frmDashboard},
@@ -24,7 +23,8 @@ uses
   libFetchAPI_U in 'libFetchAPI_U.pas',
   frmSettings_U in 'frmSettings_U.pas' {frmSettings},
   libGoals_U in 'libGoals_U.pas',
-  frmGreeter_U in 'frmGreeter_U.pas' {frmGreeter};
+  frmGreeter_U in 'frmGreeter_U.pas' {frmGreeter},
+  OKCANCL2 in 'Inherited\OKCANCL2.PAS' {OKRightDlg};
 
 {$R *.res}
 
@@ -41,6 +41,7 @@ begin
   Application.CreateForm(TfrmLogin, frmLogin);
   Application.CreateForm(TfrmSettings, frmSettings);
   Application.CreateForm(TfrmGreeter, frmGreeter);
+  Application.CreateForm(TOKRightDlg, OKRightDlg);
   Application.Run;
 
 end.

@@ -106,9 +106,6 @@
             <Form>dmData</Form>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
-        <DCCReference Include="c:\program files (x86)\embarcadero\studio\23.0\ObjRepos\EN\DelphiWin32\OKCANCL2.PAS">
-            <Form>OKRightDlg</Form>
-        </DCCReference>
         <DCCReference Include="frmAddFood_U.pas">
             <Form>frmAddFood</Form>
         </DCCReference>
@@ -137,6 +134,10 @@
         <DCCReference Include="libGoals_U.pas"/>
         <DCCReference Include="frmGreeter_U.pas">
             <Form>frmGreeter</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="Inherited\OKCANCL2.PAS">
+            <Form>OKRightDlg</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <BuildConfiguration Include="Base">

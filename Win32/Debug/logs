@@ -564,3 +564,16 @@
 04/10/2024@19:45:29: [USER] User Dai uid Dai logged in.
 04/10/2024@19:54:51: [USER] User Dai uid Dai logged in.
 04/10/2024@19:55:45: [USER] User Dai uid Dai logged in.
+04/10/2024@21:27:46: [USER] User Dai uid Dai logged in.
+04/10/2024@21:28:39: [USER] User Dai uid Dai logged in.
+04/10/2024@21:33:34: [USER] User Dai uid Dai logged in.
+04/10/2024@21:35:02: [USER] User Dai uid Dai logged in.
+04/10/2024@21:36:18: [USER] User Dai uid Dai logged in.
+04/10/2024@21:37:21: [USER] User Dai uid Dai logged in.
+04/10/2024@21:37:48: [USER] User Dai uid Dai logged in.
+04/10/2024@21:38:13: [SYSTEM] Item Burger has been added to the database
+04/10/2024@21:38:15: [SYSTEM] Food item Burger was added to the database!
+04/10/2024@21:38:34: [USER] User Dai uid Dai logged in.
+04/10/2024@21:39:48: [USER] Administrator Daru uid Daru logged in.
+04/10/2024@21:39:50: [SYSTEM] The database table `tblFoods` was accessed by administrator Daru
+04/10/2024@21:39:58: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru

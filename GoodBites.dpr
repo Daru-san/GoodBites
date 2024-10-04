@@ -24,7 +24,8 @@ uses
   frmSettings_U in 'frmSettings_U.pas' {frmSettings},
   libGoals_U in 'libGoals_U.pas',
   frmGreeter_U in 'frmGreeter_U.pas' {frmGreeter},
-  OKCANCL2 in 'Inherited\OKCANCL2.PAS' {OKRightDlg};
+  OKCANCL2 in 'Inherited\OKCANCL2.PAS' {OKRightDlg},
+  frmCustomFood_U in 'frmCustomFood_U.pas' {frmCustomFood};
 
 {$R *.res}
 
@@ -42,6 +43,7 @@ begin
   Application.CreateForm(TfrmSettings, frmSettings);
   Application.CreateForm(TfrmGreeter, frmGreeter);
   Application.CreateForm(TOKRightDlg, OKRightDlg);
+  Application.CreateForm(TfrmCustomFood, frmCustomFood);
   Application.Run;
 
 end.

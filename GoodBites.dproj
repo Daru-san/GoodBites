@@ -140,6 +140,10 @@
             <Form>OKRightDlg</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="frmCustomFood_U.pas">
+            <Form>frmCustomFood</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

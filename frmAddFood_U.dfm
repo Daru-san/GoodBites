@@ -86,23 +86,32 @@ inherited frmAddFood: TfrmAddFood
     Lines.Strings = (
       'redItems')
     ParentFont = False
+    ReadOnly = True
     TabOrder = 7
+  end
+  object actvLoad: TActivityIndicator
+    Left = 609
+    Top = 265
+  end
+  object btnCustom: TButton
+    Left = 200
+    Top = 93
+    Width = 75
+    Height = 25
+    Caption = 'Custom Item'
+    TabOrder = 9
+    OnClick = btnCustomClick
   end
   object edtQuery: TLabeledEdit
     Left = 40
     Top = 52
     Width = 121
     Height = 23
-    EditLabel.Width = 62
+    EditLabel.Width = 32
     EditLabel.Height = 15
-    EditLabel.Caption = 'Enter Query'
-    TabOrder = 8
+    EditLabel.Caption = 'Query'
+    TabOrder = 10
     Text = ''
     TextHint = 'Food name'
-    OnChange = edtQueryChange
-  end
-  object actvLoad: TActivityIndicator
-    Left = 609
-    Top = 265
   end
 end

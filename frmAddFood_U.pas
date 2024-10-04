@@ -4,7 +4,7 @@ interface
 
 uses Winapi.Windows, System.SysUtils, System.Classes, Vcl.Graphics, Vcl.Forms, StrUtils, Dialogs,
   Vcl.Controls, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, OKCANCL2, JSON, Vcl.ComCtrls,
-  libFetchAPI_U, libUtils_U, libMeals_U, Vcl.Mask, Vcl.WinXCtrls;
+  libFetchAPI_U, libUtils_U, libMeals_U, Vcl.Mask, Vcl.WinXCtrls, frmCustomFood_U;
 
 type
   TfrmAddFood = class(TOKRightDlg)
@@ -14,8 +14,9 @@ type
     btnAccept: TButton;
     cbxBranded: TCheckBox;
     redItems: TRichEdit;
-    edtQuery: TLabeledEdit;
     actvLoad: TActivityIndicator;
+    btnCustom: TButton;
+    edtQuery: TLabeledEdit;
     procedure HelpBtnClick(Sender: TObject);
     procedure btnQueryClick(Sender: TObject);
     procedure btnAcceptClick(Sender: TObject);
@@ -23,6 +24,7 @@ type
     procedure cbxItemsChange(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure edtQueryChange(Sender: TObject);
+    procedure btnCustomClick(Sender: TObject);
   private
     procedure SortItems(JSONResponse : TStringStream;ResponseLength : Integer);
     function GetNutrientValue(jsonNutrient : TJSONValue) : real;
@@ -83,6 +85,19 @@ begin
     FoodItem.Free;
     ShowMessage(Foodname + ' has been added to the database!' + #13 + 'Happy eating!');
     OKBtn.ModalResult := mrYes;
+  end;
+end;
+
+procedure TfrmAddFood.btnCustomClick(Sender: TObject);
+var
+  CustomFoods : TfrmCustomFood;
+begin
+  inherited;
+  CustomFoods := TfrmCustomFood.Create(nil);
+  try
+    CustomFoods.ShowModal;
+  finally
+    CustomFoods.Free;
   end;
 end;
 
@@ -148,7 +163,7 @@ end;
 procedure TfrmAddFood.cbxItemsChange(Sender: TObject);
 var
   iFoodIndex : integer;
-  sFoodname,sFoodDesc,sFoodCat : string;
+  sFoodDesc,sFoodCat : string;
   rCalories,rEnergy,rProtein,rCarbs,rFat,rSugar: real;
 begin
   inherited;
@@ -178,12 +193,12 @@ begin
     end;
     with lines do
     begin
-      Add('Data on ' + sFoodname + #13);
+      Add('Data on ' + Foodname + #13);
       Add('Description' + #9 + sFoodDesc);
       Add('Category' + #9 + sFoodCat);
       Add('');
       Add('Nutrients:');
-      Add('Calories(Calculated):' + #9 + FloatToStrF(rCalories,ffFixed,8,2) + 'kCal');
+      Add('Calories(Calculated):' + #9 + FloatToStrF(rCalories,ffFixed,8,2) + 'cal');
       Add('Energy:' + #9 + FloatToStrF(rEnergy,ffFixed,8,2) + 'kJ');
       Add('Protein:' + #9 + FloatToStrF(rProtein,ffFixed,8,2)+ 'g');
       Add('Carbs:' + #9 + FloatToStrF(rCarbs,ffFixed,8,2)+ 'g');
@@ -245,7 +260,6 @@ begin
     Each food item as an item in the json array, the same goes for the nutrients as a sub-array
     of foodNutrients. }
 
-
   sJsonResponse := JSONResponse.ReadString(ResponseLength);
   JSONResponse.Free;
 
@@ -262,8 +276,6 @@ begin
     exit;
   end;
 
-
-
   { I hope to prevent type casting errors that may come up when the json
     file does not come out as expected, exiting seems to prevent any issues
     from arising very quickly }
@@ -273,10 +285,10 @@ begin
   end
   else
   begin
-    ShowMessage('Something weird happened..');
+    ShowMessage('Error in retrieving results, please try again.');
     exit;
   end;
-  ;
+
   numResults := jsonArrFoods.Count;
 
   for j := 0 to numResults -1 do
@@ -303,7 +315,7 @@ begin
     end;
 
     { Formula: Calories = protein*4 + carbohydrate*4 + lipid*9 }
-    arrCalories[i] := arrProtein[i]*4+arrCarb[i]*4+arrFat[i]*9;
+    arrCalories[i] := (arrProtein[i] * 4) + (arrCarb[i] * 4) + (arrFat[i] * 9);
 
     arrEnergy[i] := arrCalories[i] * 4.18;
   end;

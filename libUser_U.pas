@@ -56,6 +56,7 @@ type
     // Used by external procedures to get user login information
     function CheckLogin : boolean;
     function GetFirstLogin : boolean;
+    function GetRegisterDate : TDate;
 
     // Meal related procedures
     function GetDailyCalories(pDate:Tdate):integer;
@@ -723,6 +724,29 @@ begin
     until EOF or isFound;
     Close;
   end;
+end;
+
+function TUser.GetRegisterDate: TDate;
+var
+  isFound : Boolean;
+  dDate : TDate;
+begin
+  isFound := false;
+  dDate := Date;
+  with dmData.tblUsers do
+  begin
+    Open;
+    First;
+    repeat
+      if UserID = FieldValues['UserID'] then
+      begin
+        isFound := true;
+        dDate := FieldValues['RegisterDate'];
+      end else next;
+    until EOF or isFound;
+    Close;
+  end;
+  Result := dDate;
 end;
 
 // Add extra information from new users on first login

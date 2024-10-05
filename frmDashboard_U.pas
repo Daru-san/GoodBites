@@ -155,6 +155,7 @@ type
     procedure LogEatenFood;
     procedure ShowMealInfo;
     procedure ShowMealLog(pDate :TDate);
+    procedure PopulateGoalUnits(pGoalItem:string);
 
     procedure ShowGoalInfo(pGoalItem : string);
     procedure ResetGoalInfo;
@@ -831,6 +832,9 @@ begin
   edtGoalTarget.Text := FloatToStrF(rTarget,ffGeneral,8,2);
 
 
+  PopulateGoalUnits(pGoalItem);
+  cbxGoalUnit.ItemIndex := 0;
+  cbxGoalUnitChange(nil);
   iTotalDays := Goal.GetTotalDays;
   iAchievedDays := GOAL.CalcDaysAchieved;
 
@@ -846,6 +850,19 @@ begin
   crplGoals.ActiveCard := crdGoalView;
 end;
 
+procedure TfrmDashboard.PopulateGoalUnits(pGoalItem: string);
+var isWater : Boolean;
+begin
+  isWater := LowerCase(pGoalItem) = 'water';
+  if isWater then
+  begin
+    cbxGoalUnit.Items.Add('millilitres');
+    cbxGoalUnit.Items.Add('litres');
+    cbxGoalUnit.Items.Add('glasses');
+  end
+  else
+    cbxGoalUnit.Items.Add('grams');
+end;
 procedure TfrmDashboard.btnGoalCaloriesClick(Sender: TObject);
 begin
   ShowGoalInfo('Calorie');

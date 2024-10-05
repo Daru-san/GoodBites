@@ -426,12 +426,17 @@ begin
   begin
     Open;
     Append;
-    FieldValues['userID'] := UserID;
+    FieldValues['UserID'] := UserID;
     FieldValues['Username'] := Username;
     FieldValues['RegisterDate'] := date;
     FieldValues['isAdmin'] := false;
     FieldValues['Age'] := 0;
     FieldValues['FirstLogin'] := true;
+    FieldValues['Fullname'] := 'Null';
+    FieldValues['ActivityLevel'] := 0;
+    FieldValues['Height'] := 0;
+    FieldValues['weight'] := 0;
+    FieldValues['LastLogin'] := date;
     Post;
     Close;
   end;

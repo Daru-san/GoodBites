@@ -9,61 +9,86 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils,System.StrUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids, Vcl.Samples.Spin, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.ComCtrls,
-  libUtils_U, libUser_U, conDB, Vcl.ToolWin,frmSettings_U;
+  libUtils_U, libUser_U, conDB, Vcl.ToolWin,frmSettings_U, Vcl.WinXCtrls;
 
 type
   TfrmAdmin = class(TForm)
-    pnlFooter: TPanel;
     btnLogout: TButton;
     pageCtrl: TPageControl;
     tsUsers: TTabSheet;
     tsLogs: TTabSheet;
     memLogs: TMemo;
     pnlLogHeader: TPanel;
-    lblLogs: TLabel;
     btnClear: TButton;
     edtFilter: TEdit;
-    pnl: TPanel;
-    lblUsers: TLabel;
-    dbgUsers: TDBGrid;
-    btnPrev: TButton;
-    btnNext: TButton;
+    btnUserPrevious: TButton;
+    btnUserNext: TButton;
     btnFilter: TButton;
-    btnUserDel: TButton;
-    btnFirst: TButton;
-    btnLast: TButton;
+    btnUserDelete: TButton;
+    btnUserFirst: TButton;
+    btnUserLast: TButton;
     pnlUserNav: TPanel;
-    lblNav: TLabel;
+    lblUserRecordNav: TLabel;
     pnlMod: TPanel;
-    lblRecMod: TLabel;
-    edtField: TEdit;
-    edtData: TEdit;
-    btnFieldEdit: TButton;
+    lblUserRecordMod: TLabel;
+    edtUserField: TEdit;
+    edtUserFieldData: TEdit;
+    btnUserFieldEdit: TButton;
     tsHome: TTabSheet;
     tsFoods: TTabSheet;
-    dbgFoods: TDBGrid;
-    tbTop: TToolBar;
-    tbtUser: TToolButton;
+    dbgFoodsTable: TDBGrid;
+    SplitView1: TSplitView;
+    pnlUserHead: TPanel;
+    pnlUsersCenter: TPanel;
+    pnlUsersBottom: TPanel;
+    pnlFoodTop: TPanel;
+    pnlFoodCenter: TPanel;
+    pnlFoodBottom: TPanel;
+    lblUser: TLabel;
+    pnlFoodRecordMod: TPanel;
+    lblFoodRecordMod: TLabel;
+    btnFoodDelete: TButton;
+    edtFoodField: TEdit;
+    edtFoodFieldData: TEdit;
+    btnFoodEdit: TButton;
+    pnlFoodRecordNav: TPanel;
+    lblFoodRecordNav: TLabel;
+    btnFoodFirst: TButton;
+    btnFoodLast: TButton;
+    btnFoodPrev: TButton;
+    btnFoodNext: TButton;
+    pnlLogsCenter: TPanel;
+    pnlLogsBottom: TPanel;
+    btnUnfilter: TButton;
+    pnlHomeTop: TPanel;
+    btnBackupDB: TButton;
+    dbgUsersTable: TDBGrid;
 
     procedure btnLogoutClick(Sender: TObject);
     procedure tsLogsShow(Sender: TObject);
     procedure btnClearClick(Sender: TObject);
     procedure tsUsersShow(Sender: TObject);
-    procedure btnNextClick(Sender: TObject);
-    procedure btnPrevClick(Sender: TObject);
+    procedure btnUserNextClick(Sender: TObject);
+    procedure btnUserPreviousClick(Sender: TObject);
     procedure dbgUsersDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure btnFilterClick(Sender: TObject);
-    procedure btnUserDelClick(Sender: TObject);
-    procedure btnFirstClick(Sender: TObject);
-    procedure btnLastClick(Sender: TObject);
-    procedure btnFieldEditClick(Sender: TObject);
+    procedure btnUserDeleteClick(Sender: TObject);
+    procedure btnUserFirstClick(Sender: TObject);
+    procedure btnUserLastClick(Sender: TObject);
+    procedure btnUserFieldEditClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure tsFoodsShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure dbgFoodsDrawColumnCell(Sender: TObject; const Rect: TRect;
+    procedure dbgFoodsTableDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure tbtUserClick(Sender: TObject);
+    procedure btnFoodFirstClick(Sender: TObject);
+    procedure btnFoodLastClick(Sender: TObject);
+    procedure btnFoodPrevClick(Sender: TObject);
+    procedure btnFoodNextClick(Sender: TObject);
+    procedure btnUnfilterClick(Sender: TObject);
+    procedure btnBackupDBClick(Sender: TObject);
   private
     { Private declarations }
     FAdminUser : TUser;
@@ -89,8 +114,10 @@ implementation
 
 {$R *.dfm}
 
-// TODO: Plot administator navigation
-// TODO: Filter logs for specific patterns
+procedure TfrmAdmin.btnBackupDBClick(Sender: TObject);
+begin
+  dmData.BackUpDB;
+end;
 
 procedure TfrmAdmin.btnClearClick(Sender: TObject);
 begin
@@ -98,12 +125,12 @@ begin
     ClearLogs();
 end;
 
-procedure TfrmAdmin.btnFieldEditClick(Sender: TObject);
+procedure TfrmAdmin.btnUserFieldEditClick(Sender: TObject);
 var
   sFieldName,sFieldData : string;
 begin
-  sFieldName := edtField.Text;
-  sFieldData := edtData.Text;
+  sFieldName := edtUserField.Text;
+  sFieldData := edtUserFieldData.Text;
   if MessageDlg('Modify user data?',mtConfirmation,mbOKCancel,0) = mrOk then
   begin
     if sFieldName = 'Username' then
@@ -137,12 +164,32 @@ begin
     ShowLogs(sSearch);
 end;
 
-procedure TfrmAdmin.btnFirstClick(Sender: TObject);
+procedure TfrmAdmin.btnFoodFirstClick(Sender: TObject);
+begin
+  dmData.tblFoods.First;
+end;
+
+procedure TfrmAdmin.btnFoodLastClick(Sender: TObject);
+begin
+  dmData.tblFoods.Last;
+end;
+
+procedure TfrmAdmin.btnFoodNextClick(Sender: TObject);
+begin
+  dmData.tblFoods.Next;
+end;
+
+procedure TfrmAdmin.btnFoodPrevClick(Sender: TObject);
+begin
+  dmData.tblFoods.Prior;
+end;
+
+procedure TfrmAdmin.btnUserFirstClick(Sender: TObject);
 begin
   dmData.tblUsers.first;
 end;
 
-procedure TfrmAdmin.btnLastClick(Sender: TObject);
+procedure TfrmAdmin.btnUserLastClick(Sender: TObject);
 begin
   dmData.tblUsers.Last;
 end;
@@ -150,20 +197,24 @@ end;
 procedure TfrmAdmin.btnLogoutClick(Sender: TObject);
 begin
   frmAdmin.Close;
-  frmAdmin.Destroy;
 end;
 
-procedure TfrmAdmin.btnNextClick(Sender: TObject);
+procedure TfrmAdmin.btnUserNextClick(Sender: TObject);
 begin
   dmData.tblUsers.Next;
 end;
 
-procedure TfrmAdmin.btnPrevClick(Sender: TObject);
+procedure TfrmAdmin.btnUserPreviousClick(Sender: TObject);
 begin
   dmData.tblUsers.Prior;
 end;
 
-procedure TfrmAdmin.btnUserDelClick(Sender: TObject);
+procedure TfrmAdmin.btnUnfilterClick(Sender: TObject);
+begin
+  ShowLogs;
+end;
+
+procedure TfrmAdmin.btnUserDeleteClick(Sender: TObject);
 begin
   AdminUser.RemoveUser(dmData.tblUsers.FieldValues['UserID']);
 end;
@@ -183,7 +234,7 @@ end;
 
 procedure TfrmAdmin.tsFoodsShow(Sender: TObject);
 begin
-  InitializeWidth(dbgFoods);
+  InitializeWidth(dbgFoodsTable);
   LogService.WriteSysLog('The database table `tblFoods` was accessed by administrator ' + AdminUser.Username);
 end;
 
@@ -195,7 +246,7 @@ end;
 
 procedure TfrmAdmin.tsUsersShow(Sender: TObject);
 begin
-  InitializeWidth(dbgUsers);
+  InitializeWidth(dbgUsersTable);
   LogService.WriteSysLog('The database table `tblUsers` was accessed by administrator ' + AdminUser.Username);
 end;
 
@@ -264,18 +315,14 @@ begin
     ShowMessage('An error occured: the log file is either missing or corrupted');
 end;
 
-
-
-{ Nicely deals with the width of the columns in the dbGrids
-  Calculates the size of the dbgrid text based on the size of
-  the longest item in the grid plus 5 }
-procedure TfrmAdmin.dbgFoodsDrawColumnCell(Sender: TObject; const Rect: TRect;
+procedure TfrmAdmin.dbgFoodsTableDrawColumnCell(Sender: TObject; const Rect: TRect;
   DataCol: Integer; Column: TColumn; State: TGridDrawState);
 var
   width : integer;
 begin
-  width := 5+dbgUsers.Canvas.TextExtent(Column.Field.DisplayText).cx;
-  if width>column.width then column.Width := width;
+  width := 5+dbgFoodsTable.Canvas.TextExtent(Column.Field.DisplayText).cx;
+  if width>column.width then
+    column.Width := width;
 end;
 
 procedure TfrmAdmin.dbgUsersDrawColumnCell(Sender: TObject; const Rect: TRect;
@@ -283,13 +330,11 @@ procedure TfrmAdmin.dbgUsersDrawColumnCell(Sender: TObject; const Rect: TRect;
 var
   width : integer;
 begin
-  width := 5+dbgUsers.Canvas.TextExtent(Column.Field.DisplayText).cx;
-  if width>column.width then column.Width := width;
+  width := 5+dbgUsersTable.Canvas.TextExtent(Column.Field.DisplayText).cx;
+  if width>column.width then
+    column.Width := width;
 end;
 
-{ Base the initial width of the dbGrid on the size of the header text
-  The size is changed when the grid is loaded with items, since the items
-  have their own dynamic lengths }
 procedure TfrmAdmin.InitializeWidth(pDBGrid:TDBGrid);
 var
   i : integer;
@@ -320,15 +365,15 @@ begin
   LogService := TLogService.Create;
   FileUtils := TFileUtils.Create;
   pageCtrl.TabIndex := 0;
-  tbtUser.Caption := AdminUser.Username;
+  lblUser.Caption := 'Hello, ' + AdminUser.Username;
 
   { Open tables when opening but close them when the form closes, preventing `read` locks as I call them }
   with dmData do
   begin
     tblUsers.open;
-    dbgUsers.DataSource := dscUsers;
     tblFoods.Open;
-    dbgFoods.DataSource := dscFoods;
+    dbgFoodsTable.DataSource := dscFoods;
+    dbgUsersTable.DataSource := dscUsers;
   end;
 end;
 

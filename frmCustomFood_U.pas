@@ -10,7 +10,6 @@ uses
 type
   TfrmCustomFood = class(TForm)
     pnlDetailsCenter: TPanel;
-    tbTop: TToolBar;
     edtFoodName: TLabeledEdit;
     nbxCalories: TNumberBox;
     nbxProtein: TNumberBox;

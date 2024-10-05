@@ -14,44 +14,34 @@ object frmCustomFood: TfrmCustomFood
   Font.Style = []
   OnShow = FormShow
   TextHeight = 15
-  object tbTop: TToolBar
+  object crplMain: TCardPanel
     Left = 0
     Top = 0
     Width = 699
-    Height = 29
-    TabOrder = 0
-    ExplicitWidth = 702
-  end
-  object crplMain: TCardPanel
-    Left = 0
-    Top = 29
-    Width = 699
-    Height = 367
+    Height = 396
     Align = alClient
     ActiveCard = crdDetails
     Caption = 'Custom Food'
-    TabOrder = 1
-    ExplicitWidth = 702
-    ExplicitHeight = 368
+    TabOrder = 0
+    ExplicitTop = 29
+    ExplicitHeight = 367
     object crdDetails: TCard
       Left = 1
       Top = 1
       Width = 697
-      Height = 365
+      Height = 394
       Caption = '1. Food Details'
       CardIndex = 0
       TabOrder = 0
-      ExplicitWidth = 700
-      ExplicitHeight = 366
+      ExplicitHeight = 365
       object pnlDetailsCenter: TPanel
         Left = 0
         Top = 41
         Width = 697
-        Height = 324
+        Height = 353
         Align = alClient
         TabOrder = 0
-        ExplicitWidth = 700
-        ExplicitHeight = 325
+        ExplicitHeight = 324
         object lblCalories: TLabel
           Left = 288
           Top = 59
@@ -199,17 +189,17 @@ object frmCustomFood: TfrmCustomFood
         Align = alTop
         Caption = 'Enter food information'
         TabOrder = 1
-        ExplicitWidth = 700
       end
     end
     object crdConfirm: TCard
       Left = 1
       Top = 1
       Width = 697
-      Height = 365
+      Height = 394
       Caption = '2. Confirmation'
       CardIndex = 1
       TabOrder = 1
+      ExplicitHeight = 365
       object pnlConfirmTop: TPanel
         Left = 0
         Top = 0
@@ -223,9 +213,10 @@ object frmCustomFood: TfrmCustomFood
         Left = 0
         Top = 41
         Width = 697
-        Height = 324
+        Height = 353
         Align = alClient
         TabOrder = 1
+        ExplicitHeight = 324
         object redConfirmation: TRichEdit
           Left = 72
           Top = 24

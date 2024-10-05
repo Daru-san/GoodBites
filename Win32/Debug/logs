@@ -7,3 +7,7 @@
 05/10/2024@21:10:00: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
 05/10/2024@21:10:36: [ERROR] Error backing up the database
 05/10/2024@21:10:44: [ERROR] Database backup successful!
+05/10/2024@23:19:34: [USER] User Tracy has been saved in the PASSWORDS file
+05/10/2024@23:19:34: [USER] The user Tracy, uid TR1310 has registered successfully
+05/10/2024@23:19:36: [USER] User Tracy uid TR1310 logged in.
+05/10/2024@23:19:53: [USER] User Tracy uid TR1310 logged in.

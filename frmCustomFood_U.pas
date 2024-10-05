@@ -167,7 +167,7 @@ var
   FoodItem : TFoodItem;
 begin
   FoodItem := TFoodItem.Create(Foodname);
-  FoodItem.AddNutrients(Calories,Protein,Carbs,Fat,Energy,Sugar);
+  FoodItem.AddNutrients(Calories,Energy,Protein,Carbs,Fat,Sugar);
   FoodItem.AddFoodToDB(FoodDesc.Text);
   FoodItem.Free;
   ShowMessage('Item added to database successfully!');

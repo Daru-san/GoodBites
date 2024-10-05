@@ -26,14 +26,26 @@ type
     lblWeight: TLabel;
     lblHeight: TLabel;
     edtFullname: TLabeledEdit;
-    pnlAge: TPanel;
-    pnlFName: TPanel;
-    pnlHeight: TPanel;
-    pnlWeight: TPanel;
     pnlDetails: TPanel;
     crdWelcome: TCard;
     crdGoals: TCard;
     mpWelcome: TMediaPlayer;
+    rgpActivity: TRadioGroup;
+    pnlGoalsHead: TPanel;
+    edtGoalCalories: TLabeledEdit;
+    edtGoalCarb: TLabeledEdit;
+    edtGoalProtein: TLabeledEdit;
+    edtGoalFats: TLabeledEdit;
+    edtGoalWater: TLabeledEdit;
+    crplGoals: TCardPanel;
+    crdGoalsOverview: TCard;
+    pnlGoalOVCenter: TPanel;
+    pnlGoalOVTop: TPanel;
+    lblCarbTargetPerc: TLabel;
+    lblFatTargetPerc: TLabel;
+    lblProteinTargetPerc: TLabel;
+    lblTotalCalCalc: TLabel;
+    lblWaterAdd: TLabel;
     procedure FormShow(Sender: TObject);
     procedure btnContinueClick(Sender: TObject);
     procedure crdWelcomeEnter(Sender: TObject);
@@ -42,6 +54,7 @@ type
     procedure spnAgeChange(Sender: TObject);
     procedure nbxHeightChange(Sender: TObject);
     procedure nbxWeightChange(Sender: TObject);
+    procedure rgpActivityClick(Sender: TObject);
 
   private
     { Private declarations }
@@ -49,11 +62,16 @@ type
     procedure ViewDetailsCard;
     procedure ViewWelcomeCard;
     procedure ViewGoalsCard;
+
+    procedure GoalCardForward;
+
     procedure ReConfirmDetails;
     procedure ConfirmDetails;
     procedure CheckFilled;
-    procedure SetGoals;
-    procedure PostGoals;
+
+    procedure SetNewGoals;
+    procedure SetGoal(pGoalItem,pGoalUnit : String; pTarget : Real);
+    procedure CalculateGoals;
   public
     { Public declarations }
     property CurrentUser : TUser read FCurrentUser write FCurrentUser;
@@ -64,7 +82,7 @@ const
 var
   frmGreeter: TfrmGreeter;
   isConfirmed : Boolean;
-  Utils : TUtils;
+  FileUtils : TFileUtils;
 
   arrTargets : array[1..5] of real;
 
@@ -72,12 +90,63 @@ implementation
 
 {$R *.dfm}
 
+
+// Form controls
+{$REGION FORM CONTROLS}
+procedure TfrmGreeter.FormShow(Sender: TObject);
+begin
+  crplWelcome.ActiveCard := crdLanding;
+  ShowMessage(
+    'Hello, ' + CurrentUser.Username + '.' + #13
+    + 'Welcome to GoodBites!' + #13
+    + 'This is the onboarding page, here you can add your info and learn how to use this app!'
+  );
+  btnBack.Enabled := false;
+  FileUtils := TFileUtils.Create;
+end;
+
+procedure TfrmGreeter.nbxHeightChange(Sender: TObject);
+begin
+  CheckFilled;
+end;
+
+procedure TfrmGreeter.nbxWeightChange(Sender: TObject);
+begin
+  CheckFilled;
+end;
+
+procedure TfrmGreeter.rgpActivityClick(Sender: TObject);
+begin
+  CheckFilled;
+end;
+
+procedure TfrmGreeter.spnAgeChange(Sender: TObject);
+begin
+  CheckFilled;
+end;
+
+procedure TfrmGreeter.crdWelcomeEnter(Sender: TObject);
+begin
+  btnBack.Enabled := false;
+  btnContinue.Enabled := true;
+end;
+
+procedure TfrmGreeter.edtFullnameChange(Sender: TObject);
+begin
+  CheckFilled;
+end;
+
+
+{$ENDREGION}
+
+// Navigation
+{$REGION NAVIGATION }
 procedure TfrmGreeter.btnBackClick(Sender: TObject);
 begin
   if crplWelcome.ActiveCard = crdDetails then
     crplWelcome.ActiveCard := crdLanding;
 
-  if crplWelcome.ActiveCard = crdWelcome then
+  if crplWelcome.ActiveCard = crdGoals then
   begin
     ReConfirmDetails;
     if not isConfirmed then
@@ -100,95 +169,35 @@ begin
   end else
   if crplWelcome.ActiveCard = crdGoals then
   begin
-    PostGoals;
-    crplWelcome.ActiveCard := crdWelcome;
-    mpWelcome.Play;
+    GoalCardForward;
   end;
   if crplWelcome.ActiveCard <> crdLanding then
     btnBack.Enabled := true;
 end;
 
-procedure TfrmGreeter.FormShow(Sender: TObject);
-begin
-  crplWelcome.ActiveCard := crdLanding;
-  ShowMessage(
-    'Hello, ' + CurrentUser.Username + '.' + #13
-    + 'Welcome to GoodBites!' + #13
-    + 'This is the onboarding page, here you can add your info and learn how to use this app!'
-  );
-  btnBack.Enabled := false;
-  Utils := TUtils.Create;
-end;
 
-procedure TfrmGreeter.nbxHeightChange(Sender: TObject);
-begin
-  CheckFilled;
-end;
-
-procedure TfrmGreeter.nbxWeightChange(Sender: TObject);
-begin
-  CheckFilled;
-end;
-
-procedure TfrmGreeter.ReConfirmDetails;
-begin
-  if MessageDlg('Are you sure you would like to go back and edit your details?',mtConfirmation,mbYesNo,0) = mrYes then
-  begin
-    isConfirmed := false;
-  end;
-end;
-
-procedure TfrmGreeter.spnAgeChange(Sender: TObject);
-begin
-  CheckFilled;
-end;
-
-procedure TfrmGreeter.ConfirmDetails;
+procedure TfrmGreeter.GoalCardForward;
 var
-  iCheckInt : Integer;
-  iAge : Integer;
-  rWeight,rHeight : real;
-  slsMessage : TStringList;
-  sFName : String;
+  sMessage : TStringList;
 begin
-  if (spnAge.Value < 7) or (spnAge.Value > 150) then
+  sMessage := TStringList.Create;
+  sMessage.Add('Are you sure you would like to continue?');
+  sMessage.Add('You can modify your goals once you have reached the dashboard');
+  if MessageDlg(sMessage.text,mtConfirmation,mbYesNo,0) = mrYes then
   begin
-    ShowMessage('Please enter an age between 7 and 150 years');
-    Exit;
+    SetNewGoals;
+    ViewWelcomeCard;
   end;
-  rWeight := nbxWeight.Value;
-  rHeight := nbxHeight.Value;
-  sFName := edtFullname.Text;
-
-  slsMessage := TStringList.Create;
-  slsMessage.Add('Please confirm these details are correct');
-  slsMessage.Add('Full name:' + #9 + sFName);
-  slsMessage.Add('Age:' + #9 + iAge.ToString);
-  slsMessage.Add('Weight:' + #9 + FloatToStrF(rWeight,ffFixed,8,2));
-  slsMessage.Add('Height:' + #9 + FloatToStrF(rHeight,ffFixed,8,2));
-
-  if MessageDlg(slsMessage.Text,mtConfirmation,mbYesNoCancel,0) = mrYes then
-  begin
-    CurrentUser.SaveUserInfo(sFName,iAge,rWeight,rHeight);
-    isConfirmed := true;
-    btnContinue.Enabled := true;
-  end;
+  sMessage.Free;
 end;
 
-procedure TfrmGreeter.crdWelcomeEnter(Sender: TObject);
-begin
-  btnBack.Enabled := false;
-  btnContinue.Enabled := true;
-end;
+{$ENDREGION}
 
-procedure TfrmGreeter.edtFullnameChange(Sender: TObject);
-begin
-  CheckFilled;
-end;
-
+// Presence checks
+{$REGION Checks }
 procedure TfrmGreeter.CheckFilled;
 var
-  isName,isAge,isWeight,isHeight : Boolean;
+  isName,isAge,isWeight,isHeight,isActive : Boolean;
   sFullname : String;
 begin
   if crplWelcome.ActiveCard <> crdDetails then
@@ -198,23 +207,16 @@ begin
   isAge := (spnAge.Value > 7) and (spnAge.Value < 150);
   isWeight := (nbxWeight.Value > 30) and (nbxWeight.Value < 1000);
   isHeight := (nbxHeight.Value > 30 ) and (nbxHeight.Value < 200);
-
+  isActive := rgpActivity.ItemIndex <> -1;
   if isName and isAge and isWeight and isHeight then
     btnContinue.Enabled := true
   else
     btnContinue.Enabled := false;
 end;
+{$ENDREGION}
 
-procedure TfrmGreeter.ViewWelcomeCard;
-begin
-  crplWelcome.ActiveCard := crdWelcome;
-end;
-
-procedure TfrmGreeter.ViewGoalsCard;
-begin
-  crplWelcome.ActiveCard := crdGoals;
-end;
-
+// Opening cards
+{$REGION VIEW CARDS}
 procedure TfrmGreeter.ViewDetailsCard;
 begin
   if not isConfirmed then
@@ -227,13 +229,131 @@ begin
   end;
 end;
 
-procedure TfrmGreeter.SetGoals;
+procedure TfrmGreeter.ViewWelcomeCard;
 begin
-
+  crplWelcome.ActiveCard := crdWelcome;
+  CurrentUser.CompleteSignUp;
+  tbNavbar.Hide;
 end;
 
-procedure TfrmGreeter.PostGoals;
+procedure TfrmGreeter.ViewGoalsCard;
 begin
-
+  CalculateGoals;
+  crplWelcome.ActiveCard := crdGoals;
+  crplGoals.ActiveCard := crdGoalsOverview;
 end;
+
+{$ENDREGION}
+
+// Confirmation
+{$REGION Detail Confirmation }
+
+procedure TfrmGreeter.ConfirmDetails;
+var
+  iCheckInt : Integer;
+  iAge : Integer;
+  rWeight,rHeight, rActivityLevel : real;
+  slsMessage : TStringList;
+  sFName : String;
+begin
+  if (spnAge.Value < 7) or (spnAge.Value > 150) then
+  begin
+    ShowMessage('Please enter an age between 7 and 150 years');
+    Exit;
+  end;
+  rWeight := nbxWeight.Value;
+  rHeight := nbxHeight.Value;
+  sFName := edtFullname.Text;
+  iAge := spnAge.Value;
+
+  case rgpActivity.itemIndex of
+  0 : rActivityLevel := 0.4;
+  1 : rActivityLevel := 0.8;
+  2 : rActivityLevel := 1.2;
+  3 : rActivityLevel := 1.6;
+  4 : rActivityLevel := 2.0;
+  end;
+
+  slsMessage := TStringList.Create;
+  slsMessage.Add('Please confirm these details are correct');
+  slsMessage.Add('Full name:' + #9 + sFName);
+  slsMessage.Add('Age:' + #9 + iAge.ToString);
+  slsMessage.Add('Weight:' + #9 + FloatToStrF(rWeight,ffFixed,8,2));
+  slsMessage.Add('Height:' + #9 + FloatToStrF(rHeight,ffFixed,8,2));
+
+  if MessageDlg(slsMessage.Text,mtConfirmation,mbYesNoCancel,0) = mrYes then
+  begin
+    CurrentUser.Age := iAge;
+    CurrentUser.Height := rHeight;
+    CurrentUser.Weight := rWeight;
+    CurrentUser.Fullname := sFName;
+    CurrentUser.ActivityLevel := rActivityLevel;
+    CurrentUser.SaveUserInfo;
+    isConfirmed := true;
+    btnContinue.Enabled := true;
+  end;
+end;
+
+procedure TfrmGreeter.ReConfirmDetails;
+begin
+  if MessageDlg('Are you sure you would like to go back and edit your details?',mtConfirmation,mbYesNo,0) = mrYes then
+  begin
+    isConfirmed := false;
+  end;
+end;
+
+{$ENDREGION}
+
+// Goal calculation, setting and display
+{$REGION Goals }
+procedure TfrmGreeter.SetGoal(pGoalItem: string; pGoalUnit: string; pTarget: Real);
+var
+  NewGoal : TGoal;
+begin
+  NewGoal := TGoal.Create(CurrentUser.UserID,pGoalItem);
+  NewGoal.Target := pTarget;
+  NewGoal.GoalUnit := pGoalUnit;
+  NewGoal.AddGoal;
+  NewGoal.Free;
+end;
+
+procedure TfrmGreeter.CalculateGoals;
+const
+  PROTEIN = 0.2;
+  CARB = 0.5;
+  FAT = 0.3;
+var
+  rProtein, rCarb, rFat, rTotalCalories : Real;
+begin
+  rTotalCalories := CurrentUser.CalcTotalCalories;
+
+  rProtein := rTotalCalories * PROTEIN;
+  rCarb := rTotalCalories * CARB;
+  rFat := rTotalCalories * FAT;
+
+  edtGoalCalories.Text := FloatToStrf(rTotalCalories,ffFixed,8,2);
+  edtGoalProtein.Text := FloatToStrF(rProtein,ffFixed,8,2);
+  edtGoalCarb.Text := FloatToStrF(rCarb,ffFixed,8,2);
+  edtGoalFats.Text := FloatToStrF(rFat,ffFixed,8,2);
+  edtGoalWater.Text := 2000.ToString;
+end;
+
+procedure TfrmGreeter.SetNewGoals;
+var
+  rProtein, rCarb, rFat, rTotalCalories, rWater : Real;
+  sWaterUnit : String;
+begin
+  rTotalCalories := StrToFloat(edtGoalCalories.Text);
+  rProtein := StrToFloat(edtGoalProtein.Text);
+  rFat := StrToFloat(edtGoalFats.Text);
+  rCarb := StrToFloat(edtGoalCarb.Text);
+  rWater := StrToFloat(edtGoalWater.Text);
+
+  SetGoal('Calorie','g',rTotalCalories);
+  SetGoal('Protein','g',rProtein);
+  SetGoal('Carbohydrate','g',rCarb);
+  SetGoal('Fat','g',rFat);
+  SetGoal('Water','ml',rWater);;
+end;
+{$ENDREGION}
 end.

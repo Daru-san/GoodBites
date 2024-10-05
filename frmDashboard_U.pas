@@ -309,38 +309,43 @@ end;
 
 procedure TfrmDashboard.ShowMealInfo;
 var
-  sFoodname,sMealType,sTime: string;
+  sFoodname,sMealType,sTime, sHeader: string;
   iFoodIndex : Integer;
   dDate : TDate;
-  isFound : Boolean;
+  isWater : Boolean;
   rPortion : Real;
   Meal : TMeal;
   FoodItem : TFoodItem;
+  strMealInfo : TStringList;
 begin
   if cbxMeals.ItemIndex = -1 then
   begin
     cbxMeals.SetFocus;
     exit;
   end;
-
   iFoodIndex := cbxMeals.ItemIndex+1;
   dDate := dpcDay.date;
+  strMealInfo := TStringList.Create;
 
   rPortion := StrToFloat(CurrentUser.GetMealInfo(iFoodIndex,dDate,'portion'));
   sMealType := CurrentUser.GetMealInfo(iFoodIndex,dDate,'type');
   sFoodname := CurrentUser.GetMealInfo(iFoodIndex,dDate,'name');
   sTime := CurrentUser.GetMealInfo(iFoodIndex,dDate,'time');
 
+  isWater := LowerCase(sFoodname) = 'water';
+
   FoodItem := TFoodItem.Create(sFoodname);
   Meal := TMeal.Create(FoodItem,rPortion,sMealType);
 
-  redMeals.Clear;
-  with redMeals.Paragraph do
+  if isWater then
+  with strMealInfo do
   begin
-    TabCount := 1;
-    Tab[0] := 100;
-  end;
-  with redMeals.Lines do
+    Add('Drank water at ' + sTime);
+    Add('=======================');
+    Add('Amount:' + #9 + FloatToStrF(rPortion,ffFixed,8,2)+'ml');
+  end
+  else
+  with strMealInfo do
   begin
     Add(sFoodname + ', eaten at ' + sTime);
     Add('=================================');
@@ -368,6 +373,16 @@ begin
       8,2) + 'g'
       );
   end;
+
+
+  with redMeals.Paragraph do
+  begin
+    TabCount := 1;
+    Tab[0] := 100;
+  end;
+  redMeals.Text := strMealInfo.Text;
+
+  strMealInfo.free;
 end;
 
 procedure TfrmDashboard.dpcDayChange(Sender: TObject);

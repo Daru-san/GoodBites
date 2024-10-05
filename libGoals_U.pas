@@ -15,6 +15,10 @@ type
 
     private
       procedure GetGoalID;
+      procedure GetGoalTarget;
+      procedure GetGoalDate;
+      procedure ResetProgress;
+      procedure LogProgress(pGoalID : Integer;pAmount : Real);
     public
       property GoalID : Integer read FGoalID write FGoalID;
       property UserID : String read FUserID write FUserID;
@@ -23,14 +27,14 @@ type
       property StartDate : TDate read FStartDate write FStartDate;
       property Target : Real read FTarget write FTarget;
 
-      constructor Create(U,I : String);
+      constructor Create(pUserID,pItem : String);
       destructor Destroy; override;
 
       function GetDesc : String;
       // Progress
-      procedure SetProgress(rAmount : Real);
+      procedure SaveProgress(pAmount : Real);
 
-      function GetProgress(RecDate : TDate) : Real;
+      function GetProgress(pRecDate : TDate) : Real;
 
       function CalcAverage : Real;
       function CalcDaysAchieved : Integer;
@@ -38,8 +42,7 @@ type
 
       procedure SetGoalTarget;
       procedure AddGoal;
-      procedure GetGoalTarget;
-      procedure EditDesc(S: String);
+      procedure EditDesc(pDesc: String);
       procedure DeleteGoal;
   end;
 
@@ -47,10 +50,12 @@ implementation
 
 constructor TGoal.Create;
 begin
-  UserID := U;
-  Item := I;
-  GetGoalTarget;
+  UserID := pUserID;
+  Item := pItem;
+
   GetGoalID;
+  GetGoalTarget;
+  GetGoalDate;
 end;
 
 destructor TGoal.Destroy;
@@ -60,51 +65,74 @@ end;
 { Goals }
 
 {$REGION Goals }
-procedure TGoal.SetProgress(rAmount: Real);
+procedure TGoal.SaveProgress(pAmount: Real);
 var
   dDate : TDate;
   iGoalID : Integer;
-  isFound,isProgFound : Boolean;
+  isFound : Boolean;
 begin
   isFound := False;
-  isProgFound := False;
+
   with dmData.tblGoals do
   begin
     Open;
     First;
     repeat
-      if FieldValues['UserID'] = UserID then
+      if (GoalID = FieldValues['GoalID']) then
       begin
-        if Item = FieldValues['Item'] then
-        begin
-          iGoalID := FieldValues['GoalID'];
-          with dmData.tblProgress do
-          begin
-            Open;
-            First;
-            repeat
-              if iGoalID = FieldValues['GoalID'] then
-              begin
-                isProgFound := true;
-                Edit;
-                FieldValues['Amount'] := FieldValues['Amount'] + rAmount;
-                Post;
-              end  else Next;
-            until EOF or isProgFound;
-            if not isProgFound then
-            begin
-              Append;
-              FieldValues['Amount'] := rAmount;
-              FieldValues['DateRecorded'] := Date;
-              Post;
-            end;
-            Close;
-          end;    // End tblProgress
-        end;  // End if sItem
-      end;    // End if UserID
+        isFound := true;
+        iGoalID := FieldValues['GoalID'];
+        LogProgress(iGoalID,pAmount);
+      end else Next;
     until EOF or isFound;
     Close;
-  end;  //End tblGoals
+  end;
+end;
+
+procedure TGoal.LogProgress;
+var
+  isFound : Boolean;
+begin
+  isFound := false;
+  with dmData.tblProgress do
+  begin
+    Open;
+    First;
+    repeat
+      if (pGoalID = FieldValues['GoalID']) and (Date = FieldValues['DateRecorded']) then
+      begin
+        isFound := true;
+        Edit;
+        FieldValues['Amount'] := FieldValues['Amount'] + pAmount;
+        Post;
+      end else Next;
+    until EOF or isFound;
+
+    if not isFound then
+    begin
+      Append;
+      FieldValues['GoalID'] := pGoalID;
+      FieldValues['Amount'] := pAmount;
+      FieldValues['DateRecorded'] := Date;
+      Post;
+    end;
+    Close;
+  end;
+end;
+
+procedure TGoal.ResetProgress;
+begin
+  with dmData.tblProgress do
+  begin
+    Open;
+    First;
+    repeat
+      if (GoalID = FieldValues['GoalID']) then
+      Delete
+      else next;
+    until EOF;
+    Close;
+  end;
 end;
 
 procedure TGoal.AddGoal;
@@ -117,36 +145,27 @@ begin
     FieldValues['Item'] := Item;
     FieldValues['Target'] := Target;
     FieldValues['StartDate'] := Date;
+    FieldValues['Unit'] := GoalUnit;
+    FieldValues['UserID'] := UserID;
+    FieldValues['Desc'] := Item + ' in ' + GoalUnit;
     Post;
     Close;
   end;
 end;
 
 procedure TGoal.DeleteGoal;
-var isGoalFound : Boolean;
 begin
-  with dmData.tblProgress do
-  begin
-    Open;
-    First;
-    repeat
-      if GoalID = FieldValues['GoalID'] then
-      Delete;
-    until EOF;
-    Close;
-  end;
+  ResetProgress;
   with dmData.tblGoals do
   begin
     Open;
     First;
-    isGoalFound := false;
     repeat
-      if (UserID = FieldValues['UserID']) and (GoalID = FieldValues['UserID']) then
+      if (UserID = FieldValues['UserID']) and (GoalID = FieldValues['GoalID']) then
       begin
-        isGoalFound := True;
         Delete;
-      end else Next;
-    until EOF or isGoalFound;
+      end else next;
+    until EOF;
     Close;
   end;
 end;
@@ -159,13 +178,14 @@ begin
     Open;
     First;
     repeat
-      if UserID = FieldValues['UserID'] and (GoalID = FieldValues['GoalID']) then
+      if (UserID = FieldValues['UserID']) and (GoalID = FieldValues['GoalID']) then
       begin
         isFound := true;
+        ResetProgress;
         Edit;
         FieldValues['Target'] := Target;
         Post;
-      end;
+      end else next;
     until EOF or isFound;
     Close;
   end;
@@ -183,7 +203,7 @@ begin
     Open;
     First;
     repeat
-      if (UserID = FieldValues['UserID']) and (Item = FieldValues['Item']) then
+      if (GoalID = FieldValues['GoalID']) and (UserID = FieldValues['UserID']) then
       begin
         isFound := true;
         rTarget := FieldValues['Target'];
@@ -206,7 +226,7 @@ begin
     Open;
     First;
     repeat
-      if (FieldValues['UserID'] = UserID) and (Item = FieldValues['Valuename']) then
+      if (FieldValues['UserID'] = UserID) and (Item = FieldValues['Item']) then
       begin
         isFound := true;
         iGoalID := FieldValues['GoalID'];
@@ -215,6 +235,26 @@ begin
     Close;
   end;
   GoalID := iGoalID;
+end;
+
+procedure TGoal.GetGoalDate;
+var isFound : Boolean;
+begin
+  isFound := False;
+  with dmData.tblGoals do
+  begin
+    Open;
+    First;
+    repeat
+      if (GoalID = FieldValues['GoalID']) then
+      begin
+        isFound := true;
+      end else next;
+    until EOF or isFound;
+    if isFound then
+      StartDate := FieldValues['StartDate'];
+    Close;
+  end;
 end;
 
 function TGoal.GetProgress;
@@ -231,7 +271,7 @@ begin
     Open;
     First;
     repeat
-      if (FieldValues['GoalID'] = iGoalID) and (RecDate = FieldValues['DateRecorded']) then
+      if (FieldValues['GoalID'] = iGoalID) and (pRecDate = FieldValues['DateRecorded']) then
       begin
         isFound := True;
         rValue := FieldValues['Amount'];
@@ -258,14 +298,14 @@ begin
       begin
         isFound := true;
         sDesc := FieldValues['Desc'];
-      end;
+      end else Next;
     until EOF or isFound;
     Close;
   end;
   Result := sDesc;
 end;
 
-procedure TGoal.EditDesc(S: string);
+procedure TGoal.EditDesc(pDesc: string);
 var isFound : Boolean;
 begin
   isFound := False;
@@ -278,9 +318,9 @@ begin
       begin
         isFound := true;
         Edit;
-        FieldValues['Desc'] := S;
+        FieldValues['Desc'] := pDesc;
         Post;
-      end;
+      end else Next;
     until EOF or isFound;
     Close;
   end;
@@ -308,18 +348,23 @@ begin
     repeat
       if (GoalID = FieldValues['GoalID']) then
       begin
-        rTotalVal := rTotalVal + FieldValues['Value'];
+        rTotalVal := rTotalVal + FieldValues['Amount'];
       end;
       Next;
     until Eof;
     Close;
   end;
-  Result := rTotalVal/iNumDays;
+
+  //Avoid dividing by zero on first day goals
+  if iNumDays = 0 then
+    Result := rTotalVal
+  else
+    Result := rTotalVal/iNumDays;
 end;
 
 function TGoal.CalcDaysAchieved: Integer;
 var
-  rTarget, rAmount : Real;
+  rAmount : Real;
   iDays : Integer;
 begin
   iDays := 0;
@@ -331,7 +376,7 @@ begin
       if (GoalID = FieldValues['GoalID']) then
       begin
         rAmount := FieldValues['Amount'];
-        if rAmount >= rTarget then
+        if rAmount >= Target then
           inc(iDays);
       end;
       Next;

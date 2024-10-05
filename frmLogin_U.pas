@@ -14,10 +14,8 @@ type
   TfrmLogin = class(TForm)
     btnLogin: TButton;
     btnGoSignUp: TButton;
-    btnMain: TToolBar;
     edtUser: TLabeledEdit;
     edtPassword: TLabeledEdit;
-    lblWelcome: TLabel;
     pnlLogin: TPanel;
     crplLogin: TCardPanel;
     crdLogin: TCard;
@@ -34,11 +32,13 @@ type
     pnlNewUser: TPanel;
     pnlNewSub: TPanel;
     cbxReveal: TCheckBox;
-    tbtHome: TToolButton;
-    imgLst: TImageList;
+    pnlLoginCenter: TPanel;
+    pnlLoginTop: TPanel;
+    pnlSignUpTop: TPanel;
+    pnlSignUpCenter: TPanel;
+    pnlLoginHead: TPanel;
     procedure btnLoginClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnGoSignUpClick(Sender: TObject);
     procedure btnCreateClick(Sender: TObject);
     procedure edtUserChange(Sender: TObject);
@@ -52,6 +52,8 @@ type
     procedure edtPasswordKeyPress(Sender: TObject; var Key: Char);
     procedure cbxRevealClick(Sender: TObject);
     procedure tbtHomeClick(Sender: TObject);
+    procedure crdLoginEnter(Sender: TObject);
+    procedure crdSignEnter(Sender: TObject);
   private
     { Private declarations }
     FLoginUser : TUser;
@@ -229,10 +231,14 @@ begin
 
 end;
 
-procedure TfrmLogin.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure TfrmLogin.crdLoginEnter(Sender: TObject);
 begin
-  if self.ModalResult <> mrOk then
-  currentUser.Free;
+  edtUser.SetFocus;
+end;
+
+procedure TfrmLogin.crdSignEnter(Sender: TObject);
+begin
+  edtNewUser.SetFocus;
 end;
 
 procedure TfrmLogin.FormShow(Sender: TObject);

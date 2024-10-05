@@ -56,7 +56,7 @@ type
     { Private declarations }
     FCurrentUser : TUser;
 
-    procedure CheckFields(sState : String = 'Login');
+    procedure CheckFields(pState : String = 'Login');
   public
     { Public declarations }
     property CurrentUser : TUser read FCurrentUser write FCurrentUser;
@@ -197,7 +197,7 @@ end;
 procedure TfrmLogin.CheckFields;
 begin
   { Only enable certain elements when the other fields are active }
-   case IndexStr(LowerCase(sState),['login','signup']) of
+   case IndexStr(LowerCase(pState),['login','signup']) of
     0: begin
         if (edtUser.Text <> '') and (edtPassword.Text <> '') then
           btnLogin.Enabled := true

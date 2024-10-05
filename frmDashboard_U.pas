@@ -55,7 +55,6 @@ type
     lblGoal: TLabel;
     pnlProgTop: TPanel;
     btnGoGoals: TButton;
-    RichEdit1: TRichEdit;
     pnlFood: TPanel;
     pnlDisplay: TPanel;
     redFoodInfo: TRichEdit;
@@ -140,17 +139,20 @@ type
     procedure PopulateFoods;
     procedure GetInfo;
     procedure PopulateMealType;
-    procedure SetProgressBar(sItem : String; rValue, rTarget : Real);
-    procedure ShowProgress(RecDate:TDate);
+    procedure SetProgressBar(pItem : String; pValue, pTarget : Real);
+    procedure ShowProgress(pRecDate:TDate);
     procedure ShowGoalOverview;
-    procedure FillGoalEditBox(sGoalItem,sGoalUnit : String;rTarget:Real);
+    procedure FillGoalEditBox(pGoalItem,pGoalUnit : String;pTarget:Real);
+    procedure DisplayWaterInfo;
+    procedure DisplayFoodInfo(pFoodname : String);
+    procedure LogGoalProgress(pMeal : TMeal);
+    procedure LogEatenFood;
 
-    procedure ShowGoalInfo(sGoalName : string);
+    procedure ShowGoalInfo(pGoalItem : string);
     procedure ResetGoalInfo;
   public
     { Public declarations }
     property CurrentUser : TUser read FCurrentUser write FCurrentUser;
-
   end;
 
 var
@@ -213,30 +215,32 @@ begin
       cbxMeals.Items.Add('#'+i.ToString + ' ' + sMealName);
     end;
   end;
+
 end;
 
-procedure TfrmDashboard.ShowProgress;
+procedure TfrmDashboard.ShowProgress(pRecDate: TDate);
 const ITEMS : array[1..5] of string = ('Calorie','Water','Carbohydrate','Protein','Fat');
 var
   Goal : TGoal;
   rTarget,rValue : Real;
   i: Integer;
 begin
+
   for i := 1 to Length(ITEMS) do
   begin
     Goal := TGoal.Create(CurrentUser.UserID,ITEMS[i]);
     rTarget := Goal.Target;
-    rValue := Goal.GetProgress(RecDate);
+
+    rValue := Goal.GetProgress(pRecDate);
 
     SetProgressBar(Goal.Item,rValue,rTarget);
+
     Goal.free;
   end;
 
   Goal := TGoal.Create(CurrentUser.UserID,'Calorie');
   rValue := Goal.GetProgress(Date);
   rTarget := Goal.Target;
-  rTarget := 300;
-  rValue := RandomRange(10,300);
   edtSVCalorie.Text := FloatToStrF(rValue,ffFixed,8,2) +  '/'+ FloatToStrF(rTarget,ffFixed,8,2);
   Goal.Free;
 
@@ -244,46 +248,44 @@ begin
   rValue := Goal.GetProgress(Date);
   rTarget := Goal.Target;
 
-  rTarget := 300;
-  rValue := RandomRange(10,300);
-  edtSVWater.Text := FloatToStrF(rValue,ffFixed,8,2) +  '/'+ FloatToStrF(rTarget,ffFixed,8,2);
+  rValue := rValue/500;
+  rTarget := rTarget/500;
+  edtSVWater.Text := Round(rValue).ToString +  '/'+ Round(rTarget).ToString + ' glasses';
   Goal.Free;
 end;
 
-procedure TfrmDashboard.SetProgressBar(sItem : String;rValue, rTarget : Real);
+procedure TfrmDashboard.SetProgressBar(pItem : String;pValue, pTarget : Real);
 begin
-  rTarget := 300;
-  rValue := RandomRange(10,300);
-  case IndexStr(LowerCase(sItem),['calorie','water','carbohydrate','protein','fat']) of
+  case IndexStr(LowerCase(pItem),['calorie','water','carbohydrate','protein','fat']) of
   0: // Calorie
     begin
-      edtCalories.Text := FloatToStrF(rValue,ffFixed,8,2) +'/'+ FloatToStrF(rTarget,ffFixed,8,2) + 'cal';
-      prgCalories.Max := Ceil(rTarget);;
-      prgCalories.Position := Ceil(rValue);
+      edtCalories.Text := FloatToStrF(pValue,ffFixed,8,2) +'/'+ FloatToStrF(pTarget,ffFixed,8,2) + 'cal';
+      prgCalories.Max := Ceil(pTarget);;
+      prgCalories.Position := Ceil(pValue);
      end;
   1:  // Water
     begin
-      edtWater.Text := FloatToStrF(rValue,ffFixed,8,2) +'/'+ FloatToStrF(rTarget,ffFixed,8,2)+' cups';
-      prgWater.Max := Ceil(rTarget);
-      prgWater.Position := Ceil(rValue);
+      edtWater.Text := FloatToStrF(pValue,ffFixed,8,2) +'/'+ FloatToStrF(pTarget,ffFixed,8,2)+'ml';
+      prgWater.Max := Ceil(pTarget);
+      prgWater.Position := Ceil(pValue);
     end;
   2: // Carbs
     begin
-      edtCarb.Text := FloatToStrF(rValue,ffFixed,8,2) +'/'+ FloatToStrF(rTarget,ffFixed,8,2) + 'g';
-      prgCarb.Max := Ceil(rTarget);
-      prgCarb.Position := Ceil(rValue);
+      edtCarb.Text := FloatToStrF(pValue,ffFixed,8,2) +'/'+ FloatToStrF(pTarget,ffFixed,8,2) + 'g';
+      prgCarb.Max := Ceil(pTarget);
+      prgCarb.Position := Ceil(pValue);
     end;
   3: // Protein
     begin
-      edtProtein.Text := FloatToStrF(rValue,ffFixed,8,2) + '/'+FloatToStrF(rTarget,ffFixed,8,2) + 'g';
-      prgProtein.Max := Ceil(rTarget);
-      prgProtein.Position := Ceil(rValue);
+      edtProtein.Text := FloatToStrF(pValue,ffFixed,8,2) + '/'+FloatToStrF(pTarget,ffFixed,8,2) + 'g';
+      prgProtein.Max := Ceil(pTarget);
+      prgProtein.Position := Ceil(pValue);
     end;
   4: // Fat
     begin
-     edtFat.Text := FloatToStrF(rValue,ffFixed,8,2) + '/'+FloatToStrF(rTarget,ffFixed,8,2) +'g';
-     prgFat.Max := Ceil(rTarget);
-     prgFat.Position := Ceil(rValue);
+     edtFat.Text := FloatToStrF(pValue,ffFixed,8,2) + '/'+FloatToStrF(pTarget,ffFixed,8,2) +'g';
+     prgFat.Max := Ceil(pTarget);
+     prgFat.Position := Ceil(pValue);
     end;
   end;
 end;
@@ -520,6 +522,18 @@ begin
     cbxMealType.SetFocus;
     exit;
   end;
+  LogEatenFood;
+
+end;
+
+procedure TfrmDashboard.LogEatenFood;
+var
+  sMealName,sMealType : String;
+  rPortion : Real;
+  Meal : TMeal;
+  FoodItem : TFoodItem;
+  iCheckInt : Integer;
+begin
   sMealName := cbxFoods.text;
   sMealType := cbxMealType.Text;
 
@@ -538,6 +552,9 @@ begin
     begin
       Meal := TMeal.Create(FoodItem,rPortion,sMealType);
       Meal.EatMeal(currentUser.UserID,currentUser.GetTotalMeals);
+
+      LogGoalProgress(Meal);
+
       GetInfo;
     end else
     ShowMessage('The item ' +  FoodItem.Foodname + ' does not exist in the database');
@@ -547,15 +564,48 @@ begin
   end;
 end;
 
-procedure TfrmDashboard.cbxFoodsChange(Sender: TObject);
+procedure TfrmDashboard.LogGoalProgress;
 var
-  sFoodname: string;
-  i: Integer;
-  isFound : boolean;
-  rProtein,rCarb,rFat,rCalories,rSugar,rEnergy: real;
-  FoodItem : TFoodItem;
+  rCalories,rProtein,rCarb,rFat : Real;
+  rWater : Real;
+  isWater : Boolean;
+  Goal : TGoal;
+  sUserID : String;
 begin
+  sUserID := CurrentUser.UserID;
+  isWater := LowerCase(pMeal.FoodItem.Foodname) = 'water';
+  if isWater then
+  begin
+    rWater := pMeal.PortionSize;
+    Goal := TGoal.Create(CurrentUser.UserID,'Water');
+    Goal.SaveProgress(rWater);
+    Goal.Free;
+  end
+  else
+  begin
+    rCalories := pMeal.TotalCalories;
+    Goal := TGoal.Create(sUserID,'Calorie');
+    Goal.SaveProgress(rCalories);
 
+    rProtein := pMeal.FoodItem.ProteinPer100G * (pMeal.PortionSize/100);
+    Goal := TGoal.Create(sUserID,'Protein');
+    Goal.SaveProgress(rProtein);
+
+    rCarb := pMeal.FoodItem.CarbPer100G * (pMeal.PortionSize/100);
+    Goal := TGoal.Create(sUserID,'Carbohydrate');
+    Goal.SaveProgress(rCarb);
+
+    rFat := pMeal.FoodItem.FatPer100G * (pMeal.PortionSize/100);
+    Goal := TGoal.Create(sUserID,'Fat');
+    Goal.SaveProgress(rFat);
+    Goal.Free;
+  end;
+end;
+
+{ Dealing with food information when combo box selected item changes }
+procedure TfrmDashboard.cbxFoodsChange(Sender: TObject);
+var sFoodname : String;
+begin
   if cbxFoods.ItemIndex <> -1 then
   begin
     cbxMealType.Enabled := true;
@@ -567,13 +617,43 @@ begin
     btnEaten.Enabled := false;
     cbxMealType.Enabled := false;
   end;
-  sFoodname := cbxFoods.Text;
+
+  if cbxFoods.ItemIndex <> -1 then
+  begin
+    sFoodname := cbxFoods.Text;
+    if LowerCase(sFoodname) = 'water' then
+      DisplayWaterInfo
+    else
+      DisplayFoodInfo(sFoodname);
+  end;
+end;
+
+procedure TfrmDashboard.DisplayWaterInfo;
+const FILENAME = 'info/water.txt';
+var isExist : Boolean;
+begin
+  isExist := Utils.CheckFileExists(FILENAME);
+  if isExist then
+  with redFoodInfo.Lines do
+  begin
+    Clear;
+    LoadFromFile(FILENAME);
+  end;
+end;
+
+procedure TfrmDashboard.DisplayFoodInfo;
+var
+  i: Integer;
+  isFound : boolean;
+  rProtein,rCarb,rFat,rCalories,rSugar,rEnergy: real;
+  FoodItem : TFoodItem;
+begin
   isFound := false;
 
   { Loop through the food list until either i is at the food count or the food is found }
   i := 0;
   repeat
-    if UpperCase(sFoodname) = UpperCase(foodList[i]) then
+    if UpperCase(pFoodname) = UpperCase(foodList[i]) then
     begin
       isFound := true;
       FoodItem := TFoodItem.Create(foodList[i]);
@@ -598,7 +678,7 @@ begin
     end; // end with paragraph
     with Lines do
     begin
-      Add('Information on ' + sFoodname);
+      Add('Information on ' + pFoodname);
       Add('----------------------------------------------------');
       Add('Calories per 100g:' + #9 + FloatToStrF(rCalories,ffFixed,8,2)+'kcal');
       Add('Energy per 100g: ' + #9 + FloatToStrF(rEnergy,ffFixed,8,2)+'kJ');
@@ -607,10 +687,7 @@ begin
       Add('Fat per 100g:' + #9 + FloatToStrF(rFat,ffFixed,8,2)+'g');
       Add('Sugar per 100g:' + #9 + FloatToStrF(rSugar,ffFixed,8,2)+'g');
     end; // end lines
-  end // end with redMealInfo
-  else
-  ShowMessage('Meal not found');
-
+  end; // end with redMealInfo
 end;
 
 procedure TfrmDashboard.cbxMealTypeChange(Sender: TObject);
@@ -649,7 +726,7 @@ begin
     frmFood.Free;
   end;
   if isSuccess then
-  PopulateFoods;
+    PopulateFoods;
 end;
 {$ENDREGION}
 
@@ -668,21 +745,8 @@ procedure TfrmDashboard.FormShow(Sender: TObject);
 var
   userGreeter : TfrmGreeter;
 begin
-  utilObj := TUtils.Create;
-  loggerObj := TLOGS.Create;
-
-  PopulateFoods;
-  PopulateMealType;
-
-
-  dpcDay.Date := Date;
-  dpcDay.MaxDate := Date;
-
-  GetInfo;
-
-  crplDashboard.ActiveCard := crdProgress;
-
-  lblHello.Caption := 'Hello, ' + CurrentUser.Username;
+  FileUtils := TFileUtils.Create;
+  LogService := TLogService.Create;
 
   if currentUser.GetFirstLogin then
   begin
@@ -698,6 +762,19 @@ begin
    end;
   end;
 
+  PopulateFoods;
+
+  PopulateMealType;
+
+  dpcDay.Date := Date;
+  dpcDay.MaxDate := Date;
+
+  GetInfo;
+
+  crplDashboard.ActiveCard := crdProgress;
+
+  lblHello.Caption := 'Hello, ' + CurrentUser.Username;
+
   redFoodInfo.Text := 'Select an item ad get information!';
 
 
@@ -707,18 +784,16 @@ end;
 { Goals and goal modification }
 {$REGION GOALS }
 
-procedure TfrmDashboard.ShowGoalInfo(sGoalName: string);
+procedure TfrmDashboard.ShowGoalInfo(pGoalItem: string);
 var
   Goal : TGoal;
   rTarget,rAverage : Real;
   iTotalDays,iAchievedDays : Integer;
   dStartDate : TDate;
 begin
-  crplGoals.ActiveCard := crdGoalView;
+  pnlGoalHead.Caption := pGoalItem;
 
-  pnlGoalHead.Caption := sGoalName;
-
-  Goal := TGoal.Create(CurrentUser.UserID,sGoalName);
+  Goal := TGoal.Create(CurrentUser.UserID,pGoalItem);
   redGoalDesc.Text := Goal.GetDesc;
 
   rTarget := Goal.Target;
@@ -733,8 +808,10 @@ begin
   edtGoalTarget.ReadOnly := true;
   edtGoalTarget.Text := FloatToStrF(rTarget,ffGeneral,8,2);
 
+
   iTotalDays := Goal.GetTotalDays;
   iAchievedDays := GOAL.CalcDaysAchieved;
+
   edtGoalDays.ReadOnly := TRUE;
   edtGoalDays.Text := iAchievedDays.ToString + '/' + iTotalDays.ToString;
   prgDays.Max := iTotalDays;
@@ -743,6 +820,8 @@ begin
   dStartDate := Goal.StartDate;
   edtGoalDate.Text := FormatDateTime('dd mmmm yyyy',dStartDate);
   Goal.Free;
+
+  crplGoals.ActiveCard := crdGoalView;
 end;
 
 procedure TfrmDashboard.btnGoalCaloriesClick(Sender: TObject);
@@ -795,13 +874,14 @@ end;
 
 procedure TfrmDashboard.btnEditGoalClick(Sender: TObject);
 var
-  sTargetStr,sGoalUnit : String;
+  sTargetStr : String;
   rNewTarget : real;
   iCheckNum : Integer;
   Goal : TGoal;
+  sGoalItem : String;
 begin
-  sGoalUnit := cbxGoalUnit.Text;
   sTargetStr := InputBox('Enter a new goal target','New target','');
+  sGoalItem := pnlGoalHead.Caption;
 
   if sTargetStr = '' then
   begin
@@ -810,18 +890,23 @@ begin
   end;
 
   Val(sTargetStr,rNewTarget,iCheckNum);
+  ShowMessage(FloatToStr(rNewTarget));
 
   if iCheckNum <> 0 then
   begin
     ShowMessage('Please ensure that the goal target is a number');
     exit;
   end;
-
   if MessageDlg('Are you sure you want to change this value to ' + sTargetStr,mtConfirmation,mbYesNo,0) = mrYes then
   begin
+    Goal := TGoal.Create(CurrentUser.UserID,sGoalItem);
+
     Goal.Target := rNewTarget;
     Goal.SetGoalTarget;
+
     ShowMessage('Goal changed successfully!');
+
+    ShowGoalInfo(sGoalItem);
     GetInfo;
   end;
 end;
@@ -860,34 +945,35 @@ begin
   end;
 end;
 
-procedure TfrmDashboard.FillGoalEditBox(sGoalItem,sGoalUnit : String;rTarget:Real);
+procedure TfrmDashboard.FillGoalEditBox(pGoalItem,pGoalUnit : String;pTarget:Real);
 begin
-  case IndexStr(LowerCase(sGoalItem),['calorie','water','carbohydrate','protein','fat']) of
+  case IndexStr(LowerCase(pGoalItem),['calorie','water','carbohydrate','protein','fat']) of
   0: begin
-    edtGoalCal.Text := FloatToStrF(rTarget,ffGeneral,8,2);
-    cbxGoalUnit.Items[0] := sGoalUnit;
+    edtGoalCal.Text := FloatToStrF(pTarget,ffGeneral,8,2);
+    cbxGoalUnit.Items.Add(pGoalUnit);
   end;
   1: begin
-    edtGoalWater.Text := FloatToStrF(rTarget,ffGeneral,8,2);
-    cbxGoalUnit.Items[0] := sGoalUnit;
+    edtGoalWater.Text := FloatToStrF(pTarget,ffGeneral,8,2);
+    cbxGoalUnit.Items.Add(pGoalUnit);
   end;
   2: begin
-    edtGoalCarb.Text := FloatToStrF(rTarget,ffGeneral,8,2);
-    cbxGoalUnit.Items[0] := sGoalUnit;
+    edtGoalCarb.Text := FloatToStrF(pTarget,ffGeneral,8,2);
+    cbxGoalUnit.Items.Add(pGoalUnit);
   end;
   3: begin
-    edtGoalProtein.Text := FloatToStrF(rTarget,ffGeneral,8,2);
-    cbxGoalUnit.Items[0] := sGoalUnit;
+    edtGoalProtein.Text := FloatToStrF(pTarget,ffGeneral,8,2);
+    cbxGoalUnit.Items.Add(pGoalUnit);
   end;
   4: begin
-    edtGoalFat.Text := FloatToStrF(rTarget,ffGeneral,8,2);
-    cbxGoalUnit.Items[0] := sGoalUnit;
+    edtGoalFat.Text := FloatToStrF(pTarget,ffGeneral,8,2);
+    cbxGoalUnit.Items.Add(pGoalUnit);
   end;
   else
     begin
       ShowMessage('FillGoalEditBox parameter `sGoalItem` is not one of `Calorie`, `Water`, `Carbohydrate`, `Protein` or `Fat`');
     end;
   end;
+  cbxGoalUnit.ItemIndex := 0;
 end;
 
 procedure TfrmDashboard.crdGoalOVEnter(Sender: TObject);

@@ -477,10 +477,6 @@ begin
   end;
 end;
 
-procedure TfrmDashboard.btnReturnClick(Sender: TObject);
-begin
-  crplDashboard.ActiveCard := crdProgress;
-  btnReturn.Enabled := false;
 end;
 
 procedure TfrmDashboard.btnSettingsClick(Sender: TObject);
@@ -519,6 +515,13 @@ end;
 { Form navigation }
 {$REGION NAVIGATION}
 
+procedure TfrmDashboard.btnGoProgressClick(Sender: TObject);
+begin
+  crplDashboard.ActiveCard := crdProgress;
+  btnGoProgress.Enabled := false;
+  btnGoGoals.Enabled := true;
+  btnGoEating.Enabled := true;
+end;
 
 procedure TfrmDashboard.btnGoGoalsClick(Sender: TObject);
 begin

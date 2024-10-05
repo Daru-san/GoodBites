@@ -829,12 +829,12 @@ begin
   edtAverageProg.Text := FloatToStrF(rAverage,ffFixed,8,2)+'/'+FloatToStrF(rTarget,ffFixed,8,2);
 
   edtGoalTarget.ReadOnly := true;
-  edtGoalTarget.Text := FloatToStrF(rTarget,ffGeneral,8,2);
-
-
+  edtGoalTarget.Text := FloatToStrF(rTarget,ffGeneral,8,2)+'g';
+  
   PopulateGoalUnits(pGoalItem);
   cbxGoalUnit.ItemIndex := 0;
   cbxGoalUnitChange(nil);
+  
   iTotalDays := Goal.GetTotalDays;
   iAchievedDays := GOAL.CalcDaysAchieved;
 
@@ -850,6 +850,27 @@ begin
   crplGoals.ActiveCard := crdGoalView;
 end;
 
+procedure TfrmDashboard.cbxGoalUnitChange(Sender: TObject);
+var
+  isWater : Boolean;
+  iUnitIndex : Integer;
+  rTarget : Real;
+  Goal : TGoal;
+begin
+  iUnitIndex := cbxGoalUnit.ItemIndex;
+  isWater := cbxGoalUnit.items.count = 3;
+  if isWater then
+  begin
+    Goal := TGoal.Create(CurrentUser.UserID,'Water');
+    rTarget := Goal.Target;
+    Goal.Free;
+    case iUnitIndex of
+    0: edtGoalTarget.Text := FloatToStrF(rTarget,ffFixed,8,2)+'ml';
+    1: edtGoalTarget.Text := FloatToStrF(rTarget/1000,ffFixed,8,2)+'l';
+    2: edtGoalTarget.Text := FloatToStrF(rTarget/500,ffFixed,8,0)+' glasses'; 
+    end;
+  end;
+end;
 procedure TfrmDashboard.PopulateGoalUnits(pGoalItem: string);
 var isWater : Boolean;
 begin

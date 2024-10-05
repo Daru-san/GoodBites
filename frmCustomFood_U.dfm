@@ -187,6 +187,7 @@ object frmCustomFood: TfrmCustomFood
           ShowHint = True
           TabOrder = 7
           TextHint = 'Sugars per 100g'
+          Value = 1.000000000000000000
           UseMouseWheel = True
         end
       end

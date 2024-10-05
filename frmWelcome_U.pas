@@ -1,4 +1,4 @@
-unit frmGreeter_U;
+unit frmWelcome_U;
 
 interface
 
@@ -10,7 +10,7 @@ uses
   libUser_U,libUtils_U, libGoals_U, Vcl.MPlayer;
 
 type
-  TfrmGreeter = class(TForm)
+  TfrmWelcome = class(TForm)
     crplWelcome: TCardPanel;
     tbTop: TToolBar;
     crdLanding: TCard;
@@ -55,6 +55,7 @@ type
     procedure nbxHeightChange(Sender: TObject);
     procedure nbxWeightChange(Sender: TObject);
     procedure rgpActivityClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
 
   private
     { Private declarations }
@@ -80,7 +81,7 @@ type
 const
   arrGOALITEMS : array[1..5] of string = ('Calorie','Water','Carbohydrate','Protein','Fat');
 var
-  frmGreeter: TfrmGreeter;
+  frmWelcome: TfrmWelcome;
   isConfirmed : Boolean;
   FileUtils : TFileUtils;
 
@@ -93,7 +94,12 @@ implementation
 
 // Form controls
 {$REGION FORM CONTROLS}
-procedure TfrmGreeter.FormShow(Sender: TObject);
+procedure TfrmWelcome.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  self.ModalResult := mrClose;
+end;
+
+procedure TfrmWelcome.FormShow(Sender: TObject);
 begin
   crplWelcome.ActiveCard := crdLanding;
   ShowMessage(
@@ -105,33 +111,33 @@ begin
   FileUtils := TFileUtils.Create;
 end;
 
-procedure TfrmGreeter.nbxHeightChange(Sender: TObject);
+procedure TfrmWelcome.nbxHeightChange(Sender: TObject);
 begin
   CheckFilled;
 end;
 
-procedure TfrmGreeter.nbxWeightChange(Sender: TObject);
+procedure TfrmWelcome.nbxWeightChange(Sender: TObject);
 begin
   CheckFilled;
 end;
 
-procedure TfrmGreeter.rgpActivityClick(Sender: TObject);
+procedure TfrmWelcome.rgpActivityClick(Sender: TObject);
 begin
   CheckFilled;
 end;
 
-procedure TfrmGreeter.spnAgeChange(Sender: TObject);
+procedure TfrmWelcome.spnAgeChange(Sender: TObject);
 begin
   CheckFilled;
 end;
 
-procedure TfrmGreeter.crdWelcomeEnter(Sender: TObject);
+procedure TfrmWelcome.crdWelcomeEnter(Sender: TObject);
 begin
   btnBack.Enabled := false;
   btnContinue.Enabled := true;
 end;
 
-procedure TfrmGreeter.edtFullnameChange(Sender: TObject);
+procedure TfrmWelcome.edtFullnameChange(Sender: TObject);
 begin
   CheckFilled;
 end;
@@ -141,7 +147,7 @@ end;
 
 // Navigation
 {$REGION NAVIGATION }
-procedure TfrmGreeter.btnBackClick(Sender: TObject);
+procedure TfrmWelcome.btnBackClick(Sender: TObject);
 begin
   if crplWelcome.ActiveCard = crdDetails then
     crplWelcome.ActiveCard := crdLanding;
@@ -154,7 +160,7 @@ begin
   end;
 end;
 
-procedure TfrmGreeter.btnContinueClick(Sender: TObject);
+procedure TfrmWelcome.btnContinueClick(Sender: TObject);
 begin
   if (crplWelcome.ActiveCard = crdLanding) then
   begin
@@ -176,7 +182,7 @@ begin
 end;
 
 
-procedure TfrmGreeter.GoalCardForward;
+procedure TfrmWelcome.GoalCardForward;
 var
   sMessage : TStringList;
 begin
@@ -195,7 +201,7 @@ end;
 
 // Presence checks
 {$REGION Checks }
-procedure TfrmGreeter.CheckFilled;
+procedure TfrmWelcome.CheckFilled;
 var
   isName,isAge,isWeight,isHeight,isActive : Boolean;
   sFullname : String;
@@ -217,7 +223,7 @@ end;
 
 // Opening cards
 {$REGION VIEW CARDS}
-procedure TfrmGreeter.ViewDetailsCard;
+procedure TfrmWelcome.ViewDetailsCard;
 begin
   if not isConfirmed then
   begin
@@ -229,14 +235,14 @@ begin
   end;
 end;
 
-procedure TfrmGreeter.ViewWelcomeCard;
+procedure TfrmWelcome.ViewWelcomeCard;
 begin
   crplWelcome.ActiveCard := crdWelcome;
   CurrentUser.CompleteSignUp;
   tbNavbar.Hide;
 end;
 
-procedure TfrmGreeter.ViewGoalsCard;
+procedure TfrmWelcome.ViewGoalsCard;
 begin
   CalculateGoals;
   crplWelcome.ActiveCard := crdGoals;
@@ -248,7 +254,7 @@ end;
 // Confirmation
 {$REGION Detail Confirmation }
 
-procedure TfrmGreeter.ConfirmDetails;
+procedure TfrmWelcome.ConfirmDetails;
 var
   iCheckInt : Integer;
   iAge : Integer;
@@ -294,7 +300,7 @@ begin
   end;
 end;
 
-procedure TfrmGreeter.ReConfirmDetails;
+procedure TfrmWelcome.ReConfirmDetails;
 begin
   if MessageDlg('Are you sure you would like to go back and edit your details?',mtConfirmation,mbYesNo,0) = mrYes then
   begin
@@ -306,7 +312,7 @@ end;
 
 // Goal calculation, setting and display
 {$REGION Goals }
-procedure TfrmGreeter.SetGoal(pGoalItem: string; pGoalUnit: string; pTarget: Real);
+procedure TfrmWelcome.SetGoal(pGoalItem: string; pGoalUnit: string; pTarget: Real);
 var
   NewGoal : TGoal;
 begin
@@ -317,7 +323,7 @@ begin
   NewGoal.Free;
 end;
 
-procedure TfrmGreeter.CalculateGoals;
+procedure TfrmWelcome.CalculateGoals;
 const
   PROTEIN = 0.2;
   CARB = 0.5;
@@ -338,7 +344,7 @@ begin
   edtGoalWater.Text := 2000.ToString;
 end;
 
-procedure TfrmGreeter.SetNewGoals;
+procedure TfrmWelcome.SetNewGoals;
 var
   rProtein, rCarb, rFat, rTotalCalories, rWater : Real;
   sWaterUnit : String;

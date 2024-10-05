@@ -1,4 +1,4 @@
-object frmGreeter: TfrmGreeter
+object frmWelcome: TfrmWelcome
   Left = 0
   Top = 0
   Caption = 'Welcome'
@@ -12,6 +12,7 @@ object frmGreeter: TfrmGreeter
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  OnClose = FormClose
   OnShow = FormShow
   TextHeight = 15
   object crplWelcome: TCardPanel

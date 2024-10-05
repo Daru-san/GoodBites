@@ -3,7 +3,7 @@ object frmLogin: TfrmLogin
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Login'
-  ClientHeight = 378
+  ClientHeight = 371
   ClientWidth = 605
   Color = clBtnFace
   Constraints.MinHeight = 410
@@ -14,398 +14,294 @@ object frmLogin: TfrmLogin
   Font.Name = 'Segoe UI'
   Font.Style = []
   Position = poMainFormCenter
-  OnClose = FormClose
   OnShow = FormShow
   TextHeight = 15
-  object btnMain: TToolBar
-    Left = 0
-    Top = 0
-    Width = 605
-    Height = 29
-    ButtonWidth = 41
-    Images = imgLst
-    TabOrder = 0
-    object tbtHome: TToolButton
-      AlignWithMargins = True
-      Left = 0
-      Top = 0
-      Caption = 'Home'
-      ImageIndex = 0
-      ParentShowHint = False
-      Wrap = True
-      ShowHint = True
-      Style = tbsTextButton
-      OnClick = tbtHomeClick
-    end
-  end
   object crplLogin: TCardPanel
     Left = 0
-    Top = 29
+    Top = 41
     Width = 605
-    Height = 349
+    Height = 330
     Align = alClient
-    ActiveCard = crdLogin
-    TabOrder = 1
+    ActiveCard = crdSign
+    TabOrder = 0
     object crdLogin: TCard
       Left = 1
       Top = 1
       Width = 603
-      Height = 347
+      Height = 328
       Caption = 'Login'
       CardIndex = 0
       TabOrder = 0
-      object lblWelcome: TLabel
-        Left = 146
-        Top = 16
-        Width = 110
-        Height = 15
-        Caption = 'Welcome to my app!'
-      end
-      object pnlLogin: TPanel
-        Left = 16
-        Top = 37
-        Width = 385
-        Height = 270
-        BevelKind = bkTile
+      OnEnter = crdLoginEnter
+      ExplicitLeft = 2
+      ExplicitHeight = 376
+      object pnlLoginCenter: TPanel
+        Left = 0
+        Top = 35
+        Width = 603
+        Height = 293
+        Align = alClient
         TabOrder = 0
-        object btnLogin: TButton
-          Left = 58
-          Top = 200
-          Width = 75
-          Height = 25
-          Caption = 'Login'
-          Default = True
-          Enabled = False
+        ExplicitLeft = 216
+        ExplicitTop = 176
+        ExplicitWidth = 185
+        ExplicitHeight = 41
+        object pnlGoSignup: TPanel
+          Left = 375
+          Top = 6
+          Width = 228
+          Height = 115
+          BevelKind = bkFlat
           TabOrder = 0
-          OnClick = btnLoginClick
+          object lblNew: TLabel
+            Left = 66
+            Top = 33
+            Width = 55
+            Height = 15
+            Caption = 'New User?'
+          end
+          object btnGoSignUp: TButton
+            Left = 62
+            Top = 63
+            Width = 75
+            Height = 25
+            Caption = 'Sign Up'
+            TabOrder = 0
+            OnClick = btnGoSignUpClick
+          end
         end
-        object edtUser: TLabeledEdit
-          Left = 42
-          Top = 74
-          Width = 121
-          Height = 23
-          Hint = 'Enter your username'
-          EditLabel.Width = 53
-          EditLabel.Height = 15
-          EditLabel.Caption = 'Username'
-          MaxLength = 20
-          ParentShowHint = False
-          ShowHint = True
+        object pnlLogin: TPanel
+          Left = 16
+          Top = 6
+          Width = 353
+          Height = 270
+          BevelKind = bkTile
           TabOrder = 1
-          Text = ''
-          TextHint = 'Lorem Ipsum'
-          OnChange = edtUserChange
-          OnKeyPress = edtUserKeyPress
-        end
-        object edtPassword: TLabeledEdit
-          Left = 42
-          Top = 146
-          Width = 121
-          Height = 23
-          Hint = 'Enter your password'
-          EditLabel.Width = 50
-          EditLabel.Height = 15
-          EditLabel.Caption = 'Password'
-          MaxLength = 20
-          ParentShowHint = False
-          PasswordChar = '*'
-          ShowHint = True
-          TabOrder = 2
-          Text = ''
-          TextHint = 'Strong password'
-          OnChange = edtPasswordChange
-          OnKeyPress = edtPasswordKeyPress
+          object btnLogin: TButton
+            Left = 34
+            Top = 192
+            Width = 75
+            Height = 25
+            Caption = 'Login'
+            Default = True
+            Enabled = False
+            TabOrder = 0
+            OnClick = btnLoginClick
+          end
+          object edtUser: TLabeledEdit
+            Left = 34
+            Top = 64
+            Width = 121
+            Height = 23
+            Hint = 'Enter your username'
+            EditLabel.Width = 53
+            EditLabel.Height = 15
+            EditLabel.Caption = 'Username'
+            MaxLength = 20
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 1
+            Text = ''
+            TextHint = 'Lorem Ipsum'
+            OnChange = edtUserChange
+            OnKeyPress = edtUserKeyPress
+          end
+          object edtPassword: TLabeledEdit
+            Left = 34
+            Top = 138
+            Width = 121
+            Height = 23
+            Hint = 'Enter your password'
+            EditLabel.Width = 50
+            EditLabel.Height = 15
+            EditLabel.Caption = 'Password'
+            MaxLength = 20
+            ParentShowHint = False
+            PasswordChar = '*'
+            ShowHint = True
+            TabOrder = 2
+            Text = ''
+            TextHint = 'Strong password'
+            OnChange = edtPasswordChange
+            OnKeyPress = edtPasswordKeyPress
+          end
         end
       end
-      object pnlGoSignup: TPanel
-        Left = 407
-        Top = 37
-        Width = 196
-        Height = 153
-        BevelKind = bkFlat
+      object pnlLoginTop: TPanel
+        Left = 0
+        Top = 0
+        Width = 603
+        Height = 35
+        Align = alTop
+        Caption = 'Login'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Arial'
+        Font.Style = []
+        ParentFont = False
         TabOrder = 1
-        object lblNew: TLabel
-          Left = 66
-          Top = 49
-          Width = 55
-          Height = 15
-          Caption = 'New User?'
-        end
-        object btnGoSignUp: TButton
-          Left = 62
-          Top = 95
-          Width = 75
-          Height = 25
-          Caption = 'Sign Up'
-          TabOrder = 0
-          OnClick = btnGoSignUpClick
-        end
       end
     end
     object crdSign: TCard
       Left = 1
       Top = 1
       Width = 603
-      Height = 347
+      Height = 328
       Caption = 'Sign Up'
       CardIndex = 1
       TabOrder = 1
-      object pnlNewUser: TPanel
-        Left = 16
-        Top = 30
-        Width = 354
-        Height = 287
-        BevelKind = bkFlat
+      OnEnter = crdSignEnter
+      object pnlSignUpTop: TPanel
+        Left = 0
+        Top = 0
+        Width = 603
+        Height = 35
+        Align = alTop
+        Caption = 'Sign Up'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Arial'
+        Font.Style = []
+        ParentFont = False
         TabOrder = 0
-        object btnCreate: TButton
-          Left = 32
-          Top = 234
-          Width = 97
-          Height = 25
-          Caption = 'Create Account'
-          Default = True
-          Enabled = False
-          TabOrder = 0
-          OnClick = btnCreateClick
-        end
-        object cbxTerms: TCheckBox
-          Left = 32
-          Top = 211
-          Width = 201
-          Height = 17
-          Caption = 'You agree with our terms of use'
-          Enabled = False
-          TabOrder = 1
-          OnClick = cbxTermsClick
-        end
-        object edtNewPassConf: TLabeledEdit
-          Left = 32
-          Top = 165
-          Width = 121
-          Height = 23
-          Hint = 'Ensure they are the same'
-          EditLabel.Width = 113
-          EditLabel.Height = 15
-          EditLabel.Caption = 'Repeat that password'
-          Enabled = False
-          MaxLength = 20
-          PasswordChar = '*'
-          TabOrder = 2
-          Text = ''
-          TextHint = 'Really, really strong password'
-          OnChange = edtNewPassConfChange
-        end
-        object edtNewPassword: TLabeledEdit
-          Left = 32
-          Top = 107
-          Width = 121
-          Height = 23
-          Hint = 'Password must be over 8 characters and include a number/s'
-          EditLabel.Width = 126
-          EditLabel.Height = 15
-          EditLabel.Caption = 'Enter a strong password'
-          Enabled = False
-          MaxLength = 20
-          PasswordChar = '*'
-          TabOrder = 3
-          Text = ''
-          TextHint = 'Really strong password'
-          OnChange = edtNewPasswordChange
-        end
-        object edtNewUser: TLabeledEdit
-          Left = 32
-          Top = 45
-          Width = 121
-          Height = 23
-          Hint = 'Enter your username'
-          EditLabel.Width = 109
-          EditLabel.Height = 15
-          EditLabel.Caption = 'Enter your username'
-          MaxLength = 12
-          TabOrder = 4
-          Text = ''
-          TextHint = 'Lorem Ipsum'
-          OnChange = edtNewUserChange
-        end
-        object cbxReveal: TCheckBox
-          Left = 208
-          Top = 168
-          Width = 113
-          Height = 17
-          Caption = 'Reveal password'
-          Enabled = False
-          TabOrder = 5
-          OnClick = cbxRevealClick
-        end
       end
-      object pnlNewSub: TPanel
-        Left = 376
-        Top = 30
-        Width = 227
-        Height = 115
-        BevelKind = bkSoft
+      object pnlSignUpCenter: TPanel
+        Left = 0
+        Top = 35
+        Width = 603
+        Height = 293
+        Align = alClient
         TabOrder = 1
-        object lblCreate: TLabel
-          Left = 55
-          Top = 30
-          Width = 110
-          Height = 15
-          Caption = 'Create your account!'
-        end
-        object btnGoLogin: TButton
-          Left = 63
-          Top = 68
-          Width = 86
-          Height = 25
-          Caption = 'Login Instead?'
+        object pnlNewSub: TPanel
+          Left = 376
+          Top = 6
+          Width = 227
+          Height = 115
+          BevelKind = bkSoft
           TabOrder = 0
-          OnClick = btnGoLoginClick
+          object lblCreate: TLabel
+            Left = 55
+            Top = 30
+            Width = 110
+            Height = 15
+            Caption = 'Create your account!'
+          end
+          object btnGoLogin: TButton
+            Left = 63
+            Top = 68
+            Width = 86
+            Height = 25
+            Caption = 'Login Instead?'
+            TabOrder = 0
+            OnClick = btnGoLoginClick
+          end
+        end
+        object pnlNewUser: TPanel
+          Left = 16
+          Top = 6
+          Width = 354
+          Height = 273
+          BevelKind = bkFlat
+          TabOrder = 1
+          object btnCreate: TButton
+            Left = 32
+            Top = 234
+            Width = 97
+            Height = 25
+            Caption = 'Create Account'
+            Default = True
+            Enabled = False
+            TabOrder = 0
+            OnClick = btnCreateClick
+          end
+          object cbxTerms: TCheckBox
+            Left = 32
+            Top = 211
+            Width = 201
+            Height = 17
+            Caption = 'You agree with our terms of use'
+            Enabled = False
+            TabOrder = 1
+            OnClick = cbxTermsClick
+          end
+          object edtNewPassConf: TLabeledEdit
+            Left = 32
+            Top = 165
+            Width = 121
+            Height = 23
+            Hint = 'Ensure they are the same'
+            EditLabel.Width = 113
+            EditLabel.Height = 15
+            EditLabel.Caption = 'Repeat that password'
+            Enabled = False
+            MaxLength = 20
+            PasswordChar = '*'
+            TabOrder = 2
+            Text = ''
+            TextHint = 'Really, really strong password'
+            OnChange = edtNewPassConfChange
+          end
+          object edtNewPassword: TLabeledEdit
+            Left = 32
+            Top = 107
+            Width = 121
+            Height = 23
+            Hint = 'Password must be over 8 characters and include a number/s'
+            EditLabel.Width = 126
+            EditLabel.Height = 15
+            EditLabel.Caption = 'Enter a strong password'
+            Enabled = False
+            MaxLength = 20
+            PasswordChar = '*'
+            TabOrder = 3
+            Text = ''
+            TextHint = 'Really strong password'
+            OnChange = edtNewPasswordChange
+          end
+          object edtNewUser: TLabeledEdit
+            Left = 32
+            Top = 45
+            Width = 121
+            Height = 23
+            Hint = 'Enter your username'
+            EditLabel.Width = 109
+            EditLabel.Height = 15
+            EditLabel.Caption = 'Enter your username'
+            MaxLength = 12
+            TabOrder = 4
+            Text = ''
+            TextHint = 'Lorem Ipsum'
+            OnChange = edtNewUserChange
+          end
+          object cbxReveal: TCheckBox
+            Left = 208
+            Top = 168
+            Width = 113
+            Height = 17
+            Caption = 'Reveal password'
+            Enabled = False
+            TabOrder = 5
+            OnClick = cbxRevealClick
+          end
         end
       end
     end
   end
-  object imgLst: TImageList
-    ShareImages = True
-    Left = 497
-    Top = 251
-    Bitmap = {
-      494C010101000800040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
-      0000000000003600000028000000400000001000000001002000000000000010
-      0000000000000000000000000000000000000000000B0000000B0000000B0000
-      00050000000000000000000000050000000B0000000B0000000B000000060000
-      0000000000000000000000000000000000700000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000C1000000BE000000BF0000
-      004E00000000000000000000004E000000BF000000BE000000C1000000700000
-      0000000000000000000000000000000000960000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000FF000000FF000000FF0000
-      0069000000000000000000000069000000FF000000FF000000FF000000960000
-      0000000000000000000000000000000000960000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000FF000000FF000000FF0000
-      0069000000000000000000000069000000FF000000FF000000FF000000960000
-      0000000000000000000000000000000000960000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000FF000000FF000000FF0000
-      0069000000000000000000000069000000FF000000FF000000FF000000960000
-      0000000000000000000000000000000000960000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000FF000000FF000000FF0000
-      007B0000001B0000001B0000007B000000FF000000FF000000FF000000960000
-      0000000000000000000000000000000000960000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000FF000000FF000000FF0000
-      00ED000000DF000000DF000000ED000000FF000000FF000000FF000000960000
-      0000000000000000004E0000006A000000C10000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000FF000000FF000000FF0000
-      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000C10000
-      006A0000004E0000003D000000CA000000FF0000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000FF000000FF000000FF0000
-      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
-      00CA0000003D0000000000000028000000BC0000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000FF000000FF000000FF0000
-      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000BC0000
-      00280000000000000000000000000000001D0000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000AC000000FE000000FF0000
-      00FF000000FF000000FF000000FF000000FF000000FE000000AC0000001D0000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000140000009A000000FB0000
-      00FF000000FF000000FF000000FF000000FB0000009A00000014000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000000000000D000000890000
-      00F7000000FF000000FF000000F7000000890000000D00000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000080000
-      0076000000F3000000F300000076000000080000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      00040000005F0000005F00000004000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000010000000100000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000424D3E000000000000003E000000
-      2800000040000000100000000100010000000000800000000000000000000000
-      000000000000000000000000FFFFFF000C1E0000000000000C1E000000000000
-      0C1E0000000000000C1E0000000000000C1E000000000000001E000000000000
-      001800000000000000000000000000000004000000000000000E000000000000
-      001F000000000000003F000000000000807F000000000000C0FF000000000000
-      E1FF000000000000F3FF00000000000000000000000000000000000000000000
-      000000000000}
+  object pnlLoginHead: TPanel
+    Left = 0
+    Top = 0
+    Width = 605
+    Height = 41
+    Align = alTop
+    Caption = 'Welcome To Goodbites'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -15
+    Font.Name = 'Bahnschrift'
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 1
   end
 end

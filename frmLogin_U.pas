@@ -193,7 +193,15 @@ begin
 
   LoginUser := TUser.Create(sUsername.Trim);
   LoginUser.SignUp(sPassword.Trim);
-  LoginUser.Free;
+  LoginUser.Login(sPassword.Trim);
+
+  if LoginUser.CheckLogin then
+    self.ModalResult := mrOk
+  else
+  begin
+    self.ModalResult := mrNone;
+    LoginUser.Free;
+  end;
 end;
 
 procedure TfrmLogin.CheckFields;

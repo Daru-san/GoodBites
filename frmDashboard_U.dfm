@@ -21,7 +21,7 @@ object frmDashboard: TfrmDashboard
     Width = 855
     Height = 451
     Align = alClient
-    ActiveCard = crdProgress
+    ActiveCard = crdGoals
     Caption = 'CardPanel1'
     TabOrder = 0
     object crdProgress: TCard
@@ -255,8 +255,8 @@ object frmDashboard: TfrmDashboard
             object lblProg: TLabel
               Left = 1
               Top = 1
-              Width = 404
-              Height = 48
+              Width = 130
+              Height = 28
               Align = alClient
               Alignment = taCenter
               Caption = 'Progress for'
@@ -267,8 +267,6 @@ object frmDashboard: TfrmDashboard
               Font.Style = []
               ParentFont = False
               Layout = tlCenter
-              ExplicitWidth = 130
-              ExplicitHeight = 28
             end
           end
         end
@@ -366,28 +364,13 @@ object frmDashboard: TfrmDashboard
           ParentFont = False
           ExplicitWidth = 40
         end
-        object RichEdit1: TRichEdit
-          Left = 264
-          Top = 288
-          Width = 185
-          Height = 89
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -12
-          Font.Name = 'Segoe UI'
-          Font.Style = []
-          Lines.Strings = (
-            'RichEdit1')
-          ParentFont = False
-          TabOrder = 0
-        end
         object pnlFood: TPanel
           Left = 1
           Top = 24
           Width = 432
           Height = 424
           Align = alLeft
-          TabOrder = 1
+          TabOrder = 0
           object pnlEating: TPanel
             Left = 1
             Top = 1
@@ -458,7 +441,7 @@ object frmDashboard: TfrmDashboard
           Width = 419
           Height = 424
           Align = alClient
-          TabOrder = 2
+          TabOrder = 1
           object redFoodInfo: TRichEdit
             Left = 1
             Top = 1
@@ -853,7 +836,7 @@ object frmDashboard: TfrmDashboard
     object lblHello: TLabel
       Left = 0
       Top = 0
-      Width = 140
+      Width = 96
       Height = 24
       Align = alTop
       Alignment = taCenter
@@ -865,7 +848,6 @@ object frmDashboard: TfrmDashboard
       Font.Style = []
       ParentFont = False
       Layout = tlCenter
-      ExplicitWidth = 96
     end
     object edtSVCalorie: TLabeledEdit
       Left = 1

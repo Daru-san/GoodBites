@@ -2,7 +2,7 @@ unit libUtils_U;
 
 interface
 
-uses System.SysUtils,System.Classes,VCL.StdCtrls,Dialogs;
+uses System.SysUtils,System.Classes,VCL.StdCtrls,Dialogs,vcl.NumberBox;
 
 type
   TFileUtils = Class(TObject)
@@ -10,6 +10,12 @@ type
     function CheckFileExists(pFilename: string) : boolean;
     function CheckLogFile : Boolean;
   end;
+
+  TControlUtils = Class(TObject)
+    public
+      procedure SetNumberBox(pNumberBox : TNumberBox;pMin,pMax : real);
+
+  End;
 
   TStringUtils = Class(TObject)
     public
@@ -27,6 +33,20 @@ type
   End;
 
 implementation
+
+//Control utilities
+
+procedure TControlUtils.SetNumberBox(pNumberBox: TNumberBox; pMin: Real; pMax: Real);
+begin
+  with pNumberBox do
+  begin
+    minValue := pMin;
+    maxValue := pMax;
+    Mode := nbmFloat;
+    Enabled := false;
+    UseMouseWheel := true;
+  end;
+end;
 
 // String utilities
 function TStringUtils.ValidateString(S,StringName: string; minLength: Integer = 0;

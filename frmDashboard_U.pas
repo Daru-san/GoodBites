@@ -392,6 +392,11 @@ begin
     sbtnNext.Enabled := False
   else
     sbtnNext.Enabled := True;
+    
+  if (dpcDay.Date = CurrentUser.GetRegisterDate) then
+    sbtnPrev.Enabled := false
+  else 
+    sbtnPrev.Enabled := true;
   GetInfo;
 end;
 
@@ -791,6 +796,8 @@ begin
 
   dpcDay.Date := Date;
   dpcDay.MaxDate := Date;
+  dpcDay.MinDate := CurrentUser.GetRegisterDate;
+  dpcDayChange(nil);
 
   GetInfo;
 

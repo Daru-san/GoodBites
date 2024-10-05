@@ -34,8 +34,8 @@ const DBFILENAME = 'dbBites.mdb'; DLFILENAME = 'dbBites.ldb';
 var
   dmData: TdmData;
   dbPath,dlPath : String;
-  logger : TLogs;
-  Utils : TUtils;
+  logger : TLogService;
+  Utils : TFileUtils;
   DatabaseExists : Boolean;
 
 implementation
@@ -145,8 +145,8 @@ end;
 
 procedure TdmData.DataModuleCreate(Sender: TObject);
 begin
-  Utils := TUtils.Create;
-  logger := TLogs.Create;
+  Utils := TFileUtils.Create;
+  logger := TLogService.Create;
 
   LocateDatabase;
   if DatabaseExists then

@@ -22,7 +22,7 @@ object frmAdmin: TfrmAdmin
     Top = 0
     Width = 814
     Height = 538
-    ActivePage = tsFoods
+    ActivePage = tsHome
     Align = alClient
     TabOrder = 0
     ExplicitLeft = 81

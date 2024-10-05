@@ -17,30 +17,30 @@ object frmDashboard: TfrmDashboard
   TextHeight = 15
   object crplDashboard: TCardPanel
     Left = 140
-    Top = 21
+    Top = 0
     Width = 855
-    Height = 451
+    Height = 472
     Align = alClient
-    ActiveCard = crdGoals
+    ActiveCard = crdProgress
     Caption = 'CardPanel1'
     TabOrder = 0
     object crdProgress: TCard
       Left = 1
       Top = 1
       Width = 853
-      Height = 449
-      Caption = 'Progress'
+      Height = 470
+      Caption = '1. Progress'
       CardIndex = 0
       TabOrder = 0
-      object pnlDate: TPanel
+      object pnlDateNavigation: TPanel
         Left = 0
-        Top = 408
+        Top = 429
         Width = 853
         Height = 41
         Align = alBottom
         TabOrder = 0
         object sbtnPrev: TSpeedButton
-          Left = 255
+          Left = 239
           Top = 6
           Width = 57
           Height = 22
@@ -57,7 +57,7 @@ object frmDashboard: TfrmDashboard
           OnClick = sbtnNextClick
         end
         object dpcDay: TDateTimePicker
-          Left = 336
+          Left = 328
           Top = 5
           Width = 186
           Height = 23
@@ -68,45 +68,29 @@ object frmDashboard: TfrmDashboard
           TabOrder = 0
           OnChange = dpcDayChange
         end
-        object btnEating: TButton
-          Left = 712
-          Top = 5
-          Width = 75
-          Height = 25
-          Caption = 'Eating'
-          TabOrder = 1
-          OnClick = btnEatingClick
-        end
       end
-      object pnlProgIndicator: TPanel
+      object pnlProgressCenter: TPanel
         Left = 0
         Top = 0
         Width = 853
-        Height = 408
+        Height = 429
         Hint = 'Select the date of progress'
         Align = alClient
         TabOrder = 1
-        object pnlGoal: TPanel
+        object pnlProgressGoals: TPanel
           Left = 1
           Top = 1
           Width = 408
-          Height = 406
+          Height = 427
           Align = alLeft
           TabOrder = 0
-          object pnlCal: TPanel
+          object pnlProgressCal: TPanel
             Left = 1
-            Top = 294
+            Top = 315
             Width = 406
             Height = 111
             Align = alBottom
             TabOrder = 0
-            object lblGoal: TLabel
-              Left = 256
-              Top = 40
-              Width = 61
-              Height = 15
-              Caption = 'Good work!'
-            end
             object edtCalories: TLabeledEdit
               Left = 21
               Top = 44
@@ -126,17 +110,8 @@ object frmDashboard: TfrmDashboard
               Smooth = True
               TabOrder = 1
             end
-            object btnGoGoals: TButton
-              Left = 256
-              Top = 72
-              Width = 89
-              Height = 25
-              Caption = 'View Goals'
-              TabOrder = 2
-              OnClick = btnGoGoalsClick
-            end
           end
-          object Panel1: TPanel
+          object pnlProgressWater: TPanel
             Left = 1
             Top = 231
             Width = 406
@@ -163,7 +138,7 @@ object frmDashboard: TfrmDashboard
               TabOrder = 1
             end
           end
-          object Panel3: TPanel
+          object pnlProgressFat: TPanel
             Left = 1
             Top = 171
             Width = 406
@@ -190,7 +165,7 @@ object frmDashboard: TfrmDashboard
               TabOrder = 1
             end
           end
-          object pnlCarb: TPanel
+          object pnlProgressCarb: TPanel
             Left = 1
             Top = 51
             Width = 406
@@ -218,7 +193,7 @@ object frmDashboard: TfrmDashboard
               TabOrder = 1
             end
           end
-          object Panel5: TPanel
+          object pnlProgressProtein: TPanel
             Left = 1
             Top = 111
             Width = 406
@@ -255,8 +230,8 @@ object frmDashboard: TfrmDashboard
             object lblProg: TLabel
               Left = 1
               Top = 1
-              Width = 130
-              Height = 28
+              Width = 404
+              Height = 48
               Align = alClient
               Alignment = taCenter
               Caption = 'Progress for'
@@ -267,14 +242,16 @@ object frmDashboard: TfrmDashboard
               Font.Style = []
               ParentFont = False
               Layout = tlCenter
+              ExplicitWidth = 130
+              ExplicitHeight = 28
             end
           end
         end
-        object pnlMeals: TPanel
+        object pnlProgressMeals: TPanel
           Left = 409
           Top = 1
           Width = 443
-          Height = 406
+          Height = 427
           Align = alClient
           Caption = 'Panel1'
           TabOrder = 1
@@ -282,7 +259,7 @@ object frmDashboard: TfrmDashboard
             Left = 1
             Top = 1
             Width = 441
-            Height = 349
+            Height = 370
             Align = alClient
             Font.Charset = ANSI_CHARSET
             Font.Color = clWindowText
@@ -292,42 +269,35 @@ object frmDashboard: TfrmDashboard
             Lines.Strings = (
               'redMeals')
             ParentFont = False
+            ReadOnly = True
+            ScrollBars = ssVertical
             TabOrder = 0
           end
           object pnlMealBottom: TPanel
             Left = 1
-            Top = 350
+            Top = 371
             Width = 441
             Height = 55
             Align = alBottom
             TabOrder = 1
-            object btnShow: TButton
-              Left = 200
-              Top = 16
-              Width = 75
-              Height = 25
-              Caption = 'Show info'
-              Enabled = False
-              TabOrder = 0
-              OnClick = btnShowClick
-            end
             object btnReset: TButton
               Left = 304
               Top = 16
               Width = 75
               Height = 25
               Caption = 'Reset'
-              TabOrder = 1
+              TabOrder = 0
               OnClick = btnResetClick
             end
             object cbxMeals: TComboBox
               Left = 41
               Top = 16
-              Width = 145
+              Width = 200
               Height = 23
               Enabled = False
-              TabOrder = 2
+              TabOrder = 1
               Text = 'Choose a meal'
+              OnChange = cbxMealsChange
             end
           end
         end
@@ -337,49 +307,38 @@ object frmDashboard: TfrmDashboard
       Left = 1
       Top = 1
       Width = 853
-      Height = 449
-      Caption = 'Eating'
+      Height = 470
+      Caption = '2. Eating'
       CardIndex = 1
       TabOrder = 1
+      OnEnter = crdEatingEnter
       object pnlCent: TPanel
         Left = 0
         Top = 0
         Width = 853
-        Height = 449
+        Height = 470
         Align = alClient
         TabOrder = 0
-        object lblEats: TLabel
-          Left = 1
-          Top = 1
-          Width = 851
-          Height = 23
-          Align = alTop
-          Alignment = taCenter
-          Caption = 'Eatin'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -17
-          Font.Name = 'Segoe UI'
-          Font.Style = [fsBold]
-          ParentFont = False
-          ExplicitWidth = 40
-        end
         object pnlFood: TPanel
           Left = 1
-          Top = 24
-          Width = 432
-          Height = 424
-          Align = alLeft
+          Top = 42
+          Width = 851
+          Height = 219
+          Align = alClient
           TabOrder = 0
+          ExplicitTop = 24
+          ExplicitHeight = 237
           object pnlEating: TPanel
             Left = 1
             Top = 1
-            Width = 430
-            Height = 223
+            Width = 407
+            Height = 217
             Align = alClient
+            BevelOuter = bvSpace
             TabOrder = 0
+            ExplicitHeight = 235
             object btnAddDB: TButton
-              Left = 26
+              Left = 18
               Top = 160
               Width = 123
               Height = 25
@@ -388,18 +347,18 @@ object frmDashboard: TfrmDashboard
               OnClick = btnAddDBClick
             end
             object btnEaten: TButton
-              Left = 262
-              Top = 96
+              Left = 278
+              Top = 112
               Width = 75
               Height = 25
-              Caption = 'Eaten'
+              Caption = 'Eat food'
               Enabled = False
               TabOrder = 1
               OnClick = btnEatenClick
             end
             object cbxFoods: TComboBox
-              Left = 24
-              Top = 50
+              Left = 18
+              Top = 66
               Width = 153
               Height = 23
               TabOrder = 2
@@ -407,8 +366,8 @@ object frmDashboard: TfrmDashboard
               OnChange = cbxFoodsChange
             end
             object cbxMealType: TComboBox
-              Left = 26
-              Top = 97
+              Left = 18
+              Top = 113
               Width = 145
               Height = 23
               Enabled = False
@@ -418,36 +377,78 @@ object frmDashboard: TfrmDashboard
             end
             object edtPortion: TEdit
               Left = 216
-              Top = 50
+              Top = 66
               Width = 137
               Height = 23
               NumbersOnly = True
               TabOrder = 4
               TextHint = 'Portion size(g)'
             end
+            object pnlEatingFoodHeader: TPanel
+              Left = 1
+              Top = 1
+              Width = 405
+              Height = 41
+              Align = alTop
+              Caption = 'Eating Food items'
+              TabOrder = 5
+            end
           end
-          object pnlEatBottom: TPanel
-            Left = 1
-            Top = 224
-            Width = 430
-            Height = 199
-            Align = alBottom
+          object pnlDrinkingWater: TPanel
+            Left = 408
+            Top = 1
+            Width = 442
+            Height = 217
+            Align = alRight
+            BevelOuter = bvSpace
             TabOrder = 1
+            ExplicitHeight = 235
+            object btnDrinking: TButton
+              Left = 44
+              Top = 136
+              Width = 97
+              Height = 25
+              Caption = 'Drink Water'
+              TabOrder = 0
+              OnClick = btnDrinkingClick
+            end
+            object edtWaterInput: TLabeledEdit
+              Left = 42
+              Top = 80
+              Width = 121
+              Height = 23
+              EditLabel.Width = 66
+              EditLabel.Height = 15
+              EditLabel.Caption = 'Water Intake'
+              TabOrder = 1
+              Text = ''
+              TextHint = 'Numbers only(ml)'
+              OnChange = edtWaterInputChange
+            end
+            object pnlDrinkingHeader: TPanel
+              Left = 1
+              Top = 1
+              Width = 440
+              Height = 41
+              Align = alTop
+              Caption = 'Drinking Water'
+              TabOrder = 2
+            end
           end
         end
         object pnlDisplay: TPanel
-          Left = 433
-          Top = 24
-          Width = 419
-          Height = 424
-          Align = alClient
+          Left = 1
+          Top = 261
+          Width = 851
+          Height = 208
+          Align = alBottom
           TabOrder = 1
           object redFoodInfo: TRichEdit
             Left = 1
             Top = 1
-            Width = 417
-            Height = 216
-            Align = alTop
+            Width = 407
+            Height = 206
+            Align = alClient
             Font.Charset = ANSI_CHARSET
             Font.Color = clWindowText
             Font.Height = -12
@@ -456,16 +457,38 @@ object frmDashboard: TfrmDashboard
             Lines.Strings = (
               'redMeal')
             ParentFont = False
+            ReadOnly = True
             TabOrder = 0
           end
-          object pnlDisplayBottom: TPanel
-            Left = 1
-            Top = 217
-            Width = 417
+          object pnlMealHelp: TPanel
+            Left = 408
+            Top = 1
+            Width = 442
             Height = 206
-            Align = alClient
+            Align = alRight
+            BevelOuter = bvLowered
             TabOrder = 1
+            ExplicitLeft = 414
+            ExplicitTop = 5
           end
+        end
+        object pnlEatingHead: TPanel
+          Left = 1
+          Top = 1
+          Width = 851
+          Height = 41
+          Align = alTop
+          Caption = 'Eating and Drinking'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -16
+          Font.Name = 'Segoe UI'
+          Font.Style = [fsBold]
+          ParentFont = False
+          TabOrder = 2
+          ExplicitLeft = 336
+          ExplicitTop = 216
+          ExplicitWidth = 185
         end
       end
     end
@@ -473,138 +496,181 @@ object frmDashboard: TfrmDashboard
       Left = 1
       Top = 1
       Width = 853
-      Height = 449
-      Caption = 'Edit goals'
+      Height = 470
+      Caption = '3. Edit goals'
       CardIndex = 2
       TabOrder = 2
       object crplGoals: TCardPanel
         Left = 0
         Top = 41
         Width = 853
-        Height = 408
+        Height = 429
         Align = alClient
-        ActiveCard = crdGoalView
+        ActiveCard = crdGoalOV
         TabOrder = 0
         object crdGoalOV: TCard
           Left = 1
           Top = 1
           Width = 851
-          Height = 406
+          Height = 427
           Caption = 'Goals Overview'
           CardIndex = 0
           TabOrder = 0
           OnEnter = crdGoalOVEnter
-          object edtGoalCal: TLabeledEdit
-            Left = 72
-            Top = 48
-            Width = 121
-            Height = 23
-            EditLabel.Width = 42
-            EditLabel.Height = 15
-            EditLabel.Caption = 'Calories'
-            ReadOnly = True
+          object pnlGoalsOVTop: TPanel
+            Left = 0
+            Top = 0
+            Width = 851
+            Height = 41
+            Align = alTop
+            Caption = 'Overview'
             TabOrder = 0
-            Text = ''
+            ExplicitLeft = 512
+            ExplicitTop = 256
+            ExplicitWidth = 185
           end
-          object btnGoalCalories: TButton
-            Left = 72
-            Top = 120
-            Width = 105
-            Height = 25
-            Caption = 'View Calorie Goal'
+          object pnlGoalsOVCenter: TPanel
+            Left = 0
+            Top = 41
+            Width = 851
+            Height = 386
+            Align = alClient
             TabOrder = 1
-            OnClick = btnGoalCaloriesClick
-          end
-          object edtGoalCarb: TLabeledEdit
-            Left = 72
-            Top = 200
-            Width = 121
-            Height = 23
-            EditLabel.Width = 77
-            EditLabel.Height = 15
-            EditLabel.Caption = 'Carbohydrates'
-            ReadOnly = True
-            TabOrder = 2
-            Text = ''
-          end
-          object btnGoalCarb: TButton
-            Left = 72
-            Top = 272
-            Width = 105
-            Height = 25
-            Caption = 'View Carbs Goal'
-            TabOrder = 3
-            OnClick = btnGoalCarbClick
-          end
-          object edtGoalFat: TLabeledEdit
-            Left = 282
-            Top = 200
-            Width = 121
-            Height = 23
-            EditLabel.Width = 57
-            EditLabel.Height = 15
-            EditLabel.Caption = 'Fats/Lipids'
-            ReadOnly = True
-            TabOrder = 4
-            Text = ''
-          end
-          object btnGoalFat: TButton
-            Left = 282
-            Top = 272
-            Width = 95
-            Height = 25
-            Caption = 'View Fats Goal'
-            TabOrder = 5
-            OnClick = btnGoalFatClick
-          end
-          object edtGoalProtein: TLabeledEdit
-            Left = 528
-            Top = 48
-            Width = 121
-            Height = 23
-            EditLabel.Width = 38
-            EditLabel.Height = 15
-            EditLabel.Caption = 'Protein'
-            ReadOnly = True
-            TabOrder = 6
-            Text = ''
-          end
-          object edtGoalWater: TLabeledEdit
-            Left = 282
-            Top = 48
-            Width = 121
-            Height = 23
-            EditLabel.Width = 66
-            EditLabel.Height = 15
-            EditLabel.Caption = 'Water intake'
-            ReadOnly = True
-            TabOrder = 7
-            Text = ''
-          end
-          object btnGoalProtein: TButton
-            Left = 528
-            Top = 120
-            Width = 105
-            Height = 25
-            Caption = 'View Protein Goal'
-            TabOrder = 8
-            OnClick = btnGoalProteinClick
-          end
-          object btnGoalWater: TButton
-            Left = 282
-            Top = 120
-            Width = 105
-            Height = 25
-            Caption = 'View Water Goal'
-            TabOrder = 9
-            OnClick = btnGoalWaterClick
+            ExplicitLeft = 336
+            ExplicitTop = 192
+            ExplicitWidth = 185
+            ExplicitHeight = 41
+            object btnGoalCalories: TButton
+              Left = 72
+              Top = 120
+              Width = 105
+              Height = 25
+              Caption = 'View Calorie Goal'
+              TabOrder = 0
+              OnClick = btnGoalCaloriesClick
+            end
+            object btnGoalCarb: TButton
+              Left = 72
+              Top = 272
+              Width = 105
+              Height = 25
+              Caption = 'View Carbs Goal'
+              TabOrder = 1
+              OnClick = btnGoalCarbClick
+            end
+            object btnGoalFat: TButton
+              Left = 282
+              Top = 272
+              Width = 95
+              Height = 25
+              Caption = 'View Fats Goal'
+              TabOrder = 2
+              OnClick = btnGoalFatClick
+            end
+            object btnGoalProtein: TButton
+              Left = 528
+              Top = 120
+              Width = 105
+              Height = 25
+              Caption = 'View Protein Goal'
+              TabOrder = 3
+              OnClick = btnGoalProteinClick
+            end
+            object btnGoalWater: TButton
+              Left = 282
+              Top = 120
+              Width = 105
+              Height = 25
+              Caption = 'View Water Goal'
+              TabOrder = 4
+              OnClick = btnGoalWaterClick
+            end
+            object edtGoalCal: TLabeledEdit
+              Left = 72
+              Top = 48
+              Width = 121
+              Height = 23
+              EditLabel.Width = 42
+              EditLabel.Height = 15
+              EditLabel.Caption = 'Calories'
+              ReadOnly = True
+              TabOrder = 5
+              Text = ''
+            end
+            object edtGoalCarb: TLabeledEdit
+              Left = 72
+              Top = 200
+              Width = 121
+              Height = 23
+              EditLabel.Width = 77
+              EditLabel.Height = 15
+              EditLabel.Caption = 'Carbohydrates'
+              ReadOnly = True
+              TabOrder = 6
+              Text = ''
+            end
+            object edtGoalFat: TLabeledEdit
+              Left = 282
+              Top = 200
+              Width = 121
+              Height = 23
+              EditLabel.Width = 57
+              EditLabel.Height = 15
+              EditLabel.Caption = 'Fats/Lipids'
+              ReadOnly = True
+              TabOrder = 7
+              Text = ''
+            end
+            object edtGoalProtein: TLabeledEdit
+              Left = 528
+              Top = 48
+              Width = 121
+              Height = 23
+              EditLabel.Width = 38
+              EditLabel.Height = 15
+              EditLabel.Caption = 'Protein'
+              ReadOnly = True
+              TabOrder = 8
+              Text = ''
+            end
+            object edtGoalWater: TLabeledEdit
+              Left = 282
+              Top = 48
+              Width = 121
+              Height = 23
+              EditLabel.Width = 66
+              EditLabel.Height = 15
+              EditLabel.Caption = 'Water intake'
+              ReadOnly = True
+              TabOrder = 9
+              Text = ''
+            end
+            object redGoalsHelp: TRichEdit
+              Left = 528
+              Top = 200
+              Width = 209
+              Height = 101
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -12
+              Font.Name = 'Segoe UI'
+              Font.Style = []
+              HideSelection = False
+              Lines.Strings = (
+                'redGoalsHelp')
+              ParentFont = False
+              PlainText = True
+              ReadOnly = True
+              TabOrder = 10
+              Transparent = True
+            end
           end
         end
         object crdGoalView: TCard
           Left = 1
           Top = 1
           Width = 851
-          Height = 406
+          Height = 427
           Caption = 'View Goal'
           CardIndex = 1
           TabOrder = 1
@@ -612,14 +678,14 @@ object frmDashboard: TfrmDashboard
             Left = 547
             Top = 0
             Width = 304
-            Height = 406
+            Height = 427
             Align = alRight
             TabOrder = 0
             object redGoalDesc: TRichEdit
               Left = 1
               Top = 42
               Width = 302
-              Height = 267
+              Height = 288
               Align = alClient
               Font.Charset = ANSI_CHARSET
               Font.Color = clWindowText
@@ -644,7 +710,7 @@ object frmDashboard: TfrmDashboard
             end
             object pnlDescBottom: TPanel
               Left = 1
-              Top = 309
+              Top = 330
               Width = 302
               Height = 96
               Align = alBottom
@@ -681,7 +747,7 @@ object frmDashboard: TfrmDashboard
             Left = 0
             Top = 0
             Width = 547
-            Height = 406
+            Height = 427
             Align = alClient
             TabOrder = 1
             object edtGoalTarget: TLabeledEdit
@@ -787,6 +853,7 @@ object frmDashboard: TfrmDashboard
               Height = 23
               TabOrder = 5
               Text = 'Unit of measurement'
+              OnChange = cbxGoalUnitChange
             end
           end
         end
@@ -798,45 +865,30 @@ object frmDashboard: TfrmDashboard
         Height = 41
         Align = alTop
         Caption = 'Goals'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
         TabOrder = 1
       end
     end
   end
-  object tbDashboard: TToolBar
-    Left = 0
-    Top = 0
-    Width = 995
-    Height = 21
-    AutoSize = True
-    ButtonHeight = 21
-    ButtonWidth = 83
-    Caption = 'Dashboard'
-    Customizable = True
-    List = True
-    ShowCaptions = True
-    TabOrder = 1
-    object tbtSidebar: TToolButton
-      Left = 0
-      Top = 0
-      Caption = 'Open Sidebar'
-      ImageIndex = 0
-      OnClick = tbtSidebarClick
-    end
-  end
   object svSidebar: TSplitView
     Left = 0
-    Top = 21
+    Top = 0
     Width = 140
-    Height = 451
+    Height = 472
     OpenedWidth = 140
     Placement = svpLeft
-    TabOrder = 2
+    TabOrder = 1
     OnMouseEnter = svSidebarMouseEnter
     OnResize = svSidebarResize
     object lblHello: TLabel
       Left = 0
       Top = 0
-      Width = 96
+      Width = 140
       Height = 24
       Align = alTop
       Alignment = taCenter
@@ -848,6 +900,7 @@ object frmDashboard: TfrmDashboard
       Font.Style = []
       ParentFont = False
       Layout = tlCenter
+      ExplicitWidth = 96
     end
     object edtSVCalorie: TLabeledEdit
       Left = 1
@@ -873,22 +926,24 @@ object frmDashboard: TfrmDashboard
       TabOrder = 1
       Text = ''
     end
-    object btnReturn: TButton
+    object btnGoProgress: TButton
       Left = 17
       Top = 360
       Width = 89
       Height = 25
-      Caption = 'Return to Main'
+      Caption = 'Progress'
+      Enabled = False
       TabOrder = 2
-      OnClick = btnReturnClick
+      OnClick = btnGoProgressClick
     end
     object btnSettings: TButton
       Left = 17
-      Top = 319
+      Top = 200
       Width = 89
       Height = 25
       Caption = 'User Settings'
       TabOrder = 3
+      Visible = False
       OnClick = btnSettingsClick
     end
     object btnLogOut: TButton
@@ -900,6 +955,24 @@ object frmDashboard: TfrmDashboard
       ModalResult = 8
       TabOrder = 4
       OnClick = btnLogOutClick
+    end
+    object btnGoGoals: TButton
+      Left = 17
+      Top = 307
+      Width = 89
+      Height = 25
+      Caption = 'View Goals'
+      TabOrder = 5
+      OnClick = btnGoGoalsClick
+    end
+    object btnGoEating: TButton
+      Left = 17
+      Top = 260
+      Width = 89
+      Height = 25
+      Caption = 'Eat and Drink'
+      TabOrder = 6
+      OnClick = btnGoEatingClick
     end
   end
 end

@@ -68,11 +68,11 @@ type
     { Private declarations }
     FAdminUser : TUser;
 
-    procedure ClearLogs();
-    procedure InitializeWidth(dbGrid:TDBGrid);
+    procedure ClearLogs;
+    procedure InitializeWidth(pDBGrid:TDBGrid);
 
     // sSearch is empty by default to prevent filtering when not requiered
-    procedure ShowLogs(sSearch:string='');
+    procedure ShowLogs(pSearch:string='');
   public
     { Public declarations }
 
@@ -82,8 +82,8 @@ type
 
 var
   frmAdmin: TfrmAdmin;
-  LoggerObj : TLogs;
-  UtilObj : TUtils;
+  LogService : TLogService;
+  FileUtils : TFileUtils;
 
 implementation
 
@@ -95,26 +95,26 @@ implementation
 procedure TfrmAdmin.btnClearClick(Sender: TObject);
 begin
   if MessageDlg('Are you sure you want to clear the log file?',mtConfirmation, mbYesNo, 0) = mrYes then
-  ClearLogs();
+    ClearLogs();
 end;
 
 procedure TfrmAdmin.btnFieldEditClick(Sender: TObject);
 var
-  fieldName,fieldData : string;
+  sFieldName,sFieldData : string;
 begin
-  fieldName := edtField.Text;
-  fieldData := edtData.Text;
+  sFieldName := edtField.Text;
+  sFieldData := edtData.Text;
   if MessageDlg('Modify user data?',mtConfirmation,mbOKCancel,0) = mrOk then
   begin
-    if fieldName = 'Username' then
+    if sFieldName = 'Username' then
     begin
      // UtilObj.EditInDB(fieldName,fieldData);
     end
     else
-    if fieldName = 'isAdmin' then
+    if sFieldName = 'isAdmin' then
     begin
       try
-        if (StrToBool(fieldData) = true) or (StrToBool(fieldData) = false) then
+        if (StrToBool(sFieldData) = true) or (StrToBool(sFieldData) = false) then
        //  UtilObj.EditInDB(fieldName,fieldData);
         except on E: Exception do
         begin
@@ -134,7 +134,7 @@ var
 begin
   sSearch := edtFilter.Text;
   if MessageDlg('Filter all logs follow the pattern: ' + sSearch+'?',mtConfirmation, mbOKCancel, 0) = mrOk then
-  ShowLogs(sSearch);
+    ShowLogs(sSearch);
 end;
 
 procedure TfrmAdmin.btnFirstClick(Sender: TObject);
@@ -184,91 +184,80 @@ end;
 procedure TfrmAdmin.tsFoodsShow(Sender: TObject);
 begin
   InitializeWidth(dbgFoods);
-  LoggerObj.WriteSysLog('The database table `tblFoods` was accessed by administrator ' + AdminUser.Username);
+  LogService.WriteSysLog('The database table `tblFoods` was accessed by administrator ' + AdminUser.Username);
 end;
 
 procedure TfrmAdmin.tsLogsShow(Sender: TObject);
 begin
-  UtilObj.SetLabel(lblLogs,'Logs',20);
   memLogs.Lines.clear;
   ShowLogs();
 end;
 
 procedure TfrmAdmin.tsUsersShow(Sender: TObject);
 begin
-  UtilObj.SetLabel(lblUsers,'User Management',20);
   InitializeWidth(dbgUsers);
-  LoggerObj.WriteSysLog('The database table `tblUsers` was accessed by administrator ' + AdminUser.Username);
+  LogService.WriteSysLog('The database table `tblUsers` was accessed by administrator ' + AdminUser.Username);
 end;
 
 procedure TfrmAdmin.ShowLogs;
-const FILENAME = 'logs';
+const LOGFILE = 'logs';
 var
-  logFile : textfile;
+  tfLogs : textfile;
   isFileExist, isStrEmpty, doFilter : boolean;
   sLine : string;
-  numLines : integer;
+  iNumLines : integer;
 begin
   memLogs.clear;
-  memLogs.Lines.TrailingLineBreak := false;
 
-  AssignFile(logFile,FILENAME);
+  AssignFile(tfLogs,LOGFILE);
 
-  isFileExist := UtilObj.CheckFileExists(FILENAME,true);
+  isFileExist := FileUtils.CheckFileExists(LOGFILE);
 
   // Only filter when the Search string has text, hence when filterig
-  doFilter := false;
-  if not (sSearch = '') then doFilter := true;
+  doFilter := pSearch <> '';
 
   if isFileExist then
-  begin
-    Reset(logFile);
+  try
+    Reset(tfLogs);
     Repeat
-      ReadLn(logFile,sLine);
+      ReadLn(tfLogs,sLine);
       Trim(sLine);
 
-      // The point is to only add a line to the memo if the line contains a character or string from the search string, only when filtering
-      // otherwise just add the current line freely
       if doFilter then
       begin
-        if ContainsText(sLine,sSearch) then
+        if ContainsText(sLine,pSearch) then
           memLogs.lines.Add(sLine)
       end
       else
         memLogs.Lines.Add(sLine)
-    Until EOF(logFile);
-
-    CloseFile(logFile);
+    Until EOF(tfLogs);
+  finally
+     CloseFile(tfLogs);
   end
   else
   // Assuming the log file does not exist, logging is omitted here unlike most error cases
     memLogs.Lines.Add('Logs file is missing or corrupted');
 end;
 
-procedure TfrmAdmin.ClearLogs();
-const FILENAME = 'logs';
+procedure TfrmAdmin.ClearLogs;
+const LOGFILE = 'logs';
 var
-  logFile : textfile;
+  tfLogs : textfile;
 begin
   FileMode := 2;
-  AssignFile(logFile,FILENAME);
-  if UtilObj.CheckFileExists(FILENAME,true) then
+  AssignFile(tfLogs,LOGFILE);
+  if FileUtils.CheckLogFile then
   begin
     try
-      ReWrite(logFile);
-      Writeln(logFile,'# Logs #');
-    except
-      on E: Exception do
-      begin
-        ShowMessage('There was an error clearing the log file: ' + #13 + E.Message);
-        exit;
-      end;
+      ReWrite(tfLogs);
+      Writeln(tfLogs,'# Logs #');
+    finally
+      CloseFile(tfLogs);
     end;
-    CloseFile(logFile);
 
     // Logged in admin is still logged when clearing the log file to keep them accountable for the clearing
     // In case anything may come up and logs were needed or some ambiguous circumstance
-    LoggerObj.WriteUserLog('The administrator ' + AdminUser.Username + ' was logged in');
+    LogService.WriteUserLog('The administrator ' + AdminUser.Username + ' was logged in');
     ShowLogs;
   end
   else
@@ -298,28 +287,27 @@ begin
   if width>column.width then column.Width := width;
 end;
 
-{
-  Base the initial width of the dbGrid on the size of the header text
+{ Base the initial width of the dbGrid on the size of the header text
   The size is changed when the grid is loaded with items, since the items
-  have their own dynamic lengths
-}
-procedure TfrmAdmin.InitializeWidth(dbGrid:TDBGrid);
+  have their own dynamic lengths }
+procedure TfrmAdmin.InitializeWidth(pDBGrid:TDBGrid);
 var
   i : integer;
 begin
-  dbGrid.ReadOnly := true;
-  for i := 0 to dbGrid.Columns.Count -1 do
-  dbGrid.Columns[i].Width := 5+dbGrid.Canvas.TextWidth(dbGrid.Columns[i].Title.Caption);
+  pDBGrid.ReadOnly := true;
+  for i := 0 to pDBGrid.Columns.Count -1 do
+  pDBGrid.Columns[i].Width := 5+pDBGrid.Canvas.TextWidth(pDBGrid.Columns[i].Title.Caption);
 end;
 
 procedure TfrmAdmin.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  {
-    Not closing tables creates an issue where the database will retain the `.ldb` file
-    which indicates that the database is still in use even when the app has been closed,
-    rather only open the tables when needed and close when not
-  }
   AdminUser.Free;
+  FileUtils.Free;
+  LogService.Free;
+
+  {Not closing tables creates an issue where the database will retain the `.ldb` file
+    which indicates that the database is still in use even when the app has been closed,
+    rather only open the tables when needed and close when not}
   with dmData do
   begin
     tblUsers.Close;
@@ -329,8 +317,8 @@ end;
 
 procedure TfrmAdmin.FormShow(Sender: TObject);
 begin
-  LoggerObj := TLogs.Create;
-  UtilObj := TUtils.Create;
+  LogService := TLogService.Create;
+  FileUtils := TFileUtils.Create;
   pageCtrl.TabIndex := 0;
   tbtUser.Caption := AdminUser.Username;
 

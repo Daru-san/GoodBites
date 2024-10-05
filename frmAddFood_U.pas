@@ -94,9 +94,11 @@ begin
   inherited;
   CustomFoods := TfrmCustomFood.Create(nil);
   try
+    Self.Hide;
     CustomFoods.ShowModal;
   finally
     CustomFoods.Free;
+    self.Show;
   end;
 end;
 

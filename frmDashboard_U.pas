@@ -228,7 +228,6 @@ begin
       cbxMeals.Items.Add('#'+i.ToString + ' ' + sLine);
     end;
   end;
-
 end;
 
 procedure TfrmDashboard.ShowProgress(pRecDate: TDate);
@@ -404,6 +403,7 @@ procedure TfrmDashboard.edtWaterInputChange(Sender: TObject);
 begin
   edtWater.Color := clDefault;
 end;
+
 procedure TfrmDashboard.PopulateFoods;
 var
  currentMeal : string;
@@ -465,18 +465,28 @@ begin
     edtSVCalorie.Top := Ceil(Height - Height*5.5/6.5);
     edtSVWater.top := Ceil(Height - Height*4.5/6.5);
 
-    btnSettings.Top := Ceil(Height - Height * 2.5/6.5);
-    btnReturn.Top := Ceil(Height - Height * 1.5/6.5);
+    //btnSettings.Top := Ceil(Height - Height * 4;
+    btnGoEating.top := Ceil(Height - Height * 2.5/6.5);
+    btnGoGoals.Top := Ceil(Height - Height * 1.5/6.5);
+    btnGoProgress.Top := Ceil(Height - Height * 3.5/6.5);
     btnLogout.Top := Ceil(Height - Height * 0.5/6.5);
 
     edtSVCalorie.Width := Ceil(Width*5/7);
     edtSVWater.Width := Ceil(Width*5/7);
     btnSettings.Width := Ceil(width*5/7);
-    btnReturn.Width := Ceil(Width*5/7);
+    btnGoEating.Width := Ceil(width*5/7);
+    btnGoGoals.Width := Ceil(width*5/7);
+    btnGoProgress.Width := Ceil(Width*5/7);
     btnLogout.Width := Ceil(Width*5/7);
-  end;
-end;
 
+    edtSVCalorie.left := Ceil(Width*17/140);
+    edtSVWater.left := Ceil(Width*17/140);
+    btnSettings.left := Ceil(Width*17/140);
+    btnGoEating.left := Ceil(Width*17/140);
+    btnGoGoals.left := Ceil(Width*17/140);
+    btnGoProgress.left := Ceil(Width*17/140);
+    btnLogout.left := Ceil(Width*17/140);    
+  end;
 end;
 
 procedure TfrmDashboard.btnSettingsClick(Sender: TObject);
@@ -497,24 +507,10 @@ begin
   self.ModalResult := mrClose;
 end;
 
-procedure TfrmDashboard.tbtSidebarClick(Sender: TObject);
-begin
-  if not svSidebar.Opened then
-  begin
-    svSidebar.Open;
-    tbtSidebar.Caption := 'Close Sidebar';
-  end
-  else
-  begin
-    svSidebar.Close;
-    tbtSidebar.Caption := 'Open sidebar';
-  end;
-end;
 {$ENDREGION}
 
 { Form navigation }
 {$REGION NAVIGATION}
-
 procedure TfrmDashboard.btnGoProgressClick(Sender: TObject);
 begin
   crplDashboard.ActiveCard := crdProgress;
@@ -525,14 +521,21 @@ end;
 
 procedure TfrmDashboard.btnGoGoalsClick(Sender: TObject);
 begin
-  crplDashboard.ActiveCard := crdGoals;
   crplGoals.ActiveCard := crdGoalOV;
+  crplDashboard.ActiveCard := crdGoals;
+  btnGoProgress.Enabled := true;
+  btnGoEating.Enabled := true;
+  btnGoGoals.Enabled := false;
+  crdGoalOVEnter(nil);
 end;
 
-procedure TfrmDashboard.btnEatingClick(Sender: TObject);
+procedure TfrmDashboard.btnGoEatingClick(Sender: TObject);
 begin
   crplDashboard.ActiveCard := crdEating;
-  btnReturn.Enabled := true;
+  btnGoProgress.Enabled := true;
+  btnGoGoals.Enabled := true;
+  btnGoEating.Enabled := false;
+  crdEatingEnter(nil);
 end;
 
 procedure TfrmDashboard.btnBackOVClick(Sender: TObject);
@@ -559,6 +562,30 @@ begin
   Goal.Free;
   edtWaterInput.Clear;
 end;
+
+
+procedure TfrmDashboard.crdEatingEnter(Sender: TObject);
+begin
+  edtWaterInput.Color := clDefault;
+  edtWaterInput.Text := '';
+  
+  cbxFoods.ItemIndex := -1;
+  cbxFoods.Text := 'Choose a food';
+  
+  edtPortion.Text := '';
+  edtPortion.Color := clDefault;
+  
+  cbxMealType.ItemIndex := -1;
+  cbxMealType.Text := 'Meal type';
+  
+  redFoodInfo.Text := 'Select an item and get information!';
+end;
+
+procedure TfrmDashboard.crdGoalOVEnter(Sender: TObject);
+begin
+  ResetGoalInfo;
+  ShowGoalOverview;
+end;
 {$ENDREGION}
 
 { Meal eating }
@@ -582,7 +609,6 @@ begin
     exit;
   end;
   LogEatenFood;
-
 end;
 
 procedure TfrmDashboard.LogEatenFood;
@@ -670,7 +696,9 @@ begin
     if LowerCase(sFoodname) = 'water' then
       DisplayWaterInfo
     else
+    begin
       DisplayFoodInfo(sFoodname);
+    end;
   end;
 end;
 
@@ -678,7 +706,7 @@ procedure TfrmDashboard.DisplayWaterInfo;
 const FILENAME = 'info/water.txt';
 var isExist : Boolean;
 begin
-  isExist := Utils.CheckFileExists(FILENAME);
+  isExist := FileUtils.CheckFileExists(FILENAME);
   if isExist then
   with redFoodInfo.Lines do
   begin
@@ -734,6 +762,11 @@ begin
       Add('Sugar per 100g:' + #9 + FloatToStrF(rSugar,ffFixed,8,2)+'g');
     end; // end lines
   end; // end with redMealInfo
+end;
+
+procedure TfrmDashboard.cbxMealsChange(Sender: TObject);
+begin
+  ShowMealInfo;
 end;
 
 procedure TfrmDashboard.cbxMealTypeChange(Sender: TObject);
@@ -792,7 +825,7 @@ procedure TfrmDashboard.FormShow(Sender: TObject);
 begin
   FileUtils := TFileUtils.Create;
   LogService := TLogService.Create;
-
+    
   PopulateFoods;
 
   PopulateMealType;
@@ -807,10 +840,6 @@ begin
   crplDashboard.ActiveCard := crdProgress;
 
   lblHello.Caption := 'Hello, ' + CurrentUser.Username;
-
-  redFoodInfo.Text := 'Select an item ad get information!';
-
-
 end;
 {$ENDREGION}
 
@@ -855,6 +884,7 @@ begin
 
   dStartDate := Goal.StartDate;
   edtGoalDate.Text := FormatDateTime('dd mmmm yyyy',dStartDate);
+
   Goal.Free;
 
   crplGoals.ActiveCard := crdGoalView;
@@ -881,6 +911,7 @@ begin
     end;
   end;
 end;
+
 procedure TfrmDashboard.PopulateGoalUnits(pGoalItem: string);
 var isWater : Boolean;
 begin
@@ -894,6 +925,7 @@ begin
   else
     cbxGoalUnit.Items.Add('grams');
 end;
+
 procedure TfrmDashboard.btnGoalCaloriesClick(Sender: TObject);
 begin
   ShowGoalInfo('Calorie');
@@ -986,13 +1018,14 @@ begin
   btnGoalDescPost.Enabled := false;
   btnGoalDescEdit.Enabled := true;
   redGoalDesc.ReadOnly := true;
+  cbxGoalUnit.clear;
   cbxGoalUnit.Text := 'Unit of measurement';
   edtGoalDate.Text := '';
   edtGoalDays.Text := '';
   prgDays.Position := 0;
   prgAverage.Position := 0;
   redGoalDesc.Lines.Clear;
-  pnlGoal.Caption := 'Goal';
+  pnlGoalHead.Caption := 'Goal';
 end;
 
 procedure TfrmDashboard.ShowGoalOverview;
@@ -1010,8 +1043,15 @@ begin
     Goal := TGoal.Create(sUserID,GOALITEMS[I]);
     rTarget := Goal.Target;
     sGoalUnit := Goal.GoalUnit;
-    FillGoalEditBox(GOALITEMS[i],sGoalUnit,rTarget);
+    FillGoalEditBox(GOALITEMS[i],rTarget);
     Goal.Free;
+  end;
+  with redGoalsHelp.Lines do
+  begin
+    Clear;
+    Add('Tip:');
+    Add('Welcome to the goals section!');
+    Add('Here you can view all of your goals as a user and modify them as you wish');
   end;
 end;
 
@@ -1040,10 +1080,5 @@ begin
   end;
 end;
 
-procedure TfrmDashboard.crdGoalOVEnter(Sender: TObject);
-begin
-  ResetGoalInfo;
-  ShowGoalOverview;
-end;
 {$ENDREGION}
 end.

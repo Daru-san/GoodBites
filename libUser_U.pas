@@ -115,33 +115,37 @@ end;
 
 procedure TUser.SignUp;
 var
-  isUserValid,userInDB, userInPassFile,isPassValid,userExistsing,isCorrect,isPresent: boolean;
-  userID : string;
+  isUserValid,
+  inDatabase,
+  hasPassword,
+  isPassValid,
+  isExisting,
+  isDetailsCorrect,
+  isPresent
+  : boolean;
 begin
   isUserValid := false;
-  userExistsing := False;
+  isExisting := False;
   isPassValid := False;
-  isCorrect := false;
+  isDetailsCorrect := false;
 
   isPresent := CheckPresence(pPassword);
 
-  {
-    Steps, if one of these fails the process stops
+  { Steps, if one of these fails the process stops
     -> Check if the username and password are present
     -> Check if the username is valid
     -> Check if the user exists
     -> Check if the password is valid
-    -> Show error message if username or password is invalid
-  }
+    -> Show error message if username or password is invalid }
   if isPresent then
   begin
     AccountErrors := TStringList.Create;
     isUserValid := CheckUsername(Username);
-    ShowMessage(isUserValid.ToString);
+
     if isUserValid then
     begin
-      userExistsing := CheckUserExisting(Username);
-      if not(userExistsing) then
+      isExisting := CheckUserExisting(Username);
+      if not(isExisting) then
       begin
         isPassValid := CheckPassword(pPassword);
       end;
@@ -151,7 +155,7 @@ begin
   end;
   AccountErrors.free;
 
-  isCorrect := isPassValid and isUserValid and isPresent and not(userExistsing);
+  isDetailsCorrect := isPassValid and isUserValid and isPresent and not(isExisting);
 
   {
     Process:
@@ -163,12 +167,12 @@ begin
 
     If any steps fail logging will be done to let me debug the issue
   }
-  if isCorrect then
+  if isDetailsCorrect then
   begin
     GenerateUserID;
     RegisterUserInDB(pPassword);
-    userInDB := CheckDatabase(Username);
-    if userInDB then
+    inDatabase := CheckDatabase(Username);
+    if inDatabase then
     begin
       WriteUserPassFile(Username,pPassword);
       LogService.WriteUserLog('The user ' + Username + ', uid ' + userID + ' has registered successfully');
@@ -194,7 +198,13 @@ const
   SPECIALCHARS = ['.',',','/','\','!','@','#','%','&','*','(',')'];
   VALIDCHARS = LOWERCHARS + UPPERCHARS + NUMBERS + SPECIALCHARS;
 var
-  hasUpcase,hasLowcase,hasNumbers,isValid,hasSpecial,isLong,hasValidChars : boolean;
+  hasUpcase,
+  hasLowcase,
+  hasNumbers,
+  isValid,
+  hasSpecial,
+  isLong,
+  hasInValidChars : boolean;
   I: Integer;
 begin
   hasUpcase := false;
@@ -202,13 +212,13 @@ begin
   hasNumbers := False;
   hasSpecial := False;
   isValid := false;
-  hasValidChars := False;
+  hasInValidChars := False;
 
-  //Ensure password is between 2 and 20 characters
-  if (pPassword.length < 2) or (pPassword.Length > 20) then
+  //Ensure password is between 8 and 20 characters
+  if (pPassword.length < 8) or (pPassword.Length > 20) then
   begin
     isLong := false;
-    AccountErrors.Add('Password must be between 3 to 20 characters in length');
+    AccountErrors.Add('Password must be between 8 to 20 characters in length');
   end else isLong := true;
 
   //Ensure presence of upper and lower case characters and numbers, special characters are optional
@@ -231,9 +241,9 @@ begin
     end;
 
     // Ensure no characters outside of the valid range are present, being letters, numbers and certain characters
-    if pPassword[i] in VALIDCHARS then
+    if not (pPassword[i] in VALIDCHARS) then
     begin
-      hasValidChars := true;
+      hasInValidChars := true;
     end;
   end;
 
@@ -244,11 +254,11 @@ begin
   AccountErrors.Add('Password must contain a number');
 
   // Special characters are optional but restricted to a range
-  if not hasValidChars then
+  if hasInValidChars then
   AccountErrors.Add('Password can numbers, letters and any of the special characters ' + '.,,,/,\,(,),!,@,#,%,&,*');
 
   // If the password has upper and lower case letters, numbers, valid characters and is of good length
-  result := hasLowcase and hasLowcase and hasNumbers and hasValidChars and isLong;
+  result := hasLowcase and hasLowcase and hasNumbers and (not hasInValidChars) and isLong;
 end;
 
 function TUser.CheckUsername;
@@ -363,12 +373,14 @@ begin
   begin
     Open;
     First;
+    if FieldCount <> 0 then
     repeat
       if pUserID = FieldValues['UserID'] then
       begin
-	isFound := true;
+	      isFound := true;
       end else next;
     until EOF or isFound;
+    Close;
   end;
   Result := isFound;
 end;
@@ -565,6 +577,7 @@ begin
   begin
     Open;
     First;
+    if FieldCount <> 0 then
     Repeat
       if UPPERCASE(FieldValues['Username']) = UPPERCASE(pUsername) then isFound := true;
       Next;
@@ -991,7 +1004,7 @@ begin
         begin
           isMealFound := true;
           tEaten := FieldValues['TimeEaten'];
-          sFoodName := FieldValues['MealName'];
+          sFoodName := FieldValues['Foodname'];
           sMealType := FieldValues['MealType'];
           rPortion := FieldValues['PortionSize'];
         end

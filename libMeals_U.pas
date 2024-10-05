@@ -64,7 +64,7 @@ type
       procedure EatMeal(UserID : String;TotalUserMeals:Integer);
   end;
   var
-    loggerObj : TLogs;
+    LogService : TLogService;
 
 implementation
 
@@ -166,7 +166,7 @@ begin
     FieldValues['Desc'] := FoodDesc;
     Post;
   end;
-  loggerObj.WriteSysLog('Item ' + Foodname + ' has been added to the database');
+  LogService.WriteSysLog('Item ' + Foodname + ' has been added to the database');
 end;
 
 {$ENDREGION}

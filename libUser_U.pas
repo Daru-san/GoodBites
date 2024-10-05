@@ -15,6 +15,9 @@ type
     FDailyCalories : integer;
     FFullname : string;
     FAge : integer;
+    FActivityLevel : Real;
+    FHeight : real;
+    FWeight : Real;
 
     // User creation
     function GenerateUserID(sUsername:string): string;
@@ -46,6 +49,9 @@ type
     property Fullname: string read FFullname write FFullname;
     property Age: Integer read FAge write FAge;
     property UserID: string read FUserID write FUserID;
+    property ActivityLevel : Real read FActivityLevel write FActivityLevel;
+    property Height: real read FHeight write FHeight;
+    property Weight: real read FWeight write FWeight;
 
     // Used by external procedures to get user login information
     function CheckLogin : boolean;

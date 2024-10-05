@@ -55,7 +55,7 @@ type
 
     // Used by external procedures to get user login information
     function CheckLogin : boolean;
-    function GetFirstLogin : boolean;
+    function CheckFirstLogin : boolean;
     function GetRegisterDate : TDate;
 
     // Meal related procedures
@@ -473,7 +473,7 @@ begin
 
       SaveLastLogin;
 
-      if not GetFirstLogin then
+      if not CheckFirstLogin then
         GetUserInfo;
 
       isSuccess := true;
@@ -706,7 +706,7 @@ begin
   result := FLoggedIn;
 end;
 
-function TUser.GetFirstLogin;
+function TUser.CheckFirstLogin;
 var
   isFound : Boolean;
 begin

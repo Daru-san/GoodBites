@@ -17,8 +17,6 @@ type
       HTPPClient : TNetHTTPClient;
       HTTPRequest : TNetHTTPRequest;
 
-      Util : TUtils;
-
       FResponseLength : Integer;
       FQuerySuccessful : Boolean;
       FJSONResponse : TStringStream;
@@ -32,22 +30,25 @@ type
       property QuerySuccessful : Boolean read FQuerySuccessful write FQuerySuccessful;
       property JSONResponse : TStringStream read FJSONResponse write FJSONResponse;
 
-      procedure SendQuery(sQuery:string;dataType :string = 'Foundation');
+      procedure SendQuery(pQuery:string;pDataType : string = 'Foundation');
   end;
+
+  var
+    FileUtils : TFileUtils;
 
 implementation
 
 constructor TFetchAPI.Create;
 begin
-  Util := TUtils.Create;
+  FileUtils := TFileUtils.Create;
 end;
 
 destructor TFetchAPI.Destroy;
 begin
-  Util.Free;
+  FileUtils.Free;
 end;
 
-procedure TFetchAPI.SendQuery(sQuery: string; dataType: string = 'Foundation');
+procedure TFetchAPI.SendQuery(pQuery: string; pDataType: string = 'Foundation');
 var
   sAPIKey,sResult : string;
   strSearchParams : TStringStream;
@@ -64,7 +65,7 @@ begin
     { Limit the maximum queries to 10, preventing a huge string that would take
       ages to parse to be returned }
     strSearchParams := TStringStream.Create(
-      '{"query":"'+sQuery+'","pageSize":10,"dataType": ["'+dataType+'"]}',
+      '{"query":"'+pQuery+'","pageSize":10,"dataType": ["'+pDataType+'"]}',
       TEncoding.UTF8
     );
 
@@ -101,17 +102,17 @@ end;
 
 function TFetchAPI.GetAPIKey : string;
 const FILENAME = 'files\api_key.txt';
-var keyFile : textfile; sAPIKey : string;
+var tfKey : textfile; sKey : string;
 begin
-  sAPIKey := '';
+  sKey := '';
 
-  if Util.CheckFileExists(FILENAME) then
+  if FileUtils.CheckFileExists(FILENAME) then
   try
-    AssignFile(keyFile,FILENAME);
-    Reset(keyFile);
-    Readln(keyFile,sAPIKey);
+    AssignFile(tfKey,FILENAME);
+    Reset(tfKey);
+    Readln(tfKey,sKey);
   finally
-    CloseFile(keyFile);
+    CloseFile(tfKey);
   end;
 
   { The API provides a demo key that can be used,
@@ -119,9 +120,9 @@ begin
     If by any chance the key does not exist, we will
     default to the DEMO_KEY which can be used, albeit
     at a much lower rate per hour than a specialized key }
-  if sAPIKey = '' then
+  if sKey = '' then
     Result := 'DEMO_KEY'
   else
-    Result := sAPIKey;
+    Result := sKey;
 end;
 end.

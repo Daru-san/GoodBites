@@ -3,8 +3,8 @@
 ## Development phase
 
 - [x] Dev(Pre-alpha)
-- [ ] Alpha
-- [ ] Beta
+- [x] Alpha
+- [x] Beta
 - [ ] Release Candidate
 - [ ] Final release
 
@@ -17,15 +17,15 @@
   - [x] Meals table
   - [x] Goals table
   - [x] Progress table
-  - [ ] Nutrients table
+  <!-- - [ ] Nutrients table -->
   - [x] Foods table
 - [ ] GUI design
   - [x] Functional interface(useful, not pretty)
-  - [ ] Responsive login screen
-  - [ ] Good looking interface
+  - [x] Responsive login screen
+  - [x] Good looking interface
   - [ ] Splash screen and completed landing screen
-  - [ ] Dashboard
-  - [ ] Administration
+  - [x] Dashboard
+  - [x] Administration
   - [ ] Help
 - [ ] User stuff
   - [x] User creation
@@ -36,13 +36,13 @@
       - [x] Showing
       - [x] Searching
     - [x] Data checking(Looking at the database tables)
-- [ ] Tracking and eating
+- [x] Tracking and eating
   - [x] Store meals
   - [x] Log meals
   - [x] Store calories and nutrients
   - [x] Get daily user stats
-  - [ ] Allow users to search stats
-  - [ ] Goals and progress
+  - [x] Allow users to search stats
+  - [x] Goals and progress
 - [x] Information display
   - [x] Fetching data on foods and nutrients on the internet
 

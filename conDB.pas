@@ -34,8 +34,8 @@ const DBFILENAME = 'dbBites.mdb'; DLFILENAME = 'dbBites.ldb';
 var
   dmData: TdmData;
   dbPath,dlPath : String;
-  logger : TLogService;
-  Utils : TFileUtils;
+  LogService : TLogService;
+  FileUtils : TFileUtils;
   DatabaseExists : Boolean;
 
 implementation
@@ -102,9 +102,9 @@ begin
   CopyFile(dbPathChar,dbPathCharBK,isFailed);
 
   if isFailed then
-    logger.WriteErrorLog('Error backing up the database')
+    LogService.WriteErrorLog('Error backing up the database')
   else
-    logger.WriteErrorLog('Database backup successful!');
+    LogService.WriteSysLog('Database backup successful!');
 end;
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
@@ -139,14 +139,14 @@ begin
 
   if not DatabaseExists then
   begin
-    logger.WriteErrorLog('The database file is missing');
+    LogService.WriteErrorLog('The database file is missing');
   end;
 end;
 
 procedure TdmData.DataModuleCreate(Sender: TObject);
 begin
-  Utils := TFileUtils.Create;
-  logger := TLogService.Create;
+  FileUtils := TFileUtils.Create;
+  LogService := TLogService.Create;
 
   LocateDatabase;
   if DatabaseExists then
@@ -163,8 +163,8 @@ end;
 
 procedure TdmData.DataModuleDestroy(Sender: TObject);
 begin
-  Utils.Free;
-  logger.Free;
+  FileUtils.Free;
+  LogService.Free;
 end;
 
 procedure TdmData.timeBackupTimer(Sender: TObject);

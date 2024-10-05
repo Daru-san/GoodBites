@@ -153,6 +153,8 @@ type
     procedure DisplayFoodInfo(pFoodname : String);
     procedure LogGoalProgress(pMeal : TMeal);
     procedure LogEatenFood;
+    procedure ShowMealInfo;
+    procedure ShowMealLog(pDate :TDate);
 
     procedure ShowGoalInfo(pGoalItem : string);
     procedure ResetGoalInfo;
@@ -176,49 +178,53 @@ implementation
 procedure TfrmDashboard.GetInfo;
 var
   dDate : TDate;
-  iDayMeals,i : integer;
-  sMealName,timeEaten : string;
-  rTotalCalories, rTargetCalories : Real;
 begin
-  redMeals.Clear;
-
   dDate := dpcDay.Date;
-  ShowProgress(dDate);
-
-  rTotalCalories := currentUser.GetDailyCalories(dDate);
-
   lblProg.Caption := 'Progress for ' + FormatDateTime('dd mmm',dDate);
+  ShowProgress(dDate);
+  ShowMealLog(dDate);
+end;
 
+procedure TfrmDashboard.ShowMealLog;
+var
+  iDayMeals,i : integer;
+  sFoodname,tEaten,sLine : string;
+  rAmount : Real;
+  isWater : Boolean;
+begin
   cbxMeals.Items.Clear;
   cbxMeals.Text := 'Choose a meal';
+  redMeals.Clear;
 
-  iDayMeals := currentUser.GetMealCount(dDate);
+  iDayMeals := currentUser.GetMealCount(pDate);
 
   if iDayMeals = 0 then
   begin
     redMeals.Lines.Add('Nothing to see here! ' + #13 + 'Start eating!');
     cbxMeals.Enabled := false;
-    btnShow.Enabled := false;
   end else
   begin
     cbxMeals.Enabled := true;
-    btnShow.Enabled := true;
-    with redMeals.Paragraph do
-    begin
-      TabCount := 1;
-      Tab[0] := 50;
-    end;
-    redMeals.Lines.Add('Meal logs for ' + FormatDateTime('dd mmm',dDate));
+    redMeals.Lines.Add('Meal logs for ' + FormatDateTime('dd mmm',pDate));
     redMeals.Lines.Add('=============');
-    redMeals.Lines.Add('');
     for i := 1 to iDayMeals do
     begin
-      sMealName := currentUser.GetMealInfo(i,dDate,'name');
-      timeEaten := currentUser.GetMealInfo(i,dDate,'time');
-      redMeals.Lines.Add('Meal: #' + i.ToString + ' at ' + timeEaten);
-      redMeals.Lines.Add('Name:' + #9 + sMealName);
-      redMeals.Lines.Add('');
-      cbxMeals.Items.Add('#'+i.ToString + ' ' + sMealName);
+      sFoodname := currentUser.GetMealInfo(i,pDate,'name');
+      rAmount := StrToFloat(CurrentUser.GetMealInfo(i,pDate,'portion'));
+      tEaten := currentUser.GetMealInfo(i,pDate,'time');
+
+      isWater := LowerCase(sFoodname) = 'water';
+
+      redMeals.Lines.Add('Meal: #' + i.ToString + ' at ' + tEaten);
+
+      if isWater then
+        sLine := FloatToStrF(rAmount,ffFixed,8,2) + 'ml of water'
+      else
+        sLine := FloatToStrF(rAmount,ffFixed,8,2) + 'g of ' + sFoodname;
+
+      redMeals.Lines.Add(sLine);
+      redMeals.Lines.Add('--------------------');
+      cbxMeals.Items.Add('#'+i.ToString + ' ' + sLine);
     end;
   end;
 
@@ -301,7 +307,7 @@ begin
   GetInfo;
 end;
 
-procedure TfrmDashboard.btnShowClick(Sender: TObject);
+procedure TfrmDashboard.ShowMealInfo;
 var
   sFoodname,sMealType,sTime: string;
   iFoodIndex : Integer;

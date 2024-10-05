@@ -20,7 +20,6 @@ type
     FWeight : Real;
 
     // User creation
-    function GenerateUserID(pUsername:string): string;
     function CheckUserID(pUserID:string) : boolean;
     function CheckUsername(pUsername:string) : boolean;
     function CheckPassword(pPassword:string):Boolean;
@@ -29,6 +28,7 @@ type
     function WriteUserPassFile(pUsername,pPassword:string): boolean;
 
     procedure RegisterUserInDB(pPassword : string);
+    procedure GenerateUserID;
 
     // User Login
     function CheckPresence(pPassword:string): boolean;
@@ -164,7 +164,7 @@ begin
   }
   if isCorrect then
   begin
-    userID := GenerateUserID(Username);
+    GenerateUserID;
     RegisterUserInDB(pPassword);
     userInDB := CheckDatabase(Username);
     if userInDB then
@@ -327,7 +327,7 @@ begin
   Result := isUserDatabase or hasPassword;
 end;
 
-function TUser.GenerateUserID;
+procedure TUser.GenerateUserID;
 var
   isExisting : boolean;
   sUserID : string;
@@ -347,10 +347,10 @@ begin
 }
   isExisting := false;
   repeat
-    sUserID := UPPERCASE(pUsername[1] + pUsername[2]) + IntToStr(RandomRange(1,9)) + FormatDateTime('t',now)[2] + FormatDateTime('m',date);
+    sUserID := UPPERCASE(Username[1] + Username[2]) + IntToStr(RandomRange(1,9)) + FormatDateTime('t',now)[2] + FormatDateTime('m',date);
     isExisting := CheckUserID(sUserID);
   until not isExisting;
-  Result := sUserID;
+  UserID := sUserID;
 end;
 
 function TUser.CheckUserID;

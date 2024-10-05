@@ -83,24 +83,19 @@ end;
 procedure TdmData.BackUpDB;
 var
   isFailed : Boolean;
-  dbPathCharBK,dlPathCharBK : PWideChar;
-  dbPathChar, dlPathChar : PWideChar;
+  isDeleted : Boolean;
 begin
 
   { Only backup if the `database.ldb` file is NOT present,
     issues can come up when the database is backed up while still in use,
     I would rather back it up frequently but not when it is in use }
 
-  // Converts the strings to widechar which can be read by DeleteFile()
-  StringToWideChar(dbPath + '.backup',dbPathCharBK,(dbPath+'.backup').Length);
-  StringToWideChar(dlPath + '.backup',dlPathCharBK,(dlPath+'.backup').Length);
-  StringToWideChar(dbPath,dbPathChar,dbPath.Length);
-  StringToWideChar(dlPath,dlPathChar,dlPath.Length);
 
-  if not Utils.CheckFileExists(dlPath) then
-  DeleteFile(dbPathCharBK);
-  CopyFile(dbPathChar,dbPathCharBK,isFailed);
+  if not FileUtils.CheckFileExists(dlPath) then
+    isDeleted := DeleteFile(pChar(dbPath+'.backup'));
 
+  if isDeleted then
+    CopyFile(pChar(dbPath),pChar(dbPath+'.backup'),isFailed);
   if isFailed then
     LogService.WriteErrorLog('Error backing up the database')
   else

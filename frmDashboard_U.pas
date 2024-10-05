@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, ComCtrls,
-  libUtils_U,libUser_u, libMeals_U,frmGreeter_U,conDB,frmAddFood_U,
+  libUtils_U,libUser_u, libMeals_U,conDB,frmAddFood_U,
   Vcl.WinXCtrls, Vcl.Buttons, System.ImageList, Vcl.ImgList, Vcl.Mask,
   Vcl.WinXPanels, Vcl.Menus, Vcl.ToolWin,frmSettings_U,Math,libGoals_U,StrUtils,
   Vcl.DBCtrls, Vcl.NumberBox;
@@ -742,25 +742,10 @@ begin
 end;
 
 procedure TfrmDashboard.FormShow(Sender: TObject);
-var
-  userGreeter : TfrmGreeter;
+
 begin
   FileUtils := TFileUtils.Create;
   LogService := TLogService.Create;
-
-  if currentUser.GetFirstLogin then
-  begin
-   userGreeter := TfrmGreeter.Create(nil);
-   userGreeter.currentUser := currentUser;
-   with userGreeter do
-   begin
-    try
-      ShowModal;
-    finally
-      Free;
-    end;
-   end;
-  end;
 
   PopulateFoods;
 

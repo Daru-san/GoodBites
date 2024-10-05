@@ -144,6 +144,7 @@ begin
   LogService := TLogService.Create;
 
   LocateDatabase;
+  BackUpDB;
   if DatabaseExists then
   begin
     ConnectDB;

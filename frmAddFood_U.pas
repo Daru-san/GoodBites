@@ -22,19 +22,18 @@ type
     procedure btnAcceptClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure cbxItemsChange(Sender: TObject);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure edtQueryChange(Sender: TObject);
     procedure btnCustomClick(Sender: TObject);
   private
-    procedure SortItems(JSONResponse : TStringStream;ResponseLength : Integer);
-    function GetNutrientValue(jsonNutrient : TJSONValue) : real;
+    procedure SortItems(pJsonResponse : TStringStream;pResponseLength : Integer);
+    function GetNutrientValue(pJsonNutrient : TJSONValue) : real;
   public
   end;
 
 var
   frmAddFood: TfrmAddFood;
   FoodItem : TFoodItem;
-  Util : TUtils;
+  StringUtils : TStringUtils;
 
   // Store the foods in arrays of 1 to 10, only taking 10 items from a single query
   // These arrays will be linked to each other
@@ -116,7 +115,7 @@ begin
 
   actvLoad.StartAnimation;
   Screen.Cursor := crHourGlass;
-  if Util.ValidateString(sQuery,'foodname',1,20,'letters,numbers') then
+  if StringUtils.ValidateString(sQuery,'foodname',1,20,'letters,numbers') then
   begin
     FetchAPI := TFetchAPI.Create;
     try
@@ -228,21 +227,15 @@ begin
   end;
 end;
 
-procedure TfrmAddFood.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-  inherited;
-  Util.Free;
-end;
-
 procedure TfrmAddFood.FormShow(Sender: TObject);
 begin
   inherited;
-  Util := TUtils.Create;
+  StringUtils := TStringUtils.Create;
   edtQuery.SetFocus;
   redItems.Text := 'Food information goes here';
 end;
 
-procedure TfrmAddFood.SortItems;
+procedure TfrmAddFood.SortItems(pJsonResponse: TStringStream; pResponseLength: Integer);
 var
   j,P,i : integer;
   jsonArrFoods,jsonArrNutrients : TJSONArray;
@@ -260,8 +253,8 @@ begin
     Each food item as an item in the json array, the same goes for the nutrients as a sub-array
     of foodNutrients. }
 
-  sJsonResponse := JSONResponse.ReadString(ResponseLength);
-  JSONResponse.Free;
+  sJsonResponse := pJsonResponse.ReadString(pResponseLength);
+  pJsonResponse.Free;
 
   isEmpty := (sJsonResponse = '');
   if isEmpty then exit;
@@ -273,7 +266,10 @@ begin
     // I hope to avoid keeping large strings in memory for a long time
     sJsonResponse := '';
   except on E: Exception do
-    exit;
+    begin
+      ShowMessage('An unkown error occured, please try again');
+      exit;
+    end;
   end;
 
   { I hope to prevent type casting errors that may come up when the json
@@ -326,9 +322,8 @@ begin
   end;
 end;
 
-function TfrmAddFood.GetNutrientValue(jsonNutrient: TJSONValue): Real;
+function TfrmAddFood.GetNutrientValue(pJsonNutrient: TJSONValue): Real;
 begin
-  Result := jsonNutrient.FindValue('value').GetValue<extended>;
+  Result := pJsonNutrient.FindValue('value').GetValue<extended>;
 end;
-
 end.

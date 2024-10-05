@@ -43,7 +43,7 @@ type
   private
     { Private declarations }
     procedure ShowConfirmationCard;
-    procedure SetNumberBox(nbxBox : TNumberBox;min,max : real);
+    procedure SetNumberBox(pNumberBox : TNumberBox;pMin,pMax : real);
     procedure CheckItemPresence;
   public
     { Public declarations }
@@ -54,8 +54,8 @@ var
   Foodname : String;
   FoodDesc : TStringList;
   Calories, Protein, Carbs, Energy, Fat, Sugar : real;
-  Utils : TUtils;
-  Logs : TLogs;
+  LogService : TLogService;
+  StringUtils : TStringUtils;
 
 
 implementation
@@ -68,7 +68,7 @@ var
   isNameValid : Boolean;
 begin
   Foodname := edtFoodName.Text;
-  isNameValid := Utils.ValidateString(Foodname,'foodname',3,20,'letters');
+  isNameValid := StringUtils.ValidateString(Foodname,'foodname',3,20,'letters');
 
   if not isNameValid then
   exit;
@@ -92,8 +92,8 @@ end;
 procedure TfrmCustomFood.FormShow(Sender: TObject);
 begin
   crplMain.ActiveCard := crdDetails;
-  Utils := TUtils.Create;
-  Logs := TLogs.Create;
+  StringUtils := TStringUtils.Create;
+  LogService := TLogService.Create;
 
   SetNumberBox(nbxCalories,0,10000);
   SetNumberBox(nbxProtein,0.01,1000);
@@ -105,10 +105,10 @@ end;
 
 procedure TfrmCustomFood.SetNumberBox;
 begin
-  with nbxBox do
+  with pNumberBox do
   begin
-    minValue := min;
-    maxValue := max;
+    minValue := pMin;
+    maxValue := pMax;
     Mode := nbmFloat;
     Enabled := false;
     UseMouseWheel := true;
@@ -182,7 +182,7 @@ begin
   FoodItem.AddFoodToDB(FoodDesc.Text);
   FoodItem.Free;
   ShowMessage('Item added to database successfully!');
-  Logs.WriteSysLog('Food item ' + Foodname + ' was added to the database!');
+  LogService.WriteSysLog('Food item ' + Foodname + ' was added to the database!');
   Self.ModalResult := mrClose;
 end;
 

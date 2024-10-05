@@ -20,10 +20,10 @@ type
     FEnergyPer100G : real;
     FSugarPer100G : real;
 
-    procedure GetNutrients(sFoodname:string);
+    procedure GetNutrients(pFoodname:string);
 
   public
-    constructor Create(sFoodname:string);
+    constructor Create(pFoodname:string);
 
     property Foodname : String read FFoodname write FFoodname;
     property CaloriePer100G : real read FCaloriePer100G write FCaloriePer100G;
@@ -35,8 +35,8 @@ type
 
     function CheckExists : Boolean;
 
-    procedure AddFoodToDB(FoodDesc:string = 'Lorem ipsum');
-    procedure AddNutrients(Calories:Real;Protein: Real; Carb: Real; Fat: Real; Energy: Real; Sugar:real);
+    procedure AddFoodToDB(pFoodDesc:string = 'Lorem ipsum');
+    procedure AddNutrients(pCalories,pEnergy,pProtein,pCarb,pFat,pSugar:real);
     //function GetFoodname(sFoodname:string) : string;
   end;
   TMeal = class(TObject)
@@ -52,7 +52,7 @@ type
 
       procedure CalcTotals;
     public
-      constructor Create(F : TFoodItem; P : Real;M: string = 'Other');
+      constructor Create(pFoodItem : TFoodItem; pPortion : Real;pMealType: string = 'Other');
 
       property TotalCalories : real read FTotalCalories write FTotalCalories;
       property TotalEnergy : real read FTotalEnergy write FTotalEnergy;
@@ -61,7 +61,7 @@ type
       property FoodItem : TFoodItem read FFoodItem write FFoodItem;
       property PortionSize : Real read FPortion write FPortion;
 
-      procedure EatMeal(UserID : String;TotalUserMeals:Integer);
+      procedure EatMeal(pUserID : String;pTotalUserMeals:Integer);
   end;
   var
     LogService : TLogService;
@@ -71,10 +71,10 @@ implementation
 { Food procedures }
 
 {$REGION FOODS }
-constructor TFoodItem.Create(sFoodname: string);
+constructor TFoodItem.Create(pFoodname: string);
 begin
-  Foodname := sFoodname;
-  GetNutrients(sFoodname);
+  Foodname := pFoodname;
+  GetNutrients(pFoodname);
 end;
 
 { Obtain food nutrients from the database }
@@ -88,7 +88,7 @@ begin
     Open;
     First;
     repeat
-      if sFoodname = FieldValues['FoodName'] then
+      if pFoodname = FieldValues['FoodName'] then
       begin
         isFoodFound := true;
         ProteinPer100G := FieldValues['ProteinPer100g'];
@@ -138,14 +138,14 @@ begin
 end;
 
 { Add the nutrients for any new food items }
-procedure TFoodItem.AddNutrients(Calories:real;Protein: Real; Carb: Real; Fat: Real; Energy: Real; Sugar:real);
+procedure TFoodItem.AddNutrients(pCalories: Real; pEnergy: Real; pProtein: Real; pCarb: Real; pFat: Real; pSugar: Real);
 begin
-  CaloriePer100G := Calories;
-  EnergyPer100G := Energy;
-  CarbPer100G := Carb;
-  FatPer100G := Fat;
-  ProteinPer100G := Protein;
-  SugarPer100G := Sugar;
+  CaloriePer100G := pCalories;
+  EnergyPer100G := pEnergy;
+  CarbPer100G := pCarb;
+  FatPer100G := pFat;
+  ProteinPer100G := pProtein;
+  SugarPer100G := pSugar;
 end;
 
 { Get validated information from the user to add to the database
@@ -163,7 +163,7 @@ begin
     FieldValues['FatPer100g'] := FatPer100G;
     FieldValues['EnergyPer100G'] := EnergyPer100G;
     FieldValues['SugarPer100G'] := SugarPer100G;
-    FieldValues['Desc'] := FoodDesc;
+    FieldValues['Desc'] := pFoodDesc;
     Post;
   end;
   LogService.WriteSysLog('Item ' + Foodname + ' has been added to the database');
@@ -174,11 +174,11 @@ end;
 { Meal procedures}
 
 {$REGION MEALS}
-constructor TMeal.Create(F : TFoodItem; P : Real;M: string = 'Other');
+constructor TMeal.Create(pFoodItem : TFoodItem; pPortion : Real;pMealType: string = 'Other');
 begin
-  FoodItem := F;
-  PortionSize := P;
-  MealType := M;
+  FoodItem := pFoodItem;
+  PortionSize := pPortion;
+  MealType := pMealType;
   CalcTotals;
 end;
 
@@ -188,7 +188,7 @@ begin
   TotalEnergy := FoodItem.EnergyPer100G * (PortionSize/100);
 end;
 
-procedure TMeal.EatMeal(UserID : String;TotalUserMeals:Integer);
+procedure TMeal.EatMeal(pUserID : String;pTotalUserMeals:Integer);
 var
   sFoodname : string;
   iMealIndex : integer;
@@ -198,7 +198,7 @@ begin
   // Increase the index of the meal for the specific user
   // Every user has an index for their meals
   // Making it possible to search through them for a specific one
-  iMealIndex := TotalUserMeals;
+  iMealIndex := pTotalUserMeals;
   inc(iMealIndex);
 
   isFound := False;
@@ -230,7 +230,7 @@ begin
           FieldValues['FoodName'] := sFoodname;
           FieldValues['DateEaten'] := Date;
           FieldValues['TimeEaten'] := Time;
-          FieldValues['UserID'] := UserID;
+          FieldValues['UserID'] := pUserID;
           FieldValues['UserMealID'] := iMealIndex;
           FieldValues['MealType'] := MealType;
           FieldValues['PortionSize'] := PortionSize;

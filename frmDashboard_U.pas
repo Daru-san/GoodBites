@@ -394,6 +394,10 @@ begin
   GetInfo;
 end;
 
+procedure TfrmDashboard.edtWaterInputChange(Sender: TObject);
+begin
+  edtWater.Color := clDefault;
+end;
 procedure TfrmDashboard.PopulateFoods;
 var
  currentMeal : string;
@@ -527,6 +531,25 @@ begin
   crplGoals.ActiveCard := crdGoalOV;
 end;
 
+procedure TfrmDashboard.btnDrinkingClick(Sender: TObject);
+var
+  rAmount : real;
+  iCheckInt : Integer;
+  Goal : TGoal;
+begin
+  Val(edtWaterInput.Text,rAmount,iCheckInt);
+  if iCheckInt <> 0 then
+  begin
+    ShowMessage('Please enter a number for water amount');
+    edtWaterInput.SetFocus;
+    edtWaterInput.Color := clRed;
+    exit;
+  end;
+  Goal := TGoal.Create(CurrentUser.UserID,'Water');
+  Goal.SaveProgress(rAmount);
+  Goal.Free;
+  edtWaterInput.Clear;
+end;
 {$ENDREGION}
 
 { Meal eating }
@@ -594,39 +617,26 @@ end;
 procedure TfrmDashboard.LogGoalProgress;
 var
   rCalories,rProtein,rCarb,rFat : Real;
-  rWater : Real;
-  isWater : Boolean;
   Goal : TGoal;
   sUserID : String;
 begin
   sUserID := CurrentUser.UserID;
-  isWater := LowerCase(pMeal.FoodItem.Foodname) = 'water';
-  if isWater then
-  begin
-    rWater := pMeal.PortionSize;
-    Goal := TGoal.Create(CurrentUser.UserID,'Water');
-    Goal.SaveProgress(rWater);
-    Goal.Free;
-  end
-  else
-  begin
-    rCalories := pMeal.TotalCalories;
-    Goal := TGoal.Create(sUserID,'Calorie');
-    Goal.SaveProgress(rCalories);
+  rCalories := pMeal.TotalCalories;
+  Goal := TGoal.Create(sUserID,'Calorie');
+  Goal.SaveProgress(rCalories);
 
-    rProtein := pMeal.FoodItem.ProteinPer100G * (pMeal.PortionSize/100);
-    Goal := TGoal.Create(sUserID,'Protein');
-    Goal.SaveProgress(rProtein);
+  rProtein := pMeal.FoodItem.ProteinPer100G * (pMeal.PortionSize/100);
+  Goal := TGoal.Create(sUserID,'Protein');
+  Goal.SaveProgress(rProtein);
 
-    rCarb := pMeal.FoodItem.CarbPer100G * (pMeal.PortionSize/100);
-    Goal := TGoal.Create(sUserID,'Carbohydrate');
-    Goal.SaveProgress(rCarb);
+  rCarb := pMeal.FoodItem.CarbPer100G * (pMeal.PortionSize/100);
+  Goal := TGoal.Create(sUserID,'Carbohydrate');
+  Goal.SaveProgress(rCarb);
 
-    rFat := pMeal.FoodItem.FatPer100G * (pMeal.PortionSize/100);
-    Goal := TGoal.Create(sUserID,'Fat');
-    Goal.SaveProgress(rFat);
-    Goal.Free;
-  end;
+  rFat := pMeal.FoodItem.FatPer100G * (pMeal.PortionSize/100);
+  Goal := TGoal.Create(sUserID,'Fat');
+  Goal.SaveProgress(rFat);
+  Goal.Free;
 end;
 
 { Dealing with food information when combo box selected item changes }

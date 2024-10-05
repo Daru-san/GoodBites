@@ -5,27 +5,31 @@ interface
 uses System.SysUtils,System.Classes,VCL.StdCtrls,Dialogs;
 
 type
-  TUtils = Class(TObject)
+  TFileUtils = Class(TObject)
   public
-    function CheckFileExists(filename: string;isLogFile:boolean = false) : boolean;
+    function CheckFileExists(pFilename: string) : boolean;
+    function CheckLogFile : Boolean;
+  end;
+
+  TStringUtils = Class(TObject)
+    public
     function ValidateString(S,StringName: string; minLength: Integer = 0;
      maxLength: Integer = 0; allowedChars : String = 'letters'): Boolean;
+  End;
 
-    procedure SetLabel(LabelComponent:TLabel;labelMsg:string;fontSize : integer);
-
-  end;
-  TLogs = Class(TObject)
+  TLogService = Class(TObject)
   private
     procedure WriteLog(logMessage:string);
   public
-    procedure WriteUserLog(logMessage:string);
-    procedure WriteSysLog(logMessage:string);
-    procedure WriteErrorLog(logMessage:string);
+    procedure WriteUserLog(pMessage:string);
+    procedure WriteSysLog(pMessage:string);
+    procedure WriteErrorLog(pMessage:string);
   End;
 
 implementation
 
-function TUtils.ValidateString(S,StringName: string; minLength: Integer = 0;
+// String utilities
+function TStringUtils.ValidateString(S,StringName: string; minLength: Integer = 0;
      maxLength: Integer = 0; allowedChars : String = 'letters'): Boolean;
 const
 NUMS = ['1'..'9'];
@@ -89,80 +93,78 @@ begin
 end;
 
 
-function TUtils.CheckFileExists;
+// File utilities
+function TFileUtils.CheckFileExists(pFilename: string): Boolean;
 var
-  logMsg : string;
+  sLogMsg : string;
   isExist : boolean;
 begin
-  logMsg := 'The file ' + filename + ' was need but not found';
-  if not FileExists(filename) then
+  sLogMsg := 'The file ' + pFilename + ' was need but not found';
+
+  if not FileExists(pFilename) then
   begin
     isExist := false;
-    if not isLogFile then
-    begin
-      Tlogs.Create.WriteSysLog(logMSG);
-    end;
-  end else isExist := true;
-  CheckFileExists := isExist;
+    TLogService.Create.WriteSysLog(sLogMsg);
+  end
+  else
+   isExist := true;
+  Result := isExist;
 end;
 
-procedure TUtils.SetLabel;
+function TFileUtils.CheckLogFile: Boolean;
+const LOGFILE = 'logs';
+var isExisting : Boolean;
 begin
-  with labelComponent do
-  begin
-    font.Name := 'Noto Sans';
-    font.size := fontSize;
-    Layout := tlCenter;
-    Alignment := taCenter;
-    Caption := labelMsg;
-  end;
+  isExisting := FileExists(LOGFILE);
+  Result := isExisting;
 end;
 
-procedure Tlogs.WriteUserLog;
+// System logging
+
+procedure TLogService.WriteUserLog;
 var
-  logMsg : string;
+  sLogMsg : string;
 begin
-  logMsg := '[USER] ' + logMessage;
-  WriteLog(logMsg);
+  sLogMsg := '[USER] ' + pMessage;
+  WriteLog(sLogMsg);
 end;
 
-procedure TLogs.WriteSysLog;
+procedure TLogService.WriteSysLog;
 var
-  logMsg : string;
+  sLogMsg : string;
 begin
-  logMsg := '[SYSTEM] ' + logMessage;
-  WriteLog(logMsg);
+  sLogMsg := '[SYSTEM] ' + pMessage;
+  WriteLog(sLogMsg);
 end;
 
-procedure TLogs.WriteErrorLog;
+procedure TLogService.WriteErrorLog;
 var
-  logMsg : string;
+  sLogMsg : string;
 begin
-  logMsg := '[ERROR] ' + logMessage;
-  WriteLog(logMsg);
+  sLogMsg := '[ERROR] ' + pMessage;
+  WriteLog(sLogMsg);
 end;
 
-procedure  TLogs.WriteLog;
-const FILENAME = 'logs';
+procedure  TLogService.WriteLog;
+const LOGFILE = 'logs';
 var
-  LogFile : textfile;
+  tfLogs : textfile;
   logsExist : boolean;
 begin
-  AssignFile(LogFile,FILENAME);
-  logsExist := Tutils.Create.CheckFileExists(FILENAME,true);
+  AssignFile(tfLogs,LOGFILE);
+  logsExist := TFileUtils.Create.CheckLogFile;
   try
     if logsExist then
-      Append(logFile)
+      Append(tfLogs)
     else
     begin
-      Rewrite(logFile);
-      WriteLn(logFile,'# LOGS #' + #13 + '########');
+      Rewrite(tfLogs);
+      WriteLn(tfLogs,'# LOGS #' + #13 + '########');
     end;
     logMessage := FormatDateTime('ddddd@tt',now) + ': ' + logMessage;
-    WriteLn(LogFile,logMessage);
-    //WriteLn(logMessage);
+    WriteLn(tfLogs,logMessage);
   finally
-    CloseFile(logFile);
+    CloseFile(tfLogs);
   end;
 end;
 end.

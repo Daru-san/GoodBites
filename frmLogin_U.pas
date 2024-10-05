@@ -54,12 +54,12 @@ type
     procedure tbtHomeClick(Sender: TObject);
   private
     { Private declarations }
-    FCurrentUser : TUser;
+    FLoginUser : TUser;
 
     procedure CheckFields(pState : String = 'Login');
   public
     { Public declarations }
-    property CurrentUser : TUser read FCurrentUser write FCurrentUser;
+    property LoginUser : TUser read FLoginUser write FLoginUser;
   end;
 
 var
@@ -100,18 +100,18 @@ begin
   sPassword := edtPassword.Text;
 
   // Call the constructor
-  currentUser := TUser.Create(sUsername.Trim);
-  currentUser.Login(sPassword.trim);
+  LoginUser := TUser.Create(sUsername.Trim);
+  LoginUser.Login(sPassword.trim);
 
   // Closes the form when login is successful using modalresult
   // Closing manually using self.Close() does not work properly
   // so this is the best approach to use
-  if currentUser.CheckLogin then
+  if LoginUser.CheckLogin then
     self.ModalResult := mrOk
   else
   begin
     self.ModalResult := mrNone;
-    currentUser.Free;
+    LoginUser.Free;
   end;
 end;
 
@@ -189,9 +189,9 @@ begin
   // object is freed from memory immediately after account creation
   // The user signs up and logs in sequentially
 
-  currentUser := TUser.Create(sUsername.Trim);
-  currentUser.SignUp(sPassword.Trim);
-  currentUser.Free;
+  LoginUser := TUser.Create(sUsername.Trim);
+  LoginUser.SignUp(sPassword.Trim);
+  LoginUser.Free;
 end;
 
 procedure TfrmLogin.CheckFields;

@@ -43,7 +43,6 @@ type
   private
     { Private declarations }
     procedure ShowConfirmationCard;
-    procedure SetNumberBox(pNumberBox : TNumberBox;pMin,pMax : real);
     procedure CheckItemPresence;
   public
     { Public declarations }
@@ -56,6 +55,7 @@ var
   Calories, Protein, Carbs, Energy, Fat, Sugar : real;
   LogService : TLogService;
   StringUtils : TStringUtils;
+  ControlUtils : TControlUtils;
 
 
 implementation
@@ -94,26 +94,16 @@ begin
   crplMain.ActiveCard := crdDetails;
   StringUtils := TStringUtils.Create;
   LogService := TLogService.Create;
+  ControlUtils := TControlUtils.Create;
 
-  SetNumberBox(nbxCalories,0,10000);
-  SetNumberBox(nbxProtein,0.01,1000);
-  SetNumberBox(nbxFats,0.01,1000);
-  SetNumberBox(nbxCarbs,0.01,1000);
-  SetNumberBox(nbxSugars,0.01,1000);
+  ControlUtils.SetNumberBox(nbxCalories,0,10000);
+  ControlUtils.SetNumberBox(nbxProtein,0.01,1000);
+  ControlUtils.SetNumberBox(nbxFats,0.01,1000);
+  ControlUtils.SetNumberBox(nbxCarbs,0.01,1000);
+  ControlUtils.SetNumberBox(nbxSugars,0.01,1000);
   btnNext.Enabled := false;
 end;
 
-procedure TfrmCustomFood.SetNumberBox;
-begin
-  with pNumberBox do
-  begin
-    minValue := pMin;
-    maxValue := pMax;
-    Mode := nbmFloat;
-    Enabled := false;
-    UseMouseWheel := true;
-  end;
-end;
 
 procedure TfrmCustomFood.CheckItemPresence;
 var

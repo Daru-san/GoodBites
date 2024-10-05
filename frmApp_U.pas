@@ -4,8 +4,8 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, frmLogin_U,
-  Vcl.Grids, frmDashboard_U,frmAdmin_U,libUser_U,frmHelp_U, Vcl.Imaging.pngimage,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, frmLogin_U, frmWelcome_U,
+  frmDashboard_U,frmAdmin_U,libUser_U, Vcl.Imaging.pngimage,
   Vcl.WinXCtrls, Vcl.ButtonGroup,Math;
 
 type
@@ -14,17 +14,20 @@ type
     imgCenter: TImage;
     btnEnter: TButton;
     procedure FormShow(Sender: TObject);
-    procedure btnHelpClick(Sender: TObject);
     procedure btnExitClick(Sender: TObject);
-    procedure grpBtnItems1Click(Sender: TObject);
     procedure btnEnterClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
   private
     { Private declarations }
-    FCurrentUser : TUser;
+    FAppUser : TUser;
+
+    procedure ShowForms;
+    procedure ShowDashboardForm;
+    procedure ShowAdminForm;
+    procedure ShowWelcomeForm;
   public
     { Public declarations }
-    property CurrentUser : TUser read FCurrentUser write FCurrentUser;
+    property AppUser : TUser read FAppUser write FAppUser;
   end;
 
 var
@@ -37,54 +40,89 @@ implementation
 procedure TfrmApp.btnEnterClick(Sender: TObject);
 var
   LoginForm : TfrmLogin;
-  DashForm : TfrmDashboard;
-  AdminForm : TfrmAdmin;
-  didLogin,isAdmin,LoginCancelled : boolean;
+  isLogin : boolean;
 begin
   Application.Initialize;
-  LoginForm := TfrmLogin.Create(nil);
+  Application.CreateForm(TfrmLogin,LoginForm);
   Self.Hide;
   try
     LoginForm.ShowModal;
 
-    //Obtain the currently logged in user from the login form, all data is filled in the object if login was successful
     if LoginForm.ModalResult = mrOk then
     begin
-      CurrentUser := LoginForm.CurrentUser;
-      didLogin := CurrentUser.CheckLogIn;
-      isAdmin := CurrentUser.isAdmin;
-    end else didLogin := false;
+      AppUser := LoginForm.LoginUser;
+      isLogin := AppUser.CheckLogIn;
+    end else isLogin := false;
   finally
     LoginForm.Free;
-    if didLogin then
-    begin
-      if (not isAdmin) then
-      begin
-        Application.CreateForm(TfrmDashboard,DashForm);
-        try
-          DashForm.CurrentUser := CurrentUser;
-          DashForm.ShowModal;
-          Self.Hide;
-        finally
-          DashForm.free;
-          Self.Visible := true;
-        end;
-      end
-        else
-      if isAdmin then
-      begin
-        Application.CreateForm(TfrmAdmin,AdminForm);
-        try
-          AdminForm.AdminUser := CurrentUser;
-          AdminForm.ShowModal;
-          self.Hide;
-        finally
-          AdminForm.Free;
-          Self.Visible := true;
-        end;
-      end;
-    end;
-    Application.Run;
+  end;
+  if isLogin then
+    ShowForms;
+
+  Application.Run;
+end;
+
+procedure TfrmApp.ShowForms;
+var
+  isAdmin : Boolean;
+  isNewUser : Boolean;
+begin
+  isAdmin := AppUser.isAdmin;
+  isNewUser := AppUser.CheckFirstLogin;
+  if isAdmin then
+    ShowAdminForm
+  else
+  begin
+    if isNewUser then
+      ShowWelcomeForm
+    else
+      ShowDashboardForm;
+  end;
+end;
+
+procedure TfrmApp.ShowAdminForm;
+var
+  AdminForm : TfrmAdmin;
+begin
+  Application.CreateForm(TfrmAdmin,AdminForm);
+  with AdminForm do
+  try
+    AdminUser := AppUser;
+    ShowModal;
+  finally
+    Free;
+  end;
+end;
+
+procedure TfrmApp.ShowWelcomeForm;
+var
+  WelcomeForm : TfrmWelcome;
+  isLoginComplete : Boolean;
+begin
+  Application.CreateForm(TfrmWelcome,WelcomeForm);
+  with WelcomeForm do
+  try
+    CurrentUser := AppUser;
+    ShowModal;
+  finally
+    isLoginComplete := ModalResult = mrYes;
+    Free;
+  end;
+  if isLoginComplete then
+    ShowDashboardForm;
+end;
+
+procedure TfrmApp.ShowDashboardForm;
+var
+  Dashboard : TfrmDashboard;
+begin
+  Application.CreateForm(TfrmDashboard,Dashboard);
+  with Dashboard do
+  try
+    CurrentUser := AppUser;
+    ShowModal;
+  finally
+    Free;
   end;
 end;
 
@@ -92,20 +130,6 @@ procedure TfrmApp.btnExitClick(Sender: TObject);
 begin
   Application.Terminate;
 end;
-
-procedure TfrmApp.btnHelpClick(Sender: TObject);
-var
-  HelperForm : TfrmHelp;
-begin
-  HelperForm := TfrmHelp.Create(nil);
-  Self.Visible := false;
-  try
-    HelperForm.ShowModal;
-  finally
-    HelperForm.Free;
-  end;
-end;
-
 
 procedure TfrmApp.FormResize(Sender: TObject);
 begin
@@ -121,11 +145,6 @@ begin
   imgCenter.Picture.LoadFromFile('..\..\image.png');
   imgCenter.Stretch := true;
   self.FormResize(self);
-end;
-
-procedure TfrmApp.grpBtnItems1Click(Sender: TObject);
-begin
-  self.close;
 end;
 
 end.

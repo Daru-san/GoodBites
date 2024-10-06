@@ -99,7 +99,7 @@ begin
   for i := 1 to S.Length do
   begin
     if allowLetters then
-      if (s[i] in LETTERS) then
+      if (UpperCase(s)[i] in LETTERS) then
       hasLetters := True;
     if allowNum then
       if (s[i] in NUMS) then

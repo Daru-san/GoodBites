@@ -12,13 +12,11 @@ uses
 type
   TfrmWelcome = class(TForm)
     crplWelcome: TCardPanel;
-    tbTop: TToolBar;
     crdLanding: TCard;
     btnContinue: TButton;
     btnBack: TButton;
     crdDetails: TCard;
     spnAge: TSpinEdit;
-    tbNavbar: TToolBar;
     pnlDetailsHead: TPanel;
     lblAge: TLabel;
     nbxHeight: TNumberBox;
@@ -46,6 +44,13 @@ type
     lblTotalCalCalc: TLabel;
     lblWaterAdd: TLabel;
     mpWelcomeVideo: TWindowsMediaPlayer;
+    imgLanding: TImage;
+    lblWelcome: TLabel;
+    pnlLandingIMG: TPanel;
+    pnlLandingCenter: TPanel;
+    memExplanation: TMemo;
+    pnlNav: TPanel;
+    redInfoHelp: TRichEdit;
     procedure FormShow(Sender: TObject);
     procedure btnContinueClick(Sender: TObject);
     procedure crdWelcomeEnter(Sender: TObject);
@@ -56,6 +61,7 @@ type
     procedure nbxWeightChange(Sender: TObject);
     procedure rgpActivityClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure mpWelcomeVideoEndOfStream(ASender: TObject; Result: Integer);
 
   private
     { Private declarations }
@@ -201,6 +207,13 @@ begin
   sMessage.Free;
 end;
 
+procedure TfrmWelcome.mpWelcomeVideoEndOfStream(ASender: TObject;
+  Result: Integer);
+begin
+  btnContinue.Enabled := true;
+  btnContinue.Caption := 'Start!';
+end;
+
 {$ENDREGION}
 
 // Presence checks
@@ -244,9 +257,10 @@ begin
   crplWelcome.ActiveCard := crdWelcome;
   CurrentUser.CompleteSignUp;
   LogService.WriteUserLog('User ' + CurrentUser.Username + ' uid ' + CurrentUser.UserID + ' has completed the sign up course!');
-  tbNavbar.Hide;
   mpWelcomeVideo.URL := 'videos\tutor.mpv';
   mpWelcomeVideo.controls.play;
+  btnBack.Enabled := false;
+  btnContinue.Enabled := false;
 end;
 
 procedure TfrmWelcome.ViewGoalsCard;

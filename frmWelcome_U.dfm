@@ -17,70 +17,144 @@ object frmWelcome: TfrmWelcome
   TextHeight = 15
   object crplWelcome: TCardPanel
     Left = 0
-    Top = 29
+    Top = 0
     Width = 834
-    Height = 363
+    Height = 389
     Align = alClient
-    ActiveCard = crdWelcome
+    ActiveCard = crdLanding
     Caption = 'Welcome Panel'
     TabOrder = 0
+    ExplicitTop = 29
+    ExplicitHeight = 363
     object crdLanding: TCard
       Left = 1
       Top = 1
       Width = 832
-      Height = 361
+      Height = 387
       Caption = '1.Landing'
       CardIndex = 0
       TabOrder = 0
+      ExplicitHeight = 361
+      object pnlLandingCenter: TPanel
+        Left = 0
+        Top = 0
+        Width = 832
+        Height = 387
+        Align = alClient
+        TabOrder = 0
+        ExplicitLeft = 64
+        ExplicitTop = 128
+        ExplicitWidth = 185
+        ExplicitHeight = 41
+        object lblWelcome: TLabel
+          Left = 1
+          Top = 1
+          Width = 830
+          Height = 32
+          Align = alTop
+          Alignment = taCenter
+          Caption = 'Welcome to Goodbites!'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -28
+          Font.Name = 'Bac'
+          Font.Style = []
+          ParentFont = False
+          ExplicitWidth = 290
+        end
+        object pnlLandingIMG: TPanel
+          Left = 120
+          Top = 72
+          Width = 225
+          Height = 153
+          TabOrder = 0
+          object imgLanding: TImage
+            Left = 1
+            Top = 1
+            Width = 223
+            Height = 151
+            Align = alClient
+            Center = True
+            Proportional = True
+            Stretch = True
+            ExplicitLeft = 113
+            ExplicitTop = 25
+          end
+        end
+        object memExplanation: TMemo
+          Left = 464
+          Top = 73
+          Width = 321
+          Height = 216
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -15
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          Lines.Strings = (
+            'What to expect from here:'
+            '- We will ask for your information to calculate '
+            'your goals'
+            '- You can view your goals after your first login'
+            '- A short video will be given to help you get up '
+            'to scratch'
+            ''
+            'Happy Eating!')
+          ParentFont = False
+          TabOrder = 1
+        end
+      end
     end
     object crdDetails: TCard
       Left = 1
       Top = 1
       Width = 832
-      Height = 361
+      Height = 387
       Caption = '2.User Details'
       CardIndex = 1
       TabOrder = 1
+      ExplicitHeight = 361
       object pnlDetailsHead: TPanel
         Left = 0
         Top = 0
         Width = 832
-        Height = 57
+        Height = 51
         Align = alTop
         Caption = 'Enter your info'
         TabOrder = 0
       end
       object pnlDetails: TPanel
         Left = 0
-        Top = 57
+        Top = 51
         Width = 832
-        Height = 304
+        Height = 336
         Align = alClient
         TabOrder = 1
+        ExplicitTop = 57
         object lblHeight: TLabel
           Left = 98
-          Top = 139
+          Top = 111
           Width = 36
           Height = 15
           Caption = 'Height'
         end
         object lblWeight: TLabel
-          Left = 272
-          Top = 144
+          Left = 256
+          Top = 111
           Width = 38
           Height = 15
           Caption = 'Weight'
         end
         object lblAge: TLabel
-          Left = 272
-          Top = 65
+          Left = 256
+          Top = 41
           Width = 21
           Height = 15
           Caption = 'Age'
         end
         object rgpActivity: TRadioGroup
-          Left = 488
-          Top = 83
+          Left = 456
+          Top = 50
           Width = 185
           Height = 105
           Caption = 'Activity Levels'
@@ -95,7 +169,7 @@ object frmWelcome: TfrmWelcome
         end
         object nbxHeight: TNumberBox
           Left = 98
-          Top = 165
+          Top = 132
           Width = 121
           Height = 23
           Mode = nbmFloat
@@ -108,8 +182,8 @@ object frmWelcome: TfrmWelcome
           OnChange = nbxHeightChange
         end
         object nbxWeight: TNumberBox
-          Left = 272
-          Top = 165
+          Left = 256
+          Top = 132
           Width = 121
           Height = 23
           Mode = nbmFloat
@@ -122,8 +196,8 @@ object frmWelcome: TfrmWelcome
           OnChange = nbxWeightChange
         end
         object spnAge: TSpinEdit
-          Left = 264
-          Top = 86
+          Left = 256
+          Top = 62
           Width = 121
           Height = 24
           MaxValue = 150
@@ -134,7 +208,7 @@ object frmWelcome: TfrmWelcome
         end
         object edtFullname: TLabeledEdit
           Left = 98
-          Top = 86
+          Top = 62
           Width = 121
           Height = 23
           EditLabel.Width = 49
@@ -144,31 +218,52 @@ object frmWelcome: TfrmWelcome
           Text = ''
           OnChange = edtFullnameChange
         end
+        object redInfoHelp: TRichEdit
+          Left = 520
+          Top = 200
+          Width = 185
+          Height = 89
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          Lines.Strings = (
+            'This information is used to '
+            'calculate your total daily calories')
+          ParentFont = False
+          ReadOnly = True
+          TabOrder = 5
+          Transparent = True
+        end
       end
     end
     object crdWelcome: TCard
       Left = 1
       Top = 1
       Width = 832
-      Height = 361
+      Height = 387
       Caption = '4.Welcome Tutorial'
       CardIndex = 2
       TabOrder = 2
       OnEnter = crdWelcomeEnter
+      ExplicitHeight = 361
       object mpWelcomeVideo: TWindowsMediaPlayer
         Left = 0
         Top = 0
         Width = 832
-        Height = 361
+        Height = 387
         Align = alClient
         TabOrder = 0
-        ExplicitTop = 5
+        OnEndOfStream = mpWelcomeVideoEndOfStream
+        ExplicitWidth = 245
+        ExplicitHeight = 240
         ControlData = {
           000300000800000000000500000000000000F03F030000000000050000000000
           0000000008000200000000000300010000000B00FFFF0300000000000B00FFFF
           08000200000000000300320000000B00000008000A000000660075006C006C00
           00000B0000000B0000000B00FFFF0B00FFFF0B00000008000200000000000800
-          020000000000080002000000000008000200000000000B000000FD5500004F25
+          020000000000080002000000000008000200000000000B000000FD550000FF27
           0000}
       end
     end
@@ -176,10 +271,11 @@ object frmWelcome: TfrmWelcome
       Left = 1
       Top = 1
       Width = 832
-      Height = 361
+      Height = 387
       Caption = '3.Goals'
       CardIndex = 3
       TabOrder = 3
+      ExplicitHeight = 361
       object pnlGoalsHead: TPanel
         Left = 0
         Top = 0
@@ -199,27 +295,30 @@ object frmWelcome: TfrmWelcome
         Left = 0
         Top = 41
         Width = 832
-        Height = 320
+        Height = 346
         Align = alClient
         ActiveCard = crdGoalsOverview
         BevelOuter = bvNone
         Caption = 'Goals'
         TabOrder = 1
+        ExplicitHeight = 320
         object crdGoalsOverview: TCard
           Left = 0
           Top = 0
           Width = 832
-          Height = 320
+          Height = 346
           Caption = '1. Overview'
           CardIndex = 0
           TabOrder = 0
+          ExplicitHeight = 320
           object pnlGoalOVCenter: TPanel
             Left = 0
             Top = 41
             Width = 832
-            Height = 279
+            Height = 305
             Align = alClient
             TabOrder = 0
+            ExplicitHeight = 279
             object lblCarbTargetPerc: TLabel
               Left = 255
               Top = 109
@@ -339,37 +438,31 @@ object frmWelcome: TfrmWelcome
       end
     end
   end
-  object tbTop: TToolBar
+  object pnlNav: TPanel
     Left = 0
-    Top = 0
+    Top = 389
     Width = 834
-    Height = 29
-    TabOrder = 1
-  end
-  object tbNavbar: TToolBar
-    Left = 0
-    Top = 392
-    Width = 834
-    Height = 29
+    Height = 32
     Align = alBottom
-    Caption = 'ToolBar1'
-    TabOrder = 2
-    Transparent = True
+    AutoSize = True
+    TabOrder = 1
+    ExplicitTop = 385
     object btnBack: TButton
-      Left = 0
-      Top = 0
+      Left = 296
+      Top = 1
       Width = 75
-      Height = 22
+      Height = 30
       Caption = 'Back'
       TabOrder = 0
       OnClick = btnBackClick
     end
     object btnContinue: TButton
-      Left = 75
-      Top = 0
+      Left = 416
+      Top = 1
       Width = 75
-      Height = 22
+      Height = 30
       Caption = 'Continue'
+      Default = True
       TabOrder = 1
       OnClick = btnContinueClick
     end

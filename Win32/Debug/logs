@@ -11,3 +11,18 @@
 05/10/2024@23:19:34: [USER] The user Tracy, uid TR1310 has registered successfully
 05/10/2024@23:19:36: [USER] User Tracy uid TR1310 logged in.
 05/10/2024@23:19:53: [USER] User Tracy uid TR1310 logged in.
+05/10/2024@23:26:53: [USER] User Tracy uid TR1310 logged in.
+06/10/2024@15:35:16: [SYSTEM] Database backup successful!
+06/10/2024@15:35:31: [USER] Administrator Daru uid DA8910 logged in.
+06/10/2024@15:35:33: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+06/10/2024@15:35:50: [SYSTEM] The database table `tblFoods` was accessed by administrator Daru
+06/10/2024@15:36:30: [SYSTEM] Database backup successful!
+06/10/2024@15:36:36: [USER] User Daru uid DA8910 logged in.
+06/10/2024@15:36:46: [USER] Administrator Daru uid DA8910 logged in.
+06/10/2024@15:36:48: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+06/10/2024@15:36:54: [SYSTEM] The database table `tblFoods` was accessed by administrator Daru
+06/10/2024@17:23:27: [SYSTEM] Database backup successful!
+06/10/2024@17:36:20: [SYSTEM] Database backup successful!
+06/10/2024@18:01:06: [SYSTEM] Database backup successful!
+06/10/2024@18:06:24: [SYSTEM] Database backup successful!
+06/10/2024@18:09:18: [SYSTEM] Database backup successful!

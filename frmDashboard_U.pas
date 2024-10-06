@@ -157,6 +157,7 @@ type
     procedure DisplayWaterInfo;
     procedure LogEatenFood;
     procedure LogGoalProgress(pMeal : TMeal);
+    procedure DrinkWater(pAmount : real);
 
     // crdGoals
     procedure ShowGoalOverview;
@@ -548,25 +549,6 @@ begin
   crplGoals.ActiveCard := crdGoalOV;
 end;
 
-procedure TfrmDashboard.btnDrinkingClick(Sender: TObject);
-var
-  rAmount : real;
-  iCheckInt : Integer;
-  Goal : TGoal;
-begin
-  Val(edtWaterInput.Text,rAmount,iCheckInt);
-  if iCheckInt <> 0 then
-  begin
-    ShowMessage('Please enter a number for water amount');
-    edtWaterInput.SetFocus;
-    edtWaterInput.Color := clRed;
-    exit;
-  end;
-  Goal := TGoal.Create(CurrentUser.UserID,'Water');
-  Goal.SaveProgress(rAmount);
-  Goal.Free;
-  edtWaterInput.Clear;
-end;
 
 procedure TfrmDashboard.crdEatingEnter(Sender: TObject);
 begin
@@ -653,6 +635,31 @@ begin
   end;
 end;
 
+procedure TfrmDashboard.btnDrinkingClick(Sender: TObject);
+var
+  rAmount : real;
+  iCheckInt : Integer;
+begin
+  Val(edtWaterInput.Text,rAmount,iCheckInt);
+  if iCheckInt <> 0 then
+  begin
+    ShowMessage('Please enter a valid quantity in ml');
+    edtWaterInput.SetFocus;
+    edtWaterInput.Color := clRed;
+    exit;
+  end;
+  DrinkWater(rAmount);
+  edtWaterInput.Clear;
+end;
+
+procedure TfrmDashboard.DrinkWater(pAmount: Real);
+var
+  Goal : TGoal;
+begin
+  Goal := TGoal.Create(CurrentUser.UserID,'Water');
+  Goal.SaveProgress(pAmount);
+  Goal.Free;
+end;
 
 procedure TfrmDashboard.LogGoalProgress;
 var

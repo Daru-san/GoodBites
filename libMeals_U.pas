@@ -13,6 +13,7 @@ type
   TFoodItem = class(TObject)
   private
     FFoodname : String;
+    FCategory : String;
     FCaloriePer100G : real;
     FProteinPer100G : real;
     FCarbPer100G : real;
@@ -26,6 +27,7 @@ type
     constructor Create(pFoodname:string);
 
     property Foodname : String read FFoodname write FFoodname;
+    property Category : String read FCategory write FCategory;
     property CaloriePer100G : real read FCaloriePer100G write FCaloriePer100G;
     property ProteinPer100G : real read FProteinPer100G write FProteinPer100G;
     property CarbPer100G : real read FCarbPer100G write FCarbPer100G;
@@ -35,7 +37,7 @@ type
 
     function CheckExists : Boolean;
 
-    procedure AddFoodToDB(pFoodDesc:string = 'Lorem ipsum');
+    procedure AddFoodToDB;
     procedure AddNutrients(pCalories,pEnergy,pProtein,pCarb,pFat,pSugar:real);
     //function GetFoodname(sFoodname:string) : string;
   end;
@@ -89,6 +91,7 @@ begin
       if pFoodname = FieldValues['FoodName'] then
       begin
         isFoodFound := true;
+        Category := FieldValues['Category'];
         ProteinPer100G := FieldValues['ProteinPer100g'];
         CarbPer100G := FieldValues['CarbPer100g'];
         FatPer100G := FieldValues['FatPer100g'];
@@ -161,7 +164,7 @@ begin
     FieldValues['FatPer100g'] := FatPer100G;
     FieldValues['EnergyPer100G'] := EnergyPer100G;
     FieldValues['SugarPer100G'] := SugarPer100G;
-    FieldValues['Desc'] := pFoodDesc;
+    FieldValues['Category'] := Category;
     Post;
   end;
   LogService.WriteSysLog('Item ' + Foodname + ' has been added to the database');

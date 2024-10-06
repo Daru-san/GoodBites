@@ -105,7 +105,6 @@ type
     pnlGoalsOVTop: TPanel;
     pnlGoalsOVCenter: TPanel;
     redGoalsHelp: TRichEdit;
-    pnlMealHelp: TPanel;
 
     procedure FormShow(Sender: TObject);
     procedure btnLogOutClick(Sender: TObject);
@@ -649,6 +648,7 @@ begin
     exit;
   end;
   DrinkWater(rAmount);
+  GetProgressInfo;
   edtWaterInput.Clear;
 end;
 
@@ -733,6 +733,7 @@ var
   isFound : boolean;
   rProtein,rCarb,rFat,rCalories,rSugar,rEnergy: real;
   FoodItem : TFoodItem;
+  sCategory : String;
 begin
   isFound := false;
 
@@ -743,6 +744,7 @@ begin
     begin
       isFound := true;
       FoodItem := TFoodItem.Create(strFoods[i]);
+      sCategory := FoodItem.Category;
       rProtein := FoodItem.ProteinPer100G;
       rCarb := FoodItem.CarbPer100G;
       rFat := FoodItem.FatPer100G;
@@ -766,6 +768,7 @@ begin
     begin
       Add('Information on ' + pFoodname);
       Add('----------------------------------------------------');
+      Add('Category' + #9 + sCategory);
       Add('Calories per 100g:' + #9 + FloatToStrF(rCalories,ffFixed,8,2)+'kcal');
       Add('Energy per 100g: ' + #9 + FloatToStrF(rEnergy,ffFixed,8,2)+'kJ');
       Add('Proteins per 100g:' + #9 + FloatToStrF(rProtein,ffFixed,8,2)+'g');

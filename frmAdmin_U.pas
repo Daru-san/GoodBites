@@ -94,7 +94,6 @@ type
     FAdminUser : TUser;
 
     procedure ClearLogs;
-    procedure InitializeWidth(pDBGrid:TDBGrid);
 
     // sSearch is empty by default to prevent filtering when not requiered
     procedure ShowLogs(pSearch:string='');
@@ -109,6 +108,7 @@ var
   frmAdmin: TfrmAdmin;
   LogService : TLogService;
   FileUtils : TFileUtils;
+  ControlUtils : TControlUtils;
 
 implementation
 
@@ -196,7 +196,7 @@ end;
 
 procedure TfrmAdmin.btnLogoutClick(Sender: TObject);
 begin
-  frmAdmin.Close;
+  self.ModalResult := mrClose;
 end;
 
 procedure TfrmAdmin.btnUserNextClick(Sender: TObject);
@@ -234,7 +234,7 @@ end;
 
 procedure TfrmAdmin.tsFoodsShow(Sender: TObject);
 begin
-  InitializeWidth(dbgFoodsTable);
+  ControlUtils.ResizeDBGrid(dbgFoodsTable);
   LogService.WriteSysLog('The database table `tblFoods` was accessed by administrator ' + AdminUser.Username);
 end;
 
@@ -246,7 +246,7 @@ end;
 
 procedure TfrmAdmin.tsUsersShow(Sender: TObject);
 begin
-  InitializeWidth(dbgUsersTable);
+  ControlUtils.ResizeDBGrid(dbgUsersTable);
   LogService.WriteSysLog('The database table `tblUsers` was accessed by administrator ' + AdminUser.Username);
 end;
 
@@ -335,20 +335,12 @@ begin
     column.Width := width;
 end;
 
-procedure TfrmAdmin.InitializeWidth(pDBGrid:TDBGrid);
-var
-  i : integer;
-begin
-  pDBGrid.ReadOnly := true;
-  for i := 0 to pDBGrid.Columns.Count -1 do
-  pDBGrid.Columns[i].Width := 5+pDBGrid.Canvas.TextWidth(pDBGrid.Columns[i].Title.Caption);
-end;
-
 procedure TfrmAdmin.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   AdminUser.Free;
   FileUtils.Free;
   LogService.Free;
+  ControlUtils.Free;
 
   {Not closing tables creates an issue where the database will retain the `.ldb` file
     which indicates that the database is still in use even when the app has been closed,
@@ -364,6 +356,7 @@ procedure TfrmAdmin.FormShow(Sender: TObject);
 begin
   LogService := TLogService.Create;
   FileUtils := TFileUtils.Create;
+  ControlUtils := TControlUtils.Create;
   pageCtrl.TabIndex := 0;
   lblUser.Caption := 'Hello, ' + AdminUser.Username;
 

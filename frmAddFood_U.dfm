@@ -89,17 +89,13 @@ inherited frmAddFood: TfrmAddFood
     ReadOnly = True
     TabOrder = 7
   end
-  object actvLoad: TActivityIndicator
-    Left = 609
-    Top = 265
-  end
   object btnCustom: TButton
     Left = 200
     Top = 93
     Width = 75
     Height = 25
     Caption = 'Custom Item'
-    TabOrder = 9
+    TabOrder = 8
     OnClick = btnCustomClick
   end
   object edtQuery: TLabeledEdit
@@ -110,8 +106,9 @@ inherited frmAddFood: TfrmAddFood
     EditLabel.Width = 32
     EditLabel.Height = 15
     EditLabel.Caption = 'Query'
-    TabOrder = 10
+    TabOrder = 9
     Text = ''
     TextHint = 'Food name'
+    OnChange = edtQueryChange
   end
 end

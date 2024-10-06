@@ -22,37 +22,9 @@ object frmAdmin: TfrmAdmin
     Top = 0
     Width = 814
     Height = 538
-    ActivePage = tsHome
+    ActivePage = tsFoods
     Align = alClient
     TabOrder = 0
-    object tsHome: TTabSheet
-      Caption = 'Home'
-      ImageIndex = 3
-      object pnlHomeTop: TPanel
-        Left = 0
-        Top = 0
-        Width = 806
-        Height = 41
-        Align = alTop
-        Caption = 'Administrator Home'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -15
-        Font.Name = 'Segoe UI'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 0
-      end
-      object btnBackupDB: TButton
-        Left = 104
-        Top = 304
-        Width = 97
-        Height = 25
-        Caption = 'Backup Database'
-        TabOrder = 1
-        OnClick = btnBackupDBClick
-      end
-    end
     object tsUsers: TTabSheet
       Caption = 'Manage Users'
       OnShow = tsUsersShow
@@ -65,34 +37,15 @@ object frmAdmin: TfrmAdmin
         Caption = 'Manage Users'
         TabOrder = 0
       end
-      object pnlUsersCenter: TPanel
-        Left = 0
-        Top = 41
-        Width = 806
-        Height = 367
-        Align = alClient
-        TabOrder = 1
-        object dbgUsersTable: TDBGrid
-          Left = 1
-          Top = 1
-          Width = 804
-          Height = 365
-          Align = alClient
-          TabOrder = 0
-          TitleFont.Charset = DEFAULT_CHARSET
-          TitleFont.Color = clWindowText
-          TitleFont.Height = -12
-          TitleFont.Name = 'Segoe UI'
-          TitleFont.Style = []
-        end
-      end
       object pnlUsersBottom: TPanel
         Left = 0
         Top = 408
         Width = 806
         Height = 100
         Align = alBottom
-        TabOrder = 2
+        TabOrder = 1
+        ExplicitTop = 365
+        ExplicitWidth = 804
         object pnlUserNav: TPanel
           Left = 377
           Top = 1
@@ -100,6 +53,7 @@ object frmAdmin: TfrmAdmin
           Height = 98
           Align = alClient
           TabOrder = 0
+          ExplicitWidth = 426
           object lblUserRecordNav: TLabel
             Left = 1
             Top = 1
@@ -202,6 +156,30 @@ object frmAdmin: TfrmAdmin
             TabOrder = 3
             OnClick = btnUserFieldEditClick
           end
+        end
+      end
+      object pnlUsersCenter: TPanel
+        Left = 0
+        Top = 41
+        Width = 806
+        Height = 367
+        Align = alClient
+        TabOrder = 2
+        ExplicitTop = 0
+        ExplicitWidth = 804
+        ExplicitHeight = 365
+        object dbgUsersTable: TDBGrid
+          Left = 1
+          Top = 1
+          Width = 804
+          Height = 365
+          Align = alClient
+          TabOrder = 0
+          TitleFont.Charset = DEFAULT_CHARSET
+          TitleFont.Color = clWindowText
+          TitleFont.Height = -12
+          TitleFont.Name = 'Segoe UI'
+          TitleFont.Style = []
         end
       end
     end
@@ -437,7 +415,7 @@ object frmAdmin: TfrmAdmin
       end
     end
   end
-  object SplitView1: TSplitView
+  object svSidebar: TSplitView
     Left = 0
     Top = 0
     Width = 90
@@ -474,6 +452,15 @@ object frmAdmin: TfrmAdmin
       ModalResult = 2
       TabOrder = 0
       OnClick = btnLogoutClick
+    end
+    object btnBackupDB: TButton
+      Left = 7
+      Top = 462
+      Width = 81
+      Height = 25
+      Caption = 'Backup DB'
+      TabOrder = 1
+      OnClick = btnBackupDBClick
     end
   end
 end

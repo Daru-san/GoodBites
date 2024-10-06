@@ -9,7 +9,8 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils,System.StrUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids, Vcl.Samples.Spin, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.ComCtrls,
-  libUtils_U, libUser_U, conDB, Vcl.ToolWin,frmSettings_U, Vcl.WinXCtrls;
+  libUtils_U, libUser_U, conDB, Vcl.ToolWin,frmSettings_U, Vcl.WinXCtrls,
+  Vcl.NumberBox, Vcl.Mask, Vcl.WinXPanels;
 
 type
   TfrmAdmin = class(TForm)
@@ -34,10 +35,9 @@ type
     edtUserField: TEdit;
     edtUserFieldData: TEdit;
     btnUserFieldEdit: TButton;
-    tsHome: TTabSheet;
     tsFoods: TTabSheet;
     dbgFoodsTable: TDBGrid;
-    SplitView1: TSplitView;
+    svSidebar: TSplitView;
     pnlUserHead: TPanel;
     pnlUsersCenter: TPanel;
     pnlUsersBottom: TPanel;
@@ -60,7 +60,6 @@ type
     pnlLogsCenter: TPanel;
     pnlLogsBottom: TPanel;
     btnUnfilter: TButton;
-    pnlHomeTop: TPanel;
     btnBackupDB: TButton;
     dbgUsersTable: TDBGrid;
 
@@ -117,6 +116,7 @@ implementation
 procedure TfrmAdmin.btnBackupDBClick(Sender: TObject);
 begin
   dmData.BackUpDB;
+  ShowLogs;
 end;
 
 procedure TfrmAdmin.btnClearClick(Sender: TObject);

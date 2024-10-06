@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.WinXPanels, Vcl.ToolWin,
   Vcl.ComCtrls, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Samples.Spin,
   Vcl.Mask, Vcl.NumberBox,
-  libUser_U,libUtils_U, libGoals_U, Vcl.MPlayer;
+  libUser_U,libUtils_U, libGoals_U, Vcl.MPlayer, Vcl.OleCtrls, WMPLib_TLB;
 
 type
   TfrmWelcome = class(TForm)
@@ -29,7 +29,6 @@ type
     pnlDetails: TPanel;
     crdWelcome: TCard;
     crdGoals: TCard;
-    mpWelcome: TMediaPlayer;
     rgpActivity: TRadioGroup;
     pnlGoalsHead: TPanel;
     edtGoalCalories: TLabeledEdit;
@@ -46,6 +45,7 @@ type
     lblProteinTargetPerc: TLabel;
     lblTotalCalCalc: TLabel;
     lblWaterAdd: TLabel;
+    mpWelcomeVideo: TWindowsMediaPlayer;
     procedure FormShow(Sender: TObject);
     procedure btnContinueClick(Sender: TObject);
     procedure crdWelcomeEnter(Sender: TObject);
@@ -245,6 +245,8 @@ begin
   CurrentUser.CompleteSignUp;
   LogService.WriteUserLog('User ' + CurrentUser.Username + ' uid ' + CurrentUser.UserID + ' has completed the sign up course!');
   tbNavbar.Hide;
+  mpWelcomeVideo.URL := 'videos\tutor.mpv';
+  mpWelcomeVideo.controls.play;
 end;
 
 procedure TfrmWelcome.ViewGoalsCard;

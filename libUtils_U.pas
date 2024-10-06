@@ -12,17 +12,16 @@ type
   end;
 
   TControlUtils = Class(TObject)
-    public
-      procedure SetNumberBox(pNumberBox : TNumberBox;pMin,pMax : real);
-      procedure ResizeDBGrid(pDBGrid:TDBGrid);
-
-  End;
+  public
+    procedure SetNumberBox(pNumberBox : TNumberBox;pMin,pMax : real);
+    procedure ResizeDBGrid(pDBGrid:TDBGrid);
+  end;
 
   TStringUtils = Class(TObject)
-    public
+  public
     function ValidateString(S,StringName: string; minLength: Integer = 0;
      maxLength: Integer = 0; allowedChars : String = 'letters'): Boolean;
-  End;
+  end;
 
   TLogService = Class(TObject)
   private
@@ -31,7 +30,7 @@ type
     procedure WriteUserLog(pMessage:string);
     procedure WriteSysLog(pMessage:string);
     procedure WriteErrorLog(pMessage:string);
-  End;
+  end;
 
 implementation
 

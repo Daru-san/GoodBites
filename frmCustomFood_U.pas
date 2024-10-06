@@ -43,6 +43,9 @@ type
     { Private declarations }
     procedure ShowConfirmationCard;
     procedure CheckItemPresence;
+    procedure AddDescription;
+
+    function ValidateFood : Boolean;
   public
     { Public declarations }
   end;
@@ -61,22 +64,35 @@ implementation
 
 {$R *.dfm}
 
-procedure TfrmCustomFood.btnNextClick(Sender: TObject);
-var
-  i: Integer;
-  isNameValid : Boolean;
+function TfrmCustomFood.ValidateFood;
+var 
+  isNameValid,
+  isNutrientsValid,
+  isValid
+  : Boolean;
 begin
-  Foodname := edtFoodName.Text;
   isNameValid := StringUtils.ValidateString(Foodname,'foodname',3,20,'letters');
+  
+  isValid := isNameValid and isNutrientsValid;
 
-  if not isNameValid then
-  exit;
+  Result := isValid;
+end;
 
+procedure TfrmCustomFood.AddDescription;
+var i : Integer;
+begin
   FoodDesc := TStringList.Create;
   for i := 1 to redDesc.Lines.count do
   begin
     FoodDesc.Add(redDesc.Lines[i]);
   end;
+end;
+
+procedure TfrmCustomFood.btnNextClick(Sender: TObject);
+var
+  isValid : Boolean;
+begin
+  Foodname := edtFoodName.Text;
 
   Calories := nbxCalories.Value;
   Protein := nbxProtein.Value;
@@ -85,7 +101,13 @@ begin
   Fat := nbxFats.Value;
   Energy := Calories * 4.18;
 
-  ShowConfirmationCard;
+  isValid := ValidateFood;
+
+  if isValid then
+  begin
+    ShowConfirmationCard;
+    AddDescription;
+  end;
 end;
 
 procedure TfrmCustomFood.FormShow(Sender: TObject);
@@ -172,7 +194,7 @@ begin
   FoodItem.Free;
   ShowMessage('Item added to database successfully!');
   LogService.WriteSysLog('Food item ' + Foodname + ' was added to the database!');
-  Self.ModalResult := mrClose;
+  Self.ModalResult := mrYes;
 end;
 
 end.

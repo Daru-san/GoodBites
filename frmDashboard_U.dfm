@@ -326,8 +326,6 @@ object frmDashboard: TfrmDashboard
           Height = 219
           Align = alClient
           TabOrder = 0
-          ExplicitTop = 24
-          ExplicitHeight = 237
           object pnlEating: TPanel
             Left = 1
             Top = 1
@@ -336,7 +334,6 @@ object frmDashboard: TfrmDashboard
             Align = alClient
             BevelOuter = bvSpace
             TabOrder = 0
-            ExplicitHeight = 235
             object btnAddDB: TButton
               Left = 18
               Top = 160
@@ -402,7 +399,6 @@ object frmDashboard: TfrmDashboard
             Align = alRight
             BevelOuter = bvSpace
             TabOrder = 1
-            ExplicitHeight = 235
             object btnDrinking: TButton
               Left = 44
               Top = 136
@@ -468,8 +464,6 @@ object frmDashboard: TfrmDashboard
             Align = alRight
             BevelOuter = bvLowered
             TabOrder = 1
-            ExplicitLeft = 414
-            ExplicitTop = 5
           end
         end
         object pnlEatingHead: TPanel
@@ -486,9 +480,6 @@ object frmDashboard: TfrmDashboard
           Font.Style = [fsBold]
           ParentFont = False
           TabOrder = 2
-          ExplicitLeft = 336
-          ExplicitTop = 216
-          ExplicitWidth = 185
         end
       end
     end
@@ -525,9 +516,6 @@ object frmDashboard: TfrmDashboard
             Align = alTop
             Caption = 'Overview'
             TabOrder = 0
-            ExplicitLeft = 512
-            ExplicitTop = 256
-            ExplicitWidth = 185
           end
           object pnlGoalsOVCenter: TPanel
             Left = 0
@@ -536,10 +524,6 @@ object frmDashboard: TfrmDashboard
             Height = 386
             Align = alClient
             TabOrder = 1
-            ExplicitLeft = 336
-            ExplicitTop = 192
-            ExplicitWidth = 185
-            ExplicitHeight = 41
             object btnGoalCalories: TButton
               Left = 72
               Top = 120

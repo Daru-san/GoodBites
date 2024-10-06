@@ -14,7 +14,6 @@ type
     btnAccept: TButton;
     cbxBranded: TCheckBox;
     redItems: TRichEdit;
-    actvLoad: TActivityIndicator;
     btnCustom: TButton;
     edtQuery: TLabeledEdit;
     procedure HelpBtnClick(Sender: TObject);
@@ -63,11 +62,12 @@ procedure TfrmAddFood.btnAcceptClick(Sender: TObject);
 var
   iFoodIndex : integer;
   rCalories,rEnergy,rProtein,rCarbs,rFat,rSugar: real;
-  sFoodDesc : string;
+  sFoodDesc,sCategory : string;
 begin
   inherited;
   iFoodIndex := cbxItems.ItemIndex+1;
   sFoodDesc := arrFood[iFoodIndex];
+  sCategory := arrCategory[iFoodIndex];
   rCalories := arrCalories[iFoodIndex];
   rEnergy := arrEnergy[iFoodIndex];
   rProtein := arrProtein[iFoodIndex];
@@ -78,9 +78,10 @@ begin
 
   if MessageDlg('Are you sure you want to enter this food item?',mtConfirmation,mbYesNo,0) = mrYes then
   begin
-    FoodItem := TfoodItem.Create(Foodname);
+    FoodItem := TfoodItem.Create(sFoodDesc);
     FoodItem.AddNutrients(rCalories,rEnergy,rProtein,rCarbs,rFat,rSugar);
-    FoodItem.AddFoodToDB(sFoodDesc);
+    FoodItem.Category := sCategory;
+    FoodItem.AddFoodToDB;
     FoodItem.Free;
     ShowMessage(Foodname + ' has been added to the database!' + #13 + 'Happy eating!');
     OKBtn.ModalResult := mrYes;
@@ -121,11 +122,13 @@ begin
   sQuery := edtQuery.Text;
   Trim(sQuery);
 
-  actvLoad.StartAnimation;
   Screen.Cursor := crHourGlass;
   if StringUtils.ValidateString(sQuery,'foodname',1,20,'letters,numbers') then
   begin
     FetchAPI := TFetchAPI.Create;
+
+    redItems.Text := 'Searching for ' + sQuery + '...';
+
     try
       if cbxBranded.Checked then
       begin
@@ -151,6 +154,7 @@ begin
 
     if isFetched then
     begin
+      redItems.Text := 'Success!';
       Foodname := sQuery;
       cbxItems.Enabled := True;
       cbxItems.Items.clear;
@@ -159,11 +163,11 @@ begin
       btnAccept.Enabled := false;
 
       SortItems(JSONResponse,iResponseLength);
+      redItems.Text := 'Select an item from the items combo box';
     end; // end if fetched
   end // end if valid
   else
     ShowMessage('Food name must be between 1 to 20 characters and not have special characters');
-  actvLoad.StopAnimation;
   Screen.Cursor := crDefault;
 end;
 
@@ -201,6 +205,7 @@ begin
     with lines do
     begin
       Add('Data on ' + Foodname + #13);
+      Add('===========================');
       Add('Description' + #9 + sFoodDesc);
       Add('Category' + #9 + sFoodCat);
       Add('');
@@ -240,7 +245,13 @@ begin
   inherited;
   StringUtils := TStringUtils.Create;
   edtQuery.SetFocus;
-  redItems.Text := 'Food information goes here';
+
+  with redItems.Lines do
+  begin
+    Clear;
+    Add('Enter a food item and click the `query` button');
+    Add('Check `branded` if the food item is branded or not a basic food item');
+  end;
 end;
 
 procedure TfrmAddFood.SortItems(pJsonResponse: TStringStream; pResponseLength: Integer);

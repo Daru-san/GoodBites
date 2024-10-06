@@ -73,12 +73,12 @@ object frmCustomFood: TfrmCustomFood
           Height = 15
           Caption = 'Sugars(Sucrose)'
         end
-        object lblDetailsDesc: TLabel
+        object lblDetailsCat: TLabel
           Left = 472
           Top = 59
-          Width = 114
+          Width = 102
           Height = 15
-          Caption = 'Description(Optional)'
+          Caption = 'Category(Optional)'
         end
         object lblDetailsDescMax: TLabel
           Left = 600
@@ -143,7 +143,7 @@ object frmCustomFood: TfrmCustomFood
           TabOrder = 5
           OnClick = btnNextClick
         end
-        object redDesc: TRichEdit
+        object redCategory: TRichEdit
           Left = 472
           Top = 80
           Width = 201
@@ -154,7 +154,7 @@ object frmCustomFood: TfrmCustomFood
           Font.Name = 'Segoe UI'
           Font.Style = []
           Lines.Strings = (
-            'Description')
+            'Category')
           MaxLength = 100
           ParentFont = False
           PlainText = True
@@ -195,7 +195,6 @@ object frmCustomFood: TfrmCustomFood
       Caption = '2. Confirmation'
       CardIndex = 1
       TabOrder = 1
-      ExplicitHeight = 365
       object pnlConfirmTop: TPanel
         Left = 0
         Top = 0
@@ -212,7 +211,6 @@ object frmCustomFood: TfrmCustomFood
         Height = 353
         Align = alClient
         TabOrder = 1
-        ExplicitHeight = 324
         object redConfirmation: TRichEdit
           Left = 72
           Top = 24

@@ -16,7 +16,7 @@ type
     nbxCarbs: TNumberBox;
     nbxFats: TNumberBox;
     btnNext: TButton;
-    redDesc: TRichEdit;
+    redCategory: TRichEdit;
     lblCalories: TLabel;
     lblFats: TLabel;
     lblProteins: TLabel;
@@ -32,7 +32,7 @@ type
     btnConfirmationConfirm: TButton;
     nbxSugars: TNumberBox;
     lblSugars: TLabel;
-    lblDetailsDesc: TLabel;
+    lblDetailsCat: TLabel;
     lblDetailsDescMax: TLabel;
     procedure btnConfirmationConfirmClick(Sender: TObject);
     procedure btnNextClick(Sender: TObject);
@@ -43,7 +43,6 @@ type
     { Private declarations }
     procedure ShowConfirmationCard;
     procedure CheckItemPresence;
-    procedure AddDescription;
 
     function ValidateFood : Boolean;
   public
@@ -53,7 +52,7 @@ type
 var
   frmCustomFood: TfrmCustomFood;
   Foodname : String;
-  FoodDesc : TStringList;
+  Category : String;
   Calories, Protein, Carbs, Energy, Fat, Sugar : real;
   LogService : TLogService;
   StringUtils : TStringUtils;
@@ -78,15 +77,6 @@ begin
   Result := isValid;
 end;
 
-procedure TfrmCustomFood.AddDescription;
-var i : Integer;
-begin
-  FoodDesc := TStringList.Create;
-  for i := 1 to redDesc.Lines.count do
-  begin
-    FoodDesc.Add(redDesc.Lines[i]);
-  end;
-end;
 
 procedure TfrmCustomFood.btnNextClick(Sender: TObject);
 var
@@ -106,7 +96,7 @@ begin
   if isValid then
   begin
     ShowConfirmationCard;
-    AddDescription;
+    Category := redCategory.Text;
   end;
 end;
 
@@ -190,7 +180,8 @@ var
 begin
   FoodItem := TFoodItem.Create(Foodname);
   FoodItem.AddNutrients(Calories,Energy,Protein,Carbs,Fat,Sugar);
-  FoodItem.AddFoodToDB(FoodDesc.Text);
+  FoodItem.Category := Category;
+  FoodItem.AddFoodToDB;
   FoodItem.Free;
   ShowMessage('Item added to database successfully!');
   LogService.WriteSysLog('Food item ' + Foodname + ' was added to the database!');

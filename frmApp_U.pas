@@ -44,6 +44,7 @@ var
 begin
   Application.Initialize;
   Application.CreateForm(TfrmLogin,LoginForm);
+  Application.MainFormOnTaskBar := False;
   Self.Hide;
   try
     LoginForm.ShowModal;

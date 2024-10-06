@@ -49,8 +49,6 @@ object frmWelcome: TfrmWelcome
         Align = alTop
         Caption = 'Enter your info'
         TabOrder = 0
-        ExplicitLeft = -1
-        ExplicitTop = 5
       end
       object pnlDetails: TPanel
         Left = 0
@@ -157,15 +155,21 @@ object frmWelcome: TfrmWelcome
       CardIndex = 2
       TabOrder = 2
       OnEnter = crdWelcomeEnter
-      object mpWelcome: TMediaPlayer
-        Left = 360
-        Top = 296
-        Width = 141
-        Height = 30
-        VisibleButtons = [btPlay, btPause, btStop, btPrev, btStep]
-        DoubleBuffered = True
-        ParentDoubleBuffered = False
+      object mpWelcomeVideo: TWindowsMediaPlayer
+        Left = 0
+        Top = 0
+        Width = 832
+        Height = 361
+        Align = alClient
         TabOrder = 0
+        ExplicitTop = 5
+        ControlData = {
+          000300000800000000000500000000000000F03F030000000000050000000000
+          0000000008000200000000000300010000000B00FFFF0300000000000B00FFFF
+          08000200000000000300320000000B00000008000A000000660075006C006C00
+          00000B0000000B0000000B00FFFF0B00FFFF0B00000008000200000000000800
+          020000000000080002000000000008000200000000000B000000FD5500004F25
+          0000}
       end
     end
     object crdGoals: TCard
@@ -190,9 +194,6 @@ object frmWelcome: TfrmWelcome
         Font.Style = [fsBold]
         ParentFont = False
         TabOrder = 0
-        ExplicitLeft = 304
-        ExplicitTop = 168
-        ExplicitWidth = 185
       end
       object crplGoals: TCardPanel
         Left = 0
@@ -204,10 +205,6 @@ object frmWelcome: TfrmWelcome
         BevelOuter = bvNone
         Caption = 'Goals'
         TabOrder = 1
-        ExplicitLeft = 392
-        ExplicitTop = 200
-        ExplicitWidth = 300
-        ExplicitHeight = 200
         object crdGoalsOverview: TCard
           Left = 0
           Top = 0
@@ -216,8 +213,6 @@ object frmWelcome: TfrmWelcome
           Caption = '1. Overview'
           CardIndex = 0
           TabOrder = 0
-          ExplicitWidth = 185
-          ExplicitHeight = 41
           object pnlGoalOVCenter: TPanel
             Left = 0
             Top = 41
@@ -225,8 +220,6 @@ object frmWelcome: TfrmWelcome
             Height = 279
             Align = alClient
             TabOrder = 0
-            ExplicitLeft = -1
-            ExplicitTop = 36
             object lblCarbTargetPerc: TLabel
               Left = 255
               Top = 109
@@ -341,9 +334,6 @@ object frmWelcome: TfrmWelcome
             Font.Style = [fsItalic]
             ParentFont = False
             TabOrder = 1
-            ExplicitLeft = -1
-            ExplicitTop = 5
-            ExplicitWidth = 830
           end
         end
       end

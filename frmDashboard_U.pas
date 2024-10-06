@@ -142,21 +142,26 @@ type
   private
     { Private declarations }
     FCurrentUser : TUser;
-    procedure PopulateFoods;
-    procedure GetInfo;
-    procedure PopulateMealType;
-    procedure SetProgressBar(pItem : String; pValue, pTarget : Real);
+
+    // crdProgress
+    procedure GetProgressInfo;
     procedure ShowProgress(pRecDate:TDate);
+    procedure SetProgressBar(pItem : String; pValue, pTarget : Real);
+    procedure ShowMealLog(pDate :TDate);
+    procedure ShowMealInfo;
+
+    // crdEating
+    procedure PopulateFoods;
+    procedure PopulateMealType;
+    procedure DisplayFoodInfo(pFoodname : String);
+    procedure DisplayWaterInfo;
+    procedure LogEatenFood;
+    procedure LogGoalProgress(pMeal : TMeal);
+
+    // crdGoals
     procedure ShowGoalOverview;
     procedure FillGoalEditBox(pGoalItem : String;pTarget:Real);
-    procedure DisplayWaterInfo;
-    procedure DisplayFoodInfo(pFoodname : String);
-    procedure LogGoalProgress(pMeal : TMeal);
-    procedure LogEatenFood;
-    procedure ShowMealInfo;
-    procedure ShowMealLog(pDate :TDate);
     procedure PopulateGoalUnits(pGoalItem:string);
-
     procedure ShowGoalInfo(pGoalItem : string);
     procedure ResetGoalInfo;
   public
@@ -166,7 +171,7 @@ type
 
 var
   frmDashboard: TfrmDashboard;
-  foodList : TStringList;
+  strFoods : TStringList;
   FoodCount : integer;
 
 implementation
@@ -176,7 +181,7 @@ implementation
 { Progress panel}
 {$REGION PROGRESS}
 
-procedure TfrmDashboard.GetInfo;
+procedure TfrmDashboard.GetProgressInfo;
 var
   dDate : TDate;
 begin
@@ -304,7 +309,7 @@ end;
 
 procedure TfrmDashboard.btnResetClick(Sender: TObject);
 begin
-  GetInfo;
+  GetProgressInfo;
 end;
 
 procedure TfrmDashboard.ShowMealInfo;
@@ -396,7 +401,7 @@ begin
     sbtnPrev.Enabled := false
   else 
     sbtnPrev.Enabled := true;
-  GetInfo;
+  GetProgressInfo;
 end;
 
 procedure TfrmDashboard.edtWaterInputChange(Sender: TObject);
@@ -410,7 +415,7 @@ var
  i : Integer;
 begin
  i := 0;
- foodList := TStringList.Create;
+ strFoods := TStringList.Create;
  cbxFoods.Items.Clear;
  with dmData.tblFoods do
  begin
@@ -423,7 +428,7 @@ begin
       if not ((currentMeal = '') or (currentMeal = 'Default')) then
       begin
         inc(i);
-        foodList.Add(currentMeal);
+        strFoods.Add(currentMeal);
         cbxFoods.Items.Add(currentMeal);
       end;
       Next;
@@ -439,14 +444,14 @@ begin
   if dpcDay.Date < Date then
     dpcDay.Date := dpcDay.Date+1;
   dpcDayChange(self);
-  GetInfo;
+  GetProgressInfo;
 end;
 
 procedure TfrmDashboard.sbtnPrevClick(Sender: TObject);
 begin
   dpcDay.Date := dpcDay.Date-1;
   dpcDayChange(self);
-  GetInfo;
+  GetProgressInfo;
 end;
 {$ENDREGION}
 
@@ -563,7 +568,6 @@ begin
   edtWaterInput.Clear;
 end;
 
-
 procedure TfrmDashboard.crdEatingEnter(Sender: TObject);
 begin
   edtWaterInput.Color := clDefault;
@@ -640,7 +644,7 @@ begin
 
       LogGoalProgress(Meal);
 
-      GetInfo;
+      GetProgressInfo;
     end else
     ShowMessage('The item ' +  FoodItem.Foodname + ' does not exist in the database');
 
@@ -648,6 +652,7 @@ begin
    FoodItem.Free;
   end;
 end;
+
 
 procedure TfrmDashboard.LogGoalProgress;
 var
@@ -727,10 +732,10 @@ begin
   { Loop through the food list until either i is at the food count or the food is found }
   i := 0;
   repeat
-    if UpperCase(pFoodname) = UpperCase(foodList[i]) then
+    if UpperCase(pFoodname) = UpperCase(strFoods[i]) then
     begin
       isFound := true;
-      FoodItem := TFoodItem.Create(foodList[i]);
+      FoodItem := TFoodItem.Create(strFoods[i]);
       rProtein := FoodItem.ProteinPer100G;
       rCarb := FoodItem.CarbPer100G;
       rFat := FoodItem.FatPer100G;
@@ -835,7 +840,7 @@ begin
   dpcDay.MinDate := CurrentUser.GetRegisterDate;
   dpcDayChange(nil);
 
-  GetInfo;
+  GetProgressInfo;
 
   crplDashboard.ActiveCard := crdProgress;
 
@@ -1009,7 +1014,7 @@ begin
     ShowMessage('Goal changed successfully!');
 
     ShowGoalInfo(sGoalItem);
-    GetInfo;
+    GetProgressInfo;
   end;
 end;
 

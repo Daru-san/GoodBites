@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{7F491604-C31A-4DE4-A370-73113905E956}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="GoodBites.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="VideoPlayer.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="GoodBites">
+        <MSBuild Projects="GoodBites.dproj"/>
+    </Target>
+    <Target Name="GoodBites:Clean">
+        <MSBuild Projects="GoodBites.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="GoodBites:Make">
+        <MSBuild Projects="GoodBites.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="VideoPlayer">
+        <MSBuild Projects="VideoPlayer.dproj"/>
+    </Target>
+    <Target Name="VideoPlayer:Clean">
+        <MSBuild Projects="VideoPlayer.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="VideoPlayer:Make">
+        <MSBuild Projects="VideoPlayer.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="GoodBites;VideoPlayer"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="GoodBites:Clean;VideoPlayer:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="GoodBites:Make;VideoPlayer:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

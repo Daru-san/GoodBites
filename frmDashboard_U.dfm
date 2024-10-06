@@ -442,7 +442,7 @@ object frmDashboard: TfrmDashboard
           object redFoodInfo: TRichEdit
             Left = 1
             Top = 1
-            Width = 407
+            Width = 849
             Height = 206
             Align = alClient
             Font.Charset = ANSI_CHARSET
@@ -455,15 +455,7 @@ object frmDashboard: TfrmDashboard
             ParentFont = False
             ReadOnly = True
             TabOrder = 0
-          end
-          object pnlMealHelp: TPanel
-            Left = 408
-            Top = 1
-            Width = 442
-            Height = 206
-            Align = alRight
-            BevelOuter = bvLowered
-            TabOrder = 1
+            ExplicitWidth = 407
           end
         end
         object pnlEatingHead: TPanel

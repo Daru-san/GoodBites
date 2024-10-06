@@ -25,8 +25,6 @@ object frmAdmin: TfrmAdmin
     ActivePage = tsHome
     Align = alClient
     TabOrder = 0
-    ExplicitLeft = 81
-    ExplicitWidth = 826
     object tsHome: TTabSheet
       Caption = 'Home'
       ImageIndex = 3
@@ -44,9 +42,6 @@ object frmAdmin: TfrmAdmin
         Font.Style = []
         ParentFont = False
         TabOrder = 0
-        ExplicitLeft = 208
-        ExplicitTop = 176
-        ExplicitWidth = 185
       end
       object btnBackupDB: TButton
         Left = 104
@@ -69,9 +64,6 @@ object frmAdmin: TfrmAdmin
         Align = alTop
         Caption = 'Manage Users'
         TabOrder = 0
-        ExplicitLeft = 320
-        ExplicitTop = 232
-        ExplicitWidth = 185
       end
       object pnlUsersCenter: TPanel
         Left = 0
@@ -80,8 +72,6 @@ object frmAdmin: TfrmAdmin
         Height = 367
         Align = alClient
         TabOrder = 1
-        ExplicitWidth = 818
-        ExplicitHeight = 426
         object dbgUsersTable: TDBGrid
           Left = 1
           Top = 1
@@ -103,7 +93,6 @@ object frmAdmin: TfrmAdmin
         Height = 100
         Align = alBottom
         TabOrder = 2
-        ExplicitWidth = 818
         object pnlUserNav: TPanel
           Left = 377
           Top = 1
@@ -111,10 +100,6 @@ object frmAdmin: TfrmAdmin
           Height = 98
           Align = alClient
           TabOrder = 0
-          ExplicitLeft = 369
-          ExplicitTop = -34
-          ExplicitWidth = 433
-          ExplicitHeight = 75
           object lblUserRecordNav: TLabel
             Left = 1
             Top = 1
@@ -178,8 +163,7 @@ object frmAdmin: TfrmAdmin
             Align = alTop
             Alignment = taCenter
             Caption = 'Record Modification'
-            ExplicitLeft = 0
-            ExplicitWidth = 359
+            ExplicitWidth = 108
           end
           object btnUserDelete: TButton
             Left = 232
@@ -233,7 +217,6 @@ object frmAdmin: TfrmAdmin
         Align = alTop
         Caption = 'View Logs'
         TabOrder = 0
-        ExplicitWidth = 899
       end
       object pnlLogsCenter: TPanel
         Left = 0
@@ -242,10 +225,6 @@ object frmAdmin: TfrmAdmin
         Height = 383
         Align = alClient
         TabOrder = 1
-        ExplicitLeft = 312
-        ExplicitTop = 232
-        ExplicitWidth = 185
-        ExplicitHeight = 41
         object memLogs: TMemo
           Left = 1
           Top = 1
@@ -257,10 +236,6 @@ object frmAdmin: TfrmAdmin
           ReadOnly = True
           ScrollBars = ssVertical
           TabOrder = 0
-          ExplicitLeft = -43
-          ExplicitTop = 47
-          ExplicitWidth = 849
-          ExplicitHeight = 305
         end
       end
       object pnlLogsBottom: TPanel
@@ -319,9 +294,6 @@ object frmAdmin: TfrmAdmin
         Align = alTop
         Caption = 'Food Management'
         TabOrder = 0
-        ExplicitLeft = 168
-        ExplicitTop = 24
-        ExplicitWidth = 185
       end
       object pnlFoodCenter: TPanel
         Left = 0
@@ -330,8 +302,6 @@ object frmAdmin: TfrmAdmin
         Height = 375
         Align = alClient
         TabOrder = 1
-        ExplicitWidth = 818
-        ExplicitHeight = 295
         object dbgFoodsTable: TDBGrid
           Left = 1
           Top = 1
@@ -354,7 +324,6 @@ object frmAdmin: TfrmAdmin
         Height = 92
         Align = alBottom
         TabOrder = 2
-        ExplicitWidth = 818
         object pnlFoodRecordMod: TPanel
           Left = 1
           Top = 1
@@ -362,8 +331,6 @@ object frmAdmin: TfrmAdmin
           Height = 90
           Align = alLeft
           TabOrder = 0
-          ExplicitLeft = 9
-          ExplicitTop = 2
           object lblFoodRecordMod: TLabel
             Left = 1
             Top = 1
@@ -419,9 +386,6 @@ object frmAdmin: TfrmAdmin
           Height = 90
           Align = alClient
           TabOrder = 1
-          ExplicitLeft = 378
-          ExplicitTop = 2
-          ExplicitWidth = 440
           object lblFoodRecordNav: TLabel
             Left = 1
             Top = 1

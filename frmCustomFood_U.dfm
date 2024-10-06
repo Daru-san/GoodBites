@@ -23,8 +23,6 @@ object frmCustomFood: TfrmCustomFood
     ActiveCard = crdDetails
     Caption = 'Custom Food'
     TabOrder = 0
-    ExplicitTop = 29
-    ExplicitHeight = 367
     object crdDetails: TCard
       Left = 1
       Top = 1
@@ -33,7 +31,6 @@ object frmCustomFood: TfrmCustomFood
       Caption = '1. Food Details'
       CardIndex = 0
       TabOrder = 0
-      ExplicitHeight = 365
       object pnlDetailsCenter: TPanel
         Left = 0
         Top = 41
@@ -41,7 +38,6 @@ object frmCustomFood: TfrmCustomFood
         Height = 353
         Align = alClient
         TabOrder = 0
-        ExplicitHeight = 324
         object lblCalories: TLabel
           Left = 288
           Top = 59

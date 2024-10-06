@@ -36,7 +36,7 @@ type
 implementation
 
 //Control utilities
-
+{$REGION CONTROL}
 procedure TControlUtils.SetNumberBox(pNumberBox: TNumberBox; pMin: Real; pMax: Real);
 begin
   with pNumberBox do
@@ -57,7 +57,10 @@ begin
   for i := 0 to pDBGrid.Columns.Count -1 do
   pDBGrid.Columns[i].Width := 5+pDBGrid.Canvas.TextWidth(pDBGrid.Columns[i].Title.Caption);
 end;
+{$ENDREGION}
+
 // String utilities
+{$REGION STRINGS}
 function TStringUtils.ValidateString(S,StringName: string; minLength: Integer = 0;
      maxLength: Integer = 0; allowedChars : String = 'letters'): Boolean;
 const
@@ -120,9 +123,10 @@ begin
   //Result := isPresent and isLong and isValid;
   Result := true;
 end;
-
+{$ENDREGION}
 
 // File utilities
+{$REGION FILES}
 function TFileUtils.CheckFileExists(pFilename: string): Boolean;
 var
   sLogMsg : string;
@@ -147,9 +151,10 @@ begin
   isExisting := FileExists(LOGFILE);
   Result := isExisting;
 end;
+{$ENDREGION}
 
 // System logging
-
+{$REGION LOGGING}
 procedure TLogService.WriteUserLog;
 var
   sLogMsg : string;
@@ -196,4 +201,5 @@ begin
     CloseFile(tfLogs);
   end;
 end;
+{$ENDREGION}
 end.

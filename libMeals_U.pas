@@ -45,7 +45,6 @@ type
       FFood : String;
       FTotalCalories : real;
       FTotalEnergy : real;
-      FNumServings : Integer;
       FMealType : String;
       FPortion : Real;
       FFoodItem : TFoodItem;
@@ -56,7 +55,6 @@ type
 
       property TotalCalories : real read FTotalCalories write FTotalCalories;
       property TotalEnergy : real read FTotalEnergy write FTotalEnergy;
-      property NumServings : Integer read FNumServings write FNumServings;
       property MealType : string read FMealType write FMealType;
       property FoodItem : TFoodItem read FFoodItem write FFoodItem;
       property PortionSize : Real read FPortion write FPortion;

@@ -90,16 +90,22 @@ end;
 procedure TfrmAddFood.btnCustomClick(Sender: TObject);
 var
   CustomFoods : TfrmCustomFood;
+  isAdded : Boolean;
 begin
   inherited;
   CustomFoods := TfrmCustomFood.Create(nil);
   try
     Self.Hide;
     CustomFoods.ShowModal;
+    isAdded := CustomFoods.ModalResult = mrYes;
   finally
     CustomFoods.Free;
-    self.Show;
   end;
+
+  if isAdded then
+    self.ModalResult := mrYes
+  else
+    self.Show;
 end;
 
 procedure TfrmAddFood.btnQueryClick(Sender: TObject);

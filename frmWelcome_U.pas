@@ -84,6 +84,7 @@ var
   frmWelcome: TfrmWelcome;
   isConfirmed : Boolean;
   FileUtils : TFileUtils;
+  LogService : TLogService;
 
   arrTargets : array[1..5] of real;
 
@@ -96,6 +97,8 @@ implementation
 {$REGION FORM CONTROLS}
 procedure TfrmWelcome.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
+  FileUtils.Free;
+  LogService.Free;
   self.ModalResult := mrClose;
 end;
 
@@ -109,6 +112,7 @@ begin
   );
   btnBack.Enabled := false;
   FileUtils := TFileUtils.Create;
+  LogService := TLogService.Create;
 end;
 
 procedure TfrmWelcome.nbxHeightChange(Sender: TObject);
@@ -239,6 +243,7 @@ procedure TfrmWelcome.ViewWelcomeCard;
 begin
   crplWelcome.ActiveCard := crdWelcome;
   CurrentUser.CompleteSignUp;
+  LogService.WriteUserLog('User ' + CurrentUser.Username + ' uid ' + CurrentUser.UserID + ' has completed the sign up course!');
   tbNavbar.Hide;
 end;
 

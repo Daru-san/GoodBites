@@ -23,11 +23,8 @@ type
     procedure timeBackupTimer(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
   private
-    { Private declarations }
     procedure ConnectDB;
     procedure LocateDatabase;
-  public
-    { Public declarations }
   end;
 // DL refers to the name of the database file when in use
 const DBFILENAME = 'dbBites.mdb'; DLFILENAME = 'dbBites.ldb';
@@ -96,6 +93,7 @@ begin
 
   if isDeleted then
     CopyFile(pChar(dbPath),pChar(dbPath+'.backup'),isFailed);
+
   if isFailed then
     LogService.WriteErrorLog('Error backing up the database')
   else
@@ -144,16 +142,15 @@ begin
   LogService := TLogService.Create;
 
   LocateDatabase;
-  BackUpDB;
   if DatabaseExists then
   begin
     ConnectDB;
-    {    ShowMessage('A');
+    BackUpDB;
+
     // Nice to keep the database backup up often, every 5 minutes, unless the `.ldb` file exists, which would mean the database is still in use
-    timeBackup.Enabled := true;
-    ShowMessage('b');
-    timeBackup.Interval := 5*60;
-    ShowMessage('c');}
+    timeBackup.Interval := 300;
+    timeBackup.Enabled := False;
+    timeBackup.OnTimer := timeBackupTimer;
   end;
 end;
 

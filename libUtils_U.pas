@@ -2,7 +2,7 @@ unit libUtils_U;
 
 interface
 
-uses System.SysUtils,System.Classes,VCL.StdCtrls,Dialogs,vcl.NumberBox;
+uses System.SysUtils,System.Classes,VCL.StdCtrls,Dialogs,vcl.NumberBox,vcl.DBGrids;
 
 type
   TFileUtils = Class(TObject)
@@ -14,6 +14,7 @@ type
   TControlUtils = Class(TObject)
     public
       procedure SetNumberBox(pNumberBox : TNumberBox;pMin,pMax : real);
+      procedure ResizeDBGrid(pDBGrid:TDBGrid);
 
   End;
 
@@ -48,6 +49,14 @@ begin
   end;
 end;
 
+procedure TControlUtils.ResizeDBGrid(pDBGrid:TDBGrid);
+var
+  i : integer;
+begin
+  pDBGrid.ReadOnly := true;
+  for i := 0 to pDBGrid.Columns.Count -1 do
+  pDBGrid.Columns[i].Width := 5+pDBGrid.Canvas.TextWidth(pDBGrid.Columns[i].Title.Caption);
+end;
 // String utilities
 function TStringUtils.ValidateString(S,StringName: string; minLength: Integer = 0;
      maxLength: Integer = 0; allowedChars : String = 'letters'): Boolean;

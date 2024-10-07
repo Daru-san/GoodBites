@@ -1,4 +1,8 @@
 unit conDB;
+// The database connection
+// Main purpose is to fascilitate the connection
+// of the database and back up the database on every run
+// of the program
 
 interface
 
@@ -26,17 +30,24 @@ type
     procedure ConnectDB;
     procedure LocateDatabase;
   end;
+
 // DL refers to the name of the database file when in use
 const DBFILENAME = 'dbBites.mdb'; DLFILENAME = 'dbBites.ldb';
 var
   dmData: TdmData;
+
+  //Paths are stored in variables to allow
+  //selective searching for the database file
   dbPath,dlPath : String;
+
+
   LogService : TLogService;
   FileUtils : TFileUtils;
   DatabaseExists : Boolean;
 
 implementation
 
+// Connect the database and its tables
 procedure TdmData.ConnectDB;
 begin
   dbConnect := TADOConnection.Create(self);
@@ -70,6 +81,12 @@ begin
   tblProgress.TableName := 'tblProgress';
   tblProgress.Connection := dbConnect;
 
+  // When connecting the database each table is enabled
+  // but they are not opened
+  // Each table is only opened when it is needed in a particular
+  // part of the application, this prevents write the creation of
+  // the `.ldb` file which remains if the program crashes for one
+  // reason or another
   tblFoods.Active := True;
   tblMeals.Active := true;
   tblUsers.Active := true;
@@ -105,14 +122,14 @@ end;
 {$R *.dfm}
 
 procedure TdmData.LocateDatabase;
-var 
+var
   isExist,isDebugExist : Boolean;
   isInCurrentDir,isInUpperDir : Boolean;
 begin
-  {
-    A series of checks ensuring that the database file exists
-    and stopping the app in the instance that it does not exist
-  }
+  // The database path is often two directories
+  // higher than the path of the program, so I
+  // need to check for the location of the database
+  // to ensure we use the correct files
   isInCurrentDir := FileExists(DBFILENAME);
   isInUpperDir := FileExists('..\..\'+DBFILENAME);
 
@@ -128,8 +145,9 @@ begin
     dlPath := '..\..\'+DLFILENAME;
   end;
 
+  // The database file should be in either directory, if not, we write a log
+  // to show that it has not been found.
   DatabaseExists := isInCurrentDir or isInUpperDir;
-
   if not DatabaseExists then
   begin
     LogService.WriteErrorLog('The database file is missing');
@@ -141,13 +159,20 @@ begin
   FileUtils := TFileUtils.Create;
   LogService := TLogService.Create;
 
+  // Locate the database file
   LocateDatabase;
+
   if DatabaseExists then
   begin
     ConnectDB;
+
+    // Back up the database on every run, nice to prevent
+    // potential data corruption
     BackUpDB;
 
     // Nice to keep the database backup up often, every 5 minutes, unless the `.ldb` file exists, which would mean the database is still in use
+    // It should backup the database every 5 minutes, but the timer logic causes it to back up the database every second for five minutes
+    // Hence this is disabled for the time being
     timeBackup.Interval := 300;
     timeBackup.Enabled := False;
     timeBackup.OnTimer := timeBackupTimer;

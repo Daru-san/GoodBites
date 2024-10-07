@@ -215,8 +215,39 @@ begin
 end;
 
 procedure TfrmAdmin.btnUserDeleteClick(Sender: TObject);
+var
+  sUsername,sUserID : String;
+  RemovedUser : TUser;
+  slsDeleteMessage : TStringList;
 begin
-  AdminUser.RemoveUser(dmData.tblUsers.FieldValues['UserID']);
+  sUsername := dmData.tblUsers.FieldValues['Username'];
+  sUserID := dmData.tblUsers.FieldValues['UserID'];
+
+  with slsDeleteMessage do
+  begin
+    Create;
+    Add('Are you sure you would like to delete user ' + sUsername + ' uid ' + sUserID);
+    Add('Once they have been deleted their data cannot be recovered');
+    Add('Please ensure that you are completely sure about this');
+  end;
+
+  if MessageDlg(slsDeleteMessage.Text,mtConfirmation,mbYesNo,0) = mrYes then
+  begin
+    RemovedUser := TUser.Create(sUsername);
+    try
+      RemovedUser.DeleteUser(sUserID);
+    finally
+      RemovedUser.Free;
+      LogService.WriteSysLog(
+        'Administrator ' + AdminUser.Username + ' uid ' + AdminUser.UserID
+        + ' has deleted user ' + sUsername + ' uid ' + sUserID
+      );
+    end;
+  end;
+
+  // Reopen the users table and resize the db grid
+  dmData.tblUsers.Open;
+  ControlUtils.ResizeDBGrid(dbgUsersTable);
 end;
 
 procedure TfrmAdmin.tbtUserClick(Sender: TObject);

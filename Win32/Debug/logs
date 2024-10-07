@@ -83,3 +83,98 @@
 06/10/2024@20:47:01: [SYSTEM] The database table `tblFoods` was accessed by administrator Daru
 06/10/2024@20:47:19: [USER] User Daru uid DA8910 logged in.
 06/10/2024@20:48:29: [SYSTEM] Item Blackeye pea, dry has been added to the database
+07/10/2024@06:50:39: [SYSTEM] Database backup successful!
+07/10/2024@16:04:20: [SYSTEM] Database backup successful!
+07/10/2024@16:04:29: [USER] Administrator Daru uid DA8910 logged in.
+07/10/2024@16:04:29: [SYSTEM] The database table `tblFoods` was accessed by administrator Daru
+07/10/2024@16:04:29: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+07/10/2024@16:04:37: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+07/10/2024@16:04:39: [SYSTEM] The database table `tblFoods` was accessed by administrator Daru
+07/10/2024@16:04:41: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+07/10/2024@16:06:03: [SYSTEM] Database backup successful!
+07/10/2024@16:06:25: [SYSTEM] Database backup successful!
+07/10/2024@16:06:31: [USER] Administrator Daru uid DA8910 logged in.
+07/10/2024@16:06:31: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+07/10/2024@16:06:32: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+07/10/2024@16:06:34: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+07/10/2024@16:07:20: [SYSTEM] Database backup successful!
+07/10/2024@16:07:30: [USER] Administrator Daru uid DA8910 logged in.
+07/10/2024@16:07:30: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+07/10/2024@16:07:31: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+07/10/2024@16:07:49: [SYSTEM] The database table `tblFoods` was accessed by administrator Daru
+07/10/2024@16:19:54: [SYSTEM] Database backup successful!
+07/10/2024@16:20:02: [USER] User Daru uid DA8910 logged in.
+07/10/2024@16:26:57: [SYSTEM] Database backup successful!
+07/10/2024@16:27:03: [USER] User Daru uid DA8910 logged in.
+07/10/2024@16:43:21: [SYSTEM] Database backup successful!
+07/10/2024@16:43:33: [USER] User Daru uid DA8910 logged in.
+07/10/2024@16:57:27: [SYSTEM] Database backup successful!
+07/10/2024@16:58:30: [USER] User Miniatu has been saved in the PASSWORDS file
+07/10/2024@16:58:30: [USER] The user Miniatu, uid MI3610 has registered successfully
+07/10/2024@17:59:18: [SYSTEM] Database backup successful!
+07/10/2024@17:59:27: [USER] User Daru uid DA8910 logged in.
+07/10/2024@17:59:41: [USER] Administrator Daru uid DA8910 logged in.
+07/10/2024@17:59:41: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+07/10/2024@17:59:41: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+07/10/2024@17:59:45: [SYSTEM] The database table `tblFoods` was accessed by administrator Daru
+07/10/2024@17:59:47: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+07/10/2024@18:00:49: [SYSTEM] Database backup successful!
+07/10/2024@18:03:21: [SYSTEM] Database backup successful!
+07/10/2024@18:04:41: [SYSTEM] Database backup successful!
+07/10/2024@18:06:32: [SYSTEM] Database backup successful!
+07/10/2024@18:07:13: [USER] User Zanark has been saved in the PASSWORDS file
+07/10/2024@18:07:13: [USER] The user Zanark, uid ZA8810 has registered successfully
+07/10/2024@18:07:14: [USER] User Zanark uid ZA8810 logged in.
+07/10/2024@18:08:21: [SYSTEM] Database backup successful!
+07/10/2024@18:08:30: [USER] User Daru uid DA8910 logged in.
+07/10/2024@18:08:40: [USER] Administrator Daru uid DA8910 logged in.
+07/10/2024@18:08:40: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+07/10/2024@18:08:40: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+07/10/2024@18:08:45: [SYSTEM] The database table `tblFoods` was accessed by administrator Daru
+07/10/2024@18:14:33: [SYSTEM] Database backup successful!
+07/10/2024@18:14:41: [USER] User Zanark uid ZA8810 logged in.
+07/10/2024@18:15:33: [SYSTEM] Database backup successful!
+07/10/2024@18:16:18: [SYSTEM] Database backup successful!
+07/10/2024@18:16:25: [USER] User Daru uid DA8910 logged in.
+07/10/2024@18:16:36: [USER] Administrator Daru uid DA8910 logged in.
+07/10/2024@18:16:36: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+07/10/2024@18:16:36: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+07/10/2024@18:16:55: [SYSTEM] The database table `tblFoods` was accessed by administrator Daru
+07/10/2024@18:16:57: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+07/10/2024@18:26:34: [SYSTEM] Database backup successful!
+07/10/2024@18:26:45: [USER] User Zanark uid ZA8810 logged in.
+07/10/2024@18:28:39: [SYSTEM] Database backup successful!
+07/10/2024@18:28:52: [USER] User Zanark uid ZA8810 logged in.
+07/10/2024@18:30:18: [USER] User Zanark uid ZA8810 has completed the sign up course!
+07/10/2024@18:30:32: [USER] User Zanark uid ZA8810 logged in.
+07/10/2024@18:42:04: [SYSTEM] Database backup successful!
+07/10/2024@18:42:11: [USER] Administrator Daru uid DA8910 logged in.
+07/10/2024@18:42:11: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+07/10/2024@18:42:11: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+07/10/2024@18:43:04: [SYSTEM] Database backup successful!
+07/10/2024@18:44:11: [USER] Administrator Daru uid DA8910 logged in.
+07/10/2024@18:44:11: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+07/10/2024@18:44:12: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+07/10/2024@18:44:16: [SYSTEM] Entry for user Zanark was removed from the passwords file
+07/10/2024@18:46:47: [SYSTEM] Database backup successful!
+07/10/2024@18:47:30: [SYSTEM] Database backup successful!
+07/10/2024@18:47:36: [USER] Administrator Daru uid DA8910 logged in.
+07/10/2024@18:47:36: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+07/10/2024@18:47:37: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+07/10/2024@18:47:39: [SYSTEM] Entry for user Zanark was removed from the passwords file
+07/10/2024@18:47:45: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+07/10/2024@18:50:23: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+07/10/2024@18:55:14: [SYSTEM] Database backup successful!
+07/10/2024@18:56:09: [USER] Administrator Daru uid DA8910 logged in.
+07/10/2024@18:56:09: [SYSTEM] The database table `tblFoods` was accessed by administrator Daru
+07/10/2024@18:56:09: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+07/10/2024@18:56:09: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+07/10/2024@18:56:19: [SYSTEM] Entry for user Tracy was removed from the passwords file
+07/10/2024@18:56:20: [USER] User Tracy was deleted from the database
+07/10/2024@18:57:07: [SYSTEM] Database backup successful!
+07/10/2024@18:57:14: [USER] Administrator Daru uid DA8910 logged in.
+07/10/2024@18:57:14: [SYSTEM] The database table `tblFoods` was accessed by administrator Daru
+07/10/2024@18:57:14: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+07/10/2024@18:57:14: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+07/10/2024@18:57:26: [SYSTEM] Entry for user Miniatu was removed from the passwords file
+07/10/2024@18:57:26: [USER] User Miniatu was deleted from the database

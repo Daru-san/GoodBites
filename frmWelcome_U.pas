@@ -50,6 +50,7 @@ type
     pnlLandingCenter: TPanel;
     memExplanation: TMemo;
     pnlNav: TPanel;
+    rgpGender: TRadioGroup;
     redInfoHelp: TRichEdit;
     procedure FormShow(Sender: TObject);
     procedure btnContinueClick(Sender: TObject);
@@ -220,7 +221,7 @@ end;
 {$REGION Checks }
 procedure TfrmWelcome.CheckFilled;
 var
-  isName,isAge,isWeight,isHeight,isActive : Boolean;
+  isName,isAge,isWeight,isHeight,isActive,isGender : Boolean;
   sFullname : String;
 begin
   if crplWelcome.ActiveCard <> crdDetails then
@@ -231,6 +232,7 @@ begin
   isWeight := (nbxWeight.Value > 30) and (nbxWeight.Value < 1000);
   isHeight := (nbxHeight.Value > 30 ) and (nbxHeight.Value < 200);
   isActive := rgpActivity.ItemIndex <> -1;
+  isGender := rgpGender.ItemIndex <> -1;
   if isName and isAge and isWeight and isHeight then
     btnContinue.Enabled := true
   else
@@ -293,6 +295,10 @@ begin
   sFName := edtFullname.Text;
   iAge := spnAge.Value;
 
+  case rgpGender.ItemIndex of
+  0 : sGender := 'Male';
+  1 : sGender := 'Female';
+  end;
   case rgpActivity.itemIndex of
   0 : rActivityLevel := 0.4;
   1 : rActivityLevel := 0.8;
@@ -307,6 +313,7 @@ begin
   slsMessage.Add('Age:' + #9 + iAge.ToString);
   slsMessage.Add('Weight:' + #9 + FloatToStrF(rWeight,ffFixed,8,2));
   slsMessage.Add('Height:' + #9 + FloatToStrF(rHeight,ffFixed,8,2));
+  slsMessage.Add('Sex:' + #9 + sGender);
 
   if MessageDlg(slsMessage.Text,mtConfirmation,mbYesNoCancel,0) = mrYes then
   begin
@@ -315,6 +322,7 @@ begin
     CurrentUser.Weight := rWeight;
     CurrentUser.Fullname := sFName;
     CurrentUser.ActivityLevel := rActivityLevel;
+    CurrentUser.Gender := sGender;
     CurrentUser.SaveUserInfo;
     isConfirmed := true;
     btnContinue.Enabled := true;

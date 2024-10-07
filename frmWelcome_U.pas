@@ -316,11 +316,11 @@ begin
 
   slsMessage := TStringList.Create;
   slsMessage.Add('Please confirm these details are correct');
-  slsMessage.Add('Full name:' + #9 + sFName);
-  slsMessage.Add('Age:' + #9 + iAge.ToString);
-  slsMessage.Add('Weight:' + #9 + FloatToStrF(rWeight,ffFixed,8,2));
-  slsMessage.Add('Height:' + #9 + FloatToStrF(rHeight,ffFixed,8,2));
+  slsMessage.Add('Name:' + #9 + sFName);
   slsMessage.Add('Sex:' + #9 + sGender);
+  slsMessage.Add('Age:' + #9 + iAge.ToString + ' years');
+  slsMessage.Add('Weight:' + #9 + FloatToStrF(rWeight,ffFixed,8,2) + 'kg');
+  slsMessage.Add('Height:' + #9 + FloatToStrF(rHeight,ffFixed,8,2) + 'cm');
 
   if MessageDlg(slsMessage.Text,mtConfirmation,mbYesNoCancel,0) = mrYes then
   begin

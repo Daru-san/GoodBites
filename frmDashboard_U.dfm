@@ -21,7 +21,7 @@ object frmDashboard: TfrmDashboard
     Width = 855
     Height = 472
     Align = alClient
-    ActiveCard = crdProgress
+    ActiveCard = crdEating
     Caption = 'CardPanel1'
     TabOrder = 0
     object crdProgress: TCard
@@ -334,9 +334,32 @@ object frmDashboard: TfrmDashboard
             Align = alClient
             BevelOuter = bvSpace
             TabOrder = 0
+            ExplicitLeft = 4
+            ExplicitTop = -3
+            object lblMealType: TLabel
+              Left = 18
+              Top = 115
+              Width = 52
+              Height = 15
+              Caption = 'Meal type'
+            end
+            object lblMeal: TLabel
+              Left = 18
+              Top = 59
+              Width = 104
+              Height = 15
+              Caption = 'Choose a food item'
+            end
+            object lblPortion: TLabel
+              Left = 232
+              Top = 59
+              Width = 76
+              Height = 15
+              Caption = 'Portion size(g)'
+            end
             object btnAddDB: TButton
               Left = 18
-              Top = 160
+              Top = 176
               Width = 123
               Height = 25
               Caption = 'Search for new meal'
@@ -344,8 +367,8 @@ object frmDashboard: TfrmDashboard
               OnClick = btnAddDBClick
             end
             object btnEaten: TButton
-              Left = 278
-              Top = 112
+              Left = 232
+              Top = 144
               Width = 75
               Height = 25
               Caption = 'Eat food'
@@ -355,7 +378,7 @@ object frmDashboard: TfrmDashboard
             end
             object cbxFoods: TComboBox
               Left = 18
-              Top = 66
+              Top = 80
               Width = 153
               Height = 23
               TabOrder = 2
@@ -364,22 +387,13 @@ object frmDashboard: TfrmDashboard
             end
             object cbxMealType: TComboBox
               Left = 18
-              Top = 113
+              Top = 136
               Width = 145
               Height = 23
               Enabled = False
               TabOrder = 3
               Text = 'Meal type'
               OnChange = cbxMealTypeChange
-            end
-            object edtPortion: TEdit
-              Left = 216
-              Top = 66
-              Width = 137
-              Height = 23
-              NumbersOnly = True
-              TabOrder = 4
-              TextHint = 'Portion size(g)'
             end
             object pnlEatingFoodHeader: TPanel
               Left = 1
@@ -388,7 +402,15 @@ object frmDashboard: TfrmDashboard
               Height = 41
               Align = alTop
               Caption = 'Eating Food items'
+              TabOrder = 4
+            end
+            object nbxPortion: TNumberBox
+              Left = 232
+              Top = 80
+              Width = 121
+              Height = 23
               TabOrder = 5
+              TextHint = 'Portion size in grams'
             end
           end
           object pnlDrinkingWater: TPanel
@@ -399,6 +421,15 @@ object frmDashboard: TfrmDashboard
             Align = alRight
             BevelOuter = bvSpace
             TabOrder = 1
+            ExplicitLeft = 413
+            ExplicitTop = 6
+            object lblWaterInput: TLabel
+              Left = 40
+              Top = 59
+              Width = 88
+              Height = 15
+              Caption = 'Water intake(ml)'
+            end
             object btnDrinking: TButton
               Left = 44
               Top = 136
@@ -408,19 +439,6 @@ object frmDashboard: TfrmDashboard
               TabOrder = 0
               OnClick = btnDrinkingClick
             end
-            object edtWaterInput: TLabeledEdit
-              Left = 42
-              Top = 80
-              Width = 121
-              Height = 23
-              EditLabel.Width = 66
-              EditLabel.Height = 15
-              EditLabel.Caption = 'Water Intake'
-              TabOrder = 1
-              Text = ''
-              TextHint = 'Numbers only(ml)'
-              OnChange = edtWaterInputChange
-            end
             object pnlDrinkingHeader: TPanel
               Left = 1
               Top = 1
@@ -428,7 +446,15 @@ object frmDashboard: TfrmDashboard
               Height = 41
               Align = alTop
               Caption = 'Drinking Water'
+              TabOrder = 1
+            end
+            object nbxWaterInput: TNumberBox
+              Left = 40
+              Top = 80
+              Width = 121
+              Height = 23
               TabOrder = 2
+              TextHint = 'Water in ml'
             end
           end
         end
@@ -455,7 +481,6 @@ object frmDashboard: TfrmDashboard
             ParentFont = False
             ReadOnly = True
             TabOrder = 0
-            ExplicitWidth = 407
           end
         end
         object pnlEatingHead: TPanel

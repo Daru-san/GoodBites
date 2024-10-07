@@ -14,7 +14,6 @@ type
   TfrmDashboard = class(TForm)
     pnlProgressCenter: TPanel;
     cbxFoods: TComboBox;
-    edtPortion: TEdit;
     btnEaten: TButton;
     pnlCent: TPanel;
     cbxMealType: TComboBox;
@@ -97,7 +96,6 @@ type
     btnBackOV: TButton;
     edtGoalDate: TLabeledEdit;
     btnDrinking: TButton;
-    edtWaterInput: TLabeledEdit;
     pnlEatingFoodHeader: TPanel;
     pnlDrinkingHeader: TPanel;
     cbxGoalUnit: TComboBox;
@@ -105,6 +103,12 @@ type
     pnlGoalsOVTop: TPanel;
     pnlGoalsOVCenter: TPanel;
     redGoalsHelp: TRichEdit;
+    nbxPortion: TNumberBox;
+    nbxWaterInput: TNumberBox;
+    lblMealType: TLabel;
+    lblMeal: TLabel;
+    lblPortion: TLabel;
+    lblWaterInput: TLabel;
 
     procedure FormShow(Sender: TObject);
     procedure btnLogOutClick(Sender: TObject);
@@ -157,6 +161,7 @@ type
     procedure LogEatenFood;
     procedure LogGoalProgress(pMeal : TMeal);
     procedure DrinkWater(pAmount : real);
+    procedure CheckMealFields;
 
     // crdGoals
     procedure ShowGoalOverview;
@@ -173,6 +178,7 @@ var
   frmDashboard: TfrmDashboard;
   strFoods : TStringList;
   FoodCount : integer;
+  ControlUtils : TControlUtils;
 
 implementation
 
@@ -551,14 +557,12 @@ end;
 
 procedure TfrmDashboard.crdEatingEnter(Sender: TObject);
 begin
-  edtWaterInput.Color := clDefault;
-  edtWaterInput.Text := '';
-  
   cbxFoods.ItemIndex := -1;
   cbxFoods.Text := 'Choose a food';
-  
-  edtPortion.Text := '';
-  edtPortion.Color := clDefault;
+
+  ControlUtils.SetNumberBox(nbxPortion,1,999);
+  ControlUtils.SetNumberBox(nbxWaterInput,10,999);
+  nbxWaterInput.Enabled := true;
   
   cbxMealType.ItemIndex := -1;
   cbxMealType.Text := 'Meal type';
@@ -602,17 +606,11 @@ var
   rPortion : Real;
   Meal : TMeal;
   FoodItem : TFoodItem;
-  iCheckInt : Integer;
 begin
   sMealName := cbxFoods.text;
   sMealType := cbxMealType.Text;
 
-  Val(edtPortion.Text,rPortion,iCheckInt);
-
-  if iCheckInt <> 0 then
-  begin
-    ShowMessage('Please enter the portion in grams');
-  end;
+  rPortion := nbxPortion.Value;
 
   if MessageDlg('Are you sure you want to enter this food item',mtConfirmation,mbYesNo,0) = mrYes then
   begin
@@ -639,17 +637,10 @@ var
   rAmount : real;
   iCheckInt : Integer;
 begin
-  Val(edtWaterInput.Text,rAmount,iCheckInt);
-  if iCheckInt <> 0 then
-  begin
-    ShowMessage('Please enter a valid quantity in ml');
-    edtWaterInput.SetFocus;
-    edtWaterInput.Color := clRed;
-    exit;
-  end;
+  rAmount := nbxWaterInput.Value;
   DrinkWater(rAmount);
   GetProgressInfo;
-  edtWaterInput.Clear;
+  nbxWaterInput.Value := 10;
 end;
 
 procedure TfrmDashboard.DrinkWater(pAmount: Real);
@@ -690,17 +681,7 @@ end;
 procedure TfrmDashboard.cbxFoodsChange(Sender: TObject);
 var sFoodname : String;
 begin
-  if cbxFoods.ItemIndex <> -1 then
-  begin
-    cbxMealType.Enabled := true;
-    if cbxMealType.ItemIndex <> -1 then
-      btnEaten.Enabled := true;
-  end
-  else
-  begin
-    btnEaten.Enabled := false;
-    cbxMealType.Enabled := false;
-  end;
+  CheckMealFields;
 
   if cbxFoods.ItemIndex <> -1 then
   begin
@@ -786,7 +767,28 @@ end;
 
 procedure TfrmDashboard.cbxMealTypeChange(Sender: TObject);
 begin
-  if (cbxMealType.ItemIndex <> -1) and (cbxFoods.ItemIndex <> -1) then
+  CheckMealFields;
+end;
+
+procedure TfrmDashboard.CheckMealFields;
+var
+  isFoodSelected, isMealSelected, isPortionEntered : Boolean;
+begin
+  isFoodSelected := cbxFoods.ItemIndex <> -1;
+  isMealSelected := cbxMealType.ItemIndex <> -1;
+
+  if not isFoodSelected then
+    cbxMealType.Enabled := false
+  else
+    nbxPortion.Enabled := true;
+
+  if isFoodSelected and not(isMealSelected) then
+  begin
+    cbxMealType.Enabled := true;
+    btnEaten.Enabled := false;
+  end;
+
+  if isFoodSelected and isMealSelected then
     btnEaten.Enabled := true
   else
     btnEaten.Enabled := false;

@@ -18,6 +18,7 @@ type
     FActivityLevel : Real;
     FHeight : real;
     FWeight : Real;
+    FGender : String;
 
     // User creation
     function CheckUserID(pUserID:string) : boolean;
@@ -52,6 +53,7 @@ type
     property ActivityLevel : Real read FActivityLevel write FActivityLevel;
     property Height: real read FHeight write FHeight;
     property Weight: real read FWeight write FWeight;
+    property Gender: String read FGender write FGender;
 
     // Used by external procedures to get user login information
     function CheckLogin : boolean;
@@ -437,6 +439,7 @@ begin
     FieldValues['Height'] := 0;
     FieldValues['weight'] := 0;
     FieldValues['LastLogin'] := date;
+    FieldValues['Gender'] := 'TBD';
     Post;
     Close;
   end;
@@ -787,6 +790,7 @@ begin
         FieldValues['Height'] := Height;
         FieldValues['Weight'] := Weight;
         FieldValues['ActivityLevel'] := ActivityLevel;
+        FieldValues['Gender'] := Gender;
         Post;
       end else next
     until (Eof) or isFound;
@@ -816,6 +820,7 @@ begin
       Height := FieldValues['Height'];
       Weight := FieldValues['Weight'];
       ActivityLevel := FieldValues['ActivityLevel'];
+      Gender := FieldValues['Gender'];
     end;
     Close;
   end;

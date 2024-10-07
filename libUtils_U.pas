@@ -2,7 +2,7 @@ unit libUtils_U;
 
 interface
 
-uses System.SysUtils,System.Classes,VCL.StdCtrls,Dialogs,vcl.NumberBox,vcl.DBGrids;
+uses System.SysUtils,System.Classes,VCL.StdCtrls,Dialogs,vcl.NumberBox,vcl.DBGrids,Spin;
 
 type
   TFileUtils = Class(TObject)
@@ -14,6 +14,7 @@ type
   TControlUtils = Class(TObject)
   public
     procedure SetNumberBox(pNumberBox : TNumberBox;pMin,pMax : real);
+    procedure SetSpinEdit(pSpinEdit : TSpinEdit;pMin,pMax : integer);
     procedure ResizeDBGrid(pDBGrid:TDBGrid);
   end;
 
@@ -48,6 +49,16 @@ begin
   end;
 end;
 
+procedure TControlUtils.SetSpinEdit(pSpinEdit: TSpinEdit; pMin: Integer; pMax: Integer);
+begin
+  with pSpinEdit do
+  begin
+    minValue := pMin;
+    maxValue := pMax;
+    Value := pMin;
+    Enabled := false;
+  end;
+end;
 procedure TControlUtils.ResizeDBGrid(pDBGrid:TDBGrid);
 var
   i : integer;

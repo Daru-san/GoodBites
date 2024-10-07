@@ -45,7 +45,7 @@ begin
     maxValue := pMax;
     Mode := nbmFloat;
     Enabled := false;
-    UseMouseWheel := true;
+    Value := pMin;
   end;
 end;
 

@@ -87,6 +87,12 @@ type
 
 const
   arrGOALITEMS : array[1..5] of string = ('Calorie','Water','Carbohydrate','Protein','Fat');
+  MINAGE = 7;
+  MAXAGE = 150;
+  MINHEIGHT = 60;
+  MAXHEIGHT =  299;
+  MINWEIGHT = 15;
+  MAXWEIGHT = 999;
 var
   frmWelcome: TfrmWelcome;
   isConfirmed : Boolean;
@@ -228,9 +234,10 @@ begin
   exit;
 
   isName := (edtFullname.text <> '');
-  isAge := (spnAge.Value > 7) and (spnAge.Value < 150);
-  isWeight := (nbxWeight.Value > 30) and (nbxWeight.Value < 1000);
-  isHeight := (nbxHeight.Value > 30 ) and (nbxHeight.Value < 200);
+
+  isAge := (spnAge.Value >= MINAGE) and (spnAge.Value <= MAXAGE);
+  isWeight := (nbxWeight.Value >= MINWEIGHT) and (nbxWeight.Value <= MAXWEIGHT);
+  isHeight := (nbxHeight.Value >= MINHEIGHT) and (nbxHeight.Value <= MAXHEIGHT);
   isActive := rgpActivity.ItemIndex <> -1;
   isGender := rgpGender.ItemIndex <> -1;
   if isName and isAge and isWeight and isHeight then

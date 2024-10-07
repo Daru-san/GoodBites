@@ -52,6 +52,7 @@ type
     pnlNav: TPanel;
     rgpGender: TRadioGroup;
     redInfoHelp: TRichEdit;
+    lblHelpNote: TLabel;
     procedure FormShow(Sender: TObject);
     procedure btnContinueClick(Sender: TObject);
     procedure crdWelcomeEnter(Sender: TObject);
@@ -87,6 +88,7 @@ type
 
 const
   arrGOALITEMS : array[1..5] of string = ('Calorie','Water','Carbohydrate','Protein','Fat');
+
   MINAGE = 7;
   MAXAGE = 150;
   MINHEIGHT = 60;
@@ -240,8 +242,10 @@ begin
   isAge := (spnAge.Value >= MINAGE) and (spnAge.Value <= MAXAGE);
   isWeight := (nbxWeight.Value >= MINWEIGHT) and (nbxWeight.Value <= MAXWEIGHT);
   isHeight := (nbxHeight.Value >= MINHEIGHT) and (nbxHeight.Value <= MAXHEIGHT);
+
   isActive := rgpActivity.ItemIndex <> -1;
   isGender := rgpGender.ItemIndex <> -1;
+
   if isName then
   begin
     spnAge.Enabled := true;
@@ -250,6 +254,7 @@ begin
     rgpActivity.Enabled := true;
     rgpGender.Enabled := true;
   end;
+
   if isName and isAge and isWeight and isHeight then
     btnContinue.Enabled := true
   else
@@ -301,12 +306,8 @@ var
   rWeight,rHeight, rActivityLevel : real;
   slsMessage : TStringList;
   sFName : String;
+  sGender : String;
 begin
-  if (spnAge.Value < 7) or (spnAge.Value > 150) then
-  begin
-    ShowMessage('Please enter an age between 7 and 150 years');
-    Exit;
-  end;
   rWeight := nbxWeight.Value;
   rHeight := nbxHeight.Value;
   sFName := edtFullname.Text;
@@ -316,6 +317,7 @@ begin
   0 : sGender := 'Male';
   1 : sGender := 'Female';
   end;
+
   case rgpActivity.itemIndex of
   0 : rActivityLevel := 0.4;
   1 : rActivityLevel := 0.8;

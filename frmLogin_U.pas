@@ -102,8 +102,8 @@ begin
   sPassword := edtPassword.Text;
 
   // Call the constructor
-  LoginUser := TUser.Create(sUsername.Trim);
-  LoginUser.Login(sPassword.trim);
+  LoginUser := TUser.Create(sUsername);
+  LoginUser.Login(sPassword);
 
   // Closes the form when login is successful using modalresult
   // Closing manually using self.Close() does not work properly
@@ -174,6 +174,7 @@ end;
 procedure TfrmLogin.btnCreateClick(Sender: TObject);
 var
   sUsername,sPassword,sPassConf:string;
+  isSuccessful : Boolean;
 begin
   sUsername := edtNewUser.text;
   sPassword := edtNewPassword.text;
@@ -187,20 +188,20 @@ begin
     exit;
   end;
 
-  // Since the user is only created when signing up, the currentUser
-  // object is freed from memory immediately after account creation
-  // The user signs up and logs in sequentially
+  // We attempt to create the user
+  // and sign them up, if a false is returned
+  // we do not login
+  LoginUser := TUser.Create(sUsername);
+  isSuccessful := LoginUser.SignUp(sPassword);
+  LoginUser.Free;
 
-  LoginUser := TUser.Create(sUsername.Trim);
-  LoginUser.SignUp(sPassword.Trim);
-  LoginUser.Login(sPassword.Trim);
-
-  if LoginUser.CheckLogin then
-    self.ModalResult := mrOk
-  else
+  // If the login is successful,
+  // we recreate the object and call the login procedure
+  if isSuccessful then
   begin
-    self.ModalResult := mrNone;
-    LoginUser.Free;
+    LoginUser := TUser.Create(sUsername);
+    LoginUser.Login(sPassword);
+    self.ModalResult := mrOk;
   end;
 end;
 
@@ -229,7 +230,12 @@ begin
                 btnCreate.Enabled := true
               else
                 btnCreate.Enabled := false;
-            end else cbxTerms.Enabled := false;
+            end
+            else
+            begin
+              cbxTerms.Enabled := false;
+              btnCreate.Enabled := false;
+            end;
           end
           else
             edtNewPassConf.Enabled := false;

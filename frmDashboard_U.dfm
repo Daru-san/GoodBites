@@ -285,7 +285,10 @@ object frmDashboard: TfrmDashboard
               Top = 16
               Width = 75
               Height = 25
+              Hint = 'Reset the goal log'
               Caption = 'Reset'
+              ParentShowHint = False
+              ShowHint = True
               TabOrder = 0
               OnClick = btnResetClick
             end
@@ -294,7 +297,10 @@ object frmDashboard: TfrmDashboard
               Top = 16
               Width = 200
               Height = 23
+              Hint = 'Choose an item to display info'
               Enabled = False
+              ParentShowHint = False
+              ShowHint = True
               TabOrder = 1
               Text = 'Choose a meal'
               OnChange = cbxMealsChange
@@ -334,8 +340,6 @@ object frmDashboard: TfrmDashboard
             Align = alClient
             BevelOuter = bvSpace
             TabOrder = 0
-            ExplicitLeft = 4
-            ExplicitTop = -3
             object lblMealType: TLabel
               Left = 18
               Top = 115
@@ -357,14 +361,14 @@ object frmDashboard: TfrmDashboard
               Height = 15
               Caption = 'Portion size(g)'
             end
-            object btnAddDB: TButton
+            object btnSearchFood: TButton
               Left = 18
               Top = 176
               Width = 123
               Height = 25
-              Caption = 'Search for new meal'
+              Caption = 'Search Foods'
               TabOrder = 0
-              OnClick = btnAddDBClick
+              OnClick = btnSearchFoodClick
             end
             object btnEaten: TButton
               Left = 232
@@ -381,6 +385,8 @@ object frmDashboard: TfrmDashboard
               Top = 80
               Width = 153
               Height = 23
+              ParentShowHint = False
+              ShowHint = True
               TabOrder = 2
               Text = 'Choose a food'
               OnChange = cbxFoodsChange
@@ -411,6 +417,7 @@ object frmDashboard: TfrmDashboard
               Height = 23
               TabOrder = 5
               TextHint = 'Portion size in grams'
+              OnChange = nbxPortionChange
             end
           end
           object pnlDrinkingWater: TPanel
@@ -421,8 +428,6 @@ object frmDashboard: TfrmDashboard
             Align = alRight
             BevelOuter = bvSpace
             TabOrder = 1
-            ExplicitLeft = 413
-            ExplicitTop = 6
             object lblWaterInput: TLabel
               Left = 40
               Top = 59
@@ -455,6 +460,25 @@ object frmDashboard: TfrmDashboard
               Height = 23
               TabOrder = 2
               TextHint = 'Water in ml'
+              OnChangeValue = nbxWaterInputChangeValue
+            end
+            object redWaterInfo: TRichEdit
+              Left = 216
+              Top = 72
+              Width = 185
+              Height = 89
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -12
+              Font.Name = 'Segoe UI'
+              Font.Style = []
+              Lines.Strings = (
+                'redWaterInfo')
+              ParentFont = False
+              PlainText = True
+              ReadOnly = True
+              TabOrder = 3
+              Transparent = True
             end
           end
         end
@@ -971,6 +995,7 @@ object frmDashboard: TfrmDashboard
       Top = 260
       Width = 89
       Height = 25
+      Hint = 'Get eating'
       Caption = 'Eat and Drink'
       TabOrder = 6
       OnClick = btnGoEatingClick

@@ -385,7 +385,7 @@ end;
 {$ENDREGION}
 
 // Form navigation
-{$FORM NAVIGATION}
+{$REGION FORM NAVIGATION}
 procedure TfrmAdmin.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   // Freeing our objects from memory

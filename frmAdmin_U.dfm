@@ -54,13 +54,12 @@ object frmAdmin: TfrmAdmin
           object lblUserRecordNav: TLabel
             Left = 1
             Top = 1
-            Width = 426
+            Width = 98
             Height = 15
             Align = alTop
             Alignment = taCenter
             Caption = 'Record Navigation'
             Layout = tlCenter
-            ExplicitWidth = 98
           end
           object btnUserLast: TButton
             Left = 126
@@ -109,12 +108,11 @@ object frmAdmin: TfrmAdmin
           object lblUserRecordMod: TLabel
             Left = 1
             Top = 1
-            Width = 374
+            Width = 108
             Height = 15
             Align = alTop
             Alignment = taCenter
             Caption = 'Record Modification'
-            ExplicitWidth = 108
           end
           object btnUserDelete: TButton
             Left = 232
@@ -306,12 +304,11 @@ object frmAdmin: TfrmAdmin
           object lblFoodRecordMod: TLabel
             Left = 1
             Top = 1
-            Width = 374
+            Width = 108
             Height = 15
             Align = alTop
             Alignment = taCenter
             Caption = 'Record Modification'
-            ExplicitWidth = 108
           end
           object edtFoodField: TEdit
             Left = 16
@@ -352,13 +349,12 @@ object frmAdmin: TfrmAdmin
           object lblFoodRecordNav: TLabel
             Left = 1
             Top = 1
-            Width = 426
+            Width = 98
             Height = 15
             Align = alTop
             Alignment = taCenter
             Caption = 'Record Navigation'
             Layout = tlCenter
-            ExplicitWidth = 98
           end
           object btnFoodFirst: TButton
             Left = 32

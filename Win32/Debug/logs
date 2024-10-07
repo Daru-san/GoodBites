@@ -178,3 +178,45 @@
 07/10/2024@18:57:14: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
 07/10/2024@18:57:26: [SYSTEM] Entry for user Miniatu was removed from the passwords file
 07/10/2024@18:57:26: [USER] User Miniatu was deleted from the database
+07/10/2024@21:07:33: [SYSTEM] Database backup successful!
+07/10/2024@21:08:03: [SYSTEM] Database backup successful!
+07/10/2024@21:08:13: [USER] Administrator Daru uid DA8910 logged in.
+07/10/2024@21:08:13: [SYSTEM] The database table `tblFoods` was accessed by administrator Daru
+07/10/2024@21:08:13: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+07/10/2024@21:08:13: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+07/10/2024@21:08:22: [USER] User Daru uid DA8910 logged in.
+07/10/2024@21:10:29: [SYSTEM] Database backup successful!
+07/10/2024@21:10:36: [USER] User Daru uid DA8910 logged in.
+07/10/2024@21:14:16: [SYSTEM] Database backup successful!
+07/10/2024@21:14:23: [USER] User Daru uid DA8910 logged in.
+07/10/2024@21:17:27: [SYSTEM] Database backup successful!
+07/10/2024@21:17:52: [USER] User Daru uid DA8910 logged in.
+07/10/2024@21:21:01: [SYSTEM] Database backup successful!
+07/10/2024@21:21:10: [USER] User Daru uid DA8910 logged in.
+07/10/2024@21:23:05: [SYSTEM] Database backup successful!
+07/10/2024@21:24:02: [SYSTEM] Database backup successful!
+07/10/2024@21:24:09: [USER] User Daru uid DA8910 logged in.
+07/10/2024@21:25:53: [SYSTEM] Database backup successful!
+07/10/2024@21:26:12: [USER] User Daru uid DA8910 logged in.
+07/10/2024@21:27:23: [SYSTEM] Database backup successful!
+07/10/2024@21:27:30: [USER] User Daru uid DA8910 logged in.
+07/10/2024@21:35:27: [SYSTEM] Database backup successful!
+07/10/2024@21:35:37: [USER] User Daru uid DA8910 logged in.
+07/10/2024@21:40:55: [SYSTEM] Database backup successful!
+07/10/2024@21:41:01: [USER] User Daru uid DA8910 logged in.
+07/10/2024@21:43:24: [SYSTEM] Database backup successful!
+07/10/2024@21:43:30: [USER] User Daru uid DA8910 logged in.
+07/10/2024@21:44:39: [SYSTEM] Database backup successful!
+07/10/2024@21:44:45: [USER] User Daru uid DA8910 logged in.
+07/10/2024@21:46:16: [SYSTEM] Database backup successful!
+07/10/2024@21:46:22: [USER] User Daru uid DA8910 logged in.
+07/10/2024@21:49:26: [SYSTEM] Database backup successful!
+07/10/2024@21:49:32: [USER] User Daru uid DA8910 logged in.
+07/10/2024@21:50:03: [SYSTEM] Database backup successful!
+07/10/2024@21:50:09: [USER] User Daru uid DA8910 logged in.
+07/10/2024@21:53:14: [SYSTEM] Database backup successful!
+07/10/2024@21:53:22: [USER] User Daru uid DA8910 logged in.
+07/10/2024@21:57:26: [SYSTEM] Database backup successful!
+07/10/2024@21:57:39: [SYSTEM] Database backup successful!
+07/10/2024@21:57:45: [USER] User Daru uid DA8910 logged in.
+07/10/2024@22:16:47: [SYSTEM] Database backup successful!

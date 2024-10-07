@@ -98,6 +98,7 @@ var
   isConfirmed : Boolean;
   FileUtils : TFileUtils;
   LogService : TLogService;
+  ControlUtils : TControlUtils;
 
   arrTargets : array[1..5] of real;
 
@@ -126,6 +127,7 @@ begin
   btnBack.Enabled := false;
   FileUtils := TFileUtils.Create;
   LogService := TLogService.Create;
+  ControlUtils := TControlUtils.Create;
 end;
 
 procedure TfrmWelcome.nbxHeightChange(Sender: TObject);
@@ -253,9 +255,9 @@ procedure TfrmWelcome.ViewDetailsCard;
 begin
   if not isConfirmed then
   begin
-    nbxWeight.Value := 0;
-    nbxHeight.Value := 0;
-    spnAge.Value := 0;
+    ControlUtils.SetNumberBox(nbxHeight,MINHEIGHT,MAXHEIGHT);
+    ControlUtils.SetNumberBox(nbxWeight,MINWEIGHT,MAXWEIGHT);
+    ControlUtils.SetSpinEdit(spnAge,MINAGE,MAXAGE);
     btnContinue.Enabled := false;
     crplWelcome.ActiveCard := crdDetails;
   end;

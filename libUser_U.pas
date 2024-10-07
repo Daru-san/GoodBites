@@ -374,7 +374,6 @@ end;
   the user is not added to the database
 }
 function TUser.WriteUserPassFile;
-const PASSWORDFILE = '.passwords';
 var
   tfPasswords : textfile;
   isFileExist, isSuccessful : boolean;

@@ -154,8 +154,10 @@ begin
 end;
 
 procedure TGoal.DeleteGoal;
+var isFound : Boolean;
 begin
   ResetProgress;
+  isFound := false;
   with dmData.tblGoals do
   begin
     Open;
@@ -163,9 +165,11 @@ begin
     repeat
       if (UserID = FieldValues['UserID']) and (GoalID = FieldValues['GoalID']) then
       begin
+        isFound := true;
         Delete;
-      end else next;
-    until EOF;
+      end
+      else next;
+    until EOF or isFound;
     Close;
   end;
 end;

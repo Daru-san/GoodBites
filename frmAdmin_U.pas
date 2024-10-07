@@ -80,7 +80,6 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure dbgFoodsTableDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
-    procedure tbtUserClick(Sender: TObject);
     procedure btnFoodFirstClick(Sender: TObject);
     procedure btnFoodLastClick(Sender: TObject);
     procedure btnFoodPrevClick(Sender: TObject);
@@ -112,16 +111,12 @@ implementation
 
 {$R *.dfm}
 
-procedure TfrmAdmin.btnBackupDBClick(Sender: TObject);
+{$REGION USER MODIFICATION}
+procedure TfrmAdmin.tsUsersShow(Sender: TObject);
 begin
-  dmData.BackUpDB;
-  ShowLogs;
-end;
-
-procedure TfrmAdmin.btnClearClick(Sender: TObject);
-begin
-  if MessageDlg('Are you sure you want to clear the log file?',mtConfirmation, mbYesNo, 0) = mrYes then
-    ClearLogs();
+  // Resize the dbgrid and log administrator interaction with the databse table
+  ControlUtils.ResizeDBGrid(dbgUsersTable);
+  LogService.WriteSysLog('The database table `tblUsers` was accessed by administrator ' + AdminUser.Username);
 end;
 
 procedure TfrmAdmin.btnUserFieldEditClick(Sender: TObject);
@@ -153,6 +148,88 @@ begin
   end;
 end;
 
+procedure TfrmAdmin.btnUserDeleteClick(Sender: TObject);
+var
+  sUsername,sUserID : String;
+  RemovedUser : TUser;
+  slsDeleteMessage : TStringList;
+begin
+  sUsername := dmData.tblUsers.FieldValues['Username'];
+  sUserID := dmData.tblUsers.FieldValues['UserID'];
+
+  // Creating the message with a string list makes it easy to
+  // add multiple lines at once with #13
+  with slsDeleteMessage do
+  begin
+    Create;
+    Add('Are you sure you would like to delete user ' + sUsername + ' uid ' + sUserID);
+    Add('Once they have been deleted their data cannot be recovered');
+    Add('Please ensure that you are completely sure about this');
+  end;
+
+  // We ensure confirmation to prevent accidental deletions in some cases
+  // Although data can be recovered since the database is backed up on every run
+  if MessageDlg(slsDeleteMessage.Text,mtConfirmation,mbYesNo,0) = mrYes then
+  begin
+    RemovedUser := TUser.Create(sUsername);
+
+    // Try should catch any errors that may have occured during
+    // user deletion and NOT log the user deletion as that would
+    // create a false positive
+    try
+      RemovedUser.DeleteUser(sUserID);
+    finally
+      RemovedUser.Free;
+      LogService.WriteSysLog(
+        'Administrator ' + AdminUser.Username + ' uid ' + AdminUser.UserID
+        + ' has deleted user ' + sUsername + ' uid ' + sUserID
+      );
+    end;
+  end;
+
+  // Memory management
+  slsDeleteMessage.Free;
+
+  // Reopen the users table and resize the db grid
+  dmData.tblUsers.Open;
+  ControlUtils.ResizeDBGrid(dbgUsersTable);
+end;
+
+// Navigating the table
+procedure TfrmAdmin.btnUserFirstClick(Sender: TObject);
+begin
+  dmData.tblUsers.first;
+end;
+
+procedure TfrmAdmin.btnUserLastClick(Sender: TObject);
+begin
+  dmData.tblUsers.Last;
+end;
+
+
+procedure TfrmAdmin.btnUserNextClick(Sender: TObject);
+begin
+  dmData.tblUsers.Next;
+end;
+
+procedure TfrmAdmin.btnUserPreviousClick(Sender: TObject);
+begin
+  dmData.tblUsers.Prior;
+end;
+{$ENDREGION}
+
+// Logs
+{$REGION LOGFILE}
+procedure TfrmAdmin.tsLogsShow(Sender: TObject);
+begin
+  ShowLogs();
+end;
+
+procedure TfrmAdmin.btnUnfilterClick(Sender: TObject);
+begin
+  ShowLogs;
+end;
+
 procedure TfrmAdmin.btnFilterClick(Sender: TObject);
 var
   sSearch : string;
@@ -163,6 +240,94 @@ begin
     ShowLogs(sSearch);
 end;
 
+procedure TfrmAdmin.ShowLogs;
+const LOGFILE = 'logs';
+var
+  tfLogs : textfile;
+  doFilter : boolean;
+  sLine : string;
+  iNumLines : integer;
+begin
+  memLogs.clear;
+
+  // Only filter when the Search string has text, hence when filterig
+  doFilter := pSearch <> '';
+
+  if FileUtils.CheckLogFile then
+  try
+    AssignFile(tfLogs,LOGFILE);
+    Reset(tfLogs);
+    Repeat
+      ReadLn(tfLogs,sLine);
+      Trim(sLine);
+
+      // Show a line containing the filtered string as a regex
+      // If not filtering we just show every single line
+      if doFilter then
+      begin
+        if ContainsText(sLine,pSearch) then
+          memLogs.lines.Add(sLine)
+      end
+      else
+        memLogs.Lines.Add(sLine)
+    Until EOF(tfLogs);
+  finally
+     CloseFile(tfLogs);
+  end
+  else
+  // Assuming the log file does not exist, logging is omitted here unlike most error cases
+    memLogs.Lines.Add('Logs file is missing or corrupted');
+end;
+
+procedure TfrmAdmin.btnClearClick(Sender: TObject);
+begin
+  if MessageDlg('Are you sure you want to clear the log file?',mtConfirmation, mbYesNo, 0) = mrYes then
+    ClearLogs();
+end;
+
+procedure TfrmAdmin.ClearLogs;
+const LOGFILE = 'logs';
+var
+  tfLogs : textfile;
+begin
+  if FileUtils.CheckLogFile then
+  begin
+    try
+      AssignFile(tfLogs,LOGFILE);
+      ReWrite(tfLogs);
+      Writeln(tfLogs,'# Logs #');
+    finally
+      CloseFile(tfLogs);
+    end;
+
+    // Logged in admin is still logged when clearing the log file to keep them accountable for the clearing
+    // In case anything may come up and logs were needed or some ambiguous circumstance
+    LogService.WriteUserLog('The administrator ' + AdminUser.Username + ' was logged in');
+    ShowLogs;
+  end
+  else
+    ShowMessage('An error occured: the log file is either missing or corrupted');
+end;
+{$ENDREGION}
+
+
+// Sidebar
+{$REGION SIDEBAR}
+procedure TfrmAdmin.btnBackupDBClick(Sender: TObject);
+begin
+  dmData.BackUpDB;
+  ShowLogs;
+end;
+
+procedure TfrmAdmin.btnLogoutClick(Sender: TObject);
+begin
+  self.ModalResult := mrClose;
+end;
+
+{$ENDREGION}
+// Food
+{$REGION FOOD}
+// Table navigation
 procedure TfrmAdmin.btnFoodFirstClick(Sender: TObject);
 begin
   dmData.tblFoods.First;
@@ -183,167 +348,20 @@ begin
   dmData.tblFoods.Prior;
 end;
 
-procedure TfrmAdmin.btnUserFirstClick(Sender: TObject);
-begin
-  dmData.tblUsers.first;
-end;
-
-procedure TfrmAdmin.btnUserLastClick(Sender: TObject);
-begin
-  dmData.tblUsers.Last;
-end;
-
-procedure TfrmAdmin.btnLogoutClick(Sender: TObject);
-begin
-  self.ModalResult := mrClose;
-end;
-
-procedure TfrmAdmin.btnUserNextClick(Sender: TObject);
-begin
-  dmData.tblUsers.Next;
-end;
-
-procedure TfrmAdmin.btnUserPreviousClick(Sender: TObject);
-begin
-  dmData.tblUsers.Prior;
-end;
-
-procedure TfrmAdmin.btnUnfilterClick(Sender: TObject);
-begin
-  ShowLogs;
-end;
-
-procedure TfrmAdmin.btnUserDeleteClick(Sender: TObject);
-var
-  sUsername,sUserID : String;
-  RemovedUser : TUser;
-  slsDeleteMessage : TStringList;
-begin
-  sUsername := dmData.tblUsers.FieldValues['Username'];
-  sUserID := dmData.tblUsers.FieldValues['UserID'];
-
-  with slsDeleteMessage do
-  begin
-    Create;
-    Add('Are you sure you would like to delete user ' + sUsername + ' uid ' + sUserID);
-    Add('Once they have been deleted their data cannot be recovered');
-    Add('Please ensure that you are completely sure about this');
-  end;
-
-  if MessageDlg(slsDeleteMessage.Text,mtConfirmation,mbYesNo,0) = mrYes then
-  begin
-    RemovedUser := TUser.Create(sUsername);
-    try
-      RemovedUser.DeleteUser(sUserID);
-    finally
-      RemovedUser.Free;
-      LogService.WriteSysLog(
-        'Administrator ' + AdminUser.Username + ' uid ' + AdminUser.UserID
-        + ' has deleted user ' + sUsername + ' uid ' + sUserID
-      );
-    end;
-  end;
-
-  // Reopen the users table and resize the db grid
-  dmData.tblUsers.Open;
-  ControlUtils.ResizeDBGrid(dbgUsersTable);
-end;
-
-procedure TfrmAdmin.tbtUserClick(Sender: TObject);
-var
-  Settings : TfrmSettings;
-begin
-  Settings := TfrmSettings.Create(nil);
-  try
-    Settings.CurrentUser := AdminUser;
-    Settings.ShowModal;
-  finally
-    Settings.Free;
-  end;
-end;
-
 procedure TfrmAdmin.tsFoodsShow(Sender: TObject);
 begin
+  // Resize the food dbgrid and log administrator interaction with the table
   ControlUtils.ResizeDBGrid(dbgFoodsTable);
   LogService.WriteSysLog('The database table `tblFoods` was accessed by administrator ' + AdminUser.Username);
 end;
+{$ENDREGION}
 
-procedure TfrmAdmin.tsLogsShow(Sender: TObject);
-begin
-  memLogs.Lines.clear;
-  ShowLogs();
-end;
-
-procedure TfrmAdmin.tsUsersShow(Sender: TObject);
-begin
-  ControlUtils.ResizeDBGrid(dbgUsersTable);
-  LogService.WriteSysLog('The database table `tblUsers` was accessed by administrator ' + AdminUser.Username);
-end;
-
-procedure TfrmAdmin.ShowLogs;
-const LOGFILE = 'logs';
-var
-  tfLogs : textfile;
-  isFileExist, isStrEmpty, doFilter : boolean;
-  sLine : string;
-  iNumLines : integer;
-begin
-  memLogs.clear;
-
-  AssignFile(tfLogs,LOGFILE);
-
-  isFileExist := FileUtils.CheckFileExists(LOGFILE);
-
-  // Only filter when the Search string has text, hence when filterig
-  doFilter := pSearch <> '';
-
-  if isFileExist then
-  try
-    Reset(tfLogs);
-    Repeat
-      ReadLn(tfLogs,sLine);
-      Trim(sLine);
-
-      if doFilter then
-      begin
-        if ContainsText(sLine,pSearch) then
-          memLogs.lines.Add(sLine)
-      end
-      else
-        memLogs.Lines.Add(sLine)
-    Until EOF(tfLogs);
-  finally
-     CloseFile(tfLogs);
-  end
-  else
-  // Assuming the log file does not exist, logging is omitted here unlike most error cases
-    memLogs.Lines.Add('Logs file is missing or corrupted');
-end;
-
-procedure TfrmAdmin.ClearLogs;
-const LOGFILE = 'logs';
-var
-  tfLogs : textfile;
-begin
-  FileMode := 2;
-  AssignFile(tfLogs,LOGFILE);
-  if FileUtils.CheckLogFile then
-  begin
-    try
-      ReWrite(tfLogs);
-      Writeln(tfLogs,'# Logs #');
-    finally
-      CloseFile(tfLogs);
-    end;
-
-    // Logged in admin is still logged when clearing the log file to keep them accountable for the clearing
-    // In case anything may come up and logs were needed or some ambiguous circumstance
-    LogService.WriteUserLog('The administrator ' + AdminUser.Username + ' was logged in');
-    ShowLogs;
-  end
-  else
-    ShowMessage('An error occured: the log file is either missing or corrupted');
-end;
+// Formatting the DBGRIDS
+{$REGION DBGRIDS}
+// These procedures format the size of each dbgrid making the size
+// of each field equal to the length of the heading + 5 units
+// Once the original size is calculated, we call ResizeDBGrid() to
+// change size based on the length of the items in the grid
 
 procedure TfrmAdmin.dbgFoodsTableDrawColumnCell(Sender: TObject; const Rect: TRect;
   DataCol: Integer; Column: TColumn; State: TGridDrawState);
@@ -364,9 +382,13 @@ begin
   if width>column.width then
     column.Width := width;
 end;
+{$ENDREGION}
 
+// Form navigation
+{$FORM NAVIGATION}
 procedure TfrmAdmin.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
+  // Freeing our objects from memory
   AdminUser.Free;
   FileUtils.Free;
   LogService.Free;
@@ -384,14 +406,21 @@ end;
 
 procedure TfrmAdmin.FormShow(Sender: TObject);
 begin
+  //Initializing our objects
   LogService := TLogService.Create;
   FileUtils := TFileUtils.Create;
   ControlUtils := TControlUtils.Create;
 
+  // Ensuring we start on the first tab every time
   pageCtrl.TabIndex := 0;
+
+  // Greeting
   lblUser.Caption := 'Hello, ' + AdminUser.Username;
 
-  { Open tables when opening but close them when the form closes, preventing `read` locks as I call them }
+  // I choose to open database tables only when they are needed
+  // hence they are opened upon opening this form
+  // They are not open automatically
+
   with dmData do
   begin
     tblUsers.open;
@@ -399,9 +428,9 @@ begin
     dbgFoodsTable.DataSource := dscFoods;
     dbgUsersTable.DataSource := dscUsers;
   end;
+
+  // Call the OnShow() of the tab to get the dbgrid resized
   tsUsers.OnShow(nil);
 end;
-
-
+{$ENDREGION}
 end.
-

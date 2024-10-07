@@ -17,7 +17,7 @@ type
     btnEaten: TButton;
     pnlCent: TPanel;
     cbxMealType: TComboBox;
-    btnAddDB: TButton;
+    btnSearchFood: TButton;
     pnlDateNavigation: TPanel;
     sbtnPrev: TSpeedButton;
     sbtnNext: TSpeedButton;
@@ -109,11 +109,12 @@ type
     lblMeal: TLabel;
     lblPortion: TLabel;
     lblWaterInput: TLabel;
+    redWaterInfo: TRichEdit;
 
     procedure FormShow(Sender: TObject);
     procedure btnLogOutClick(Sender: TObject);
     procedure btnEatenClick(Sender: TObject);
-    procedure btnAddDBClick(Sender: TObject);
+    procedure btnSearchFoodClick(Sender: TObject);
     procedure sbtnNextClick(Sender: TObject);
     procedure sbtnPrevClick(Sender: TObject);
     procedure dpcDayChange(Sender: TObject);
@@ -142,6 +143,8 @@ type
     procedure edtWaterInputChange(Sender: TObject);
     procedure crdEatingEnter(Sender: TObject);
     procedure cbxGoalUnitChange(Sender: TObject);
+    procedure nbxPortionChange(Sender: TObject);
+    procedure nbxWaterInputChangeValue(Sender: TObject);
   private
     { Private declarations }
     FCurrentUser : TUser;
@@ -213,6 +216,8 @@ begin
   if iDayMeals = 0 then
   begin
     redMeals.Lines.Add('Nothing to see here! ' + #13 + 'Start eating!');
+    if pDate = Date then
+      redMeals.Lines.Add('Head to the `Eating and drinking` section to start!');
     cbxMeals.Enabled := false;
   end else
   begin
@@ -546,6 +551,7 @@ begin
   btnGoProgress.Enabled := true;
   btnGoGoals.Enabled := true;
   btnGoEating.Enabled := false;
+  btnGoEating.Default := false;
   crdEatingEnter(nil);
 end;
 
@@ -559,6 +565,7 @@ procedure TfrmDashboard.crdEatingEnter(Sender: TObject);
 begin
   cbxFoods.ItemIndex := -1;
   cbxFoods.Text := 'Choose a food';
+  cbxFoods.SetFocus;
 
   ControlUtils.SetNumberBox(nbxPortion,1,999);
   ControlUtils.SetNumberBox(nbxWaterInput,10,999);
@@ -566,8 +573,15 @@ begin
   
   cbxMealType.ItemIndex := -1;
   cbxMealType.Text := 'Meal type';
-  
-  redFoodInfo.Text := 'Select an item and get information!';
+
+  DisplayWaterInfo;
+
+  with redFoodInfo.Lines do
+  begin
+    Clear;
+    Add('Select a food item and get information');
+    Add('Click `Search foods` if you can`t find what you are looking for');
+  end;
 end;
 
 procedure TfrmDashboard.crdGoalOVEnter(Sender: TObject);
@@ -598,6 +612,11 @@ begin
     exit;
   end;
   LogEatenFood;
+
+  if MessageDlg('Show updated progress?',mtConfirmation,mbYesNo,0) = mrYes then
+    btnGoProgressClick(nil);
+
+  btnEaten.Default := false;
 end;
 
 procedure TfrmDashboard.LogEatenFood;
@@ -641,6 +660,7 @@ begin
   DrinkWater(rAmount);
   GetProgressInfo;
   nbxWaterInput.Value := 10;
+  btnDrinking.Default := false;
 end;
 
 procedure TfrmDashboard.DrinkWater(pAmount: Real);
@@ -677,6 +697,17 @@ begin
   Goal.Free;
 end;
 
+procedure TfrmDashboard.nbxPortionChange(Sender: TObject);
+begin
+  btnEaten.Default := true;
+end;
+
+
+procedure TfrmDashboard.nbxWaterInputChangeValue(Sender: TObject);
+begin
+  btnDrinking.Default := true;
+end;
+
 { Dealing with food information when combo box selected item changes }
 procedure TfrmDashboard.cbxFoodsChange(Sender: TObject);
 var sFoodname : String;
@@ -686,12 +717,7 @@ begin
   if cbxFoods.ItemIndex <> -1 then
   begin
     sFoodname := cbxFoods.Text;
-    if LowerCase(sFoodname) = 'water' then
-      DisplayWaterInfo
-    else
-    begin
-      DisplayFoodInfo(sFoodname);
-    end;
+    DisplayFoodInfo(sFoodname);
   end;
 end;
 
@@ -701,7 +727,7 @@ var isExist : Boolean;
 begin
   isExist := FileUtils.CheckFileExists(FILENAME);
   if isExist then
-  with redFoodInfo.Lines do
+  with redWaterInfo.Lines do
   begin
     Clear;
     LoadFromFile(FILENAME);
@@ -808,7 +834,7 @@ begin
   end;
 end;
 
-procedure TfrmDashboard.btnAddDBClick(Sender: TObject);
+procedure TfrmDashboard.btnSearchFoodClick(Sender: TObject);
 var
   frmFood : TfrmAddFood;
   isSuccess : boolean;
@@ -857,6 +883,10 @@ begin
   crplDashboard.ActiveCard := crdProgress;
 
   lblHello.Caption := 'Hello, ' + CurrentUser.Username;
+
+  btnGoEating.Default := true;
+  btnGoEating.Hint := 'Start eating to update progress';
+  btnGoEating.ShowHint := true;
 end;
 {$ENDREGION}
 

@@ -111,6 +111,7 @@ implementation
 
 {$R *.dfm}
 
+// User modificaiton
 {$REGION USER MODIFICATION}
 procedure TfrmAdmin.tsUsersShow(Sender: TObject);
 begin
@@ -159,9 +160,9 @@ begin
 
   // Creating the message with a string list makes it easy to
   // add multiple lines at once with #13
+  slsDeleteMessage := TStringList.Create;
   with slsDeleteMessage do
   begin
-    Create;
     Add('Are you sure you would like to delete user ' + sUsername + ' uid ' + sUserID);
     Add('Once they have been deleted their data cannot be recovered');
     Add('Please ensure that you are completely sure about this');
@@ -227,6 +228,7 @@ end;
 
 procedure TfrmAdmin.btnUnfilterClick(Sender: TObject);
 begin
+  edtFilter.Text := '';
   ShowLogs;
 end;
 
@@ -309,7 +311,6 @@ begin
     ShowMessage('An error occured: the log file is either missing or corrupted');
 end;
 {$ENDREGION}
-
 
 // Sidebar
 {$REGION SIDEBAR}

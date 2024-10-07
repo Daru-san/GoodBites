@@ -255,7 +255,7 @@ begin
     rgpGender.Enabled := true;
   end;
 
-  if isName and isAge and isWeight and isHeight then
+  if isName and isAge and isWeight and isHeight and isGender and isActive then
     btnContinue.Enabled := true
   else
     btnContinue.Enabled := false;

@@ -71,7 +71,7 @@ __recovery/
 modules/
 
 Win32/
-!.passwords 
+!passwords
 !logs
 
 api_key.txt

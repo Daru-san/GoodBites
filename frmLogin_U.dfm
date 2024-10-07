@@ -33,8 +33,6 @@ object frmLogin: TfrmLogin
       CardIndex = 0
       TabOrder = 0
       OnEnter = crdLoginEnter
-      ExplicitLeft = 2
-      ExplicitHeight = 376
       object pnlLoginCenter: TPanel
         Left = 0
         Top = 35
@@ -42,10 +40,6 @@ object frmLogin: TfrmLogin
         Height = 293
         Align = alClient
         TabOrder = 0
-        ExplicitLeft = 216
-        ExplicitTop = 176
-        ExplicitWidth = 185
-        ExplicitHeight = 41
         object pnlGoSignup: TPanel
           Left = 375
           Top = 6
@@ -97,7 +91,7 @@ object frmLogin: TfrmLogin
             EditLabel.Width = 53
             EditLabel.Height = 15
             EditLabel.Caption = 'Username'
-            MaxLength = 20
+            MaxLength = 12
             ParentShowHint = False
             ShowHint = True
             TabOrder = 1

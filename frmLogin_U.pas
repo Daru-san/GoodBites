@@ -208,41 +208,40 @@ end;
 procedure TfrmLogin.CheckFields;
 begin
   { Only enable certain elements when the other fields are active }
-   case IndexStr(LowerCase(pState),['login','signup']) of
-    0: begin
+  case IndexStr(LowerCase(pState),['login','signup']) of
+  0: begin
         if (edtUser.Text <> '') and (edtPassword.Text <> '') then
           btnLogin.Enabled := true
-        else
-          btnLogin.Enabled := false;
-      end;
-    1: begin
-        if edtNewUser.Text <> '' then
+      else
+        btnLogin.Enabled := false;
+    end;
+  1: begin
+      if edtNewUser.Text <> '' then
+      begin
+        edtNewPassword.Enabled := true;
+        cbxReveal.Enabled := true;
+        if (edtNewUser.Text <> '') and (edtNewPassword.Text <> '') then
         begin
-          edtNewPassword.Enabled := true;
-          cbxReveal.Enabled := true;
-          if (edtNewUser.Text <> '') and (edtNewPassword.Text <> '') then
+          edtNewPassConf.Enabled := true;
+          if (edtNewPassword.Text <> '') and (edtNewPassConf.Text <> '') then
           begin
-            edtNewPassConf.Enabled := true;
-            if (edtNewPassword.Text <> '') and (edtNewPassConf.Text <> '') then
-            begin
-              cbxTerms.Enabled := true;
-              if cbxTerms.Checked then
-                btnCreate.Enabled := true
-              else
-                btnCreate.Enabled := false;
-            end
+            cbxTerms.Enabled := true;
+            if cbxTerms.Checked then
+              btnCreate.Enabled := true
             else
-            begin
-              cbxTerms.Enabled := false;
               btnCreate.Enabled := false;
-            end;
           end
           else
-            edtNewPassConf.Enabled := false;
-        end;
+          begin
+            cbxTerms.Enabled := false;
+            btnCreate.Enabled := false;
+          end;
+        end
+        else
+          edtNewPassConf.Enabled := false;
       end;
-   end;
-
+    end;
+  end;
 end;
 
 procedure TfrmLogin.crdLoginEnter(Sender: TObject);

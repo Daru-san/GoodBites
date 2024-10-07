@@ -42,13 +42,17 @@ var
   LoginForm : TfrmLogin;
   isLogin : boolean;
 begin
+  // We initialize the app
+  // and disable MainFormOnTaskBar to show
+  // all forms on the taskbar
   Application.Initialize;
-  Application.CreateForm(TfrmLogin,LoginForm);
-  Application.MainFormOnTaskBar := False;
   Self.Hide;
+  Application.MainFormOnTaskBar := False;
+  Application.CreateForm(TfrmLogin,LoginForm);
   try
     LoginForm.ShowModal;
 
+    // This means the login was successful
     if LoginForm.ModalResult = mrOk then
     begin
       AppUser := LoginForm.LoginUser;
@@ -58,7 +62,7 @@ begin
     LoginForm.Free;
   end;
   if isLogin then
-    ShowForms;
+  ShowForms;
 
   Application.Run;
 end;

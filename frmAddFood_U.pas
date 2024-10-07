@@ -16,6 +16,7 @@ type
     redItems: TRichEdit;
     btnCustom: TButton;
     edtQuery: TLabeledEdit;
+    lblSelectItem: TLabel;
     procedure HelpBtnClick(Sender: TObject);
     procedure btnQueryClick(Sender: TObject);
     procedure btnAcceptClick(Sender: TObject);
@@ -58,57 +59,8 @@ begin
   Application.HelpContext(HelpContext);
 end;
 
-procedure TfrmAddFood.btnAcceptClick(Sender: TObject);
-var
-  iFoodIndex : integer;
-  rCalories,rEnergy,rProtein,rCarbs,rFat,rSugar: real;
-  sFoodDesc,sCategory : string;
-begin
-  inherited;
-  iFoodIndex := cbxItems.ItemIndex+1;
-  sFoodDesc := arrFood[iFoodIndex];
-  sCategory := arrCategory[iFoodIndex];
-  rCalories := arrCalories[iFoodIndex];
-  rEnergy := arrEnergy[iFoodIndex];
-  rProtein := arrProtein[iFoodIndex];
-  rCarbs := arrCarb[iFoodIndex];
-  rFat := arrFat[iFoodIndex];
-  rSugar := arrSugar[iFoodIndex];
-
-
-  if MessageDlg('Are you sure you want to enter this food item?',mtConfirmation,mbYesNo,0) = mrYes then
-  begin
-    FoodItem := TfoodItem.Create(sFoodDesc);
-    FoodItem.AddNutrients(rCalories,rEnergy,rProtein,rCarbs,rFat,rSugar);
-    FoodItem.Category := sCategory;
-    FoodItem.AddFoodToDB;
-    FoodItem.Free;
-    ShowMessage(Foodname + ' has been added to the database!' + #13 + 'Happy eating!');
-    OKBtn.ModalResult := mrYes;
-  end;
-end;
-
-procedure TfrmAddFood.btnCustomClick(Sender: TObject);
-var
-  CustomFoods : TfrmCustomFood;
-  isAdded : Boolean;
-begin
-  inherited;
-  CustomFoods := TfrmCustomFood.Create(nil);
-  try
-    Self.Hide;
-    CustomFoods.ShowModal;
-    isAdded := CustomFoods.ModalResult = mrYes;
-  finally
-    CustomFoods.Free;
-  end;
-
-  if isAdded then
-    self.ModalResult := mrYes
-  else
-    self.Show;
-end;
-
+{$REGION BUTTONS}
+// Sending the query
 procedure TfrmAddFood.btnQueryClick(Sender: TObject);
 var
   sQuery : string;
@@ -122,7 +74,10 @@ begin
   sQuery := edtQuery.Text;
   Trim(sQuery);
 
+  // Set a loading cursor
   Screen.Cursor := crHourGlass;
+
+  // We validate the name before beginning the query
   if StringUtils.ValidateString(sQuery,'foodname',1,20,'letters,numbers') then
   begin
     FetchAPI := TFetchAPI.Create;
@@ -143,6 +98,8 @@ begin
       end; // end if
       isFetched := FetchAPI.QuerySuccessful;
 
+      // If the query was successful we obtain
+      // the response and store it
       if isFetched then
       begin
         JSONResponse := FetchAPI.JSONResponse;
@@ -159,10 +116,13 @@ begin
       cbxItems.Enabled := True;
       cbxItems.Items.clear;
       cbxItems.Text := 'Choose an item';
+      cbxItems.SetFocus;
 
       btnAccept.Enabled := false;
 
+      // Sorting items and populating the array
       SortItems(JSONResponse,iResponseLength);
+
       redItems.Text := 'Select an item from the items combo box';
     end; // end if fetched
   end // end if valid
@@ -171,6 +131,67 @@ begin
   Screen.Cursor := crDefault;
 end;
 
+// Accepting the food item and adding it to the database
+procedure TfrmAddFood.btnAcceptClick(Sender: TObject);
+var
+  iFoodIndex : integer;
+  rCalories,rEnergy,rProtein,rCarbs,rFat,rSugar: real;
+  sFoodDesc,sCategory : string;
+begin
+  inherited;
+  // Combo box indices begin at zero so we
+  // increase this index by one to match with the arrays
+  iFoodIndex := cbxItems.ItemIndex+1;
+  sFoodDesc := arrFood[iFoodIndex];
+  sCategory := arrCategory[iFoodIndex];
+  rCalories := arrCalories[iFoodIndex];
+  rEnergy := arrEnergy[iFoodIndex];
+  rProtein := arrProtein[iFoodIndex];
+  rCarbs := arrCarb[iFoodIndex];
+  rFat := arrFat[iFoodIndex];
+  rSugar := arrSugar[iFoodIndex];
+
+
+  // Confirmation
+  if MessageDlg('Are you sure you want to enter this food item?',mtConfirmation,mbYesNo,0) = mrYes then
+  begin
+    // We supply the food item with all necessary information and add it to the database
+    FoodItem := TfoodItem.Create(sFoodDesc);
+    FoodItem.AddNutrients(rCalories,rEnergy,rProtein,rCarbs,rFat,rSugar);
+    FoodItem.Category := sCategory;
+    FoodItem.AddFoodToDB;
+    FoodItem.Free;
+    ShowMessage(Foodname + ' has been added to the database!' + #13 + 'Happy eating!');
+    OKBtn.ModalResult := mrYes;
+  end;
+end;
+
+// Opening the `custom foods` form where users
+// can add their own select food choices
+procedure TfrmAddFood.btnCustomClick(Sender: TObject);
+var
+  CustomFoods : TfrmCustomFood;
+  isAdded : Boolean;
+begin
+  inherited;
+  CustomFoods := TfrmCustomFood.Create(nil);
+  try
+    Self.Hide;
+    CustomFoods.ShowModal;
+    isAdded := CustomFoods.ModalResult = mrYes;
+  finally
+    CustomFoods.Free;
+  end;
+
+  if isAdded then
+    self.ModalResult := mrYes
+  else
+    self.Show;
+end;
+{$ENDREGION}
+
+// Displaying food information
+{$REGION DISPLAYING}
 procedure TfrmAddFood.cbxItemsChange(Sender: TObject);
 var
   iFoodIndex : integer;
@@ -179,7 +200,11 @@ var
 begin
   inherited;
   if cbxItems.ItemIndex <> -1 then
-    btnAccept.Enabled := true
+  begin
+    btnAccept.Enabled := true;
+    btnAccept.Default := true;
+    btnQuery.Default := false;
+  end
   else btnAccept.Enabled := false;
   iFoodIndex := cbxItems.ItemIndex+1;
 
@@ -204,7 +229,7 @@ begin
     end;
     with lines do
     begin
-      Add('Data on ' + Foodname + #13);
+      Add('Food item on ' + Foodname);
       Add('===========================');
       Add('Description' + #9 + sFoodDesc);
       Add('Category' + #9 + sFoodCat);
@@ -216,10 +241,31 @@ begin
       Add('Carbs:' + #9 + FloatToStrF(rCarbs,ffFixed,8,2)+ 'g');
       Add('Fat:' + #9 + FloatToStrF(rFat,ffFixed,8,2) + 'g');
       Add('Sugar:' + #9 + FloatToStrF(rSugar,ffFixed,8,2) + 'g');
+      Add('');
+      Add('Hit accept if everything looks good');
     end;
   end;
 end;
+{$ENDREGION}
 
+// Form control
+{$REGION FORM CONTROL}
+procedure TfrmAddFood.FormShow(Sender: TObject);
+begin
+  inherited;
+  StringUtils := TStringUtils.Create;
+  edtQuery.SetFocus;
+
+  with redItems.Lines do
+  begin
+    Clear;
+    Add('Enter a food item and click the `query` button');
+    Add('Check `branded` if the food item is branded or not a basic food item');
+    Add('Add a custom food item by clicking `custom item`');
+  end;
+end;
+
+// Dynamically enable components when the query is entered
 procedure TfrmAddFood.edtQueryChange(Sender: TObject);
 var
   isEditEmpty : Boolean;
@@ -232,6 +278,8 @@ begin
   begin
     btnQuery.Enabled := True;
     cbxBranded.Enabled := True;
+    btnQuery.Default := true;
+    btnAccept.Default := false;
   end
   else
   begin
@@ -239,21 +287,10 @@ begin
     cbxBranded.Enabled := false;
   end;
 end;
+{$ENDREGION}
 
-procedure TfrmAddFood.FormShow(Sender: TObject);
-begin
-  inherited;
-  StringUtils := TStringUtils.Create;
-  edtQuery.SetFocus;
-
-  with redItems.Lines do
-  begin
-    Clear;
-    Add('Enter a food item and click the `query` button');
-    Add('Check `branded` if the food item is branded or not a basic food item');
-  end;
-end;
-
+// Parsing JSON and sorting food items
+{$REGION PARSING AND SORTING}
 procedure TfrmAddFood.SortItems(pJsonResponse: TStringStream; pResponseLength: Integer);
 var
   j,P,i : integer;
@@ -306,19 +343,29 @@ begin
 
   numResults := jsonArrFoods.Count;
 
-  for j := 0 to numResults -1 do
+  // Start with j and use i as j+1, it makes
+  // it easier for me to understand where the loop is
+  for j := 0 to numResults - 1 do
   begin
+    // i has to be one higher than j because json arrays begin their indexes at 0
+    // but the others begin at one
     i := j+1;
     jsonFood := jsonArrFoods[j] as TJSONValue;
+
+    // Getting our values from the current item in the `foods` json array
     arrFood[i] := JsonFood.FindValue('description').GetValue<string>;
     arrCategory[i] := jsonFood.FindValue('foodCategory').GetValue<String>;
 
+    // Get our `jsonNutrients` json array and assign it as a TJSONArray
     jsonArrNutrients := (jsonFood as TJSONObject).Get('foodNutrients').JsonValue as TJSONArray;
 
+    // p loops through each `jsonNutrient` in the jsonNutrients json array
     for p := 0 to jsonArrNutrients.Count - 1 do
     begin
       jsonNutrient := jsonArrNutrients.Items[p] as TJSONValue;
 
+      // We use nutrient IDs to obtain specific values based on identifiers
+      // that each nutrient is set in the API
       iNutrientID := jsonNutrient.FindValue('nutrientId').GetValue<integer>;
 
       case iNutrientID of
@@ -332,17 +379,23 @@ begin
     { Formula: Calories = protein*4 + carbohydrate*4 + lipid*9 }
     arrCalories[i] := (arrProtein[i] * 4) + (arrCarb[i] * 4) + (arrFat[i] * 9);
 
+    // Energy being calories x 4.18
     arrEnergy[i] := arrCalories[i] * 4.18;
   end;
 
+  // Populating our food combo box
   for j := 1 to numResults do
   begin
     cbxItems.Items.Add(arrFood[j]);
   end;
 end;
 
+// We use this function to get the value of the `value` key of the
+// current item in the `jsonNutrients` json array
+// Returned as a floating point number
 function TfrmAddFood.GetNutrientValue(pJsonNutrient: TJSONValue): Real;
 begin
   Result := pJsonNutrient.FindValue('value').GetValue<extended>;
 end;
+{$ENDREGION}
 end.

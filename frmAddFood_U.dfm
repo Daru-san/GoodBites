@@ -14,6 +14,13 @@ inherited frmAddFood: TfrmAddFood
     ExplicitWidth = 574
     ExplicitHeight = 322
   end
+  object lblSelectItem: TLabel [1]
+    Left = 368
+    Top = 31
+    Width = 95
+    Height = 15
+    Caption = 'Select a food item'
+  end
   inherited OKBtn: TButton
     Left = 588
     ExplicitLeft = 588
@@ -31,6 +38,7 @@ inherited frmAddFood: TfrmAddFood
     Height = 25
     Caption = '&Help'
     TabOrder = 2
+    Visible = False
     OnClick = HelpBtnClick
   end
   object cbxItems: TComboBox
@@ -70,7 +78,9 @@ inherited frmAddFood: TfrmAddFood
     Width = 97
     Height = 17
     Caption = 'Branded'
+    Checked = True
     Enabled = False
+    State = cbChecked
     TabOrder = 6
   end
   object redItems: TRichEdit
@@ -103,9 +113,12 @@ inherited frmAddFood: TfrmAddFood
     Top = 52
     Width = 121
     Height = 23
-    EditLabel.Width = 32
+    Hint = 'Name of the food item to query'
+    EditLabel.Width = 88
     EditLabel.Height = 15
-    EditLabel.Caption = 'Query'
+    EditLabel.Caption = 'Enter food name'
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 9
     Text = ''
     TextHint = 'Food name'

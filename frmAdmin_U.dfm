@@ -44,8 +44,6 @@ object frmAdmin: TfrmAdmin
         Height = 100
         Align = alBottom
         TabOrder = 1
-        ExplicitTop = 365
-        ExplicitWidth = 804
         object pnlUserNav: TPanel
           Left = 377
           Top = 1
@@ -53,7 +51,6 @@ object frmAdmin: TfrmAdmin
           Height = 98
           Align = alClient
           TabOrder = 0
-          ExplicitWidth = 426
           object lblUserRecordNav: TLabel
             Left = 1
             Top = 1
@@ -165,9 +162,6 @@ object frmAdmin: TfrmAdmin
         Height = 367
         Align = alClient
         TabOrder = 2
-        ExplicitTop = 0
-        ExplicitWidth = 804
-        ExplicitHeight = 365
         object dbgUsersTable: TDBGrid
           Left = 1
           Top = 1
@@ -319,15 +313,6 @@ object frmAdmin: TfrmAdmin
             Caption = 'Record Modification'
             ExplicitWidth = 108
           end
-          object btnFoodDelete: TButton
-            Left = 200
-            Top = 53
-            Width = 147
-            Height = 25
-            Caption = 'Delete Selected Food item'
-            TabOrder = 0
-            OnClick = btnUserDeleteClick
-          end
           object edtFoodField: TEdit
             Left = 16
             Top = 22
@@ -336,7 +321,7 @@ object frmAdmin: TfrmAdmin
             Hint = 'Name of Field'
             ParentShowHint = False
             ShowHint = True
-            TabOrder = 1
+            TabOrder = 0
             TextHint = 'Field'
           end
           object edtFoodFieldData: TEdit
@@ -344,7 +329,7 @@ object frmAdmin: TfrmAdmin
             Top = 51
             Width = 121
             Height = 23
-            TabOrder = 2
+            TabOrder = 1
             TextHint = 'Field Data'
           end
           object btnFoodEdit: TButton
@@ -353,7 +338,7 @@ object frmAdmin: TfrmAdmin
             Width = 90
             Height = 25
             Caption = 'Edit Field Data'
-            TabOrder = 3
+            TabOrder = 2
             OnClick = btnUserFieldEditClick
           end
         end

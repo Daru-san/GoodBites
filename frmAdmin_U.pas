@@ -47,7 +47,6 @@ type
     lblUser: TLabel;
     pnlFoodRecordMod: TPanel;
     lblFoodRecordMod: TLabel;
-    btnFoodDelete: TButton;
     edtFoodField: TEdit;
     edtFoodFieldData: TEdit;
     btnFoodEdit: TButton;
@@ -388,6 +387,7 @@ begin
   LogService := TLogService.Create;
   FileUtils := TFileUtils.Create;
   ControlUtils := TControlUtils.Create;
+
   pageCtrl.TabIndex := 0;
   lblUser.Caption := 'Hello, ' + AdminUser.Username;
 
@@ -399,6 +399,7 @@ begin
     dbgFoodsTable.DataSource := dscFoods;
     dbgUsersTable.DataSource := dscUsers;
   end;
+  tsUsers.OnShow(nil);
 end;
 
 

@@ -46,6 +46,7 @@ begin
     Mode := nbmFloat;
     Enabled := false;
     Value := pMin;
+    UseMouseWheel := true;
   end;
 end;
 

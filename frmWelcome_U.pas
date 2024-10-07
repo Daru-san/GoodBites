@@ -242,6 +242,14 @@ begin
   isHeight := (nbxHeight.Value >= MINHEIGHT) and (nbxHeight.Value <= MAXHEIGHT);
   isActive := rgpActivity.ItemIndex <> -1;
   isGender := rgpGender.ItemIndex <> -1;
+  if isName then
+  begin
+    spnAge.Enabled := true;
+    nbxWeight.Enabled := true;
+    nbxHeight.Enabled := true;
+    rgpActivity.Enabled := true;
+    rgpGender.Enabled := true;
+  end;
   if isName and isAge and isWeight and isHeight then
     btnContinue.Enabled := true
   else

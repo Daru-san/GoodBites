@@ -3,7 +3,7 @@ unit libUser_U;
 
 interface
 
-uses system.SysUtils,conDB, Vcl.Dialogs,libUtils_U,Classes,Math,StrUtils,controls;
+uses system.SysUtils,conDB, Vcl.Dialogs,libUtils_U,Classes,Math,StrUtils,controls, libGoals_U;
 
 type
   TUser = class(TObject)
@@ -23,10 +23,12 @@ type
     // User creation
     function CheckUserID(pUserID:string) : boolean;
     function CheckUsername(pUsername:string) : boolean;
-    function CheckPassword(pPassword:string):Boolean;
+    function ValidatePassword(pPassword:string):Boolean;
     function CheckDatabase(pUsername:string):boolean;
     function CheckUserExisting(pUsername:string):Boolean;
     function WriteUserPassFile(pUsername,pPassword:string): boolean;
+    function ValidateUserDetails(pPassword:string) : Boolean;
+    function AddUser(pPassword:String) : Boolean;
 
     procedure RegisterUserInDB(pPassword : string);
     procedure GenerateUserID;
@@ -34,13 +36,19 @@ type
     // User Login
     function CheckPresence(pPassword:string): boolean;
     function CheckLoginDetails(pPassword: string): boolean;
+    function CheckPassword(pPassword : String = ''): Boolean;
 
-    procedure DeleteUserPassFile;
+
     procedure GetUsername;
     procedure SetAdmin;
     procedure GetUserID;
-
     procedure SaveLastLogin;
+
+    // Deleting users
+    procedure DeletePassword;
+    procedure RemoveUserDB;
+    procedure DeleteGoals;
+    procedure DeleteMeals;
   public
     constructor Create(Username : string);
     destructor Destroy; override;
@@ -71,22 +79,23 @@ type
 
     // User modification: creation,deletion and login
     procedure ChangeUsername(pUsername: string);
-    procedure RemoveUser(pUserID : string);
     procedure Login(pPassword:String);
-    procedure SignUp(pPassword:String);
+    function SignUp(pPassword:String) : Boolean;
     procedure CompleteSignUp;
+    procedure DeleteUser(pUserID:String);
 
     procedure SaveUserInfo;
     procedure GetUserInfo;
   end;
 
+  const PASSWORDFILE = 'passwords';
   var
     LogService : TLogService;
     FileUtils : TFileUtils;
 
     // Stores all accumulated user-creation errors
     // An array would not work since the number of errors can change
-    AccountErrors : TStringList;
+    slsAccountErrors : TStringList;
 
 implementation
 
@@ -115,84 +124,77 @@ end;
 { User account creation  }
 {$REGION Account creation }
 
-procedure TUser.SignUp;
+function TUser.SignUp(pPassword: string): Boolean;
 var
-  isUserValid,
-  inDatabase,
-  hasPassword,
-  isPassValid,
-  isExisting,
-  isDetailsCorrect,
-  isPresent
-  : boolean;
+  isPresent, isValid, isAdded : boolean;
 begin
-  isUserValid := false;
-  isExisting := False;
-  isPassValid := False;
-  isDetailsCorrect := false;
+  isAdded := false;
+  isValid := false;
 
   isPresent := CheckPresence(pPassword);
 
-  { Steps, if one of these fails the process stops
-    -> Check if the username and password are present
-    -> Check if the username is valid
-    -> Check if the user exists
-    -> Check if the password is valid
-    -> Show error message if username or password is invalid }
   if isPresent then
+    isValid := ValidateUserDetails(pPassword);
+
+  if isValid then
+    isAdded := AddUser(pPassword);
+
+  if isAdded then
   begin
-    AccountErrors := TStringList.Create;
-    isUserValid := CheckUsername(Username);
-
-    if isUserValid then
-    begin
-      isExisting := CheckUserExisting(Username);
-      if not(isExisting) then
-      begin
-        isPassValid := CheckPassword(pPassword);
-      end;
-    end;
-    if not (isPassValid) or not(isUserValid) then
-      ShowMessage('User creation errors ' + #13+#13+ AccountErrors.Text);
+    LogService.WriteUserLog('The user ' + Username + ', uid ' + userID + ' has registered successfully');
+    ShowMessage('You have successfully been registered, happy eating!');
   end;
-  AccountErrors.free;
-
-  isDetailsCorrect := isPassValid and isUserValid and isPresent and not(isExisting);
-
-  {
-    Process:
-    1. generate the user ID
-    2. Register the user in the database
-    3. Ensure that they exist in the database
-    4. Write the user to the passwords file
-    5. Log their successful account creation
-
-    If any steps fail logging will be done to let me debug the issue
-  }
-  if isDetailsCorrect then
-  begin
-    GenerateUserID;
-    RegisterUserInDB(pPassword);
-    inDatabase := CheckDatabase(Username);
-    if inDatabase then
-    begin
-      WriteUserPassFile(Username,pPassword);
-      LogService.WriteUserLog('The user ' + Username + ', uid ' + userID + ' has registered successfully');
-      ShowMessage('You have successfully been registered, happy eating!');
-    end
-    else
-    begin
-      LogService.WriteUserLog(
-        'The user ' + Username + ',uid ' + userID +
-        ' attempted to register, but were not found in the database afterward.'
-        + #13 + #9 + 'Something must have gone wrong'
-      );
-      ShowMessage('Some error occured and user registration has failed.' + #13 + 'Please try again');
-    end;
-  end;
+  Result := isAdded;
 end;
 
-function TUser.CheckPassword(pPassword:string):Boolean;
+function TUser.AddUser(pPassword: string) : Boolean;
+var
+  isAdded, hasPassword, isDatabase : Boolean;
+begin
+  isAdded := false;
+  GenerateUserID;
+
+  RegisterUserInDB(pPassword);
+  isDatabase := CheckDatabase(Username);
+  hasPassword := WriteUserPassFile(Username,pPassword);
+
+  // If the user is in the database but password creation failed, delete them from the database
+  if isDatabase and not(hasPassword) then
+    RemoveUserDB;
+
+  // If the user has a password but is not in the database, delete them from the password file
+  if hasPassword and not(isDatabase) then
+    DeletePassword;
+
+  if isDatabase and hasPassword then
+    isAdded := true;
+  Result := isAdded;
+end;
+
+function TUser.ValidateUserDetails(pPassword: string): Boolean;
+var
+  isUsername,isExisting,isPassword, isValid : Boolean;
+begin
+  slsAccountErrors := TStringList.Create;
+  isUsername := CheckUsername(Username);
+
+  if isUsername then
+  begin
+    isExisting := CheckUserExisting(Username);
+    if not(isExisting) then
+    begin
+      isPassword := ValidatePassword(pPassword);
+    end;
+  end;
+
+  isValid := isUsername and isPassword;
+  if not isValid then
+    ShowMessage('User creation errors ' + #13 + #13+ slsAccountErrors.Text);
+  slsAccountErrors.free;
+  Result := isValid;
+end;
+
+function TUser.ValidatePassword(pPassword:string):Boolean;
 const
   LOWERCHARS = ['a'..'z'];
   UPPERCHARS = ['A'..'z'];
@@ -220,7 +222,7 @@ begin
   if (pPassword.length < 8) or (pPassword.Length > 20) then
   begin
     isLong := false;
-    AccountErrors.Add('Password must be between 8 to 20 characters in length');
+    slsAccountErrors.Add('Password must be between 8 to 20 characters in length');
   end else isLong := true;
 
   //Ensure presence of upper and lower case characters and numbers, special characters are optional
@@ -250,14 +252,14 @@ begin
   end;
 
   if (not hasLowcase) or (not hasUpcase) then
-  AccountErrors.Add('Password must contain uppercase and lowercase characters');
+  slsAccountErrors.Add('Password must contain uppercase and lowercase characters');
 
   if not hasNumbers then
-  AccountErrors.Add('Password must contain a number');
+  slsAccountErrors.Add('Password must contain a number');
 
   // Special characters are optional but restricted to a range
   if hasInValidChars then
-  AccountErrors.Add('Password can numbers, letters and any of the special characters ' + '.,,,/,\,(,),!,@,#,%,&,*');
+  slsAccountErrors.Add('Password can numbers, letters and any of the special characters ' + '.,,,/,\,(,),!,@,#,%,&,*');
 
   // If the password has upper and lower case letters, numbers, valid characters and is of good length
   result := hasLowcase and hasLowcase and hasNumbers and (not hasInValidChars) and isLong;
@@ -275,10 +277,10 @@ begin
   hasValidChars := false;
   hasExtraChars := false;
 
-  //Ensure username is between 2 and 10 characters
-  if (pUsername.Length < 2) or (pUsername.Length > 10) then
+  //Ensure username is between 2 and 12 characters
+  if (pUsername.Length < 2) or (pUsername.Length > 12) then
   begin
-    AccountErrors.Add('Username must be between 2 and 10 characters in length');
+    slsAccountErrors.Add('Username must be between 2 and 12 characters in length');
     isLong := false;
   end else isLong := True;
 
@@ -296,46 +298,24 @@ begin
   end;
   // Ensure that characters are only numbers and letters
   if (hasValidChars and hasExtraChars) or hasExtraChars or (not hasValidChars) then
-  AccountErrors.Add('Username must only have letters and numbers, special characters are not allowed');
+  slsAccountErrors.Add('Username must only have letters and numbers, special characters and spaces are not allowed');
 
   // If the password is long enough, has only numbers and letters
   Result := isLong and hasValidChars and (not hasExtraChars);
 end;
 
 function TUser.CheckUserExisting;
-const FILENAME = '.passwords';
 var
   isUserDatabase,hasPassword : Boolean;
-  passFile : TextFile;
-  fileString,sUserinFile : string;
-  delimPos : Integer;
 begin
   hasPassword := false;
   isUserDatabase := CheckDatabase(pUsername);
-  if FileUtils.CheckFileExists(FILENAME) then
-  begin
-    AssignFile(passFile,FILENAME);
-    Reset(passFile);
-    repeat
-      Readln(passFile,fileString);
-
-      // Get the delimiter position
-      delimPos := pos('#',fileString);
-
-      // Copy the username in the file
-      sUserinFile := Copy(fileString,1,delimPos-1);
-
-      if UpperCase(sUserinFile) = UpperCase(pUsername) then
-      begin
-        hasPassword := true;
-      end;
-    until Eof(passFile) or hasPassword;
-    CloseFile(passFile);
-  end;
+  hasPassword := CheckPassword;
 
   if isUserDatabase or hasPassword then
   begin
     ShowMessage('The user ' + pUsername + ' already exists');
+    slsAccountErrors.Add('The user ' + pUsername + ' already exists');
   end;
   Result := isUserDatabase or hasPassword;
 end;
@@ -394,32 +374,23 @@ end;
   the user is not added to the database
 }
 function TUser.WriteUserPassFile;
-const FILENAME = '.passwords';
+const PASSWORDFILE = '.passwords';
 var
-  passFile : textfile;
+  tfPasswords : textfile;
   isFileExist, isSuccessful : boolean;
 begin
-
-  // The condition here being whether the file exists or not
-  // If not then the operation has to be aborted as soon as possible
-  if not TFileUtils.Create.CheckFileExists(FILENAME) then
-  begin
-    LogService.WriteSysLog(
-      'User register attempted, but the password file is missing' + #13
-      + #9 + 'This may cause errrors, manual intervention is required'
-    );
-    ShowMessage('An unkown error occured');
-    isSuccessful := false;
-  end else
-  begin
-    AssignFile(passFile,FILENAME);
-    Append(passFile);
-    WriteLn(passFile,Username + '#' + pPassword);
-    CloseFile(passFile);
+  isSuccessful := false;
+  if FileUtils.CheckFileExists(PASSWORDFILE) then
+  try
+    AssignFile(tfPasswords,PASSWORDFILE);
+    Append(tfPasswords);
+    WriteLn(tfPasswords,Username + '#' + pPassword);
+  finally
+    CloseFile(tfPasswords);
     LogService.WriteUserLog('User ' + Username + ' has been saved in the PASSWORDS file');
-    isSuccessful:= true;
+    isSuccessful := true;
   end;
-  WriteUserPassFile := isSuccessful;
+  Result := isSuccessful;
 end;
 
 procedure TUser.RegisterUserInDB;
@@ -434,7 +405,7 @@ begin
     FieldValues['isAdmin'] := false;
     FieldValues['Age'] := 0;
     FieldValues['FirstLogin'] := true;
-    FieldValues['Fullname'] := 'Null';
+    FieldValues['Fullname'] := 'TBD';
     FieldValues['ActivityLevel'] := 0;
     FieldValues['Height'] := 0;
     FieldValues['weight'] := 0;
@@ -488,8 +459,10 @@ begin
       GetUsername;
 
       if isAdmin then
-      if MessageDlg('Log in as a normal user?',mtConfirmation,mbYesNo,0) = mrYes then
-       isAdmin := false;
+      if MessageDlg('Log in as an administrator?',mtConfirmation,mbYesNo,0) = mrYes then
+       isAdmin := true
+      else
+        isAdmin := false;
 
       SaveLastLogin;
 
@@ -507,11 +480,6 @@ begin
   FUsername := Username;
   FIsAdmin := IsAdmin;
   FLoggedIn := isSuccess;
-  if isSuccess then
-  begin
-    FUserID := UserID;
-    FDailyCalories := GetDailyCalories(date);
-  end;
 end;
 
 procedure TUser.GetUsername;
@@ -619,49 +587,13 @@ end;
 
 // Check user details to ensure they exist in the database and the passwords file
 function TUser.CheckLoginDetails;
-const
-FILENAME = '.passwords';
 var
-  tfPasswords : textfile;
-  sLine, sUserInFile, sPassInFile : string;
-  isFound,inDatabase : boolean;
-  delPos : integer;
+  inDatabase, isCorrect : Boolean;
 begin
-  AssignFile(tfPasswords,filename);
-  isFound := false;
-
-  if not FileUtils.CheckFileExists(FILENAME) then
-  begin
-    ShowMessage('An unkown error ocurred, please contact an administrator');
-    LogService.WriteSysLog('The passwords file was needed but not found');
-    Result := false;
-    exit;
-  end;
-
-  Reset(tfPasswords);
-
   inDatabase := CheckDatabase(Username);
+  isCorrect := CheckPassword(pPassword);
 
-  if not inDatabase then
-  begin
-    ShowMessage('The user ' + Username + ' is not found');
-  end
-  else
-  try
-    repeat
-      ReadLn(tfPasswords,sLine);
-      delPos := pos('#',sLine);
-      sUserInFile := copy(sLine,1,delPos-1);
-      delete(sLine,1,delPos);
-      sPassInFile := sLine;
-      if ((UpperCase(sUserInFile) = UpperCase(Username)) and (sPassInFile = pPassword)) then
-        isFound := true;
-    until EOF(tfPasswords) or isFound;
-  finally
-    CloseFile(tfPasswords);
-  end;
-
-  Result := isFound;
+  Result := inDatabase and isCorrect;
 end;
 
 // Save the last login parameter in the database as the current date
@@ -720,6 +652,39 @@ begin
     end;
     Close;
   end;
+end;
+
+function TUser.CheckPassword(pPassword : String = '') : Boolean;
+var
+  tfPasswords : textfile;
+  sLine, sUserInFile, sPassInFile : string;
+  isPassword, isUsername : Boolean;
+  delPos : integer;
+begin
+  isUsername := false;
+  isPassword := false;
+  if FileUtils.CheckFileExists(PASSWORDFILE) then
+  try
+    AssignFile(tfPasswords,PASSWORDFILE);
+    Reset(tfPasswords);
+    repeat
+      ReadLn(tfPasswords,sLine);
+      delPos := pos('#',sLine);
+      sUserInFile := copy(sLine,1,delPos-1);
+      delete(sLine,1,delPos);
+      sPassInFile := sLine;
+      isUsername := Uppercase(sUserInFile) = Uppercase(Username);
+      isPassword := sPassInFile = pPassword;
+    until EOF(tfPasswords) or isUsername;
+  finally
+      CloseFile(tfPasswords);
+  end;
+
+  // If the password field is empty, only return whether the user is found
+  if pPassword = '' then
+    Result := isUsername
+  else
+    Result := isUsername and isPassword;
 end;
 
 function TUser.CheckLogin;
@@ -852,70 +817,90 @@ end;
 
 { User deletion procedures }
 {$REGION USER DELETION}
-// Still in progress, removing a user from the database
-//TODO: Come back to user removal
-procedure TUser.RemoveUser;
-var
-  isFound, isRemoved : boolean;
-begin
- { with dmData.tblUsers do
-  begin
-    Open;
-    First;
-    repeat
-      if FieldValues['UserID'] = userID then
-        isFound := true
-      else Next;
-    until EOF or isFound;
-    sUsername := FieldValues['Username'];
 
-    isRemoved := DeleteUserPassFile(Username);
-    if isRemoved then
-    begin
-      Delete;
-      Post;
-      loggerObj.WriteUserLog('User ' + sUsername + ', uid ' + userID + ' was removed completely');
-    end;
-  end; }
+procedure TUser.DeleteUser(pUserID: string);
+begin
+  UserID := pUserID;
+  DeletePassword;
+  RemoveUserDB;
 end;
 
-{
-  A very incomplete attempt at removing entries from the passwords file
-  The main issue is that the file begings with a `.`, giving it the hidden
-  attribute, preventing me from rewriting it.
-  I will either rename the file or find a workaround to solve this
-}
-procedure TUser.DeleteUserPassFile;
-const FILENAME = '.passwords';
+procedure TUser.DeletePassword;
 var
-  passFile : textfile;
+  tfPasswords : textfile;
   isSuccessful : boolean;
-  passList : TStringList;
-  indexNum : integer;
+  slsPasswords : TStringList;
+  iUserIndex : integer;
 begin
-  if not FileUtils.CheckFileExists(FILENAME) then
+  if FileUtils.CheckFileExists(PASSWORDFILE) then
   begin
-    LogService.WriteSysLog('User deletion attempted, but the password file is missing or corrupted');
-    ShowMessage('An unkown error occured');
-    isSuccessful := false;
-  end else
-  begin
-    passList := TStringList.Create;
-    passList.LoadFromFile(FILENAME);
-    passList.NameValueSeparator := '#';
+    slsPasswords := TStringList.Create;
+    slsPasswords.LoadFromFile(PASSWORDFILE);
+    slsPasswords.NameValueSeparator := '#';
 
     // Delete the password at the index in the file, e.g line 9
-    indexNum := passList.IndexOfName(Username);
-    if (indexNum <> -1) then
+    iUserIndex := slsPasswords.IndexOfName(Username);
+    if (iUserIndex <> -1) then
     begin
-      passList.Delete(indexNum);
-      passList.SaveToFile(FILENAME);
+      slsPasswords.Delete(iUserIndex);
+      slsPasswords.SaveToFile(PASSWORDFILE);
     end;
-    passList.Free;
+    slsPasswords.Free;
     LogService.WriteSysLog('Entry for user ' + Username + ' was removed from the passwords file');
     isSuccessful := true;
   end;
 end;
+
+procedure TUser.DeleteGoals;
+const GOALITEMS :array[1..5] of string = ('Calorie','Water','Carbohydrate','Protein','Fat');
+var
+  CurrentGoal : TGoal;
+  i: Integer;
+begin
+  for i := 1 to Length(GOALITEMS) do
+  begin
+    CurrentGoal := TGoal.Create(UserID,GOALITEMS[i]);
+    CurrentGoal.DeleteGoal;
+  end;
+end;
+
+procedure TUser.DeleteMeals;
+begin
+  with dmData.tblMeals do
+  begin
+    Open;
+    First;
+    repeat
+      if UserID = FieldValues['UserID'] then
+        Delete;
+    until EOF;
+    Close;
+  end;
+end;
+
+procedure TUser.RemoveUserDB;
+var isFound : Boolean;
+begin
+  isFound := false;
+  DeleteGoals;
+  with dmData.tblUsers do
+  begin
+    Open;
+    First;
+    repeat
+      if UserID = FieldValues['UserID'] then
+      begin
+        Delete;
+        isFound := true;
+        LogService.WriteUserLog('User ' + Username + ' was deleted from the database');
+      end
+      else
+      next;
+    until EOF or isFound;
+    Close;
+  end;
+end;
+
 {$ENDREGION}
 
 { Meals }
@@ -1048,8 +1033,12 @@ var
   rTotalCalories : REAL;
 begin
   { Formula = 10 * weight + 6.25 * height + 5 * age }
-  //TODO: Add calculations based on biological sex
-  rTotalCalories := (10*Weight) + (6.25 * Height) + (5*Age);
+  { Add 5 for males and subtract 161 for females }
+  if Gender = 'Male' then
+    rTotalCalories := (10*Weight) + (6.25 * Height) + (5*Age) +5
+  else
+    rTotalCalories := (10*Weight) + (6.25 * Height) + (5*Age) - 161;
+
   Result := rTotalCalories * ActivityLevel;
 end;
 {$ENDREGION}

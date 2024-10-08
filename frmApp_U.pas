@@ -12,11 +12,11 @@ type
   TfrmApp = class(TForm)
     pnlCenter: TPanel;
     imgCenter: TImage;
-    btnEnter: TButton;
+    pnlEnter: TPanel;
     procedure FormShow(Sender: TObject);
     procedure btnExitClick(Sender: TObject);
-    procedure btnEnterClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
+    procedure pnlEnterClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { Private declarations }
@@ -152,8 +152,8 @@ procedure TfrmApp.FormResize(Sender: TObject);
 begin
   with pnlCenter do
   begin
-    btnEnter.Left := Round(Width/2);
-    btnEnter.Top := Round(Height - Height/4);
+    pnlEnter.Left := Round(Width*1/8);
+    pnlEnter.Top := Round(Height - Height/4);
   end;
 end;
 
@@ -164,4 +164,8 @@ begin
   self.FormResize(self);
 end;
 
+procedure TfrmApp.pnlEnterClick(Sender: TObject);
+begin
+  ShowLogin;
+end;
 end.

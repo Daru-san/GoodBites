@@ -17,6 +17,7 @@ type
     procedure btnExitClick(Sender: TObject);
     procedure btnEnterClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { Private declarations }
     FAppUser : TUser;
@@ -134,6 +135,17 @@ end;
 procedure TfrmApp.btnExitClick(Sender: TObject);
 begin
   Application.Terminate;
+end;
+
+procedure TfrmApp.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  // Show login screen when enter is pressed
+  // Close login screen when escape is pressed
+  case Key of
+    VK_RETURN : ShowLogin;
+    VK_ESCAPE : Close;
+  end;
 end;
 
 procedure TfrmApp.FormResize(Sender: TObject);

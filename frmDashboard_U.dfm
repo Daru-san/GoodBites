@@ -99,6 +99,7 @@ object frmDashboard: TfrmDashboard
               EditLabel.Width = 71
               EditLabel.Height = 15
               EditLabel.Caption = 'Daily Calories'
+              ReadOnly = True
               TabOrder = 0
               Text = ''
             end
@@ -126,6 +127,7 @@ object frmDashboard: TfrmDashboard
               EditLabel.Width = 66
               EditLabel.Height = 15
               EditLabel.Caption = 'Water intake'
+              ReadOnly = True
               TabOrder = 0
               Text = ''
             end
@@ -153,6 +155,7 @@ object frmDashboard: TfrmDashboard
               EditLabel.Width = 16
               EditLabel.Height = 15
               EditLabel.Caption = 'Fat'
+              ReadOnly = True
               TabOrder = 0
               Text = ''
             end
@@ -181,6 +184,7 @@ object frmDashboard: TfrmDashboard
               EditLabel.Width = 72
               EditLabel.Height = 15
               EditLabel.Caption = 'Carbohydrate'
+              ReadOnly = True
               TabOrder = 0
               Text = ''
             end
@@ -208,6 +212,7 @@ object frmDashboard: TfrmDashboard
               EditLabel.Width = 38
               EditLabel.Height = 15
               EditLabel.Caption = 'Protein'
+              ReadOnly = True
               TabOrder = 0
               Text = ''
             end
@@ -936,6 +941,7 @@ object frmDashboard: TfrmDashboard
       EditLabel.Width = 84
       EditLabel.Height = 15
       EditLabel.Caption = 'Today'#39's Calories'
+      ReadOnly = True
       TabOrder = 0
       Text = ''
     end
@@ -948,6 +954,7 @@ object frmDashboard: TfrmDashboard
       EditLabel.Width = 108
       EditLabel.Height = 15
       EditLabel.Caption = 'Today'#39's Water Intake'
+      ReadOnly = True
       TabOrder = 1
       Text = ''
     end

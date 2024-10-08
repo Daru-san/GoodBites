@@ -188,6 +188,7 @@ begin
         ResetProgress;
         Edit;
         FieldValues['Target'] := Target;
+        FieldValues['StartDate'] := Date;
         Post;
       end else next;
     until EOF or isFound;

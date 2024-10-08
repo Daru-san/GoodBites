@@ -2,7 +2,7 @@ object frmAdmin: TfrmAdmin
   Left = 0
   Top = 0
   BorderStyle = bsDialog
-  Caption = 'Goodbites:  Adminastration'
+  Caption = 'Goodbites:  Administration'
   ClientHeight = 538
   ClientWidth = 904
   Color = clBtnFace

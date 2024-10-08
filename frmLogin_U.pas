@@ -37,6 +37,7 @@ type
     pnlSignUpTop: TPanel;
     pnlSignUpCenter: TPanel;
     pnlLoginHead: TPanel;
+    btnHome: TButton;
     procedure btnLoginClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btnGoSignUpClick(Sender: TObject);
@@ -54,6 +55,7 @@ type
     procedure tbtHomeClick(Sender: TObject);
     procedure crdLoginEnter(Sender: TObject);
     procedure crdSignEnter(Sender: TObject);
+    procedure btnHomeClick(Sender: TObject);
   private
     { Private declarations }
     FLoginUser : TUser;
@@ -92,6 +94,11 @@ begin
   edtUser.Text := '';
   edtPassword.Text := '';
   btnLogin.Enabled := false;
+end;
+
+procedure TfrmLogin.btnHomeClick(Sender: TObject);
+begin
+  self.ModalResult := mrClose;
 end;
 
 procedure TfrmLogin.btnLoginClick(Sender: TObject);

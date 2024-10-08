@@ -2,7 +2,7 @@ object frmLogin: TfrmLogin
   Left = 0
   Top = 0
   BorderStyle = bsDialog
-  Caption = 'Login'
+  Caption = 'Goodbites: Login'
   ClientHeight = 371
   ClientWidth = 605
   Color = clBtnFace
@@ -297,5 +297,14 @@ object frmLogin: TfrmLogin
     Font.Style = [fsBold]
     ParentFont = False
     TabOrder = 1
+  end
+  object btnHome: TButton
+    Left = 488
+    Top = 319
+    Width = 75
+    Height = 25
+    Caption = 'Home'
+    TabOrder = 2
+    OnClick = btnHomeClick
   end
 end

@@ -130,7 +130,7 @@ end;
 
 procedure TfrmApp.FormShow(Sender: TObject);
 begin
-  imgCenter.Picture.LoadFromFile('..\..\image.png');
+  imgCenter.Picture.LoadFromFile('..\..\Artwork.png');
   imgCenter.Stretch := true;
   self.FormResize(self);
 end;

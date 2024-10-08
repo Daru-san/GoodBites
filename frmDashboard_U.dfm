@@ -1,7 +1,7 @@
 object frmDashboard: TfrmDashboard
   Left = 0
   Top = 0
-  Caption = 'Dashboard'
+  Caption = 'Goodbites: Dashboard'
   ClientHeight = 472
   ClientWidth = 995
   Color = clBtnFace

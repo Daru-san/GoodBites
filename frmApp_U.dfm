@@ -28537,8 +28537,6 @@ object frmApp: TfrmApp
       ShowHint = True
       TabOrder = 0
       OnClick = pnlEnterClick
-      OnMouseEnter = pnlEnterMouseEnter
-      OnMouseLeave = pnlEnterMouseLeave
     end
     object pnlExit: TPanel
       Left = 48

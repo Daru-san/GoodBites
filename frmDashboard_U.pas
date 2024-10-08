@@ -844,7 +844,7 @@ begin
   try
     frmFood.ShowModal;
   finally
-    isSuccess := frmFood.ModalResult = mrYes;
+    isSuccess := frmFood.ModalResult = mrOk;
     frmFood.Free;
   end;
   if isSuccess then

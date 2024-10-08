@@ -44,15 +44,14 @@ type
     lblTotalCalCalc: TLabel;
     lblWaterAdd: TLabel;
     mpWelcomeVideo: TWindowsMediaPlayer;
-    imgLanding: TImage;
     lblWelcome: TLabel;
-    pnlLandingIMG: TPanel;
     pnlLandingCenter: TPanel;
-    memExplanation: TMemo;
     pnlNav: TPanel;
     rgpGender: TRadioGroup;
     redInfoHelp: TRichEdit;
     lblHelpNote: TLabel;
+    redGreeting: TRichEdit;
+    lblTagline: TLabel;
     procedure FormShow(Sender: TObject);
     procedure btnContinueClick(Sender: TObject);
     procedure crdWelcomeEnter(Sender: TObject);
@@ -130,6 +129,23 @@ begin
   FileUtils := TFileUtils.Create;
   LogService := TLogService.Create;
   ControlUtils := TControlUtils.Create;
+  // Ensure that the greeting text file exists, if not display default text
+  if FileUtils.CheckFileExists('info/greeting.txt') then
+    redGreeting.Lines.LoadFromFile('info/greeting.txt')
+  else
+    with redGreeting.Lines do
+    begin
+      Clear;
+      Add('Hello, ' + CurrentUser.Username+'.');
+      Add('Welcome to Goodbites');
+      Add('This app is designed to help you improve YOUR nutrition.');
+      Add('With advanced nutrient calculation and food tracking, we hope to help you live in your best health');
+      Add('');
+      Add('First steps');
+      Add('============');
+      Add('Let`s start by getting your data.');
+      Add('Hit `continue` to move to the next step.');
+    end;
 end;
 
 procedure TfrmWelcome.nbxHeightChange(Sender: TObject);

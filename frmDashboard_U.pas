@@ -962,6 +962,7 @@ end;
 procedure TfrmDashboard.PopulateGoalUnits(pGoalItem: string);
 var isWater : Boolean;
 begin
+  cbxGoalUnit.Items.Clear;
   isWater := LowerCase(pGoalItem) = 'water';
   if isWater then
   begin
@@ -1039,7 +1040,6 @@ begin
   end;
 
   Val(sTargetStr,rNewTarget,iCheckNum);
-  ShowMessage(FloatToStr(rNewTarget));
 
   if iCheckNum <> 0 then
   begin
@@ -1055,8 +1055,8 @@ begin
 
     ShowMessage('Goal changed successfully!');
 
-    ShowGoalInfo(sGoalItem);
     GetProgressInfo;
+    ShowGoalInfo(sGoalItem);
   end;
 end;
 
@@ -1106,19 +1106,19 @@ procedure TfrmDashboard.FillGoalEditBox(pGoalItem : String;pTarget:Real);
 begin
   case IndexStr(LowerCase(pGoalItem),['calorie','water','carbohydrate','protein','fat']) of
   0: begin
-    edtGoalCal.Text := FloatToStrF(pTarget,ffGeneral,8,2);
+    edtGoalCal.Text := FloatToStrF(pTarget,ffGeneral,8,2)+'g';
   end;
   1: begin
-    edtGoalWater.Text := FloatToStrF(pTarget,ffGeneral,8,2);
+    edtGoalWater.Text := FloatToStrF(pTarget,ffGeneral,8,2)+'ml';
   end;
   2: begin
-    edtGoalCarb.Text := FloatToStrF(pTarget,ffGeneral,8,2);
+    edtGoalCarb.Text := FloatToStrF(pTarget,ffGeneral,8,2)+'g';
   end;
   3: begin
-    edtGoalProtein.Text := FloatToStrF(pTarget,ffGeneral,8,2);
+    edtGoalProtein.Text := FloatToStrF(pTarget,ffGeneral,8,2)+'g';
   end;
   4: begin
-    edtGoalFat.Text := FloatToStrF(pTarget,ffGeneral,8,2);
+    edtGoalFat.Text := FloatToStrF(pTarget,ffGeneral,8,2)+'g';
   end;
   else
     begin

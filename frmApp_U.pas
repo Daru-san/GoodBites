@@ -13,11 +13,13 @@ type
     pnlCenter: TPanel;
     imgCenter: TImage;
     pnlEnter: TPanel;
+    pnlExit: TPanel;
     procedure FormShow(Sender: TObject);
     procedure btnExitClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure pnlEnterClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure pnlExitClick(Sender: TObject);
   private
     { Private declarations }
     FAppUser : TUser;
@@ -124,7 +126,9 @@ begin
   with pnlCenter do
   begin
     pnlEnter.Left := Round(Width*1/8);
+    pnlExit.left := pnlEnter.Left;
     pnlEnter.Top := Round(Height - Height/4);
+    pnlExit.Top := pnlEnter.Top + pnlEnter.Height + 10;
   end;
 end;
 
@@ -169,4 +173,10 @@ procedure TfrmApp.pnlEnterClick(Sender: TObject);
 begin
   ShowLogin;
 end;
+
+procedure TfrmApp.pnlExitClick(Sender: TObject);
+begin
+  Close;
+end;
+
 end.

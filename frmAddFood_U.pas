@@ -11,7 +11,6 @@ type
     HelpBtn: TButton;
     cbxItems: TComboBox;
     btnQuery: TButton;
-    btnAccept: TButton;
     cbxBranded: TCheckBox;
     redItems: TRichEdit;
     btnCustom: TButton;
@@ -19,11 +18,12 @@ type
     lblSelectItem: TLabel;
     procedure HelpBtnClick(Sender: TObject);
     procedure btnQueryClick(Sender: TObject);
-    procedure btnAcceptClick(Sender: TObject);
+    procedure AcceptItem;
     procedure FormShow(Sender: TObject);
     procedure cbxItemsChange(Sender: TObject);
     procedure edtQueryChange(Sender: TObject);
     procedure btnCustomClick(Sender: TObject);
+    procedure OKBtnClick(Sender: TObject);
   private
     procedure SortItems(pJsonResponse : TStringStream;pResponseLength : Integer);
     function GetNutrientValue(pJsonNutrient : TJSONValue) : real;
@@ -57,6 +57,12 @@ procedure TfrmAddFood.HelpBtnClick(Sender: TObject);
 begin
   //TODO: Add help screen or dialogue to explain how this would ne done
   Application.HelpContext(HelpContext);
+end;
+
+procedure TfrmAddFood.OKBtnClick(Sender: TObject);
+begin
+  inherited;
+  AcceptItem;
 end;
 
 {$REGION BUTTONS}
@@ -118,7 +124,7 @@ begin
       cbxItems.Text := 'Choose an item';
       cbxItems.SetFocus;
 
-      btnAccept.Enabled := false;
+      OKBtn.Enabled := false;
 
       // Sorting items and populating the array
       SortItems(JSONResponse,iResponseLength);
@@ -132,7 +138,7 @@ begin
 end;
 
 // Accepting the food item and adding it to the database
-procedure TfrmAddFood.btnAcceptClick(Sender: TObject);
+procedure TfrmAddFood.AcceptItem;
 var
   iFoodIndex : integer;
   rCalories,rEnergy,rProtein,rCarbs,rFat,rSugar: real;
@@ -201,11 +207,11 @@ begin
   inherited;
   if cbxItems.ItemIndex <> -1 then
   begin
-    btnAccept.Enabled := true;
-    btnAccept.Default := true;
+    OKBtn.Enabled := true;
+    OKBtn.Default := true;
     btnQuery.Default := false;
   end
-  else btnAccept.Enabled := false;
+  else OKBtn.Enabled := false;
   iFoodIndex := cbxItems.ItemIndex+1;
 
   sFoodCat := arrCategory[iFoodIndex];
@@ -279,7 +285,7 @@ begin
     btnQuery.Enabled := True;
     cbxBranded.Enabled := True;
     btnQuery.Default := true;
-    btnAccept.Default := false;
+    OKBtn.Default := false;
   end
   else
   begin

@@ -1,5 +1,5 @@
 inherited frmAddFood: TfrmAddFood
-  Caption = 'Add food to database'
+  Caption = 'Search foods'
   ClientHeight = 338
   ClientWidth = 669
   Constraints.MinHeight = 377
@@ -23,6 +23,9 @@ inherited frmAddFood: TfrmAddFood
   end
   inherited OKBtn: TButton
     Left = 588
+    Caption = 'Accept'
+    Enabled = False
+    OnClick = OKBtnClick
     ExplicitLeft = 588
   end
   inherited CancelBtn: TButton
@@ -57,20 +60,10 @@ inherited frmAddFood: TfrmAddFood
     Top = 51
     Width = 75
     Height = 25
-    Caption = 'Query'
+    Caption = 'Search'
     Enabled = False
     TabOrder = 4
     OnClick = btnQueryClick
-  end
-  object btnAccept: TButton
-    Left = 438
-    Top = 93
-    Width = 75
-    Height = 25
-    Caption = 'Accept Item'
-    Enabled = False
-    TabOrder = 5
-    OnClick = btnAcceptClick
   end
   object cbxBranded: TCheckBox
     Left = 40
@@ -81,7 +74,7 @@ inherited frmAddFood: TfrmAddFood
     Checked = True
     Enabled = False
     State = cbChecked
-    TabOrder = 6
+    TabOrder = 5
   end
   object redItems: TRichEdit
     Left = 24
@@ -97,15 +90,15 @@ inherited frmAddFood: TfrmAddFood
       'redItems')
     ParentFont = False
     ReadOnly = True
-    TabOrder = 7
+    TabOrder = 6
   end
   object btnCustom: TButton
-    Left = 200
-    Top = 93
+    Left = 588
+    Top = 116
     Width = 75
     Height = 25
     Caption = 'Custom Item'
-    TabOrder = 8
+    TabOrder = 7
     OnClick = btnCustomClick
   end
   object edtQuery: TLabeledEdit
@@ -119,7 +112,7 @@ inherited frmAddFood: TfrmAddFood
     EditLabel.Caption = 'Enter food name'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 9
+    TabOrder = 8
     Text = ''
     TextHint = 'Food name'
     OnChange = edtQueryChange

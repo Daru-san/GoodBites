@@ -263,3 +263,137 @@
 07/10/2024@22:40:33: [SYSTEM] Entry for user Matsuka was removed from the passwords file
 07/10/2024@22:40:33: [USER] User Matsuka was deleted from the database
 07/10/2024@22:40:33: [SYSTEM] Administrator Daru uid DA8910 has deleted user Matsuka uid MA2210
+2024/10/08@08:57:15: [SYSTEM] Database backup successful!
+2024/10/08@08:57:29: [USER] Administrator Daru uid DA8910 logged in.
+2024/10/08@08:57:29: [SYSTEM] The database table `tblFoods` was accessed by administrator Daru
+2024/10/08@08:57:29: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+2024/10/08@08:57:29: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+2024/10/08@08:57:37: [SYSTEM] The database table `tblFoods` was accessed by administrator Daru
+2024/10/08@08:58:31: [ERROR] Error backing up the database
+2024/10/08@08:58:35: [ERROR] Error backing up the database
+2024/10/08@09:08:24: [SYSTEM] Database backup successful!
+2024/10/08@09:08:37: [USER] User Daru uid DA8910 logged in.
+2024/10/08@09:16:00: [SYSTEM] Database backup successful!
+2024/10/08@09:16:05: [USER] User Daru uid DA8910 logged in.
+2024/10/08@09:17:23: [SYSTEM] Database backup successful!
+2024/10/08@09:17:30: [USER] User Daru uid DA8910 logged in.
+2024/10/08@09:19:44: [SYSTEM] Database backup successful!
+2024/10/08@09:19:50: [USER] User Daru uid DA8910 logged in.
+2024/10/08@09:43:35: [SYSTEM] Database backup successful!
+2024/10/08@09:47:59: [SYSTEM] Database backup successful!
+2024/10/08@09:48:06: [SYSTEM] Database backup successful!
+2024/10/08@09:48:31: [USER] User Rolan has been saved in the PASSWORDS file
+2024/10/08@09:48:31: [USER] The user Rolan, uid RO6910 has registered successfully
+2024/10/08@09:48:32: [USER] User Rolan uid RO6910 logged in.
+2024/10/08@09:49:01: [USER] User Rolan uid RO6910 has completed the sign up course!
+2024/10/08@09:49:36: [SYSTEM] Database backup successful!
+2024/10/08@09:49:56: [USER] User Mano has been saved in the PASSWORDS file
+2024/10/08@09:49:56: [USER] The user Mano, uid MA3910 has registered successfully
+2024/10/08@09:49:57: [USER] User Mano uid MA3910 logged in.
+2024/10/08@09:50:25: [USER] User Mano uid MA3910 has completed the sign up course!
+2024/10/08@09:55:41: [SYSTEM] Database backup successful!
+2024/10/08@09:57:04: [SYSTEM] Database backup successful!
+2024/10/08@09:57:59: [SYSTEM] Database backup successful!
+2024/10/08@09:58:15: [SYSTEM] Database backup successful!
+2024/10/08@09:58:31: [SYSTEM] Database backup successful!
+2024/10/08@09:58:56: [SYSTEM] Database backup successful!
+2024/10/08@10:00:35: [SYSTEM] Database backup successful!
+2024/10/08@10:00:47: [SYSTEM] Database backup successful!
+2024/10/08@10:01:06: [SYSTEM] Database backup successful!
+2024/10/08@10:01:22: [SYSTEM] Database backup successful!
+2024/10/08@10:01:40: [SYSTEM] Database backup successful!
+2024/10/08@10:03:25: [SYSTEM] Database backup successful!
+2024/10/08@10:05:01: [SYSTEM] Database backup successful!
+2024/10/08@10:05:13: [SYSTEM] Database backup successful!
+2024/10/08@10:05:27: [SYSTEM] Database backup successful!
+2024/10/08@10:05:43: [SYSTEM] Database backup successful!
+2024/10/08@10:05:54: [SYSTEM] Database backup successful!
+2024/10/08@10:06:48: [SYSTEM] Database backup successful!
+2024/10/08@10:07:43: [SYSTEM] Database backup successful!
+2024/10/08@10:10:26: [SYSTEM] Database backup successful!
+2024/10/08@10:12:04: [SYSTEM] Database backup successful!
+2024/10/08@10:12:19: [SYSTEM] Database backup successful!
+2024/10/08@10:12:43: [SYSTEM] Database backup successful!
+2024/10/08@10:12:59: [SYSTEM] Database backup successful!
+2024/10/08@10:13:32: [SYSTEM] Database backup successful!
+2024/10/08@10:13:54: [SYSTEM] Database backup successful!
+2024/10/08@10:14:23: [SYSTEM] Database backup successful!
+2024/10/08@10:21:29: [SYSTEM] Database backup successful!
+2024/10/08@10:22:34: [SYSTEM] Database backup successful!
+2024/10/08@10:23:01: [SYSTEM] Database backup successful!
+08/10/2024@19:50:49: [SYSTEM] Database backup successful!
+08/10/2024@19:57:19: [SYSTEM] Database backup successful!
+08/10/2024@19:57:46: [SYSTEM] Database backup successful!
+08/10/2024@19:58:12: [SYSTEM] Database backup successful!
+08/10/2024@19:58:27: [SYSTEM] Database backup successful!
+08/10/2024@20:13:50: [SYSTEM] Database backup successful!
+08/10/2024@20:17:52: [SYSTEM] Database backup successful!
+08/10/2024@20:18:22: [SYSTEM] Database backup successful!
+08/10/2024@20:19:25: [SYSTEM] Database backup successful!
+08/10/2024@20:20:36: [SYSTEM] Database backup successful!
+08/10/2024@20:20:57: [SYSTEM] Database backup successful!
+08/10/2024@20:21:29: [SYSTEM] Database backup successful!
+08/10/2024@20:21:43: [SYSTEM] Database backup successful!
+08/10/2024@20:23:26: [SYSTEM] Database backup successful!
+08/10/2024@20:23:40: [SYSTEM] Database backup successful!
+08/10/2024@20:23:57: [SYSTEM] Database backup successful!
+08/10/2024@20:24:12: [SYSTEM] Database backup successful!
+08/10/2024@20:25:17: [SYSTEM] Database backup successful!
+08/10/2024@20:25:37: [SYSTEM] Database backup successful!
+08/10/2024@20:26:39: [SYSTEM] Database backup successful!
+08/10/2024@20:27:08: [SYSTEM] Database backup successful!
+08/10/2024@20:29:09: [SYSTEM] Database backup successful!
+08/10/2024@20:33:34: [SYSTEM] Database backup successful!
+08/10/2024@20:34:47: [SYSTEM] Database backup successful!
+08/10/2024@20:34:58: [USER] User Daru uid DA8910 logged in.
+08/10/2024@20:35:42: [SYSTEM] Database backup successful!
+08/10/2024@20:35:49: [USER] User Daru uid DA8910 logged in.
+08/10/2024@20:37:15: [SYSTEM] Database backup successful!
+08/10/2024@20:37:55: [SYSTEM] Database backup successful!
+08/10/2024@20:39:20: [SYSTEM] Database backup successful!
+08/10/2024@20:39:35: [SYSTEM] Database backup successful!
+08/10/2024@20:39:43: [USER] Administrator Daru uid DA8910 logged in.
+08/10/2024@20:39:44: [SYSTEM] The database table `tblFoods` was accessed by administrator Daru
+08/10/2024@20:39:44: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+08/10/2024@20:39:44: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+08/10/2024@20:39:48: [SYSTEM] The database table `tblFoods` was accessed by administrator Daru
+08/10/2024@20:39:49: [SYSTEM] The database table `tblUsers` was accessed by administrator Daru
+08/10/2024@20:44:29: [SYSTEM] Database backup successful!
+08/10/2024@20:45:23: [SYSTEM] Database backup successful!
+08/10/2024@20:45:27: [SYSTEM] Database backup successful!
+08/10/2024@20:46:22: [SYSTEM] Database backup successful!
+08/10/2024@20:47:01: [SYSTEM] Database backup successful!
+08/10/2024@20:47:06: [SYSTEM] Database backup successful!
+08/10/2024@20:50:23: [SYSTEM] Database backup successful!
+08/10/2024@21:38:00: [SYSTEM] Database backup successful!
+08/10/2024@21:39:12: [SYSTEM] Database backup successful!
+08/10/2024@22:17:08: [SYSTEM] Database backup successful!
+08/10/2024@22:19:31: [SYSTEM] Database backup successful!
+08/10/2024@22:19:57: [USER] User Manoka has been saved in the PASSWORDS file
+08/10/2024@22:19:58: [USER] The user Manoka, uid MA8210 has registered successfully
+08/10/2024@22:19:59: [USER] User Manoka uid MA8210 logged in.
+08/10/2024@22:20:02: [SYSTEM] The file info/greeting.txt was need but not found
+08/10/2024@22:23:08: [SYSTEM] Database backup successful!
+08/10/2024@22:23:43: [USER] User Manoka uid MA8210 logged in.
+08/10/2024@22:23:44: [SYSTEM] The file info/greeting.txt was need but not found
+08/10/2024@22:26:11: [SYSTEM] Database backup successful!
+08/10/2024@22:26:43: [USER] User Manoka uid MA8210 logged in.
+08/10/2024@22:26:44: [SYSTEM] The file info/greeting.txt was need but not found
+08/10/2024@22:28:06: [USER] User Manoka uid MA8210 has completed the sign up course!
+08/10/2024@22:28:32: [USER] User Manoka uid MA8210 logged in.
+08/10/2024@22:30:11: [SYSTEM] Database backup successful!
+08/10/2024@22:30:24: [USER] User Manoka uid MA8210 logged in.
+08/10/2024@22:32:31: [SYSTEM] Database backup successful!
+08/10/2024@22:32:40: [USER] User Daru uid DA8910 logged in.
+08/10/2024@22:34:33: [SYSTEM] Database backup successful!
+08/10/2024@22:34:40: [USER] User Daru uid DA8910 logged in.
+08/10/2024@22:35:03: [SYSTEM] Item SPICY BILTONG, SPICY has been added to the database
+08/10/2024@22:38:58: [SYSTEM] Database backup successful!
+08/10/2024@22:39:05: [USER] User Daru uid DA8910 logged in.
+08/10/2024@22:40:10: [SYSTEM] Database backup successful!
+08/10/2024@22:40:16: [USER] User Daru uid DA8910 logged in.
+08/10/2024@22:41:54: [SYSTEM] Database backup successful!
+08/10/2024@22:42:58: [SYSTEM] Database backup successful!
+08/10/2024@22:43:15: [SYSTEM] Database backup successful!
+08/10/2024@22:44:20: [SYSTEM] Database backup successful!
+08/10/2024@22:44:46: [SYSTEM] Database backup successful!

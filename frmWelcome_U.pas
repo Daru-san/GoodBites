@@ -43,13 +43,13 @@ type
     lblProteinTargetPerc: TLabel;
     lblTotalCalCalc: TLabel;
     lblWaterAdd: TLabel;
-    mpWelcomeVideo: TWindowsMediaPlayer;
     lblWelcome: TLabel;
     pnlLandingCenter: TPanel;
     pnlNav: TPanel;
     rgpGender: TRadioGroup;
     redInfoHelp: TRichEdit;
     lblHelpNote: TLabel;
+    pnlVideo: TPanel;
     redGreeting: TRichEdit;
     lblTagline: TLabel;
     procedure FormShow(Sender: TObject);
@@ -129,6 +129,7 @@ begin
   FileUtils := TFileUtils.Create;
   LogService := TLogService.Create;
   ControlUtils := TControlUtils.Create;
+
   // Ensure that the greeting text file exists, if not display default text
   if FileUtils.CheckFileExists('info/greeting.txt') then
     redGreeting.Lines.LoadFromFile('info/greeting.txt')
@@ -293,12 +294,20 @@ begin
 end;
 
 procedure TfrmWelcome.ViewWelcomeCard;
+var
+  mpWelcomeVideo : TWindowsMediaPlayer;
 begin
   crplWelcome.ActiveCard := crdWelcome;
   CurrentUser.CompleteSignUp;
   LogService.WriteUserLog('User ' + CurrentUser.Username + ' uid ' + CurrentUser.UserID + ' has completed the sign up course!');
-  mpWelcomeVideo.URL := 'videos\tutor.mpv';
+
+  mpWelcomeVideo := TWindowsMediaPlayer.Create(pnlVideo);
+  mpWelcomeVideo.Parent := pnlVideo;
+  mpWelcomeVideo.Align := alClient;
+  mpWelcomeVideo.URL := 'videos\tutor.mp4';
+  mpWelcomeVideo.Show;
   mpWelcomeVideo.controls.play;
+
   btnBack.Enabled := false;
   btnContinue.Enabled := false;
 end;

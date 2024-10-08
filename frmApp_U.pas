@@ -22,6 +22,7 @@ type
     { Private declarations }
     FAppUser : TUser;
 
+    procedure ShowLogin;
     procedure ShowForms;
     procedure ShowDashboardForm;
     procedure ShowAdminForm;
@@ -37,36 +38,6 @@ var
 implementation
 
 {$R *.dfm}
-
-procedure TfrmApp.btnEnterClick(Sender: TObject);
-var
-  LoginForm : TfrmLogin;
-  isLogin : boolean;
-begin
-  // We initialize the app
-  // and disable MainFormOnTaskBar to show
-  // all forms on the taskbar
-  Application.Initialize;
-  Self.Hide;
-  Application.MainFormOnTaskBar := False;
-  Application.CreateForm(TfrmLogin,LoginForm);
-  try
-    LoginForm.ShowModal;
-
-    // This means the login was successful
-    if LoginForm.ModalResult = mrOk then
-    begin
-      AppUser := LoginForm.LoginUser;
-      isLogin := AppUser.CheckLogIn;
-    end else isLogin := false;
-  finally
-    LoginForm.Free;
-  end;
-  if isLogin then
-  ShowForms;
-
-  Application.Run;
-end;
 
 procedure TfrmApp.ShowForms;
 var
@@ -162,6 +133,36 @@ begin
   imgCenter.Picture.LoadFromFile('..\..\image.png');
   imgCenter.Stretch := true;
   self.FormResize(self);
+end;
+
+procedure TfrmApp.ShowLogin;
+var
+  LoginForm : TfrmLogin;
+  isLogin : boolean;
+begin
+  // We initialize the app
+  // and disable MainFormOnTaskBar to show
+  // all forms on the taskbar
+  Application.Initialize;
+  Self.Hide;
+  Application.MainFormOnTaskBar := False;
+  Application.CreateForm(TfrmLogin,LoginForm);
+  try
+    LoginForm.ShowModal;
+
+    // This means the login was successful
+    if LoginForm.ModalResult = mrOk then
+    begin
+      AppUser := LoginForm.LoginUser;
+      isLogin := AppUser.CheckLogIn;
+    end else isLogin := false;
+  finally
+    LoginForm.Free;
+  end;
+  if isLogin then
+  ShowForms;
+
+  Application.Run;
 end;
 
 procedure TfrmApp.pnlEnterClick(Sender: TObject);

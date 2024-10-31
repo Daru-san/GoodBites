@@ -235,8 +235,8 @@ object frmDashboard: TfrmDashboard
             object lblProg: TLabel
               Left = 1
               Top = 1
-              Width = 404
-              Height = 48
+              Width = 130
+              Height = 28
               Align = alClient
               Alignment = taCenter
               Caption = 'Progress for'
@@ -247,8 +247,6 @@ object frmDashboard: TfrmDashboard
               Font.Style = []
               ParentFont = False
               Layout = tlCenter
-              ExplicitWidth = 130
-              ExplicitHeight = 28
             end
           end
         end
@@ -918,7 +916,7 @@ object frmDashboard: TfrmDashboard
     object lblHello: TLabel
       Left = 0
       Top = 0
-      Width = 140
+      Width = 96
       Height = 24
       Align = alTop
       Alignment = taCenter
@@ -930,7 +928,6 @@ object frmDashboard: TfrmDashboard
       Font.Style = []
       ParentFont = False
       Layout = tlCenter
-      ExplicitWidth = 96
     end
     object edtSVCalorie: TLabeledEdit
       Left = 1

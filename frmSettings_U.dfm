@@ -38,15 +38,7 @@ inherited frmSettings: TfrmSettings
     Height = 15
     Caption = 'Label3'
   end
-  object pnlSide: TPanel [4]
-    Left = 384
-    Top = 0
-    Width = 102
-    Height = 251
-    Align = alRight
-    TabOrder = 0
-  end
-  object LabeledEdit1: TLabeledEdit [5]
+  object LabeledEdit1: TLabeledEdit [4]
     Left = 40
     Top = 72
     Width = 121
@@ -57,19 +49,27 @@ inherited frmSettings: TfrmSettings
     TabOrder = 1
     Text = ''
   end
-  object nbxWeight: TNumberBox [6]
+  object nbxWeight: TNumberBox [5]
     Left = 40
     Top = 128
     Width = 121
     Height = 23
     TabOrder = 2
   end
-  object nbxHeight: TNumberBox [7]
+  object nbxHeight: TNumberBox [6]
     Left = 40
     Top = 173
     Width = 121
     Height = 23
     TabOrder = 3
+  end
+  object pnlSide: TPanel [7]
+    Left = 384
+    Top = 0
+    Width = 102
+    Height = 251
+    Align = alRight
+    TabOrder = 0
   end
   inherited OKBtn: TButton
     Left = 403

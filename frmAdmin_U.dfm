@@ -4,7 +4,7 @@ object frmAdmin: TfrmAdmin
   BorderStyle = bsDialog
   Caption = 'Goodbites:  Administration'
   ClientHeight = 538
-  ClientWidth = 904
+  ClientWidth = 908
   Color = clBtnFace
   Constraints.MinHeight = 465
   Constraints.MinWidth = 920
@@ -20,7 +20,7 @@ object frmAdmin: TfrmAdmin
   object pageCtrl: TPageControl
     Left = 90
     Top = 0
-    Width = 814
+    Width = 818
     Height = 538
     ActivePage = tsFoods
     Align = alClient
@@ -31,7 +31,7 @@ object frmAdmin: TfrmAdmin
       object pnlUserHead: TPanel
         Left = 0
         Top = 0
-        Width = 806
+        Width = 810
         Height = 41
         Align = alTop
         Caption = 'Manage Users'
@@ -40,27 +40,26 @@ object frmAdmin: TfrmAdmin
       object pnlUsersBottom: TPanel
         Left = 0
         Top = 408
-        Width = 806
+        Width = 810
         Height = 100
         Align = alBottom
         TabOrder = 1
         object pnlUserNav: TPanel
           Left = 377
           Top = 1
-          Width = 428
+          Width = 432
           Height = 98
           Align = alClient
           TabOrder = 0
           object lblUserRecordNav: TLabel
             Left = 1
             Top = 1
-            Width = 426
+            Width = 98
             Height = 15
             Align = alTop
             Alignment = taCenter
             Caption = 'Record Navigation'
             Layout = tlCenter
-            ExplicitWidth = 98
           end
           object btnUserLast: TButton
             Left = 126
@@ -125,24 +124,16 @@ object frmAdmin: TfrmAdmin
             TabOrder = 0
             OnClick = btnUserDeleteClick
           end
-          object edtUserField: TEdit
+          object edtUserData: TEdit
             Left = 16
-            Top = 22
+            Top = 51
             Width = 121
             Height = 23
             Hint = 'Name of Field'
             ParentShowHint = False
             ShowHint = True
             TabOrder = 1
-            TextHint = 'Field'
-          end
-          object edtUserFieldData: TEdit
-            Left = 16
-            Top = 51
-            Width = 121
-            Height = 23
-            TabOrder = 2
-            TextHint = 'Field Data'
+            TextHint = 'Field data'
           end
           object btnUserFieldEdit: TButton
             Left = 232
@@ -150,22 +141,30 @@ object frmAdmin: TfrmAdmin
             Width = 90
             Height = 25
             Caption = 'Edit Field Data'
-            TabOrder = 3
+            TabOrder = 2
             OnClick = btnUserFieldEditClick
+          end
+          object cbxUserField: TComboBox
+            Left = 16
+            Top = 22
+            Width = 145
+            Height = 23
+            TabOrder = 3
+            Text = 'Table field'
           end
         end
       end
       object pnlUsersCenter: TPanel
         Left = 0
         Top = 41
-        Width = 806
+        Width = 810
         Height = 367
         Align = alClient
         TabOrder = 2
         object dbgUsersTable: TDBGrid
           Left = 1
           Top = 1
-          Width = 804
+          Width = 808
           Height = 365
           Align = alClient
           TabOrder = 0
@@ -184,7 +183,7 @@ object frmAdmin: TfrmAdmin
       object pnlLogHeader: TPanel
         Left = 0
         Top = 0
-        Width = 806
+        Width = 810
         Height = 41
         Align = alTop
         Caption = 'View Logs'
@@ -193,14 +192,14 @@ object frmAdmin: TfrmAdmin
       object pnlLogsCenter: TPanel
         Left = 0
         Top = 41
-        Width = 806
+        Width = 810
         Height = 383
         Align = alClient
         TabOrder = 1
         object memLogs: TMemo
           Left = 1
           Top = 1
-          Width = 804
+          Width = 808
           Height = 381
           Align = alClient
           Lines.Strings = (
@@ -213,7 +212,7 @@ object frmAdmin: TfrmAdmin
       object pnlLogsBottom: TPanel
         Left = 0
         Top = 424
-        Width = 806
+        Width = 810
         Height = 84
         Align = alBottom
         TabOrder = 2
@@ -261,7 +260,7 @@ object frmAdmin: TfrmAdmin
       object pnlFoodTop: TPanel
         Left = 0
         Top = 0
-        Width = 806
+        Width = 810
         Height = 41
         Align = alTop
         Caption = 'Food Management'
@@ -270,14 +269,14 @@ object frmAdmin: TfrmAdmin
       object pnlFoodCenter: TPanel
         Left = 0
         Top = 41
-        Width = 806
+        Width = 810
         Height = 375
         Align = alClient
         TabOrder = 1
         object dbgFoodsTable: TDBGrid
           Left = 1
           Top = 1
-          Width = 804
+          Width = 808
           Height = 373
           Align = alClient
           TabOrder = 0
@@ -292,7 +291,7 @@ object frmAdmin: TfrmAdmin
       object pnlFoodBottom: TPanel
         Left = 0
         Top = 416
-        Width = 806
+        Width = 810
         Height = 92
         Align = alBottom
         TabOrder = 2
@@ -313,52 +312,61 @@ object frmAdmin: TfrmAdmin
             Caption = 'Record Modification'
             ExplicitWidth = 108
           end
-          object edtFoodField: TEdit
+          object edtFoodData: TEdit
             Left = 16
-            Top = 22
+            Top = 54
             Width = 121
             Height = 23
             Hint = 'Name of Field'
             ParentShowHint = False
             ShowHint = True
             TabOrder = 0
-            TextHint = 'Field'
-          end
-          object edtFoodFieldData: TEdit
-            Left = 16
-            Top = 51
-            Width = 121
-            Height = 23
-            TabOrder = 1
-            TextHint = 'Field Data'
+            TextHint = 'Field data'
           end
           object btnFoodEdit: TButton
-            Left = 264
+            Left = 248
             Top = 22
-            Width = 90
+            Width = 83
             Height = 25
-            Caption = 'Edit Field Data'
+            Caption = 'Edit Food Data'
+            TabOrder = 1
+            OnClick = btnFoodEditClick
+          end
+          object cbxFoodField: TComboBox
+            Left = 16
+            Top = 25
+            Width = 145
+            Height = 23
             TabOrder = 2
-            OnClick = btnUserFieldEditClick
+            Text = 'Food Field'
+            OnChange = cbxFoodFieldChange
+          end
+          object btnFoodDelete: TButton
+            Left = 232
+            Top = 53
+            Width = 99
+            Height = 25
+            Caption = 'Delete Food Item'
+            TabOrder = 3
+            OnClick = btnFoodDeleteClick
           end
         end
         object pnlFoodRecordNav: TPanel
           Left = 377
           Top = 1
-          Width = 428
+          Width = 432
           Height = 90
           Align = alClient
           TabOrder = 1
           object lblFoodRecordNav: TLabel
             Left = 1
             Top = 1
-            Width = 426
+            Width = 98
             Height = 15
             Align = alTop
             Alignment = taCenter
             Caption = 'Record Navigation'
             Layout = tlCenter
-            ExplicitWidth = 98
           end
           object btnFoodFirst: TButton
             Left = 32
@@ -446,6 +454,30 @@ object frmAdmin: TfrmAdmin
       Caption = 'Backup DB'
       TabOrder = 1
       OnClick = btnBackupDBClick
+    end
+    object edtTotalUsers: TLabeledEdit
+      Left = -2
+      Top = 104
+      Width = 86
+      Height = 23
+      EditLabel.Width = 55
+      EditLabel.Height = 15
+      EditLabel.Caption = 'Total users'
+      ReadOnly = True
+      TabOrder = 2
+      Text = ''
+    end
+    object edtTotalFoods: TLabeledEdit
+      Left = -2
+      Top = 168
+      Width = 86
+      Height = 23
+      EditLabel.Width = 58
+      EditLabel.Height = 15
+      EditLabel.Caption = 'Total foods'
+      ReadOnly = True
+      TabOrder = 3
+      Text = ''
     end
   end
 end

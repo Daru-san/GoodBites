@@ -127,15 +127,19 @@ begin
   with dmData.tblFoods do
   begin
     Open;
-    First;
-    repeat
-      if Foodname = FieldValues['Foodname'] then
-	      isFound := true
-        else next;
-    until isFound or EOF;
-    Close;
-  end;
-  Result := isFound;
+		First;
+		repeat
+			// Casing causes issues where the item may not be cased
+			// the same but it still exists, this fixes that issue
+			if UpperCase(Foodname) = UpperCase(FieldValues['Foodname']) then
+			begin
+				isFound := true;
+			end
+			else next;
+		until isFound or EOF;
+		Close;
+	end;
+	Result := isFound;
 end;
 
 { Add the nutrients for any new food items }
@@ -183,6 +187,7 @@ begin
   CalcTotals;
 end;
 
+// Calculating our meal totals
 procedure TMeal.CalcTotals;
 begin
   TotalCalories := FoodItem.CaloriePer100G * (PortionSize/100);
@@ -205,16 +210,8 @@ begin
   isFound := False;
 
 
-  {
-    Steps:
-    1. Loop through the food table to find the meal name
-    - If found then:
-    1.1. Open the meals table to create a new record
-    1.2. Add record with all relevent data
-    1.3. Close Meal table
-    1.4. Stop the loop
-    1.5. Close the foods table
-  }
+	// Loop through our foods table to obtain our food name
+	// then add the item to our meals table
   with dmData.tblFoods do
   begin
     Open;

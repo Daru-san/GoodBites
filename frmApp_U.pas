@@ -134,11 +134,42 @@ end;
 
 procedure TfrmApp.FormShow(Sender: TObject);
 begin
-  imgCenter.Picture.LoadFromFile('..\..\Artwork.png');
-  imgCenter.Stretch := true;
-  self.FormResize(self);
+	ShowArt;
+
+	// Call the FormResize procedure to set the
+	// enter and exit panel positions
+	self.FormResize(self);
 end;
 
+// Show the artwork image
+procedure TfrmApp.ShowArt;
+const ARTWORKPATH = 'Artwork.png';
+var
+	sArtPath : String;
+	isArtFound : Boolean;
+begin
+	isArtFound := false;
+
+	// Checking if the image is in the current director or in the upper directory
+	if FileExists(ARTWORKPATH) then
+	begin
+		sArtPath := ARTWORKPATH;
+		isArtFound := true;
+	end
+		else
+	if FileExists('..\..\'+ARTWORKPATH) then
+	begin
+		sArtPath := '..\..\'+ARTWORKPATH;
+		isArtFound := true;
+	end;
+
+	if isArtFound then
+		imgCenter.Picture.LoadFromFile(sArtPath)
+	else
+		ShowMessage('Artwork file is missing');
+
+	imgCenter.Stretch := true;
+end;
 procedure TfrmApp.ShowLogin;
 var
   LoginForm : TfrmLogin;

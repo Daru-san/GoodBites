@@ -32,8 +32,7 @@ type
     lblUserRecordNav: TLabel;
     pnlMod: TPanel;
     lblUserRecordMod: TLabel;
-    edtUserField: TEdit;
-    edtUserFieldData: TEdit;
+    edtUserData: TEdit;
     btnUserFieldEdit: TButton;
     tsFoods: TTabSheet;
     dbgFoodsTable: TDBGrid;
@@ -61,6 +60,7 @@ type
     btnUnfilter: TButton;
     btnBackupDB: TButton;
     dbgUsersTable: TDBGrid;
+    cbxUserField: TComboBox;
 
     procedure btnLogoutClick(Sender: TObject);
     procedure tsLogsShow(Sender: TObject);
@@ -94,6 +94,14 @@ type
 
     // sSearch is empty by default to prevent filtering when not requiered
     procedure ShowLogs(pSearch:string='');
+    // Edit a field in the users database
+		procedure EditUserTable(pFieldName,pFieldData : string);
+
+    // Validating our data
+		function ValidateUserData(pFieldName,pFieldData : String) : Boolean;
+    function ValidateNum(pNum : String ; pNumName : String; pMin,pMax : Real) : Boolean;
+		function ValidateBool(pValue,pBoolName : String): Boolean;
+
   public
     { Public declarations }
 
@@ -101,11 +109,16 @@ type
     property AdminUser : TUser read FAdminUser write FAdminUser;
   end;
 
+const
+	USERFIELDS : array[1..9] of String = (
+		'UserID','Username','Fullname','Gender','ActivityLevel','Age','Weight','Height','isAdmin'
+	);
 var
   frmAdmin: TfrmAdmin;
   LogService : TLogService;
   FileUtils : TFileUtils;
   ControlUtils : TControlUtils;
+	StringUtils : TStringUtils;
 
 implementation
 
@@ -117,46 +130,25 @@ procedure TfrmAdmin.tsUsersShow(Sender: TObject);
 begin
   // Resize the dbgrid and log administrator interaction with the databse table
   ControlUtils.ResizeDBGrid(dbgUsersTable);
-  LogService.WriteSysLog('The database table `tblUsers` was accessed by administrator ' + AdminUser.Username);
-end;
 
-procedure TfrmAdmin.btnUserFieldEditClick(Sender: TObject);
-var
-  sFieldName,sFieldData : string;
-begin
-  sFieldName := edtUserField.Text;
-  sFieldData := edtUserFieldData.Text;
-  if MessageDlg('Modify user data?',mtConfirmation,mbOKCancel,0) = mrOk then
-  begin
-    if sFieldName = 'Username' then
-    begin
-     // UtilObj.EditInDB(fieldName,fieldData);
-    end
-    else
-    if sFieldName = 'isAdmin' then
-    begin
-      try
-        if (StrToBool(sFieldData) = true) or (StrToBool(sFieldData) = false) then
-       //  UtilObj.EditInDB(fieldName,fieldData);
-        except on E: Exception do
-        begin
-          ShowMessage('This field only takes boolean data');
-          exit;
-        end;
-      end;
-    end
-    else ShowMessage('This data cannot be modified');
-  end;
+  // Only log the opening of the users table once, else it will show every time the tab is shown
+	if not isUserTableOpen then
+	begin
+		LogService.WriteSysLog('The database table `tblUsers` was accessed by administrator ' + AdminUser.Username);
+		isUserTableOpen := true;
+	end;
 end;
 
 procedure TfrmAdmin.btnUserDeleteClick(Sender: TObject);
 var
-  sUsername,sUserID : String;
-  RemovedUser : TUser;
-  slsDeleteMessage : TStringList;
+	sUsername,sUserID : String;
+	iUserIndex : Integer;
+	RemovedUser : TUser;
+	slsDeleteMessage : TStringList;
 begin
-  sUsername := dmData.tblUsers.FieldValues['Username'];
-  sUserID := dmData.tblUsers.FieldValues['UserID'];
+	sUsername := dmData.tblUsers.FieldValues['Username'];
+	sUserID := dmData.tblUsers.FieldValues['UserID'];
+	iUserIndex := dmData.tblUsers.FieldValues['UserIndex'];
 
   // Creating the message with a string list makes it easy to
   // add multiple lines at once with #13
@@ -171,12 +163,19 @@ begin
   // We ensure confirmation to prevent accidental deletions in some cases
   // Although data can be recovered since the database is backed up on every run
   if MessageDlg(slsDeleteMessage.Text,mtConfirmation,mbYesNo,0) = mrYes then
-  begin
-    RemovedUser := TUser.Create(sUsername);
+	begin
+		// Creates a user that logs in automatically,
+		// allowing administrators to delete them based on
+		// their data that is copied from the database on login
+		RemovedUser := TUser.Create(sUsername,sUserID);
 
-    // Try should catch any errors that may have occured during
-    // user deletion and NOT log the user deletion as that would
-    // create a false positive
+		// Prevents the deletion of an administrator
+		if RemovedUser.isAdmin then
+		begin
+			ShowMessage('Cannot delete an administrator user');
+			RemovedUser.Free;
+		end
+		else
     try
       RemovedUser.DeleteUser(sUserID);
     finally
@@ -184,7 +183,8 @@ begin
       LogService.WriteSysLog(
         'Administrator ' + AdminUser.Username + ' uid ' + AdminUser.UserID
         + ' has deleted user ' + sUsername + ' uid ' + sUserID
-      );
+			);
+			ShowMessage('User ' + sUsername + ' was deleted successfully!');
     end;
   end;
 
@@ -194,6 +194,187 @@ begin
   // Reopen the users table and resize the db grid
   dmData.tblUsers.Open;
   ControlUtils.ResizeDBGrid(dbgUsersTable);
+end;
+
+procedure TfrmAdmin.btnUserFieldEditClick(Sender: TObject);
+var
+	sFieldName,sFieldData : string;
+	isValid : Boolean;
+begin
+	sFieldName := cbxUserField.Text;
+	sFieldData := edtUserData.Text;
+
+	// Obtain confirmation, validate and edit data
+	if MessageDlg('Modify user data?',mtConfirmation,mbYesNo,0) = mrYes then
+	begin
+		isValid := ValidateUserData(sFieldName,sFieldData);
+		if isValid then
+			EditUserTable(sFieldName,sFieldData)
+		else
+			ShowMessage('Table tblUsers was not modified');
+	end;
+end;
+
+function TfrmAdmin.ValidateUserData(pFieldName: string; pFieldData: string): Boolean;
+var
+	isValid : Boolean;
+	i : Integer;
+	sParamList : String;
+begin
+	// We list all of our user parameters so that
+	// we can display a message one is incorrect
+	sParamList := USERFIELDS[1];
+	for i := 2 to Length(userFIELDS) do
+		sParamList := sParamList + ',' + USERFIELDS[I];
+
+	isValid := false;
+
+	// Validate each feild separately, the array index makes this easy to
+	// do without many if statements
+	case IndexStr(pFieldName,USERFIELDS) of
+		0: isValid := StringUtils.ValidateString(pFieldData,'UserID',6,6,'numbers,letters');
+		1: isValid := StringUtils.ValidateString(pFieldData,'Username',3,12);
+		2: isValid := StringUtils.ValidateString(pFieldData,'Full name',3,20);
+		3: begin
+			isValid := (LowerCase(pFieldData) = 'male') or (LowerCase(pFieldData) = 'female');
+			if not isValid then ShowMessage('Enter either male or female');
+		end;
+		4: isValid := ValidateNum(pFieldData,'ActivityLevel',1.0,2.0);
+		5: isValid := ValidateNum(pFieldData,'Age',7,150);
+		6: isValid := ValidateNum(pFieldData,'Weight',15,999);
+		7: isValid := ValidateNum(pFieldData,'Height',60,299);
+
+		// Administrators should not be able to remove administrators
+		8: begin
+			isValid := false;
+			ShowMessage('You cannot change the `isAdmin` field of another user');
+		end;
+	else
+		// Showing a message when none of provided options are selected
+		ShowMessage('Please pick one of ' + sParamList);
+	end;
+	Result := isValid;
+end;
+
+// Boolean field validation
+function TfrmAdmin.ValidateBool(pValue: string; pBoolName: String): Boolean;
+var
+	isValid,isPresent,bValue : Boolean;
+	iCheckInt : Integer;
+begin
+	// Make sure our value is actually present
+	if pValue <> '' then
+		isPresent := true
+	else
+		isPresent := false;
+
+	isValid := true;
+
+	// A convert error would tell us that
+	// the value is not a boolean
+	// allowing the entrance of true, false, 1 or 0
+	try
+		// We try to convert the string to a boolean
+		// catching the excpetion in the case that it cannot be converted
+		bValue := StrToBool(pValue);
+	except on E: EConvertError do
+		isValid := false;
+	end;
+
+	if not isValid then
+		ShowMessage(pBoolName + ' must be a valid boolean value');
+
+	if not isPresent then
+		ShowMessage('Please enter a valid boolean value');
+
+	// Ensuring validity and presence at the same time
+	Result := isValid and isPresent;
+end;
+
+// Numeric field data validation
+function TfrmAdmin.ValidateNum(pNum: String; pNumName: string; pMin: Real; pMax: Real): Boolean;
+var
+	isValid,isNum,isPresent : Boolean;
+	iCheckInt : Integer;
+  rNumber : Real;
+begin
+	if pNum <> '' then
+		isPresent := true
+	else
+		isPresent := false;
+
+	Val(pNum,rNumber,iCheckInt);
+
+	// A zero would mean that the string cannot be
+	// converted to a number
+	// zero indicates the position of any non-number
+	// values in the string
+  if iCheckInt = 0 then
+    isNum := true
+  else
+    isNum := false;
+
+	// Min-max checking
+  if (rNumber > pMin) and (rNumber < pMax) then
+    isValid := true
+  else
+    isValid := false;
+
+	if (not isPresent) or (not isNum) then
+		ShowMessage('Please enter a valid number for field ' + pNumName);
+
+	if not isValid then
+		ShowMessage(pNumName + ' must be a number between ' + FloatToStr(pMin) + ' and ' + FloatToStr(pMax));
+
+	// We want to ensure validity, numerical `correctness` and presence
+	Result := isValid and isNum and isPresent;
+end;
+
+procedure TfrmAdmin.EditUserTable(pFieldName: string; pFieldData: string);
+var
+	isChanged : Boolean;
+begin
+	isChanged := false;
+
+	with dmData.tblUsers do
+	begin
+		// An administrator should not be able to change the `isAdmin` field
+		// of their own user when they are logged in, so we prevent that
+		if (FieldValues['UserID'] = AdminUser.UserID) and (pFieldName = 'isAdmin') then
+		begin
+			ShowMessage('Cannot change this personal isAdmin field while logged in');
+			exit;
+		end;
+
+		Edit;
+
+		// This should hopefully catch any last minute errors that I cannot
+		// prepare for such as on-the-stop database deletion or any corruption
+		// errors, others I do not know of may occur as well
+		try
+
+		// The item indexes of 4 to 7 contains all number values which should be converted
+		// back into floats before entering them into the database
+		case IndexStr(pFieldName,USERFIELDS) of
+			4..7: FieldValues[pFieldName] := StrToFloat(pFieldData);
+		else
+			FieldValues[pFieldName] := pFieldData;
+		end;
+		finally
+			Post;
+			Refresh;
+			isChanged := true;
+		end;
+	end;
+
+	// Display upon success or failure
+	if isChanged then
+	begin
+		ShowMessage('Field ' + pFieldName + ' was changed successfully!');
+		LogService.WriteSysLog('Field ' + pFieldName + ' of tblUsers was updated by administrator ' + AdminUser.Username + ' uid ' + AdminUser.UserID);
+	end
+	else
+		ShowMessage('Change of field ' + pFieldName + ' failed, an unknown error has occured');
 end;
 
 // Navigating the table

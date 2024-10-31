@@ -3,5 +3,15 @@ What to expect from here:
 - From here you will be asked to enter your information 
 - We will calculate your goal targets 
 - You will get a small welcoming video to get you up to scratch.
-
 Happy eating!
+Welcome to GoodBites
+We are happy to have you
+We're here to help YOU improve your nutritional health
+So stick around
+
+What to expect from here:
+- You will be asked to enter your biological info
+- We will calculate your goal targets 
+- You will get a small welcoming tutorial to get you started
+
+Let's begin by hitting `continue`

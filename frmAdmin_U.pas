@@ -232,6 +232,7 @@ begin
   ShowLogs;
 end;
 
+//Applying our filter
 procedure TfrmAdmin.btnFilterClick(Sender: TObject);
 var
   sSearch : string;
@@ -243,54 +244,58 @@ begin
 end;
 
 procedure TfrmAdmin.ShowLogs;
-const LOGFILE = 'logs';
 var
-  tfLogs : textfile;
-  doFilter : boolean;
-  sLine : string;
-  iNumLines : integer;
+	tfLogs : textfile;
+	doFilter : boolean;
+	sLine,sLogPath : string;
+	iNumLines : integer;
 begin
-  memLogs.clear;
+	memLogs.clear;
 
-  // Only filter when the Search string has text, hence when filterig
-  doFilter := pSearch <> '';
+	// Only filter when the Search string has text, hence when filterig
+	doFilter := pSearch <> '';
+	
+	// The log path is stores in the logService object
+	sLogPath := LogService.LogPath;
 
-  if FileUtils.CheckLogFile then
-  try
-    AssignFile(tfLogs,LOGFILE);
-    Reset(tfLogs);
-    Repeat
-      ReadLn(tfLogs,sLine);
-      Trim(sLine);
+	if FileUtils.CheckLogFile then
+	try
+		AssignFile(tfLogs,sLogPath);
+		Reset(tfLogs);
+		Repeat
+			ReadLn(tfLogs,sLine);
+			Trim(sLine);
 
-      // Show a line containing the filtered string as a regex
-      // If not filtering we just show every single line
-      if doFilter then
-      begin
-        if ContainsText(sLine,pSearch) then
-          memLogs.lines.Add(sLine)
-      end
-      else
-        memLogs.Lines.Add(sLine)
-    Until EOF(tfLogs);
-  finally
-     CloseFile(tfLogs);
-  end
-  else
-  // Assuming the log file does not exist, logging is omitted here unlike most error cases
-    memLogs.Lines.Add('Logs file is missing or corrupted');
+			// Show a line containing the filtered string as a regex
+			// If not filtering we just show every single line
+			if doFilter then
+			begin
+				if ContainsText(sLine,pSearch) then
+					memLogs.lines.Add(sLine)
+			end
+			else
+				memLogs.Lines.Add(sLine)
+		Until EOF(tfLogs);
+	finally
+		 CloseFile(tfLogs);
+	end
+	else
+	// Assuming the log file does not exist, logging is omitted here unlike most error cases
+		memLogs.Lines.Add('Logs file is missing or corrupted');
 end;
 
+// Clearing out log file
 procedure TfrmAdmin.btnClearClick(Sender: TObject);
 begin
-  if MessageDlg('Are you sure you want to clear the log file?',mtConfirmation, mbYesNo, 0) = mrYes then
-    ClearLogs();
+	if MessageDlg('Are you sure you want to clear the log file?',mtConfirmation, mbYesNo, 0) = mrYes then
+		ClearLogs();
 end;
 
 procedure TfrmAdmin.ClearLogs;
 var
 	tfLogs : textfile;
 	sLogPath : String;
+begin
 	sLogPath := LogService.LogPath;
 	if FileUtils.CheckLogFile then
 	begin
@@ -312,14 +317,8 @@ var
 end;
 begin
 
-    // Logged in admin is still logged when clearing the log file to keep them accountable for the clearing
-    // In case anything may come up and logs were needed or some ambiguous circumstance
-    LogService.WriteUserLog('The administrator ' + AdminUser.Username + ' was logged in');
-    ShowLogs;
-  end
-  else
-    ShowMessage('An error occured: the log file is either missing or corrupted');
 end;
+
 {$ENDREGION}
 
 // Sidebar

@@ -75,7 +75,11 @@ implementation
 
 procedure TfrmLogin.btnGoLoginClick(Sender: TObject);
 begin
+  // Move to login card
   crplLogin.ActiveCard := crdLogin;
+
+  // Reset the sign up card so when a user re-enters it
+  // it will be clear of any data
   edtNewUser.Text := '';
   edtNewPassword.Text := '';
   edtNewPassConf.Text := '';
@@ -90,7 +94,10 @@ end;
 
 procedure TfrmLogin.btnGoSignUpClick(Sender: TObject);
 begin
+  // Move to sign up card
   crplLogin.ActiveCard := crdSign;
+
+  // Reset the login card
   edtUser.Text := '';
   edtPassword.Text := '';
   btnLogin.Enabled := false;
@@ -126,6 +133,7 @@ end;
 
 procedure TfrmLogin.cbxRevealClick(Sender: TObject);
 begin
+  //Show password when checking the box
   if cbxReveal.Checked then
   begin
     edtNewPassword.PasswordChar := #0;
@@ -138,6 +146,7 @@ begin
   end;
 end;
 
+// Checking the sign up fields to ensure that they have all been filled
 procedure TfrmLogin.cbxTermsClick(Sender: TObject);
 begin
   CheckFields('Signup');
@@ -158,6 +167,7 @@ begin
   CheckFields('Signup');
 end;
 
+// Ensuring that the login fields have been filled
 procedure TfrmLogin.edtPasswordChange(Sender: TObject);
 begin
   CheckFields('Login');
@@ -187,6 +197,7 @@ begin
   sPassword := edtNewPassword.text;
   sPassConf := edtNewPassConf.Text;
 
+  // Password match validation
   if sPassword <> sPassConf then
   begin
     ShowMessage('Passwords do not match');
@@ -251,6 +262,7 @@ begin
   end;
 end;
 
+// Focusing the edit boxes based on the current card
 procedure TfrmLogin.crdLoginEnter(Sender: TObject);
 begin
   edtUser.SetFocus;
@@ -261,14 +273,13 @@ begin
   edtNewUser.SetFocus;
 end;
 
+// Start at login
 procedure TfrmLogin.FormShow(Sender: TObject);
 begin
  crplLogin.ActiveCard := crdLogin;
 end;
-
 procedure TfrmLogin.tbtHomeClick(Sender: TObject);
 begin
   self.ModalResult := mrCancel;
 end;
-
 end.

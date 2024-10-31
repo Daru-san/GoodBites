@@ -105,6 +105,8 @@ type
 
 		// Edit a food item
 		procedure EditFoodTable(pFieldName,pFieldData : String);
+    // Show total user and food stats
+    procedure ShowTotalStats;
   public
     { Public declarations }
 
@@ -200,6 +202,9 @@ begin
   // Reopen the users table and resize the db grid
   dmData.tblUsers.Open;
   ControlUtils.ResizeDBGrid(dbgUsersTable);
+
+  // Update user stats based on new user count
+  ShowTotalStats;
 end;
 
 procedure TfrmAdmin.btnUserFieldEditClick(Sender: TObject);
@@ -730,8 +735,47 @@ begin
     dbgUsersTable.DataSource := dscUsers;
   end;
 
+  // Initializing totals
+  ShowTotalStats;
   // Call the OnShow() of the tab to get the dbgrid resized
   tsUsers.OnShow(nil);
+procedure TfrmAdmin.ShowTotalStats;
+var
+  i, iNumFoods, iNumUsers : integer;
+begin
+  // Counting the totals manually
+  // Using FieldCount returns incorrect values, hence calculation is better
+
+  // Both will go back to the top of the tables once they are done counting
+
+  // Total Users
+  iNumUsers := 0;
+  with dmData.tblUsers do
+  begin
+    First;
+    repeat
+      inc(iNumUsers);
+      Next;
+    until EOF;
+    First;
+  end;
+
+  // Total food items
+  iNumFoods := 0;
+  with dmData.tblFoods do
+  begin
+    First;
+    repeat
+      inc(iNumFoods);
+      Next;
+    until EOF;
+    First;
+  end;
+
+  // Display in our sidebar edits
+  edtTotalUsers.Text := iNumUsers.ToString + ' users';
+  edtTotalFoods.Text := iNumFoods.ToString + ' items';
 end;
+
 {$ENDREGION}
 end.

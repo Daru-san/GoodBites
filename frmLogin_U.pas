@@ -52,7 +52,6 @@ type
     procedure edtUserKeyPress(Sender: TObject; var Key: Char);
     procedure edtPasswordKeyPress(Sender: TObject; var Key: Char);
     procedure cbxRevealClick(Sender: TObject);
-    procedure tbtHomeClick(Sender: TObject);
     procedure crdLoginEnter(Sender: TObject);
     procedure crdSignEnter(Sender: TObject);
     procedure btnHomeClick(Sender: TObject);
@@ -277,9 +276,5 @@ end;
 procedure TfrmLogin.FormShow(Sender: TObject);
 begin
  crplLogin.ActiveCard := crdLogin;
-end;
-procedure TfrmLogin.tbtHomeClick(Sender: TObject);
-begin
-  self.ModalResult := mrCancel;
 end;
 end.

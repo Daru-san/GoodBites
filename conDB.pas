@@ -133,7 +133,7 @@ begin
   isInCurrentDir := FileExists(DBFILENAME);
   isInUpperDir := FileExists('..\..\'+DBFILENAME);
 
-  if isInUpperDir then
+  if isInCurrentDir then
   begin
     dbPath := DBFILENAME;
     dlPath := DLFILENAME;

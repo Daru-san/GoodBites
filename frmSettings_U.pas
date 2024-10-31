@@ -1,5 +1,5 @@
 unit frmSettings_U;
-
+// Not finished due to time :(
 interface
 
 uses

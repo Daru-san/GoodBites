@@ -31,8 +31,8 @@ uses
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-  Application.Title := 'Goodbites';
   TStyleManager.TrySetStyle('Onyx Blue');
+  Application.Title := 'Goodbites';
   Application.CreateForm(TfrmApp, frmApp);
   Application.CreateForm(TdmData, dmData);
   Application.CreateForm(TfrmAddFood, frmAddFood);

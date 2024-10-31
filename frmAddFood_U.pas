@@ -118,6 +118,7 @@ begin
     if isFetched then
     begin
       redItems.Text := 'Success!';
+      ShowMessage('Success! Select a food item');
       Foodname := sQuery;
       cbxItems.Enabled := True;
       cbxItems.Items.clear;

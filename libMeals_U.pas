@@ -88,7 +88,7 @@ begin
     Open;
     First;
     repeat
-      if pFoodname = FieldValues['FoodName'] then
+      if UpperCase(pFoodname) = UpperCase(FieldValues['FoodName']) then
       begin
         isFoodFound := true;
         Category := FieldValues['Category'];

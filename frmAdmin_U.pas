@@ -99,9 +99,12 @@ type
 
     // Validating our data
 		function ValidateUserData(pFieldName,pFieldData : String) : Boolean;
+		function ValidateFoodData(pFieldName,pFieldData : String) : Boolean;
     function ValidateNum(pNum : String ; pNumName : String; pMin,pMax : Real) : Boolean;
 		function ValidateBool(pValue,pBoolName : String): Boolean;
 
+		// Edit a food item
+		procedure EditFoodTable(pFieldName,pFieldData : String);
   public
     { Public declarations }
 
@@ -112,6 +115,9 @@ type
 const
 	USERFIELDS : array[1..9] of String = (
 		'UserID','Username','Fullname','Gender','ActivityLevel','Age','Weight','Height','isAdmin'
+	);
+	FOODFIELDS : array[1..8] of String = (
+		'Foodname','Category','CaloriesPer100G','EnergyPer100G','CarbPer100G','FatPer100G','ProteinPer100G','SugarPer100G'
 	);
 var
   frmAdmin: TfrmAdmin;
@@ -496,6 +502,7 @@ begin
 	else
 		ShowMessage('An error occured: the log file is either missing or corrupted');
 end;
+procedure TfrmAdmin.cbxFoodFieldChange(Sender: TObject);
 begin
 
 end;
@@ -543,7 +550,110 @@ procedure TfrmAdmin.tsFoodsShow(Sender: TObject);
 begin
   // Resize the food dbgrid and log administrator interaction with the table
   ControlUtils.ResizeDBGrid(dbgFoodsTable);
-  LogService.WriteSysLog('The database table `tblFoods` was accessed by administrator ' + AdminUser.Username);
+
+  //Check if the food table has been opened during the current session
+	if not isFoodTableOpen then
+	begin
+		LogService.WriteSysLog('The database table `tblFoods` was accessed by administrator ' + AdminUser.Username);
+		isFoodTableOpen := true;
+	end;
+end;
+
+procedure TfrmAdmin.btnFoodDeleteClick(Sender: TObject);
+var
+	sFoodName : String;
+begin
+	// Get our deletion confirmation and safely delete our food item
+	if MessageDlg('Delete this food item?',mtConfirmation,mbYesNo,0) = mrYes then
+	begin
+		with dmData.tblFoods do
+		begin
+			sFoodName := FieldValues['Foodname'];
+			Delete;
+		end;
+		ShowMessage('Food item has been deleted');
+
+		// All modification interactions of this sort will be logged
+		LogService.WriteSysLog(
+			'Food item ' + sFoodname + ' was deleted by an administrator ' + AdminUser.Username + ' uid ' + AdminUser.UserID
+		);
+	end;
+end;
+
+procedure TfrmAdmin.btnFoodEditClick(Sender: TObject);
+var
+	sFieldName,sFieldData : string;
+	isValid : Boolean;
+begin
+	// Obtain our data
+	sFieldName := cbxFoodField.Text;
+	sFieldData := edtFoodData.Text;
+
+	// Get our confirmation, validate our data and edit our table
+	if MessageDlg('Modify food data?',mtConfirmation,mbYesNo,0) = mrYes then
+	begin
+		isValid := ValidateFoodData(sFieldName,sFieldData);
+		if isValid then
+			EditFoodTable(sFieldName,sFieldData)
+		else
+			ShowMessage('Table tblFoods was not modified');
+	end;
+end;
+
+function TfrmAdmin.ValidateFoodData(pFieldName: string; pFieldData: string): Boolean;
+var
+	isValid : Boolean;
+	i : Integer;
+	sParamList : String;
+begin
+	// Getting our parameters in a nice list
+	sParamList := FOODFIELDS[1];
+	for I := 2 to Length(FOODFIELDS) do
+		sParamList := sParamList + ',' + FOODFIELDS[i];
+
+	isValid := false;
+
+	// 0 and 1 are the strings and 2 to 7 are all numbers, so we are free to couple them like this
+	case IndexStr(pFieldName,FOODFIELDS) of
+		0..1: isValid := StringUtils.ValidateString(pFieldData,pFieldName,3,20,'numbers,letters');
+		2..7: isValid := ValidateNum(pFieldData,pFieldName,0,1000);
+	else
+		ShowMessage('Please pick one of ' + sParamList + ' in the combobox');
+	end;
+	Result := isValid;
+end;
+
+procedure TfrmAdmin.EditFoodTable(pFieldName: string; pFieldData: string);
+var
+	isChanged : Boolean;
+begin
+	isChanged := false;
+
+	with dmData.tblFoods do
+	begin
+		Edit;
+		try
+			// Same logic as the previous procedure
+			case IndexStr(pFieldName,FOODFIELDS) of
+				0..1: FieldValues[pFieldName] := pFieldData;
+				2..7: FieldValues[pFieldData] := StrToFloat(pFieldData);
+			end;
+		finally
+			Post;
+			Refresh;
+			isChanged := true;
+		end;
+		Refresh;
+	end;
+
+	// Display upon success or failure
+	if isChanged then
+	begin
+		ShowMessage('Field ' + pFieldName + ' was changed successfully!');
+		LogService.WriteSysLog('Field ' + pFieldName + ' of tblFoods was updated by administrator ' + AdminUser.Username + ' uid ' + AdminUser.UserID);
+	end
+	else
+		ShowMessage('Change of field ' + pFieldName + ' failed, an unknown error has occured');
 end;
 {$ENDREGION}
 

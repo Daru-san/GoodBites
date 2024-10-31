@@ -288,19 +288,29 @@ begin
 end;
 
 procedure TfrmAdmin.ClearLogs;
-const LOGFILE = 'logs';
 var
-  tfLogs : textfile;
+	tfLogs : textfile;
+	sLogPath : String;
+	sLogPath := LogService.LogPath;
+	if FileUtils.CheckLogFile then
+	begin
+		try
+			AssignFile(tfLogs,sLogPath);
+			ReWrite(tfLogs);
+			Writeln(tfLogs,'# Logs #');
+		finally
+			CloseFile(tfLogs);
+		end;
+
+		// Logged in admin is still logged when clearing the log file to keep them accountable for the clearing
+		// In case anything may come up and logs were needed or some ambiguous circumstance
+		LogService.WriteUserLog('The administrator ' + AdminUser.Username + ' was logged in');
+		ShowLogs;
+	end
+	else
+		ShowMessage('An error occured: the log file is either missing or corrupted');
+end;
 begin
-  if FileUtils.CheckLogFile then
-  begin
-    try
-      AssignFile(tfLogs,LOGFILE);
-      ReWrite(tfLogs);
-      Writeln(tfLogs,'# Logs #');
-    finally
-      CloseFile(tfLogs);
-    end;
 
     // Logged in admin is still logged when clearing the log file to keep them accountable for the clearing
     // In case anything may come up and logs were needed or some ambiguous circumstance

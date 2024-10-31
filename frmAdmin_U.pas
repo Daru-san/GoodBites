@@ -2,8 +2,7 @@ unit frmAdmin_U;
 { Administator dashboard that provides administrator users with the ability to:
   - View the database tables
   - Edit the database tables
-  - View the application logs for any errors or strange behavior in the program or just general program usage
-}
+	- View the application logs for any errors or strange behavior in the program or just general program usage}
 interface
 
 uses
@@ -46,9 +45,7 @@ type
     lblUser: TLabel;
     pnlFoodRecordMod: TPanel;
     lblFoodRecordMod: TLabel;
-    edtFoodField: TEdit;
-    edtFoodFieldData: TEdit;
-    btnFoodEdit: TButton;
+    edtFoodData: TEdit;
     pnlFoodRecordNav: TPanel;
     lblFoodRecordNav: TLabel;
     btnFoodFirst: TButton;
@@ -60,7 +57,12 @@ type
     btnUnfilter: TButton;
     btnBackupDB: TButton;
     dbgUsersTable: TDBGrid;
+    edtTotalUsers: TLabeledEdit;
+    edtTotalFoods: TLabeledEdit;
+    btnFoodEdit: TButton;
+    cbxFoodField: TComboBox;
     cbxUserField: TComboBox;
+    btnFoodDelete: TButton;
 
     procedure btnLogoutClick(Sender: TObject);
     procedure tsLogsShow(Sender: TObject);
@@ -86,6 +88,9 @@ type
     procedure btnFoodNextClick(Sender: TObject);
     procedure btnUnfilterClick(Sender: TObject);
     procedure btnBackupDBClick(Sender: TObject);
+    procedure cbxFoodFieldChange(Sender: TObject);
+    procedure btnFoodEditClick(Sender: TObject);
+    procedure btnFoodDeleteClick(Sender: TObject);
   private
     { Private declarations }
     FAdminUser : TUser;
@@ -94,6 +99,7 @@ type
 
     // sSearch is empty by default to prevent filtering when not requiered
     procedure ShowLogs(pSearch:string='');
+
     // Edit a field in the users database
 		procedure EditUserTable(pFieldName,pFieldData : string);
 
@@ -105,6 +111,7 @@ type
 
 		// Edit a food item
 		procedure EditFoodTable(pFieldName,pFieldData : String);
+
     // Show total user and food stats
     procedure ShowTotalStats;
   public
@@ -127,6 +134,10 @@ var
   FileUtils : TFileUtils;
   ControlUtils : TControlUtils;
 	StringUtils : TStringUtils;
+
+  // Used to check whether a database table has been opened by the user
+  isUserTableOpen : Boolean;
+  isFoodTableOpen : Boolean;
 
 implementation
 
@@ -388,23 +399,20 @@ begin
 		ShowMessage('Change of field ' + pFieldName + ' failed, an unknown error has occured');
 end;
 
+
 // Navigating the table
 procedure TfrmAdmin.btnUserFirstClick(Sender: TObject);
 begin
   dmData.tblUsers.first;
 end;
-
 procedure TfrmAdmin.btnUserLastClick(Sender: TObject);
 begin
   dmData.tblUsers.Last;
 end;
-
-
 procedure TfrmAdmin.btnUserNextClick(Sender: TObject);
 begin
   dmData.tblUsers.Next;
 end;
-
 procedure TfrmAdmin.btnUserPreviousClick(Sender: TObject);
 begin
   dmData.tblUsers.Prior;
@@ -418,6 +426,7 @@ begin
   ShowLogs();
 end;
 
+// Reset our filter and show the logs again
 procedure TfrmAdmin.btnUnfilterClick(Sender: TObject);
 begin
   edtFilter.Text := '';
@@ -518,16 +527,17 @@ end;
 {$REGION SIDEBAR}
 procedure TfrmAdmin.btnBackupDBClick(Sender: TObject);
 begin
-  dmData.BackUpDB;
-  ShowLogs;
+	// Back up our database and update our logs to reflect this backup
+	dmData.BackUpDB;
+	ShowLogs;
 end;
 
 procedure TfrmAdmin.btnLogoutClick(Sender: TObject);
 begin
-  self.ModalResult := mrClose;
+	self.ModalResult := mrClose;
 end;
-
 {$ENDREGION}
+
 // Food
 {$REGION FOOD}
 // Table navigation
@@ -535,17 +545,14 @@ procedure TfrmAdmin.btnFoodFirstClick(Sender: TObject);
 begin
   dmData.tblFoods.First;
 end;
-
 procedure TfrmAdmin.btnFoodLastClick(Sender: TObject);
 begin
   dmData.tblFoods.Last;
 end;
-
 procedure TfrmAdmin.btnFoodNextClick(Sender: TObject);
 begin
   dmData.tblFoods.Next;
 end;
-
 procedure TfrmAdmin.btnFoodPrevClick(Sender: TObject);
 begin
   dmData.tblFoods.Prior;
@@ -711,11 +718,14 @@ begin
 end;
 
 procedure TfrmAdmin.FormShow(Sender: TObject);
+var
+  i: Integer;
 begin
   //Initializing our objects
   LogService := TLogService.Create;
   FileUtils := TFileUtils.Create;
   ControlUtils := TControlUtils.Create;
+  StringUtils := TStringUtils.Create;
 
   // Ensuring we start on the first tab every time
   pageCtrl.TabIndex := 0;
@@ -723,10 +733,13 @@ begin
   // Greeting
   lblUser.Caption := 'Hello, ' + AdminUser.Username;
 
+  // Setting the read states of the tables to false, until they are viewed by the administrator
+  isUserTableOpen := false;
+  isFoodTableOpen := false;
+
   // I choose to open database tables only when they are needed
   // hence they are opened upon opening this form
   // They are not open automatically
-
   with dmData do
   begin
     tblUsers.open;
@@ -737,8 +750,19 @@ begin
 
   // Initializing totals
   ShowTotalStats;
+
   // Call the OnShow() of the tab to get the dbgrid resized
-  tsUsers.OnShow(nil);
+	tsUsers.OnShow(nil);
+
+	// Populate the user fields combo box
+	for i := 1 to Length(USERFIELDS) do
+		cbxUserField.Items.Add(USERFIELDS[i]);
+
+	// Populate the food fields combo box
+	for i  := 1 to Length(FOODFIELDS) do
+		cbxFoodField.Items.Add(FOODFIELDS[i]);
+end;
+
 procedure TfrmAdmin.ShowTotalStats;
 var
   i, iNumFoods, iNumUsers : integer;

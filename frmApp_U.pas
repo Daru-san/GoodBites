@@ -1,5 +1,6 @@
 unit frmApp_U;
-
+// Our starting point and the display for my sister`s artwork ^.^
+// This form facilitates movement between the login and dashboard form(s)
 interface
 
 uses
@@ -15,7 +16,6 @@ type
     pnlEnter: TPanel;
     pnlExit: TPanel;
     procedure FormShow(Sender: TObject);
-    procedure btnExitClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure pnlEnterClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -24,11 +24,12 @@ type
     { Private declarations }
     FAppUser : TUser;
 
-    procedure ShowLogin;
-    procedure ShowForms;
-    procedure ShowDashboardForm;
-    procedure ShowAdminForm;
-    procedure ShowWelcomeForm;
+		procedure ShowLogin;
+		procedure ShowForms;
+		procedure ShowDashboardForm;
+		procedure ShowAdminForm;
+		procedure ShowWelcomeForm;
+		procedure ShowArt;
   public
     { Public declarations }
     property AppUser : TUser read FAppUser write FAppUser;
@@ -41,13 +42,15 @@ implementation
 
 {$R *.dfm}
 
+// Form showing starts here and moves to the other procudures bases on
+// user information
 procedure TfrmApp.ShowForms;
 var
   isAdmin : Boolean;
   isNewUser : Boolean;
 begin
   isAdmin := AppUser.isAdmin;
-  isNewUser := AppUser.CheckFirstLogin;
+  isNewUser := AppUser.CheckRegistered;
   if isAdmin then
     ShowAdminForm
   else
@@ -59,35 +62,41 @@ begin
   end;
 end;
 
+// Administrator form navigation
 procedure TfrmApp.ShowAdminForm;
 var
-  AdminForm : TfrmAdmin;
+	AdminForm : TfrmAdmin;
 begin
-  Application.CreateForm(TfrmAdmin,AdminForm);
-  with AdminForm do
-  try
-    AdminUser := AppUser;
-    ShowModal;
-  finally
-    Free;
-  end;
+	Application.CreateForm(TfrmAdmin,AdminForm);
+	with AdminForm do
+	try
+		AdminUser := AppUser;
+		ShowModal;
+	finally
+		Free;
+	end;
 end;
 
+// We want to show the welcome form and
+// go staight to the dashboard if all went well
 procedure TfrmApp.ShowWelcomeForm;
 var
   WelcomeForm : TfrmWelcome;
   isLoginComplete : Boolean;
 begin
+	isLoginComplete := false;
   Application.CreateForm(TfrmWelcome,WelcomeForm);
   with WelcomeForm do
   try
     CurrentUser := AppUser;
-    ShowModal;
-  finally
-    isLoginComplete := ModalResult = mrYes;
-    Free;
-  end;
-  if isLoginComplete then
+		ShowModal;
+	finally
+		Free;
+	end;
+
+	// If the tutorial was completed they should
+	// be moved straight to the dashboard
+  if not AppUser.CheckRegistered then
     ShowDashboardForm;
 end;
 
@@ -105,11 +114,6 @@ begin
   end;
 end;
 
-procedure TfrmApp.btnExitClick(Sender: TObject);
-begin
-  Application.Terminate;
-end;
-
 procedure TfrmApp.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -123,6 +127,7 @@ end;
 
 procedure TfrmApp.FormResize(Sender: TObject);
 begin
+  // Keep the buttons in the same relative position
   with pnlCenter do
   begin
     pnlEnter.Left := Round(Width*1/8);
@@ -170,6 +175,8 @@ begin
 
 	imgCenter.Stretch := true;
 end;
+
+// Moving to our login screen
 procedure TfrmApp.ShowLogin;
 var
   LoginForm : TfrmLogin;
@@ -197,17 +204,19 @@ begin
   if isLogin then
   ShowForms;
 
+  // Come back to this form when everything else is done
   Application.Run;
 end;
 
+// Going to our login screen;
 procedure TfrmApp.pnlEnterClick(Sender: TObject);
 begin
-  ShowLogin;
+	ShowLogin;
 end;
 
 procedure TfrmApp.pnlExitClick(Sender: TObject);
 begin
-  Close;
+	Close;
 end;
 
 end.
